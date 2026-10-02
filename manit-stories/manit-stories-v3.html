@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1080">
+<meta name="hz:slide-selector" content=".slide">
+<meta name="hz:canvas-width" content="1080">
+<meta name="hz:canvas-height" content="1920">
+<title>Manit Stories</title>
+<link rel="stylesheet" href="https://use.typekit.net/vgg1qhv.css">
+<style>
+  :root{--wine:#3d0d15;--ink:#f6ece6;--soft:rgba(246,236,230,.78);--line:rgba(246,236,230,.55);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#1a0508}
+  .slide{position:relative;width:1080px;height:1920px;overflow:hidden;color:var(--ink);
+    background-color:#330a12;
+    margin-bottom:40px}
+  .abs{position:absolute}
+  .g1{left:0;top:0;width:1080px;height:1920px;background:radial-gradient(ellipse at 25% 20%, rgba(122,30,44,.75) 0%, rgba(51,10,18,0) 60%)}
+  .g2{left:0;top:0;width:1080px;height:1920px;background:radial-gradient(ellipse at 80% 70%, rgba(20,3,6,.7) 0%, rgba(20,3,6,0) 60%)}
+  .arcs{position:absolute;left:0;top:0}
+  .kicker{left:0;width:1080px;top:110px;text-align:center;font-family:"montserrat",sans-serif;font-weight:300;
+    font-size:24px;letter-spacing:7px;color:var(--soft)}
+  .kicker span{display:inline-block;width:70px;height:1px;background:var(--line);vertical-align:middle;margin:0 28px}
+  .serif{font-family:"cormorant-garamond",serif}
+  .sans{font-family:"montserrat",sans-serif}
+  .center{left:0;width:1080px;text-align:center}
+  .h-caps{font-family:"cormorant-garamond",serif;font-weight:400;font-size:100px;line-height:1;letter-spacing:1px;text-transform:uppercase}
+  .h-ital{font-family:"cormorant-garamond",serif;font-style:italic;font-weight:400;font-size:130px;line-height:1}
+  .lead{font-family:"montserrat",sans-serif;font-weight:300;font-size:36px;line-height:1.4;color:var(--ink)}
+  .logo{font-family:"cormorant-garamond",serif;font-weight:500;font-size:150px;letter-spacing:6px;line-height:1}
+  .logo-sub{font-family:"montserrat",sans-serif;font-weight:300;font-size:30px;letter-spacing:9px}
+  .item-t{font-family:"montserrat",sans-serif;font-weight:400;font-size:32px;letter-spacing:3px;text-transform:uppercase;line-height:1.3}
+  .item-d{font-family:"montserrat",sans-serif;font-weight:300;font-size:27px;color:var(--soft);line-height:1.35}
+  .price{font-family:"cormorant-garamond",serif;font-weight:400;font-size:66px;text-align:right;line-height:1}
+  .note{font-family:"cormorant-garamond",serif;font-style:italic;font-size:38px;line-height:1.35;color:var(--ink)}
+  .rule{height:1px;background:var(--line)}
+  .vbar{width:1px;background:var(--line)}
+  .photo{left:220px;top:150px;width:640px;height:640px;object-fit:cover}
+  .photo-shade{left:220px;top:520px;width:640px;height:270px;background:linear-gradient(180deg,rgba(28,4,9,0) 0%,rgba(28,4,9,.72) 100%)}
+  .frame{left:204px;top:134px;width:672px;height:672px;border:1px solid rgba(246,236,230,.5)}
+  .ph-logo{font-family:"cormorant-garamond",serif;font-weight:500;font-size:84px;letter-spacing:10px;line-height:1;color:#fff}
+  .ph-sub{font-family:"montserrat",sans-serif;font-weight:300;font-size:18px;letter-spacing:9px;color:#fff}
+  .script{font-family:"cormorant-garamond",serif;font-style:italic;font-weight:400;font-size:150px;line-height:1}
+  .colh{font-family:"cormorant-garamond",serif;font-style:italic;font-size:30px;line-height:1.05;text-align:center;color:var(--soft)}
+  .svc{font-family:"cormorant-garamond",serif;font-weight:400;font-size:38px;line-height:1.15}
+  .pr{font-family:"cormorant-garamond",serif;font-weight:400;font-size:42px;line-height:1;text-align:center}
+  .box{border:1px solid rgba(246,236,230,.6)}
+  .boxnote{font-family:"cormorant-garamond",serif;font-style:italic;font-size:32px;line-height:1.3;text-align:center}
+</style>
+</head>
+<body>
+
+<!-- ============ 1. COVER ============ -->
+<section class="slide" data-canvas-width="1080" data-canvas-height="1920">
+  <div class="abs g1"></div><div class="abs g2"></div>
+  <svg class="arcs" width="1080" height="1920" viewBox="0 0 1080 1920">
+    <path d="M0 330 C 160 250, 260 120, 300 0" fill="none" stroke="rgba(246,236,230,.6)" stroke-width="1.5"/>
+    <path d="M1080 1560 C 860 1640, 760 1800, 720 1920" fill="none" stroke="rgba(246,236,230,.6)" stroke-width="1.5"/>
+    <path d="M1080 1720 C 960 1760, 900 1840, 880 1920" fill="none" stroke="rgba(246,236,230,.45)" stroke-width="1.2"/>
+  </svg>
+  <div class="abs kicker"><span></span>MANIT NAIL STUDIO<span></span></div>
+
+  <div class="abs center lead" style="top:240px">Прежде чем вы познакомитесь<br>с прайсом, хотим рассказать, что</div>
+  <div class="abs center h-caps" style="top:400px">В нашем салоне</div>
+  <div class="abs center h-ital" style="top:510px">нет доплат:</div>
+
+  <!-- feature 1 -->
+  <svg class="abs" style="left:110px;top:760px" width="110" height="110" viewBox="0 0 110 110">
+    <circle cx="55" cy="55" r="53" fill="none" stroke="#f6ece6" stroke-width="1.5"/>
+    <rect x="42" y="30" width="26" height="50" rx="13" fill="none" stroke="#f6ece6" stroke-width="1.8"/>
+    <path d="M47 46 Q55 38 63 46" fill="none" stroke="#f6ece6" stroke-width="1.8"/>
+  </svg>
+  <div class="abs vbar" style="left:265px;top:755px;height:120px"></div>
+  <div class="abs item-t" style="left:300px;top:760px;width:700px">За снятие чужого<br>или нашего покрытия</div>
+  <div class="abs item-d" style="left:300px;top:850px;width:720px">(снятие включено в стоимость комплексов)</div>
+
+  <!-- feature 2 -->
+  <svg class="abs" style="left:110px;top:960px" width="110" height="110" viewBox="0 0 110 110">
+    <circle cx="55" cy="55" r="53" fill="none" stroke="#f6ece6" stroke-width="1.5"/>
+    <path d="M33 47 L42 35 H68 L77 47 L55 77 Z M33 47 H77 M47 47 L55 77 L63 47 M42 35 L47 47 L55 35 L63 47 L68 35" fill="none" stroke="#f6ece6" stroke-width="1.6" stroke-linejoin="round"/>
+  </svg>
+  <div class="abs vbar" style="left:265px;top:965px;height:100px"></div>
+  <div class="abs item-t" style="left:300px;top:975px;width:700px">За скорость</div>
+  <div class="abs item-d" style="left:300px;top:1025px;width:720px">(вы просто выбираете скоростного мастера)</div>
+
+  <!-- feature 3 -->
+  <svg class="abs" style="left:110px;top:1140px" width="110" height="110" viewBox="0 0 110 110">
+    <circle cx="55" cy="55" r="53" fill="none" stroke="#f6ece6" stroke-width="1.5"/>
+    <path d="M32 50 H72 V62 Q72 76 52 76 Q32 76 32 62 Z M72 54 Q82 54 82 60 Q82 66 72 66 M28 80 H76" fill="none" stroke="#f6ece6" stroke-width="1.8"/>
+    <path d="M45 42 Q42 36 46 31 M54 42 Q51 36 55 31 M63 42 Q60 36 64 31" fill="none" stroke="#f6ece6" stroke-width="1.5"/>
+  </svg>
+  <div class="abs vbar" style="left:265px;top:1145px;height:100px"></div>
+  <div class="abs item-t" style="left:300px;top:1155px;width:700px">За сервис</div>
+  <div class="abs item-d" style="left:300px;top:1205px;width:720px">(горячие и холодные напитки,<br>а также сезонное меню)</div>
+
+  <div class="abs rule" style="left:110px;top:1360px;width:385px"></div>
+  <svg class="abs" style="left:520px;top:1340px" width="40" height="40" viewBox="0 0 40 40"><path d="M20 2 Q22 18 38 20 Q22 22 20 38 Q18 22 2 20 Q18 18 20 2Z" fill="#f6ece6"/></svg>
+  <div class="abs rule" style="left:585px;top:1360px;width:385px"></div>
+
+  <div class="abs center sans" style="top:1420px;font-weight:300;font-size:30px;line-height:1.5;color:var(--soft)">*Мы даём гарантию на наши услуги в течение 7 дней,<br>вне зависимости от причин. Даже если вы сами<br>случайно сломаете ноготок, мы отремонтируем<br>его без дополнительной оплаты.</div>
+
+  <div class="abs center logo" style="top:1640px">MÁNIT</div>
+  <div class="abs center logo-sub" style="top:1795px">NAIL STUDIO</div>
+</section>
+
+<!-- ============ 2. MANICURE ============ -->
+<section class="slide" data-canvas-width="1080" data-canvas-height="1920">
+  <div class="abs g1"></div><div class="abs g2"></div>
+  <svg class="arcs" width="1080" height="1920" viewBox="0 0 1080 1920"><path d="M1080 330 C 960 260, 920 140, 900 0" fill="none" stroke="rgba(246,236,230,.55)" stroke-width="1.5"/><path d="M0 1640 C 160 1700, 230 1820, 250 1920" fill="none" stroke="rgba(246,236,230,.55)" stroke-width="1.5"/></svg>
+  <div class="abs kicker" style="top:62px"><span></span>MANIT NAIL STUDIO<span></span></div>
+  <div class="abs frame"></div>
+  <img class="abs photo" src="photo-manicure-s.jpg" alt="">
+  <div class="abs photo-shade"></div>
+  <div class="abs center ph-logo" style="top:668px">MÁNIT</div>
+  <div class="abs center ph-sub" style="top:758px">NAIL STUDIO</div>
+  <div class="abs center script" style="top:815px">маникюр</div>
+  <div class="abs colh" style="left:650px;top:968px;width:170px">топ<br>мастер</div>
+  <div class="abs colh" style="left:830px;top:968px;width:190px">ведущий<br>мастер</div>
+  <div class="abs svc" style="left:90px;top:1065px;width:540px">Маникюр + покрытие гель лак<br>(всё включено)</div>
+  <div class="abs pr" style="left:650px;top:1067px;width:170px">250 с</div>
+  <div class="abs pr" style="left:840px;top:1067px;width:170px">000 с</div>
+  <div class="abs rule" style="left:90px;top:1179px;width:900px;background:rgba(246,236,230,.25)"></div>
+  <div class="abs svc" style="left:90px;top:1205px;width:540px">Маникюр Френч (всё включено)</div>
+  <div class="abs pr" style="left:650px;top:1207px;width:170px">280 с</div>
+  <div class="abs pr" style="left:840px;top:1207px;width:170px">000 с</div>
+  <div class="abs rule" style="left:90px;top:1273px;width:900px;background:rgba(246,236,230,.25)"></div>
+  <div class="abs svc" style="left:90px;top:1299px;width:540px">Наращивание ногтей до 4 длины</div>
+  <div class="abs pr" style="left:650px;top:1301px;width:170px">320 с</div>
+  <div class="abs pr" style="left:840px;top:1301px;width:170px">000 с</div>
+  <div class="abs rule" style="left:90px;top:1367px;width:900px;background:rgba(246,236,230,.25)"></div>
+  <div class="abs svc" style="left:90px;top:1393px;width:540px">Маникюр без покрытия</div>
+  <div class="abs pr" style="left:650px;top:1395px;width:170px">000 с</div>
+  <div class="abs pr" style="left:840px;top:1395px;width:170px">000 с</div>
+  <div class="abs rule" style="left:90px;top:1461px;width:900px;background:rgba(246,236,230,.25)"></div>
+  <div class="abs svc" style="left:90px;top:1487px;width:540px">Японский маникюр</div>
+  <div class="abs pr" style="left:650px;top:1489px;width:170px">180 с</div>
+  <div class="abs pr" style="left:840px;top:1489px;width:170px">000 с</div>
+  <svg class="abs" style="left:525px;top:1553px" width="30" height="30" viewBox="0 0 40 40"><path d="M20 2 Q22 18 38 20 Q22 22 20 38 Q18 22 2 20 Q18 18 20 2Z" fill="#f6ece6"/></svg>
+  <div class="abs box" style="left:150px;top:1603px;width:780px;height:215px"></div>
+  <div class="abs center boxnote" style="left:190px;width:700px;top:1631px">***В наши услуги входит всё, чтобы ваши ногти выглядели безупречно, поэтому мы не берём доплат за снятие покрытия, укрепление, исправления и ремонт!</div>
+</section>
+
+<!-- ============ 3. PEDICURE ============ -->
+<section class="slide" data-canvas-width="1080" data-canvas-height="1920">
+  <div class="abs g1"></div><div class="abs g2"></div>
+  <svg class="arcs" width="1080" height="1920" viewBox="0 0 1080 1920"><path d="M0 330 C 120 260, 160 140, 180 0" fill="none" stroke="rgba(246,236,230,.55)" stroke-width="1.5"/><path d="M1080 1640 C 920 1700, 850 1820, 830 1920" fill="none" stroke="rgba(246,236,230,.55)" stroke-width="1.5"/></svg>
+  <div class="abs kicker" style="top:62px"><span></span>MANIT NAIL STUDIO<span></span></div>
+  <div class="abs frame"></div>
+  <img class="abs photo" src="photo-pedicure-s.jpg" alt="">
+  <div class="abs photo-shade"></div>
+  <div class="abs center ph-logo" style="top:668px">MÁNIT</div>
+  <div class="abs center ph-sub" style="top:758px">NAIL STUDIO</div>
+  <div class="abs center script" style="top:815px">педикюр</div>
+  <div class="abs colh" style="left:650px;top:968px;width:170px">топ<br>мастер</div>
+  <div class="abs colh" style="left:830px;top:968px;width:190px">ведущий<br>мастер</div>
+  <div class="abs svc" style="left:90px;top:1065px;width:540px">Полный smart педикюр<br>с покрытием гель лак</div>
+  <div class="abs pr" style="left:650px;top:1067px;width:170px">000 с</div>
+  <div class="abs pr" style="left:840px;top:1067px;width:170px">000 с</div>
+  <div class="abs rule" style="left:90px;top:1187px;width:900px;background:rgba(246,236,230,.25)"></div>
+  <div class="abs svc" style="left:90px;top:1221px;width:540px">Полный педикюр без покрытия</div>
+  <div class="abs pr" style="left:650px;top:1223px;width:170px">000 с</div>
+  <div class="abs pr" style="left:840px;top:1223px;width:170px">000 с</div>
+  <div class="abs rule" style="left:90px;top:1297px;width:900px;background:rgba(246,236,230,.25)"></div>
+  <div class="abs svc" style="left:90px;top:1331px;width:540px">Express педикюр с покрытием<br>гель лак/лак</div>
+  <div class="abs pr" style="left:650px;top:1333px;width:170px">000 с</div>
+  <div class="abs pr" style="left:840px;top:1333px;width:170px">000 с</div>
+  <div class="abs rule" style="left:90px;top:1453px;width:900px;background:rgba(246,236,230,.25)"></div>
+  <div class="abs svc" style="left:90px;top:1487px;width:540px">Express педикюр без покрытия</div>
+  <div class="abs pr" style="left:650px;top:1489px;width:170px">000 с</div>
+  <div class="abs pr" style="left:840px;top:1489px;width:170px">000 с</div>
+  <svg class="abs" style="left:525px;top:1553px" width="30" height="30" viewBox="0 0 40 40"><path d="M20 2 Q22 18 38 20 Q22 22 20 38 Q18 22 2 20 Q18 18 20 2Z" fill="#f6ece6"/></svg>
+  <div class="abs box" style="left:150px;top:1603px;width:780px;height:150px"></div>
+  <div class="abs center boxnote" style="left:190px;width:700px;top:1631px">***SPA ритуал включён в программу<br>любого педикюра</div>
+</section>
+
+</body>
+</html>
