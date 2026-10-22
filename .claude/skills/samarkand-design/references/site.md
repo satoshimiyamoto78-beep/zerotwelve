@@ -46,3 +46,13 @@ Zoning comes from the owner's red markup:
 - Roof columns: mid row x=6300 on the grid axes, east row in the planter centreline, west row on brackets to the building.
 
 Project log (Claude Doc): https://claude.ai/artifact/J1QKYY82544U1DqaET49jN. Add a timeline row after every step.
+
+## Layout R6 (2026-10-22, current)
+Script `samarkand/site/tools/layout_r6.py` → `samarkand/layout/samarkand-terrace-layout-R6-{ru,en}.{svg,pdf,png}` + DXF/JSON. Sheet A2 at 1:100, with axes, dimensions, table numbers, ergonomics table and four details (mangal 1:75, tent 1:75, street-bench section, aivan section).
+- Aivan platform (3.3 m): ONE row only. Banquette 550 on the hall wall in front of the closed doors, 4 tables 1200×700, chairs on the aisle side, aisle 1510. In R5 two columns of tables did not physically fit.
+- Mangal 4.2 × 4.8 m (x 8100–12300, y 3700–8500), was 3.2 × 6.1. The hot line (tandoor, mangal, kazan) runs along the east fire wall. The pass (2.8 m) faces the entrance tables, with 1710 to the guests.
+- Street façade (lot-line strip 1500): outer 550 is a cast concrete bench at +450, then a 150 back wall with majolica, then an 800 planter with the roof columns in it. It also has a sebil fountain south of the entrance, a street photo arch at y 25800–27800, and pishtaq pylons at the entrance. Nothing projects onto the sidewalk.
+- Entrance alley: the first 2.8 m from the street is a draped velvet corridor (runner, khum jars, floor lanterns).
+- North: 2 tapchans, a majlis tent 3.3×3.6 (U-sofa, 10 seats) in place of the 2 northern tapchans, and 2×2-tops at the north entrance.
+- Photo zone: freestanding backlit jali arch 3.2 m, palms in terracotta pots, rug, lanterns and candles.
+- Seats: 163, plus about 35 on the street benches. Minimum path 1205 (booths). Chairs back-to-back are at least 450.
