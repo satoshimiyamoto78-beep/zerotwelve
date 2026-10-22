@@ -34,3 +34,15 @@ Z1 (0, 42340) NW at north boundary · Z2 (9656, 41965) NE lot corner · Z3 (1345
 
 ## Open questions (ask the client or verify on site)
 Canopy size · balcony soffit height · what the round elements are · keep or remove the pergola · bay 5–6/A–A' open to sky above F2? · keep the car ramp · drainage, power and water points.
+
+## Layout R1 (2026-10-22)
+`samarkand/layout/samarkand-terrace-layout-R1.*`, script `samarkand/site/tools/layout.py`. The script checks that furniture is clear of planters, columns, the ramp, the steps and the door swing.
+Zoning comes from the owner's red markup:
+- North entrance (from parking) and east entrance (street stair 13300–18300). The alley runs y 16300–19700 into the hall doors C–D.
+- Bar on the façade, y 8600–15200, under the balcony, 10 stools.
+- BBQ along the planter in the SE corner: tandoor, mangal 2.4 m, kazan, prep and pass counters.
+- Photo zone on the south edge with a pishtaq backdrop. Kids zone in bay 5–6/A–A'.
+- Dining: 4-tops N and S, 4 hybrid tapchans under the canopy, banquette along the planter. 112 seats in total.
+- Roof columns: mid row x=6300 on the grid axes, east row in the planter centreline, west row on brackets to the building.
+
+Project log (Claude Doc): https://claude.ai/artifact/J1QKYY82544U1DqaET49jN. Add a timeline row after every step.
