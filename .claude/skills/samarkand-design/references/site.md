@@ -108,3 +108,14 @@ The owner said the R8 aivan (10 two-tops in a line on a banquette) felt odd and 
 - Formats: .blend (packed, procedural materials), .fbx / .obj / .glb (flat colours).
 - Web viewer: https://claude.ai/artifact/7NGDiBpaXwuSr9gytuvAtm
 - Coordinates: metres, origin axis 6 × A'. The README lists levels and collections.
+
+## Layout R10 (2026-10-27, current)
+Owner markup on the 3D cutaway changed the north zone.
+- **Kept:** one tapchan (y 28550–30750).
+- **Removed:** the planting bed and the second tapchan.
+- **Two majlis tents** (3.2 × 2.8 m, 8 guests each) sit side by side along the ramp rail: x 1450–4650, y 30950–33700 and 33850–36650. They open east, and guests reach them over stone bridges.
+- **Aryk** (0.3 m wide) runs from the hauz to the north entrance: x 5700–6000, y 30150–35500.
+- **Museum vitrine** at the head of the aryk: x 4800–5600, y 35500–36250.
+- **"Khiva gate"** at the parking entrance: carved posts at x 4750 / 7100, y 36300–36550, opening 2.1 m.
+- Street booths stay where they are. The owner decided to make each one a themed room (9 epochs / cities); this is still to be detailed.
+- Totals: 175 seats. Estimate R10 about 3.93 bn VND (~151k USD), all-economy option about 3.40 bn.
