@@ -119,3 +119,11 @@ Owner markup on the 3D cutaway changed the north zone.
 - **"Khiva gate"** at the parking entrance: carved posts at x 4750 / 7100, y 36300–36550, opening 2.1 m.
 - Street booths stay where they are. The owner decided to make each one a themed room (9 epochs / cities); this is still to be detailed.
 - Totals: 175 seats. Estimate R10 about 3.93 bn VND (~151k USD), all-economy option about 3.40 bn.
+- **Owner decision (2026-10-27): street booths stay in place and become CLOSED THEMED ROOMS.** Each booth gets:
+  - side partitions h 2.2 m;
+  - a front arch-portal with tie-back curtains;
+  - a theme panel on the street-side wall;
+  - its own ceiling cap, light and fan;
+  - a plaque RU/EN/VN.
+
+  Themes, from the street entrance northward: Sogdiana · Sasanids · Samanids · Khorezm · Timurids · Shahrisabz · Margilan · Pamir · Bukhara. Budget about 30 M VND per booth (economy 22 M); the estimate R10 total becomes about 4.07 bn VND.

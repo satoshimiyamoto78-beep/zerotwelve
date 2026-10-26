@@ -162,6 +162,7 @@ add('station', R(1750, 30250, 2350, 30850), 'SMK-R10-SERV')
 # booths: 9 orthogonal booths, 2.0 m module, depth 1.3
 B_Y0, B_N, B_W, B_D = 18300, 9, 2000, 1300
 booth_west = []
+BOOTH_THEMES = []          # closed themed booths (owner decision 2026-10-27), chronological from the street entrance
 for k in range(B_N):
     y0, y1 = B_Y0 + k * B_W, B_Y0 + (k + 1) * B_W
     xe = xi(y1); xw = xe - B_D; booth_west.append((y0, y1, xw))
@@ -171,6 +172,8 @@ for k in range(B_N):
     add('btable', R(xw + 150, y0 + 650, xe - 150, y1 - 650)); tables.append(((xw + xe) / 2, (y0 + y1) / 2, 'booths'))
     add('bench', R(xw + 80, y1 - 580, xe - 60, y1 - 100))
     add('lantern', C((xw + xe) / 2, (y0 + y1) / 2, 150, 20))
+    add('bportal', R(xw - 60, y0, xw, y0 + 220)); add('bportal', R(xw - 60, y1 - 220, xw, y1))      # arch-portal posts, curtains between
+    BOOTH_THEMES.append(((xw + xe) / 2, (y0 + y1) / 2))
     add('sliver', Polygon([(xe, y0), (xi(y0), y0), (xi(y1), y1), (xe, y1)]))
     seat('booths', 4)
 add('screen', R(booth_west[-1][2], B_Y0 + B_N * B_W, xi(B_Y0 + B_N * B_W), B_Y0 + B_N * B_W + 60))
@@ -329,7 +332,7 @@ T = {
             zones='ЗОНЫ', seats='ПОСАДКА', total='Итого мест в ресторане', key='ОБОЗНАЧЕНИЯ', erg='ЭРГОНОМИКА  ·  норма / по плану',
             L=[('Главный вход · портал-пештак', 'проём 2,5 м, 4 ступени с тротуара'), ('Коридор-драпировка', 'бархат, ковровая дорожка, хумы, фонари'),
                ('Аллея к залу', 'гирих, 2,5 м, хостес у выхода'), ('Айван-платформа ±0.000', '4 седир-кабинки на 6 у стены, проход 1,4 м'),
-               ('Кабинки вдоль улицы', '9 кабинок на 4, резные ширмы, фонари'), ('Чинар-дворик (север)', 'открыт к небу, скамья-полукольцо'),
+               ('Тематические кабинки', '9 закрытых залов: эпохи и города, шторы-порталы'), ('Чинар-дворик (север)', 'открыт к небу, скамья-полукольцо'),
                ('Топчан 2,0 × 2,2 м', '6 гостей, курпачи с 3 сторон, у фонтана'), ('Два шатра-маджлиса 3,2 × 2,8 м', 'по 8 гостей, вход по мостику через арык'),
                ('Фонтан-хауз и арык', 'хауз Ø1,2 м, арык 0,3 м ведёт от северного входа'), ('Северный вход · «Хивинские ворота»', 'резные ворота, витрина-музей, пандус 1:12'),
                ('Зал север', 'ряды по 4 + средний ряд из 3 столов на 2'), ('Бар', 'чай, самовар, кофе · 9 стульев'), ('Станция персонала', 'стеллажи, касса, вода, лёд, посуда'),
@@ -337,7 +340,7 @@ T = {
                ('Мангальная 4,2 × 4,8 м', 'тандыр · мангал · казан · раздача к гостям'), ('Фото-лаунж «Очаг»', 'драпировки, ковры, огонь-чаша, 3 столика, 12 пуфов'),
                ('Детская зона', 'ограждение, мягкое покрытие'), ('Уличные скамьи', 'литой бетон в стенке клумбы, майолика'),
                ('Фонтан-себиль', 'майоликовая стена, латунный носик, чаша'), ('Уличная фото-арка', 'ниша со скамьёй, подсветка, пальмы')],
-            S={'platform': 'Айван: седир-кабинки (4 × 6)', 'booths': 'Кабинки', 'north': 'Зал север', 'chinar_n': 'Скамья у чинара (север)', 'tapchans': 'Топчан',
+            S={'platform': 'Айван: седир-кабинки (4 × 6)', 'booths': 'Тематические кабинки', 'north': 'Зал север', 'chinar_n': 'Скамья у чинара (север)', 'tapchans': 'Топчан',
                'tent': 'Шатры-маджлисы (2 × 8)', 'lounge': 'Фото-лаунж (пуфы)', 'bar': 'Барная стойка', 'south': 'Зал юг',
                'chinar_s': 'Скамья у чинара (юг)', 'plaza': 'Столы у входа'},
             street_seats='+ уличные скамьи (вне счёта)', mods='Столы: на 2 — {t2}, на 4 — {t4} (каждый делится на 2 × 2), кабинки на 6 — 4',
@@ -355,7 +358,7 @@ T = {
                    'Все отдельно стоящие столы — модули 700 × 800: пары разъединяются на 2-местные или сдвигаются в столы на 6–8 (ряды выровнены).',
                    'Двери: C–D южная открыта; C–D северная и D–E южная закрыты (банкетка); D–E северная и E–F у лифта открыты.'],
             foot='Концепция для согласования с заказчиком · размеры уточнить на месте', ph='ФОТО-ЛАУНЖ', barlbl='БАР', ent='ВХОД', scale='Масштаб 1:100 · A2',
-            lv_t='терраса −0.450', lv_p='±0.000', lv_s='тротуар −1.170', tunnel='КОРИДОР', sky='открыто к небу', vit='ВИТРИНА', gate='ХИВИНСКИЕ ВОРОТА', aryk='АРЫК',
+            lv_t='терраса −0.450', lv_p='±0.000', lv_s='тротуар −1.170', tunnel='КОРИДОР', sky='открыто к небу', vit='ВИТРИНА', gate='ХИВИНСКИЕ ВОРОТА', aryk='АРЫК', themes=['Согдиана', 'Сасаниды', 'Саманиды', 'Хорезм', 'Тимуриды', 'Шахрисабз', 'Маргилан', 'Памир', 'Бухара'],
             i_bbq='МАНГАЛЬНАЯ  ·  1:75', i_tent='ШАТЁР-МАДЖЛИС (×2)  ·  1:75', i_st='АЙВАН: СЕДИР-КАБИНКИ  ·  1:75', i_mod='СТОЛЫ-МОДУЛИ  ·  1:75',
             bbqL=['Тандыр Ø900', 'Мангал 2,0 м, угли', 'Казан Ø800, газ', 'Мойка · уголь · зола', 'Заготовка, холод', 'Раздача 2,8 м, лампы', 'Огнестойкая стена', 'Склад угля и тары'],
             tentL=['П-диван h 400, глуб. 650', 'Ковёр 2,4 × 1,5 м', 'Столики Ø600, 8 граней', 'Стойки, ткань-драпировка', 'Стойка шатра', 'Вход с мостика, 1,5 м'],
@@ -372,7 +375,7 @@ T = {
             zones='ZONES', seats='SEATS', total='Total restaurant seats', key='KEY', erg='ERGONOMICS  ·  standard / as planned',
             L=[('Street entrance · pishtaq portal', '2.5 m opening, 4 steps from the sidewalk'), ('Draped corridor', 'velvet swags, runner, clay jars, lanterns'),
                ('Alley to the hall', 'girih paving, 2.5 m, host at the exit'), ('Aivan platform ±0.000', '4 sedir booths for 6 on the wall, 1.4 m aisle'),
-               ('Booths along the street', '9 booths for 4, carved screens, lanterns'), ('Chinar court north', 'open to the sky, half-ring bench'),
+               ('Themed booths', '9 closed rooms: epochs and cities, curtained portals'), ('Chinar court north', 'open to the sky, half-ring bench'),
                ('Tapchan 2.0 × 2.2 m', '6 guests, kurpacha on 3 sides, by the fountain'), ('Two majlis tents 3.2 × 2.8 m', '8 guests each, entered over a bridge across the aryk'),
                ('Hauz fountain and aryk', 'hauz Ø1.2 m, 0.3 m aryk leads from the north entrance'), ('North entrance · "Khiva gate"', 'carved gate, museum vitrine, ramp 1:12'),
                ('Dining north', 'rows of 4-tops + a middle row of three 2-tops'), ('Bar', 'tea, samovar, coffee · 9 stools'), ('Staff station', 'shelving, POS, water, ice, dishes'),
@@ -380,7 +383,7 @@ T = {
                ('Mangal kitchen 4.2 × 4.8 m', 'tandoor · mangal · kazan · pass to guests'), ('Photo lounge "Ochag"', 'drapes, carpets, fire bowl, 3 low tables, 12 poufs'),
                ('Kids zone', 'fenced, soft floor'), ('Street benches', 'cast concrete in the planter wall, majolica'),
                ('Sebil fountain', 'majolica wall, brass spout, basin'), ('Street photo arch', 'bench niche, uplight, palms')],
-            S={'platform': 'Aivan: sedir booths (4 × 6)', 'booths': 'Booths', 'north': 'Dining north', 'chinar_n': 'Chinar bench north', 'tapchans': 'Tapchan',
+            S={'platform': 'Aivan: sedir booths (4 × 6)', 'booths': 'Themed booths', 'north': 'Dining north', 'chinar_n': 'Chinar bench north', 'tapchans': 'Tapchan',
                'tent': 'Majlis tents (2 × 8)', 'lounge': 'Photo lounge (poufs)', 'bar': 'Bar counter', 'south': 'Dining south',
                'chinar_s': 'Chinar bench south', 'plaza': 'Entrance tables'},
             street_seats='+ street benches (not counted)', mods='Tables: {t2} two-tops, {t4} four-tops (each splits into 2 × 2), 4 booths for 6',
@@ -398,7 +401,7 @@ T = {
                    'Every loose table is a 700 × 800 module: pairs split into 2-tops or push together into tables for 6–8 (rows are aligned).',
                    'Doors: C–D south open; C–D north and D–E south closed (banquette); D–E north and E–F by the lift open.'],
             foot='Concept for client review · dimensions to verify on site', ph='PHOTO LOUNGE', barlbl='BAR', ent='ENTRANCE', scale='Scale 1:100 · A2',
-            lv_t='terrace −0.450', lv_p='±0.000', lv_s='sidewalk −1.170', tunnel='CORRIDOR', sky='open to the sky', vit='VITRINE', gate='KHIVA GATE', aryk='ARYK',
+            lv_t='terrace −0.450', lv_p='±0.000', lv_s='sidewalk −1.170', tunnel='CORRIDOR', sky='open to the sky', vit='VITRINE', gate='KHIVA GATE', aryk='ARYK', themes=['Sogdiana', 'Sasanids', 'Samanids', 'Khorezm', 'Timurids', 'Shahrisabz', 'Margilan', 'Pamir', 'Bukhara'],
             i_bbq='MANGAL KITCHEN  ·  1:75', i_tent='MAJLIS TENT (×2)  ·  1:75', i_st='AIVAN: SEDIR BOOTHS  ·  1:75', i_mod='TABLE MODULES  ·  1:75',
             bbqL=['Tandoor Ø900', 'Mangal 2.0 m, charcoal', 'Kazan Ø800, gas', 'Sink · charcoal · ash', 'Cold prep, fridges', 'Pass 2.8 m, heat lamps', 'Fire wall', 'Charcoal + crate store'],
             tentL=['U-sofa h 400, depth 650', 'Carpet 2.4 × 1.5 m', 'Octagonal tables Ø600', 'Posts, draped fabric', 'Tent post', 'Entry from the bridge, 1.5 m'],
@@ -479,13 +482,13 @@ STY = {'table': ('#a87444', '#5a3a22', 'sh'), 'btable': ('#a87444', '#5a3a22', '
        'kazanblock': ('#9a9590', '#55524e', 'sh'), 'kazan': ('#1d1d1d', '#b8893a', ''), 'sinkbins': ('#c9ccd0', '#6b6f73', 'sh'), 'prep': ('#d7dadd', '#6b6f73', 'sh'), 'pass': ('#e9ebed', '#6b6f73', 'sh'), 'glass': ('#bfe0ea', 'none', ''),
        'phdrape': ('url(#velvetP)', '#5a2410', 'sh'), 'firebowl': ('#5a4a3a', '#2b1d12', 'sh'), 'ltable': ('url(#brass)', '#7a5a1a', 'sh'), 'pouf': ('url(#ikat)', '#3b2a1e', 'sh'), 'kurpacha': ('url(#ikat)', '#3b2a1e', ''), 'plantbed': ('url(#green)', '#5f8a44', ''), 'phrug': ('url(#carpet)', '#5a1a1c', ''), 'palm': ('#b5653a', '#6b3a1e', 'sh'), 'flantern': ('url(#brass)', '#7a5a1a', 'sh'), 'candle': ('#fff3c4', '#d9a23a', ''),
        'camera': ('#3b2a1e', 'none', ''),
-       'pit': ('#6b5a48', '#4a3b2c', ''), 'ascreen': ('url(#lattice)', '#2b1d12', 'sh'), 'abench': ('url(#ikat)', '#3b2a1e', 'sh'), 'atable': ('#a87444', '#5a3a22', 'sh'), 'ringbench': ('#9a6a40', '#4a2f1c', 'sh'), 'aryk': ('url(#water)', '#1F3F8A', ''), 'bridge': ('#cdbfa6', '#6b5a48', 'sh'), 'vitrine': ('#e9f3f5', '#b8893a', 'sh'), 'gatepost': ('#6b4429', '#3b2a1e', 'sh'), 'hauzborder': ('url(#majolica)', '#13285a', 'sh'), 'medallion': ('url(#starP)', '#b8893a', ''), 'pot': ('#b5653a', '#6b3a1e', 'sh'), 'hauz': ('url(#water)', 'none', ''),
+       'pit': ('#6b5a48', '#4a3b2c', ''), 'bportal': ('#6b4429', '#3b2a1e', ''), 'ascreen': ('url(#lattice)', '#2b1d12', 'sh'), 'abench': ('url(#ikat)', '#3b2a1e', 'sh'), 'atable': ('#a87444', '#5a3a22', 'sh'), 'ringbench': ('#9a6a40', '#4a2f1c', 'sh'), 'aryk': ('url(#water)', '#1F3F8A', ''), 'bridge': ('#cdbfa6', '#6b5a48', 'sh'), 'vitrine': ('#e9f3f5', '#b8893a', 'sh'), 'gatepost': ('#6b4429', '#3b2a1e', 'sh'), 'hauzborder': ('url(#majolica)', '#13285a', 'sh'), 'medallion': ('url(#starP)', '#b8893a', ''), 'pot': ('#b5653a', '#6b3a1e', 'sh'), 'hauz': ('url(#water)', 'none', ''),
        'lantern': ('url(#glow)', 'none', ''), 'banquette': ('url(#ikat)', '#3b2a1e', 'sh'),
        'carpet': ('url(#carpet)', '#5a1a1c', ''), 'sofa': ('url(#stripe)', '#5a1a1c', 'sh'), 'otable': ('#f4efe6', '#b8893a', 'sh'), 'pole': ('#4a2f1c', 'none', ''),
        'runner': ('url(#carpet)', '#5a1a1c', ''), 'jar': ('#c4703f', '#7a3d22', 'sh'), 'flamp': ('url(#glow)', 'none', ''),
        'sbench': ('url(#concrete)', '#6b5a48', 'sh'), 'sback': ('url(#majolica)', '#13285a', ''), 'sebil': ('url(#majolica)', '#13285a', 'sh'), 'sebilbasin': ('url(#water)', '#1F3F8A', 'sh'),
        'sarch': ('url(#jali)', '#b8893a', 'sh'), 'spalm': ('#b5653a', '#6b3a1e', 'sh'), 'portal': ('#A4482B', '#5a2a18', 'sh')}
-ORDER = ['plantbed', 'rug', 'tapchan', 'kurpacha', 'tapchanrug', 'carpet', 'runner', 'phrug', 'aryk', 'medallion', 'hauzborder', 'hauz', 'bridge', 'pit', 'ringbench', 'banquette', 'abench', 'atable', 'ascreen', 'table', 'btable', 'bench', 'screen', 'tapchantable',
+ORDER = ['plantbed', 'rug', 'tapchan', 'kurpacha', 'tapchanrug', 'carpet', 'runner', 'phrug', 'aryk', 'medallion', 'hauzborder', 'hauz', 'bridge', 'pit', 'ringbench', 'banquette', 'abench', 'atable', 'ascreen', 'table', 'btable', 'bench', 'screen', 'bportal', 'tapchantable',
          'sofa', 'otable', 'stool', 'station', 'host', 'backbar', 'barbody', 'bartop', 'barreturn', 'samovar', 'coffee', 'sink', 'shelving', 'counter', 'screenwall',
          'firewall', 'tandoorblock', 'tandoor', 'mangal', 'ledge', 'kazanblock', 'kazan', 'sinkbins', 'prep', 'pass', 'glass', 'storage', 'phdrape', 'firebowl', 'ltable', 'pouf', 'camera',
          'sbench', 'sback', 'sebil', 'sebilbasin', 'sarch', 'portal', 'jar', 'pot', 'pole', 'vitrine', 'gatepost', 'flantern', 'candle', 'lantern', 'flamp']
@@ -619,6 +622,13 @@ def build(lang):
     for it in items:
         if it['kind'] in ('palm', 'spalm'):
             c = it['geom'].centroid; palm((c.x, c.y), it['geom'].bounds[2] - c.x + 380)
+    # themed booths: front curtains (tied back) + theme name
+    for k_, (y0, y1, xw) in enumerate(booth_west):
+        for ya, yb in ((y0 + 220, y0 + 700), (y1 - 700, y1 - 220)):
+            p = 'M' + ' '.join(f'{P(xw - 30 + 35 * math.sin(j * 1.4), ya + j * 60)[0]:.2f},{P(xw, ya + j * 60)[1]:.2f}' for j in range(int((yb - ya) / 60) + 1))
+            out.append(f'<path d="{p}" fill="none" stroke="#7a3518" stroke-width=".45"/>')
+        X, Y = P(xw - 120, (y0 + y1) / 2)
+        out.append(f'<text x="{X:.2f}" y="{Y:.2f}" font-family="Inter" font-size="1.35" font-weight="700" fill="#5a2410" text-anchor="middle" transform="rotate(-90 {X:.2f} {Y:.2f})" paint-order="stroke" stroke="#f7f1e6" stroke-width=".5">{t["themes"][k_]}</text>')
     # tents: ridge lines + tied curtains on the open (east) side + glow; entry arrows over the bridges
     for it in items:
         if it['kind'] != 'tentroof': continue
