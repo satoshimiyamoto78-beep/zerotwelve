@@ -5,7 +5,7 @@ Zone-unique pieces (corridor ceiling, firewood wall, hood, portal arch...) are b
 import os, math, random
 HERE = os.path.dirname(os.path.abspath(__file__))
 TEX2 = os.path.join(HERE, 'tex2')
-for f_ in ('kit.py', 'assets_r12.py'): exec(open(os.path.join(HERE, f_)).read())
+for f_ in ('kit.py', 'assets_r12.py', 'assets_v3.py'): exec(open(os.path.join(HERE, f_)).read())
 RD = random.Random(42)
 
 # ---------------- materials ----------------
@@ -30,24 +30,39 @@ X = dict(
     meat=mat('meat', (0.42, 0.16, 0.08), rough=0.6), ember=mat('ember', (1, .3, .05), emit=(1.0, 0.28, 0.04), strength=6.0),
     lampglow=mat('lampglow', (1, .75, .45), emit=(1.0, 0.62, 0.30), strength=8.0),
 )
-for k in ('carpet1', 'carpet2', 'carpet3', 'carpet4'): X[k] = uvmat(k + '_uv', k + '.png')
+for k, fn in (('carpet1', 'rug_persian'), ('carpet2', 'rug_bukhara'), ('carpet3', 'suzani2'), ('carpet4', 'carpet1')): X[k] = uvmat(k + '_uv', fn + '.png')
+X.update(kilim2=bl2.fabric('kilim2_f', os.path.join(TEX2, 'kilim2.png'), 0.6), suzani2=bl2.fabric('suzani2_f', os.path.join(TEX2, 'suzani2.png'), 0.9),
+         quilt=bl2.fabric('quilt_f', os.path.join(TEX2, 'quilt.png'), 0.5), plaster=tex2('plaster_t', 'plaster.png', 1.5, rough=0.85, bump=0.15),
+         rattan=tex2('rattan_t', 'rattan.png', 0.25, rough=0.7, bump=0.5), domeglaze=tex2('domeglaze_t', 'domeglaze.png', 0.9, rough=0.15, bump=0.2, coat=0.6),
+         rishtan=uvmat('rishtan_uv', 'rishtan.png', rough=0.12, sheen=0.0), plov=tex2('plov_t', 'plov.png', 0.12, rough=0.6), bread=uvmat('bread_uv', 'bread.png', rough=0.7, sheen=0.0))
 for th in ('sogd', 'sasan', 'saman', 'khorezm', 'timur', 'shahr', 'margil', 'pamir'): X['ep_' + th] = uvmat('ep_' + th + '_uv', 'ep_' + th + '.png', rough=0.5, sheen=0.1)
 for mm, sz in ((m['ikat'], 0.5), (m['suzani'], 0.6), (m['jali'], 0.5), (m['majolica'], 0.6), (m['band'], 1.2), (m['girih'], 0.6), (m['floor'], 1.2),
-               (X['carved'], 0.9), (X['kilim'], 0.6), (X['velvet'], 0.8), (X['tent'], 1.2), (X['copper'], 0.5), (X['gajbrick'], 1.4), (X['dometile'], 0.7)):
+               (X['carved'], 0.9), (X['kilim'], 0.6), (X['kilim2'], 0.6), (X['suzani2'], 0.9), (X['quilt'], 0.5), (X['plaster'], 1.5), (X['rattan'], 0.25), (X['domeglaze'], 0.9), (X['plov'], 0.12), (X['velvet'], 0.8), (X['tent'], 1.2), (X['copper'], 0.5), (X['gajbrick'], 1.4), (X['dometile'], 0.7)):
     register_uv_size(mm, sz)
 def ceil_at(x, y):
     """underside of whatever is overhead: balcony slab (x < 1.5) or the roof sandwich panel"""
     return 3.85 if x < 1.5 else top(x) - 0.05
 
-# =============== 1. THEMED BOOTHS: partitions (stepped), modules, lanterns ===============
-BO = D['booths']
+# =============== 1. OPEN THEMED BOOTHS (sea view), niche walls with vases + framed epoch art, theme objects ===============
+BO = D['booths']; PEOPLE = []
 for k, (y0, y1, xw, xe, th) in enumerate(BO):
-    L = (BO[k - 1][3] if k > 0 else xe) - xw                     # south partition reaches the back of the booth before it
-    inst(a_partition(round(L, 3)), f'Booth{k + 1}_partition_S', (xw, y0, TER), 0, 'Booths')
-    inst(a_booth(th), f'Booth{k + 1}_{th}', (xw, y0, TER), 0, 'Booths')
-    lantern_at(xw + 0.65, (y0 + y1) / 2, TER + 1.75, 0.9, TER + 2.2, 'Booths', f'Booth{k + 1}_lantern')
+    L = round((BO[k - 1][3] if k > 0 else xe) - xw, 3)                   # wall reaches the back of the booth before it
+    th_s = BO[k - 1][4] if k > 0 else None
+    inst(a_nichewall(L, th_s, th), f'Booth{k + 1}_wall_S', (xw, y0, TER), 0, 'Booths')
+    inst(a_vase(k % 4), f'Booth{k + 1}_niche_vase', (xw + L - 0.4, y0 + TH / 2, TER + 1.0), 0, 'Booths')
+    inst(a_booth_open(th), f'Booth{k + 1}_{th}', (xw, y0, TER), 0, 'Booths')
+    inst(a_monument(th), f'Booth{k + 1}_object_{th}', (xw + 1.21, y0 + (TH + 2.0) / 2, TER + 0.78), math.pi / 2, 'Booths')
+    for i_, yy in enumerate((y0 + TH + 0.12, y0 + 2.0 - 0.12)): inst(a_vase((k + 2 * i_ + 1) % 4), f'Booth{k + 1}_parapet_vase_{i_ + 1}', (xw + 1.21, yy, TER + 0.78), 0, 'Booths')
+    inst(a_boothset(), f'Booth{k + 1}_tableset', (xw, y0, TER), 0, 'Booths')
+    inst(a_rattan(), f'Booth{k + 1}_rattan', (xw + 0.6, y0 + 1.08, TER + 1.62), 0, 'Booths')
+    inst(a_rod(), 'Rod_booth', (xw + 0.6, y0 + 1.08, TER + 1.92), 0, 'Booths', scale=(1, 1, round(2.165 - 1.92, 4)))
+    if k in (0, 2, 3, 5, 7):                                                    # guests on the benches
+        for j_, (px, sy) in enumerate(((0.38, 1), (0.85, 1), (0.38, -1), (0.85, -1))[: (4 if k % 2 == 0 else 2)]):
+            yb = y0 + (TH + 0.25 if sy > 0 else 2.0 - 0.25)
+            PEOPLE.append(('bench', (xw + px, yb - sy * 0.03, TER), 0.0 if sy > 0 else math.pi, k * 4 + j_))
 y0, y1, xw, xe, th = BO[-1]
-inst(a_partition(1.3), f'Booth{len(BO)}_partition_N', (xw, y1, TER), 0, 'Booths')
+inst(a_nichewall(1.3, th, None), f'Booth{len(BO)}_wall_N', (xw, y1, TER), 0, 'Booths')
+inst(a_vase(1), f'Booth{len(BO)}_niche_vase_N', (xw + 1.3 - 0.4, y1 + TH / 2, TER + 1.0), 0, 'Booths')
 
 # =============== 2. CHAIRS / TABLES / TABLEWARE (one object per piece) ===============
 ROT_BACK = {'s': 0.0, 'n': math.pi, 'e': math.pi / 2, 'w': -math.pi / 2}
@@ -57,11 +72,12 @@ for it in D['items']:
         for r in it['poly']:
             base = 0.0 if on_plat(r) else TER; x0, y0, x1, y1 = bbox(r)
             nc += 1; inst(a_chair(), f'Chair_{nc:03d}', ((x0 + x1) / 2, (y0 + y1) / 2, base), ROT_BACK[it.get('back', 'n')], 'Furniture')
+            if RD.random() < 0.42: PEOPLE.append(('sit', ((x0 + x1) / 2, (y0 + y1) / 2, base), ROT_BACK[it.get('back', 'n')], nc))
     if it['kind'] == 'table':
         for r in it['poly']:
             base = 0.0 if on_plat(r) else TER; x0, y0, x1, y1 = bbox(r); n = it.get('mods', 1); rz = 0.0 if it.get('axis', 'x') == 'x' else math.pi / 2
             nt += 1; c_ = ((x0 + x1) / 2, (y0 + y1) / 2, base)
-            inst(a_table(n), f'Table_{nt:03d}', c_, rz, 'Furniture'); inst(a_tableware(n), f'Tableware_{nt:03d}', c_, rz, 'Furniture')
+            inst(a_table(n), f'Table_{nt:03d}', c_, rz, 'Furniture'); inst(a_tableset(n), f'Tableset_{nt:03d}', c_, rz, 'Furniture')
 
 # =============== 3. AIVAN SEDIR BOOTHS: back cushions, wall carpets, tableware, lanterns ===============
 scr = [bbox(it['poly'][0]) for it in D['items'] if it['kind'] == 'ascreen']
@@ -78,11 +94,11 @@ for i_, (x0, y0, x1, y1) in enumerate(ats):
     cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
     mb = MB(); mb.picture_box(0.0, -0.85, 0.75, 0.012, 0.85, 2.25, X['carpet%d' % (1 + i_ % 4)], '+x'); mb.box(0.0, -0.9, 2.25, 0.03, 0.9, 2.29, m['brass'])
     inst(mb.mesh(f'Aivan_wallcarpet_{i_ + 1}'), f'Aivan_wallcarpet_{i_ + 1}', (0.14, cy, 0.0), 0, 'Aivan')
-    inst(a_tableware(2), f'Aivan_tableware_{i_ + 1}', (cx, cy, 0.0), 0.0 if (x1 - x0) >= (y1 - y0) else math.pi / 2, 'Aivan')
+    inst(a_tableset(2), f'Aivan_tableset_{i_ + 1}', (cx, cy, 0.0), 0.0 if (x1 - x0) >= (y1 - y0) else math.pi / 2, 'Aivan')
     lantern_at(cx, cy, 1.95, 1.0, ceil_at(cx, cy), 'Aivan', f'Aivan_lantern_{i_ + 1}')
 
 # =============== 4. FLYING CARPETS under the roof ===============
-ZONES = [(2.6, 8.6, 5.3, 9.3), (8.0, 11.0, 10.4, 14.6), (3.6, 7.8, 22.9, 24.8), (4.4, 7.6, 30.2, 34.0), (1.7, 3.2, 15.6, 28.2)]
+ZONES = [(3.6, 7.8, 22.9, 24.8), (4.4, 7.6, 30.2, 34.0)]
 def clear_of_domes(x, y, pad): return all(math.hypot(x - d['c'][0], y - d['c'][1]) > d['r'] + pad for d in D['domes'])
 nfc = 0
 for zx0, zx1, zy0, zy1 in ZONES:
@@ -95,7 +111,9 @@ for zx0, zx1, zy0, zy1 in ZONES:
                 nfc += 1; inst(a_flycarpet(1 + nfc % 4), f'Flying_carpet_{nfc:02d}', (x, y, z), rot, 'Carpet_ceiling')
                 c_, s_ = math.cos(rot), math.sin(rot)
                 for u, v in ((-0.55, -0.85), (0.55, -0.85), (0.55, 0.85), (-0.55, 0.85)):
-                    px, py = x + u * c_ - v * s_, y + u * s_ + v * c_; pz = z + 0.05 * math.sin(v / 1.9 * 2 * math.pi) + 0.013
+                    px, py = x + u * c_ - v * s_, y + u * s_ + v * c_
+                    j_ = min(7, int((v + 0.95) / (1.9 / 8))); va = -0.95 + 1.9 * j_ / 8; vb = va + 1.9 / 8; t_ = (v - va) / (vb - va)
+                    pz = z + 0.05 * ((1 - t_) * math.sin(va / 1.9 * 2 * math.pi) + t_ * math.sin(vb / 1.9 * 2 * math.pi)) + 0.0005   # exact top of the faceted carpet
                     inst(a_rod(), 'Rod_carpet', (px, py, pz), 0, 'Carpet_ceiling', scale=(0.7, 0.7, ceil_at(px, py) - pz))
             x += 1.6
         y += 2.3
@@ -114,7 +132,7 @@ for i_, (tx0, ty0, tx1, ty1) in enumerate(D.get('tents', [D['tent']])):
             ox, oy = cen(it['poly'][0])
             if tx0 <= ox <= tx1 and ty0 <= oy <= ty1:
                 if 'Tent_tray' not in ASSETS:
-                    mb = MB(); mb.cyl(0, 0, 0, 0.02, 0.33, m['brass'], 32); _plate(mb, -0.12, 0.0, 0.02); _piala(mb, 0.15, 0.08, 0.02); _piala(mb, 0.15, -0.1, 0.02)
+                    mb = MB(); mb.cyl(0, 0, 0, 0.02, 0.33, m['brass'], 32); _plate_r(mb, -0.12, 0.0, 0.02, 0.11); _glass(mb, 0.15, 0.08, 0.02); _glass(mb, 0.15, -0.1, 0.02)
                     ASSETS['Tent_tray'] = mb.mesh('Tent_tray')
                 inst(ASSETS['Tent_tray'], f'Tent{i_ + 1}_tray', (ox, oy, TER + 0.465), 0, 'Tapchans_tent')
     for yy in (ty0 + 0.9, ty1 - 0.9): lantern_at((tx0 + tx1) / 2 + 0.2, yy, TER + 1.8, 0.9, TER + 2.25, 'Tapchans_tent', f'Tent{i_ + 1}_lantern')
@@ -124,8 +142,8 @@ for y0 in D['tap']:
     inst(a_tapchan_rail(2.0, 2.2), 'Tapchan_railing', (2.55, y0, TER + 0.45), 0, 'Tapchans_tent')
     inst(a_bolster(1.9, 0.09, 'ikat'), 'Tapchan_bolster', (2.55 + 0.18, y0 + 1.1, TER + 0.57 + 0.09), 0, 'Tapchans_tent')
     mb = MB(); mb.picture_box(-0.55, -0.45, 0, 0.55, 0.45, 0.003, X['carpet3'], '+z')
-    for px, py in ((-0.3, -0.25), (-0.3, 0.25), (0.3, -0.25), (0.3, 0.25)): _plate(mb, px, py, 0.003)
-    mb.lathe(0, 0, 0.003, [(0.0, 0), (0.12, 0), (0.17, 0.03), (0.18, 0.05), (0.0, 0.035)], m['majolica'], 32)
+    for px, py in ((-0.35, -0.25), (-0.35, 0.25), (0.35, -0.25), (0.35, 0.25)): _plate_r(mb, px, py, 0.003, 0.1)
+    _lagan_plov(mb, 0.0, 0.0, 0.003); _bread(mb, 0.0, 0.33, 0.003, 0.07)
     inst(mb.mesh('Dastarkhan_set'), 'Tapchan_dastarkhan', (3.8, y0 + 1.1, TER + 0.78), 0, 'Tapchans_tent')
 
 # =============== 7. CORRIDOR: arches, sagging velvet ceiling, museum niches, khum jars ===============
@@ -252,10 +270,58 @@ for i_, ((x0, y0), mm) in enumerate((((-6.6, 1.8), m['majolica']), ((-5.6, 1.8),
     mb = MB(); mb.box(0, 0, 0, 0.7, 0.45, 0.45, mm, 0.004); mb.box(-0.02, -0.02, 0.45, 0.72, 0.47, 0.5, m['brass'], 0.004)
     inst(mb.mesh(f'Kids_chest_{i_ + 1}'), f'Kids_chest_{i_ + 1}', (x0, y0, TER), 0, 'Kids')
 
+# =============== 13a. CEILING CARPETS between the beams (aivan + dining south) with rattan pendant clusters ===============
+TY = sorted(y for y, _ in D['beams']); ncc = 0
+def ceiling_carpet(x0, x1, ya, yb, k):
+    global ncc
+    rows = []
+    for j in range(7):
+        y = ya + (yb - ya) * j / 6
+        rows.append([(x0 + (x1 - x0) * c / 6, y, top(x0 + (x1 - x0) * c / 6) - 0.25) for c in range(7)])        # top face on the purlins; 12 mm solid hangs below
+    mb = MB(); mb.sheet(rows, X['carpet%d' % (1 + k % 4)], 0.012, picture=True)
+    ncc += 1; inst(mb.mesh(f'Ceiling_carpet_{ncc:02d}'), f'Ceiling_carpet_{ncc:02d}', (0, 0, 0), 0, 'Carpet_ceiling')
+for ya, yb in zip(TY[:-1], TY[1:]):
+    if 15.0 < ya < 29.0: ceiling_carpet(1.6, 3.2, ya + 0.1, yb - 0.1, int(ya))                       # aivan (outside the balcony slab)
+for ya, yb in ((4.1, 9.85),):
+    for x0, x1 in ((1.0, 3.4), (3.6, 6.0), (6.2, 8.6)):
+        ceiling_carpet(x0, x1, ya + 0.1, yb - 0.1, int(x0))
+        for dx, dy in ((0.0, -0.9), (0.35, 0.0), (-0.3, 0.9)):                                          # rattan pendant clusters
+            cx, cy = (x0 + x1) / 2 + dx, (ya + yb) / 2 + dy; zt = top(cx) - 0.25 - 0.012
+            inst(a_rattan(), 'Rattan_pendant', (cx, cy, zt - 0.95 - 0.3 * abs(dy)), 0, 'Lights')
+            inst(a_rod(), 'Rod_rattan', (cx, cy, zt - 0.95 - 0.3 * abs(dy) + 0.3), 0, 'Lights', scale=(1, 1, round(0.95 + 0.3 * abs(dy) - 0.3, 4)))
+print('ceiling carpets', ncc)
+
+# =============== 13b. VELVET SWAGS over the plaza (beam to beam), CARPET FRIEZE over the aivan ===============
+for i_, xc in enumerate((9.6, 10.35, 11.1)):
+    ya, yb = 9.85 + 0.1, 15.3 - 0.1; rows = []
+    for c in (0, 1):
+        xx = xc - 0.35 + 0.7 * c
+        rows.append([(xx, ya + (yb - ya) * j / 14, top(xx) - 0.55 - 0.65 * math.sin(math.pi * j / 14)) for j in range(15)])
+    mb = MB(); mb.sheet(rows, X['velvet'], 0.008, picture=False)
+    inst(mb.mesh(f'Velvet_swag_{i_ + 1}'), f'Velvet_swag_{i_ + 1}', (0, 0, 0), 0, 'Carpet_ceiling')
+for i_, (ya, yb) in enumerate(((15.62, 21.9), (21.9, 28.4))):
+    n = int((yb - ya) / 0.4); top_row = [(0.152, ya + (yb - ya) * j / n, 3.3) for j in range(n + 1)]
+    bot_row = [(0.152, ya + (yb - ya) * j / n, 2.45 + (0.12 if j % 2 else 0.0)) for j in range(n + 1)]
+    mb = MB(); mb.sheet([bot_row, top_row], X['carpet3'], 0.008, picture=True)
+    inst(mb.mesh(f'Carpet_frieze_{i_ + 1}'), f'Carpet_frieze_{i_ + 1}', (0, 0, 0), 0, 'Aivan')
+
+# =============== 13c. PEOPLE ===============
+for i_, (pose, (x, y, z), rz, seed) in enumerate(PEOPLE):
+    r_ = random.Random(seed * 7 + 3); fem = r_.random() < 0.5
+    inst(a_person(pose, r_.randrange(4), r_.randrange(8), r_.randrange(8), r_.randrange(3), fem), f'Person_{i_ + 1:03d}', (x, y, z), rz, 'People')
+STAND = [((7.3, 14.4, TER), math.pi * 0.6, 1), ((8.3, 14.6, TER), -math.pi / 2, 2), ((10.6, 9.4, TER), math.pi, 3), ((10.0, 9.4, TER), math.pi, 4),
+         ((7.0, 34.6, TER), math.pi / 2, 5), ((5.2, 35.6, TER), -math.pi / 3, 6), ((6.9, 33.8, TER), math.pi, 7), ((5.6, 33.3, TER), math.pi / 2, 8),
+         ((5.0, 21.8, TER), 0.0, 9), ((8.1, 6.2, TER), math.pi / 2, 10), ((xb(17.0) + 1.4, 17.2, SID), math.pi / 2, 11), ((xb(16.0) + 2.6, 14.5, SID), 0.0, 12),
+         ((xb(23.0) + 2.2, 23.0, SID), math.pi, 13), ((xb(30.0) + 1.8, 29.5, SID), 0.0, 14)]
+for i_, ((x, y, z), rz, seed) in enumerate(STAND):
+    r_ = random.Random(seed * 13 + 1); fem = r_.random() < 0.5
+    inst(a_person('stand', r_.randrange(4), r_.randrange(8), r_.randrange(8), r_.randrange(3), fem), f'Person_stand_{i_ + 1:02d}', (x, y, z), rz, 'People')
+print('people', len(PEOPLE) + len(STAND))
+
 # =============== 13. DOME FINISHES ===============
 for o in bpy.data.objects:
     if o.type != 'MESH' or not o.name.startswith('dome_'): continue
     for i_, ms in enumerate(o.data.materials):
         if ms == m.get('gaj'): o.data.materials[i_] = X['gajbrick']
-        if ms == m.get('dometile'): o.data.materials[i_] = X['dometile']
+        if ms == m.get('dometile'): o.data.materials[i_] = X['domeglaze']
 print('detail v2 ok: chairs', nc, 'tables', nt, 'lanterns', nl, 'assets', len(ASSETS))

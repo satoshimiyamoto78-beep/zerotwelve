@@ -130,8 +130,14 @@ xb0, xb1 = D['lot'][0][0], D['lot'][1][0]; yb0, yb1 = D['lot'][0][1], D['lot'][1
 def xb(y): return xb0 + (xb1 - xb0) * (y - yb0) / (yb1 - yb0)
 
 # ======================= CONTEXT =======================
-boxes('ground', [(-45, -25, -1.6, 60, 75, -1.45)], m['ground'], 'Context')
+boxes('ground', [(-45, -25, -1.6, 32.0, 75, -1.45)], m['ground'], 'Context')
 boxes('road', [(14.9, -25, -1.32, 32, 75, -1.30)], m['asphalt'], 'Context')
+boxes('beach_promenade', [(32.0, -25, -1.45, 36.0, 75, -1.17)], m['sidewalk'], 'Context')
+boxes('beach_sand', [(36.0, -60, -1.9, 95.0, 110, -1.5)], mat('sand', (0.86, 0.78, 0.62), rough=0.95, noise_var=0.04), 'Context')
+boxes('sea', [(95.0, -400, -2.2, 900.0, 500, -1.6)], mat('sea', (0.03, 0.22, 0.30), rough=0.04, coat=1.0), 'Context')
+for yy in range(-20, 74, 9):
+    cylinder('beach_palm_trunk', 34.0, yy, -1.17, 5.5, 0.16, m['bark'], 'Context', n=10, r2=0.11)
+    for a_ in range(6): blob('beach_palm_leaf', [(34.0 + 1.2 * math.cos(a_) * t_, yy + 1.2 * math.sin(a_) * t_, 5.5 - 0.5 * t_ * t_, 0.28 - 0.08 * t_) for t_ in (0.3, 0.7, 1.0)], m['leaf'], 'Context', 1)
 boxes('road_marks', [(23.3, y, -1.30, 23.45, y + 3, -1.295) for y in range(-24, 74, 6)], m['white'], 'Context')
 sw = [[(xb(-25), -25), (14.9, -25), (14.9, 75), (xb(75), 75)]]
 prism('sidewalk', sw, -1.45, SID, m['sidewalk'], 'Context')
@@ -400,9 +406,9 @@ def dome_solid(d):
     cx, cy = d['c']; r, h = d['r'], d['rise']; r0 = d['oc'] or d['lantern']
     th0 = math.asin(min(0.999, r0 / r)); N = 18
     ths = [th0 + (math.pi / 2 - th0) * k / N for k in range(N + 1)]
-    bm = bmesh.new()
-    def ringv(rad, z): return [bm.verts.new((cx + rad * math.cos(2 * math.pi * j / SEG), cy + rad * math.sin(2 * math.pi * j / SEG), z)) for j in range(SEG)]
-    O = [ringv((r + T_) * math.sin(t), ZR + (h + T_) * math.cos(t)) for t in ths]; I = [ringv(r * math.sin(t), ZR + h * math.cos(t)) for t in ths]
+    bm = bmesh.new(); SEG = 96                         # local: finer rings for the ribbed shell
+    def ringv(rad, z, rib=0.0): return [bm.verts.new((cx + rad * (1 + rib * math.cos(24 * 2 * math.pi * j / SEG)) * math.cos(2 * math.pi * j / SEG), cy + rad * (1 + rib * math.cos(24 * 2 * math.pi * j / SEG)) * math.sin(2 * math.pi * j / SEG), z)) for j in range(SEG)]
+    O = [ringv((r + T_) * math.sin(t), ZR + (h + T_) * math.cos(t), 0.035 * math.sin(t) ** 0.5) for t in ths]; I = [ringv(r * math.sin(t), ZR + h * math.cos(t)) for t in ths]
     fo, fi, fl = [], [], []
     for a, b in zip(O[:-1], O[1:]):
         for j in range(SEG): fo.append(bm.faces.new((a[j], a[(j + 1) % SEG], b[(j + 1) % SEG], b[j])))
@@ -428,13 +434,14 @@ for d in D.get('domes', []):
         k = (j + 1) % SEG
         bm.faces.new((ol[j], ol[k], oh[k], oh[j])); bm.faces.new((ih[j], ih[k], il[k], il[j]))
         bm.faces.new((oh[j], oh[k], ih[k], ih[j])); bm.faces.new((il[j], il[k], ol[k], ol[j]))
-    bmesh.ops.recalc_face_normals(bm, faces=bm.faces); new_obj(f'dome_drum_{d["key"]}', bm, [m['jali']], 'Domes')
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces); new_obj(f'dome_drum_{d["key"]}', bm, [m['band']], 'Domes')
     # ring beam inside the drum, under the springing line
     bm = bmesh.new(); prof = [(d['r'] - 0.15, ZR - 0.25), (d['r'], ZR - 0.25), (d['r'], ZR), (d['r'] - 0.15, ZR)]
     rg = [[bm.verts.new((cx + rr_ * math.cos(2 * math.pi * j / SEG), cy + rr_ * math.sin(2 * math.pi * j / SEG), zz)) for j in range(SEG)] for rr_, zz in prof]
-    for a, b in zip(rg, rg[1:] + rg[:1]):
-        for j in range(SEG): bm.faces.new((a[j], a[(j + 1) % SEG], b[(j + 1) % SEG], b[j]))
-    bmesh.ops.recalc_face_normals(bm, faces=bm.faces); new_obj(f'dome_ring_{d["key"]}', bm, [m['bronze']], 'Domes')
+    for si, (a, b) in enumerate(zip(rg, rg[1:] + rg[:1])):
+        for j in range(SEG):
+            f = bm.faces.new((a[j], a[(j + 1) % SEG], b[(j + 1) % SEG], b[j])); f.material_index = 1 if si == 3 else 0     # LED cove on the inner face
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces); new_obj(f'dome_ring_{d["key"]}', bm, [m['bronze'], mat('coveglow', (1, .8, .55), emit=(1.0, 0.72, 0.42), strength=18.0)], 'Domes')
     # 12 ribs: closed 100 x 120 bars following the inner surface, stopping above the ring beam
     bm = bmesh.new(); r, h = d['r'], d['rise']
     for k in range(12):
@@ -455,6 +462,8 @@ for d in D.get('domes', []):
         ro = (d['r'] + T_) * math.sin(ths[0]); lz = ZR + (d['rise'] + T_) * math.cos(ths[0])
         cylinder(f'dome_lantern_{d["key"]}', cx, cy, lz, lz + 0.5, ro, m['glass'], 'Domes', n=SEG)
         cylinder(f'dome_lantern_cap_{d["key"]}', cx, cy, lz + 0.5, lz + 0.85, ro + 0.1, m['dometile'], 'Domes', n=SEG, r2=0.05)
+        cylinder(f'dome_finial_{d["key"]}', cx, cy, lz + 0.85, lz + 1.45, 0.05, m['brass'], 'Domes', n=12, r2=0.008)
+        blob(f'dome_finial_ball_{d["key"]}', [(cx, cy, lz + 1.05, 0.07), (cx, cy, lz + 1.25, 0.05)], m['brass'], 'Domes', 2)
 
 # ======================= BUKHARA DOME (rotunda vitrine + shop) + KHIVA GATE =======================
 if 'rot' in D and not DETAIL:
@@ -537,26 +546,45 @@ base = os.path.join(OUTD, f'samarkand-base3d-{REV}')
 bpy.ops.wm.save_as_mainfile(filepath=base + '.blend')
 # ======================= RENDERS =======================
 if DO_RENDER:
-    bl2.sun(elev=40, rot=235, strength=2.2, color=(1, 0.9, 0.78))
-    VIEWS = [('aerial', (30, -7, 21), (6, 17.5, 0), 28, [], -1.3),
-             ('domes_street', (24, 6, 9), (6, 20, 3.5), 24, [], -1.3),
-             ('dome_inside', (8.9, 9.6, 1.0), (6.0, 12.7, 4.6), 14, [], 0.9),
-             ('booths', (6.4, 17.2, 1.2), (8.6, 24.5, 0.6), 20, [], 1.3),
-             ('corridor', (11.0, 16.8, 0.95), (7.0, 16.8, 1.0), 17, [], -0.4),
-             ('tents', (7.2, 30.2, 1.3), (3.0, 34.0, 0.3), 18, [], 0.6),
-             ('mangal', (7.4, 11.4, 1.3), (10.6, 6.0, 0.5), 18, [], 0.9),
-             ('bukhara', (5.0, 30.5, 1.4), (6.1, 35.3, 0.8), 20, [], 0.6),
-             ('aivan', (3.0, 16.0, 1.2), (1.0, 23.5, 0.6), 18, [], 0.9),
-             ('aerial_cutaway', (28, -5, 19), (5.5, 18, 0), 28, ['Roof_skin'], -1.3),
-             ('street', (17.5, 9.0, 0.4), (6.0, 18.5, 0.9), 22, [], -1.3),
-             ('alley_north', (7.3, 17.0, 1.15), (5.0, 30.0, 0.9), 20, [], 0.4)]
+    w_ = sc.world.node_tree.nodes; w_['Background'].inputs['Strength'].default_value = 1.0
+    try: sc.view_settings.look = 'AgX - Medium High Contrast'
+    except Exception: pass
+    bl2.sun(elev=42, rot=120, strength=4.5, color=(1, 0.93, 0.84))
+    for xx in (2.6, 6.4, 10.2):                                   # soft daylight fill under the roof (bounce from the street)
+        for yy in range(2, 37, 4):
+            if xx > xb(yy) - 1.6: continue
+            ld = bpy.data.lights.new('fill', 'AREA'); ld.energy = 120; ld.size = 2.6; ld.color = (1.0, 0.92, 0.82)
+            lo_ = bpy.data.objects.new('fill', ld); lo_.location = (xx, yy, top(xx) - 0.62); coll('Lights_fill').objects.link(lo_)
+    def cam2p(loc, tgt, lens, shift):
+        cd = bpy.data.cameras.new('cam'); cd.lens = lens; cd.shift_y = shift; cd.sensor_width = 36
+        o = bpy.data.objects.new('cam', cd); coll('Cameras').objects.link(o); o.location = loc
+        d_ = Vector((tgt[0] - loc[0], tgt[1] - loc[1], 0.0)); o.rotation_euler = d_.to_track_quat('-Z', 'Y').to_euler(); sc.camera = o
+    BO_ = D['booths']; b4 = BO_[3]; b5 = BO_[4]
+    VIEWS = [('01_street_facade', (27.0, 21.0, 0.45), (12.0, 20.5), 21, 0.18, [], -0.6),
+             ('02_entrance_pishtaq', (17.6, 12.6, 0.4), (9.0, 17.4), 20, 0.12, [], -0.4),
+             ('03_corridor_teleport', (11.2, 16.8, 1.0), (6.0, 16.8), 17, 0.08, [], -0.1),
+             ('04_plaza_mangal', (5.6, 15.4, 1.55), (11.4, 7.0), 18, 0.14, [], -0.1),
+             ('05_south_dome', (8.9, 9.6, 1.05), (4.8, 13.6), 15, 0.3, [], -0.1),
+             ('06_booth_alley', (6.7, 17.6, 1.2), (8.2, 27.0), 19, 0.1, [], -0.1),
+             ('07_booth_sea_view', (b4[2] - 0.45, (b4[0] + b4[1]) / 2 + 0.25, 0.75), (b4[3] + 4.0, (b4[0] + b4[1]) / 2), 17, 0.08, [], -0.1),
+             ('08_booth_front', (BO_[2][2] - 2.2, BO_[2][0] + 0.7, 1.25), (BO_[2][2] + 0.9, BO_[2][0] + 1.1), 19, 0.08, [], -0.1),
+             ('09_aivan', (3.1, 15.9, 1.2), (1.2, 23.5), 18, 0.12, [], -0.1),
+             ('10_central_dome', (8.3, 18.6, 1.05), (4.6, 21.2), 15, 0.32, [], -0.1),
+             ('11_fountain_court', (8.1, 27.2, 1.35), (4.6, 33.0), 18, 0.08, [], -0.1),
+             ('12_bukhara_dome', (5.0, 30.6, 1.35), (6.1, 35.3), 19, 0.06, [], -0.1),
+             ('13_tents_tapchan', (7.3, 30.1, 1.3), (2.8, 34.2), 17, 0.04, [], -0.1),
+             ('14_khiva_gate', (6.9, 40.8, 0.9), (6.1, 33.0), 20, 0.12, [], -0.5),
+             ('15_aerial_street', (40.0, 6.0, 20.0), (7.0, 20.0), 26, 0.0, [], -0.7),
+             ('16_aerial_sea', (30.0, 62.0, 28.0), (16.0, 14.0), 24, 0.0, [], -0.7)]
     only = os.environ.get('VIEWS')
-    for name, loc, tgt, lens, hide, ev in VIEWS:
+    for name, loc, tgt, lens, shift, hide, ev in VIEWS:
+        if only and not any(name.startswith(v) for v in only.split(',')): continue
         sc.view_settings.exposure = ev
-        if only and name not in only.split(','): continue
         for cn, c in COLS.items(): c.hide_render = cn in hide
-        bl2.camera(loc, tgt, lens=lens)
-        bl.render(os.path.join(OUTD, f'samarkand-base3d-{REV}-{name}.png'), W, H, S)
+        if name.startswith(('15', '16')):
+            bl2.camera(loc, (tgt[0], tgt[1], 0.0), lens=lens)
+        else: cam2p(loc, tgt, lens, shift)
+        bl.render(os.path.join(OUTD, f'samarkand-R12-{name}.png'), W, H, S)
 
 # ======================= EXPORT (flat colours) =======================
 export_prep(); flatten_materials()

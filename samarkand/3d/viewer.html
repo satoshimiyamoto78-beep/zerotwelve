@@ -33,7 +33,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 <div id="stage"></div>
 <div id="status">Загружаю модель…</div>
-<header class="bar"><h1>SAMARKAND</h1><span>Крытая терраса · 3D-модель R12 · чистая геометрия · 171 место</span></header>
+<header class="bar"><h1>SAMARKAND</h1><span>Крытая терраса · 3D-модель R12 · открытые кабинки, люди · 171 место</span></header>
 <nav class="dock" aria-label="Управление моделью">
   <div class="row" id="views"><span class="lbl">Вид</span>
     <button class="view" data-v="overview" aria-pressed="true">Сверху</button>
@@ -95,7 +95,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     ['skin', /^roof_panel/], ['domes', /^dome_/], ['structure', /^(roof_beam|purlin|facade_ledger|column_|gutter|court_gutter)/],
     ['planting', /^(chinar_canopy|chinar_branch|pomegranate|plumeria|areca|banana|herbs|jasmine|planter_shrubs|bougainvillea)/],
     ['building', /^(building_hall|parapet|facade_|slab_F2|balcony_rail)/],
-    ['furniture', /^(Chair_|Table_|Tableware_|Aivan_tableware|Tent\d_tray|Tapchan_|Aivan_backcushion|Tent\d_cushion|chairs_carved|tables_tableware|booth_tableware|table|chair|bar_stool|abench|atable|bench|btable|sofa|otable|tapchan|kurpacha|pouf|ltable)/]
+    ['furniture', /^(Person|Tableset|Boothset|Chair_|Table_|Tableware_|Aivan_tableware|Tent\d_tray|Tapchan_|Aivan_backcushion|Tent\d_cushion|chairs_carved|tables_tableware|booth_tableware|table|chair|bar_stool|abench|atable|bench|btable|sofa|otable|tapchan|kurpacha|pouf|ltable)/]
   ];
   function setView(v) {
     const [p, t] = VIEWS[v];

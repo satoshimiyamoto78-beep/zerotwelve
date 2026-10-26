@@ -101,6 +101,8 @@ class MB:
                 if picture:
                     for lp, uv in zip(f.loops, ((c / (C_ - 1), r / (R_ - 1)), ((c + 1) / (C_ - 1), r / (R_ - 1)), ((c + 1) / (C_ - 1), (r + 1) / (R_ - 1)), (c / (C_ - 1), (r + 1) / (R_ - 1)))): lp[s.uv].uv = uv
         bmesh.ops.recalc_face_normals(s.bm, faces=top)
+        nz = sum(f.normal.z * f.calc_area() for f in top)
+        if nz < 0: bmesh.ops.reverse_faces(s.bm, faces=top)                 # horizontal sheets: thickness always grows downward
         ret = bmesh.ops.solidify(s.bm, geom=top, thickness=thick)
         fs = [g for g in ret['geom'] if isinstance(g, bmesh.types.BMFace)] + top
         for f in fs:

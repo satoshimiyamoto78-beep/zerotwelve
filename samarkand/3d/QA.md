@@ -32,3 +32,24 @@ Audit tool: `scripts/qa.py`. It runs on the .blend. Each mesh datablock is check
 - **Assets in the library:** chair, module tables 2p/4p, tableware sets, lanterns, cushions, bolster, booth module ×8 themes, stepped partitions, majlis tent, tapchan railing, corridor arch and niche, khum and jars, Bukhara rotunda, vitrine, Khiva gate, flying carpets, tandoor, kazan, firewood wall, hood, heat lamp.
 
 Asset sheet (materials + clay/wireframe): `renders/asset-sheet-wireframe.jpg`.
+
+## R12 client pass (open booths, people)
+Audit on the client-render model: 782 objects, **567 / 567 clean meshes, 0 penetrations, 0 floating**, 191k triangles.
+People (`People` collection) are stylised figures and are left out of the contact checks, because hands rest on table tops.
+
+What the pass adds:
+- **Booths** are open to the street / sea. Each has:
+  - a plaster parapet with a majolica cap;
+  - a carved arch framing the view;
+  - a theme object on the parapet and two vases;
+  - a quilted suzani ceiling and a velvet swag at the portal;
+  - a rattan pendant.
+- **Walls between booths** are 160 mm plaster niche walls:
+  - a through arched niche with a vase;
+  - a majolica band and a carved frieze;
+  - framed epoch art on both faces.
+- **Domes:** turquoise ribbed (24 ribs) glaze, majolica drum band, gold finial, LED cove inside.
+- **Ceilings:** carpets fixed under the roof (aivan, dining south) with rattan clusters; velvet swags over the plaza; scalloped carpet frieze over the aivan.
+- **Tableware:** Rishtan plates, plov on a lagan, lepyoshka, teapot, tea glasses.
+- **Context and people:** 55 people, a beach promenade with palms, sand and sea.
+- **Renders:** 16 client renders in `samarkand/renders/R12-client/`.

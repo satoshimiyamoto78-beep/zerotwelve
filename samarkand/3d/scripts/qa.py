@@ -96,7 +96,7 @@ if PLACE_COLLS is not None:
             if bi.overlap(bj): pen.append([oi.name, oj.name])
     # floating: every standing piece must rest on something (a floor, deck or another piece) within 2 mm
     HANG = ('Lantern', 'Rod', 'Flying_carpet', 'Heat_lamp', 'Corridor_niche', 'Aivan_wallcarpet', 'Corridor_velvet', 'Mangal_hood', 'Mangal_skewers',
-            'Khiva_gate', 'Street_pishtaq', 'Booth', 'dome_', 'Tent_', 'Corridor_arch')
+            'Khiva_gate', 'Street_pishtaq', 'Booth', 'dome_', 'Tent_', 'Corridor_arch', 'Carpet_frieze', 'Ceiling_carpet', 'Rattan', 'Velvet_swag')
     sup = []
     for o in objs:
         mw = o.matrix_world; vs = [mw @ v.co for v in o.data.vertices]
