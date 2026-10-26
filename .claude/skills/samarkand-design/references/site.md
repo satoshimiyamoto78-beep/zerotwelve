@@ -65,3 +65,14 @@ Source: BV_HOAN_CONG_GALINA PDF, sheets KT-06 (east elevation A'–H), H–A', r
 - Existing entrance canopy at E–G: 4400 deep (y 28662–36300), soffit about +3.650, 1260 fascia. The GALINA sign pylon at the F–G corner rises to +12.150.
 - **Building line (chỉ giới xây dựng)**: dashed line about **4.0 m inside the lot line / red line** (chỉ giới đường đỏ = our east boundary xb). Local x at y=20000: lot line 11820, building line 7800. Any permanent roof east of it needs the authority's OK. Fallback: a fixed roof up to the building line, and a retractable or demountable cover (awning, retractable-fabric pergola) over the outer 4 m.
 - The roof can only go under the balcony. At the façade, the top of the roof structure is ≤ +3.850. With a 5–8% fall to the street over 10–13 m, the street eave sits at about +2.9…+3.3, which is 3.3–3.7 m above the terrace. That is a strong reason to keep the terrace at −0.450.
+
+## Layout R7 + roof + estimate (2026-10-26, current)
+The owner said: legal setback is not a concern, so the roof goes to the street. Remove the wave louvers. Keep both trees, open to the sky. Budget "normal, no waste". The north driveway stays for cars and scooters. The mangal kitchen has all utilities.
+- Tables: every loose table is built from 700 × 800 modules (1 = 2 seats, 2 = 4, 3 = 6, 4 = 8). There are 36 modules and 64 chairs. Rows are aligned so pairs push together into tables for 8.
+- Tapchans: two of 2.0 × 2.2 m for 6 guests each, with kurpacha on 3 sides, open to the east. The hauz fountain is in front of them at (6000, 30800). The aryk was removed and a planting bed sits behind.
+- Majlis tent: 3.3 × 3.2 m, entered from the east (1.8 m opening).
+- Photo lounge "Ochag": draped portal, carpets, LED fire bowl, 3 low tables with 9 poufs.
+- Courts open to the sky: south x3600–7600 / y10400–15000, north x4700–7400 / y25800–29000.
+- Seats: 164, plus about 35 on the street benches.
+- Roof (`roof_r7.py`): beams on the column lines 4100/9850/15300/18300/21350/25600/29100/32100/36300. Steel ledger under the balcony slab (top of skin +3.750), 5% fall to the street (eave about +3.16). PU 50 mm sandwich panel with a wood-look underside, box gutter along the street, downpipes in the columns. About 9.8 t of steel, 419.5 m² of roof.
+- Estimate (`samarkand/estimate/samarkand-estimate-R7.xlsx`, live formulas): about 3.67 bn VND (~141k USD at 26,000) including 10% contingency. The all-economy option is about 3.2 bn VND. Prices are Da Nang 2026 indicative, ±20%.
