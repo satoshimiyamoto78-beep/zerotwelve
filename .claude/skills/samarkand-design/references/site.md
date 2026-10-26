@@ -102,3 +102,9 @@ The owner said the R8 aivan (10 two-tops in a line on a banquette) felt odd and 
 - Totals: **175 seats**. Tables: 4 two-tops, 12 four-tops (each splits into 2 × 2), and 4 booths for 6.
 - Fixed the sheet header, which showed "R6" (now uses REV).
 - Estimate R9: about 3.78 bn VND including 10% contingency.
+
+## 3D base model (2026-10-27)
+`samarkand/3d/` holds the LOD 200 model of the whole site, built from R9 by `scripts/base3d.py` (data comes from `site/tools/export3d_r9.py`).
+- Formats: .blend (packed, procedural materials), .fbx / .obj / .glb (flat colours).
+- Web viewer: https://claude.ai/artifact/7NGDiBpaXwuSr9gytuvAtm
+- Coordinates: metres, origin axis 6 × A'. The README lists levels and collections.

@@ -1,0 +1,124 @@
+<title>Samarkand Terrace 3D</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Manrope:wght@400;600&display=swap">
+<style>
+/* Layout: full-screen 3D canvas, a slim title bar on top, view + layer controls floating at the bottom */
+:root {
+  --bg: #efe6d6; --panel: rgba(251,246,236,.92); --fg: #2e2016; --muted: #75614d; --accent: #1f3f8a; --clay: #a4482b; --line: #d8c7aa;
+  --display: "Cormorant Garamond", Georgia, serif; --body: "Manrope", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #17120e; --panel: rgba(32,25,19,.9); --fg: #f2e8d8; --muted: #b8a58c; --accent: #8fb0ff; --clay: #e07a52; --line: #4a3a2b; color-scheme: dark } }
+:root[data-theme="dark"] { --bg: #17120e; --panel: rgba(32,25,19,.9); --fg: #f2e8d8; --muted: #b8a58c; --accent: #8fb0ff; --clay: #e07a52; --line: #4a3a2b; color-scheme: dark }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); overflow: hidden; }
+#stage { position: fixed; inset: 0; }
+#stage canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.bar { position: fixed; left: 0; right: 0; top: 0; padding-top: calc(env(safe-area-inset-top, 0px) + 10px); padding-bottom: 10px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; background: linear-gradient(var(--panel), transparent); pointer-events: none; }
+.bar h1 { font-family: var(--display); font-weight: 600; font-size: 1.6rem; letter-spacing: .14em; margin: 0; }
+.bar span { color: var(--muted); font-size: .82rem; }
+.dock { position: fixed; left: 0; right: 0; bottom: 0; padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); padding-top: 10px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 8px; }
+.row { display: flex; gap: 6px; flex-wrap: wrap; }
+.row .lbl { font-size: .7rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); align-self: center; min-width: 4.5em; }
+button { font: 600 .82rem var(--body); color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 7px 12px; cursor: pointer; backdrop-filter: blur(6px); }
+button[aria-pressed="true"] { background: var(--accent); color: #fff; border-color: var(--accent); }
+button.view[aria-pressed="true"] { background: var(--clay); border-color: var(--clay); }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#status { position: fixed; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: .95rem; pointer-events: none; }
+.hint { color: var(--muted); font-size: .72rem; }
+[hidden] { display: none !important; }
+</style>
+
+<div id="stage"></div>
+<div id="status">Загружаю модель…</div>
+<header class="bar"><h1>SAMARKAND</h1><span>Крытая терраса · базовая 3D-модель R9 · 175 мест</span></header>
+<nav class="dock" aria-label="Управление моделью">
+  <div class="row" id="views"><span class="lbl">Вид</span>
+    <button class="view" data-v="overview" aria-pressed="true">Сверху</button>
+    <button class="view" data-v="cutaway">Без кровли</button>
+    <button class="view" data-v="street">С улицы</button>
+    <button class="view" data-v="aivan">Айван</button>
+    <button class="view" data-v="tapchan">Топчаны и шатёр</button>
+  </div>
+  <div class="row" id="layers"><span class="lbl">Слои</span>
+    <button data-l="skin" aria-pressed="true">Кровля</button>
+    <button data-l="structure" aria-pressed="true">Каркас</button>
+    <button data-l="furniture" aria-pressed="true">Мебель</button>
+    <button data-l="planting" aria-pressed="true">Растения</button>
+    <button data-l="building" aria-pressed="true">Здание</button>
+  </div>
+  <div class="hint">Вращение — один палец, масштаб — два пальца, сдвиг — правая кнопка или два пальца.</div>
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script>
+(function () {
+  const stage = document.getElementById('stage'), status = document.getElementById('status');
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  stage.appendChild(renderer.domElement);
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xcfd9e0); scene.fog = new THREE.Fog(0xcfd9e0, 70, 160);
+  const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 400);
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true; controls.maxPolarAngle = Math.PI * 0.495; controls.minDistance = 2; controls.maxDistance = 120;
+  scene.add(new THREE.HemisphereLight(0xfff3e0, 0x5a4a3a, 0.75));
+  const sun = new THREE.DirectionalLight(0xffe6c4, 1.6); sun.position.set(30, 40, 25); sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -35, right: 35, top: 35, bottom: -35, near: 1, far: 140 });
+  scene.add(sun);
+
+  // Blender Z-up plan coords (x east, y north) are exported Y-up: plan (x, y, z) -> three (x, z, -y)
+  const P = (x, y, z) => new THREE.Vector3(x, z, -y);
+  const VIEWS = {
+    overview: [P(30, -8, 24), P(6, 18, 0)], cutaway: [P(26, -4, 20), P(5.5, 18, 0)],
+    street: [P(17.5, 9, 0.4), P(6, 18.5, 0.9)], aivan: [P(3.0, 15.8, 1.6), P(1.2, 27, 0.6)],
+    tapchan: [P(7.4, 27.4, 1.6), P(3.5, 33.5, 0.4)]
+  };
+  const groups = { skin: [], structure: [], furniture: [], planting: [], building: [] };
+  const rules = [
+    ['skin', /^roof_panel/], ['structure', /^(roof_beam|purlin|facade_ledger|column_|gutter|court_gutter)/],
+    ['planting', /^(chinar|pomegranate|plumeria|areca|banana|herbs|jasmine|planter_shrubs|bougainvillea)/],
+    ['building', /^(building_hall|parapet|facade_|slab_F2|balcony_rail)/],
+    ['furniture', /^(table|chair|bar_stool|abench|atable|bench|btable|sofa|otable|tapchan|kurpacha|pouf|ltable)/]
+  ];
+  function setView(v) {
+    const [p, t] = VIEWS[v];
+    const far = (v === 'overview' || v === 'cutaway') && camera.aspect < 1 ? 1.75 : 1;
+    camera.position.copy(t.clone().add(p.clone().sub(t).multiplyScalar(far))); controls.target.copy(t); controls.update();
+    document.querySelectorAll('#views button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
+    if (v === 'cutaway') toggle('skin', false); else if (v === 'overview' || v === 'street') toggle('skin', true);
+  }
+  function toggle(l, on) {
+    groups[l].forEach(o => { o.visible = on; });
+    const b = document.querySelector(`#layers button[data-l="${l}"]`); if (b) b.setAttribute('aria-pressed', String(on));
+  }
+  document.getElementById('views').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setView(b.dataset.v); });
+  document.getElementById('layers').addEventListener('click', e => { const b = e.target.closest('button'); if (b) toggle(b.dataset.l, b.getAttribute('aria-pressed') !== 'true'); });
+
+  const onModel = gltf => {
+    const root = gltf.scene;
+    root.traverse(o => {
+      if (!o.isMesh) return;
+      o.castShadow = true; o.receiveShadow = true;
+      const mats = Array.isArray(o.material) ? o.material : [o.material];
+      mats.forEach(m => { if (m.transmission) { m.transparent = true; m.opacity = 0.35; } m.side = THREE.DoubleSide; });
+      const nm = (o.parent && o.parent !== root ? o.parent.name : o.name) || '';
+      for (const [g, re] of rules) if (re.test(nm)) { groups[g].push(o.parent && o.parent !== root ? o.parent : o); break; }
+    });
+    scene.add(root); status.hidden = true; setView('overview');
+  };
+  const fail = () => { status.textContent = 'Не удалось загрузить модель. Обновите страницу.'; };
+  fetch('samarkand-base3d-R9-web.json').then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+    .then(txt => new THREE.GLTFLoader().parse(txt, '', onModel, fail)).catch(fail);
+
+  function resize() { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+  window.addEventListener('resize', resize); resize();
+  (function loop() { requestAnimationFrame(loop); controls.update(); renderer.render(scene, camera); })();
+})();
+</script>
