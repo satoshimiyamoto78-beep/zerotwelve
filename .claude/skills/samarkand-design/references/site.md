@@ -56,3 +56,12 @@ Script `samarkand/site/tools/layout_r6.py` → `samarkand/layout/samarkand-terra
 - North: 2 tapchans, a majlis tent 3.3×3.6 (U-sofa, 10 seats) in place of the 2 northern tapchans, and 2×2-tops at the north entrance.
 - Photo zone: freestanding backlit jali arch 3.2 m, palms in terracotta pots, rug, lanterns and candles.
 - Seats: 163, plus about 35 on the street benches. Minimum path 1205 (booths). Chairs back-to-back are at least 450.
+
+## Heights and legal lines from the as-built set (checked 2026-10-26)
+Source: BV_HOAN_CONG_GALINA PDF, sheets KT-06 (east elevation A'–H), H–A', roof plan, site plan 1:250.
+- Levels (finished): hall ±0.000. Ground at the façade −0.450 on the elevation (the plan spot level says −0.470, so verify on site). Sidewalk −1.170. F2 +4.200, F3 +7.800, roof +11.700, arched roof up to +15.400.
+- F2 slab 350 thick, so the balcony soffit is at **+3.850**. The balcony is a curved slab up to about 1.5 m deep (B–F), with a 1000 rail.
+- The F1 glazing is 2600 doors plus a 600 transom. A decorative wavy louver screen hangs from the balcony edge, dropping as low as about +3.2.
+- Existing entrance canopy at E–G: 4400 deep (y 28662–36300), soffit about +3.650, 1260 fascia. The GALINA sign pylon at the F–G corner rises to +12.150.
+- **Building line (chỉ giới xây dựng)**: dashed line about **4.0 m inside the lot line / red line** (chỉ giới đường đỏ = our east boundary xb). Local x at y=20000: lot line 11820, building line 7800. Any permanent roof east of it needs the authority's OK. Fallback: a fixed roof up to the building line, and a retractable or demountable cover (awning, retractable-fabric pergola) over the outer 4 m.
+- The roof can only go under the balcony. At the façade, the top of the roof structure is ≤ +3.850. With a 5–8% fall to the street over 10–13 m, the street eave sits at about +2.9…+3.3, which is 3.3–3.7 m above the terrace. That is a strong reason to keep the terrace at −0.450.
