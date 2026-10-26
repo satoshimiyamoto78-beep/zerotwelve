@@ -11,6 +11,16 @@ Ni 1.500000
 d 1.000000
 illum 2
 
+newmtl band2
+Ns 672.400024
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex/band.png
+
 newmtl bark
 Ns 10.000005
 Ka 1.000000 1.000000 1.000000
@@ -81,6 +91,66 @@ Ni 1.500000
 d 1.000000
 illum 2
 
+newmtl carpet1_uv
+Ns 39.999996
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex2/carpet1.png
+
+newmtl carpet2_uv
+Ns 39.999996
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex2/carpet2.png
+
+newmtl carpet3_uv
+Ns 39.999996
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex2/carpet3.png
+
+newmtl carpet4_uv
+Ns 39.999996
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex2/carpet4.png
+
+newmtl carved_t
+Ns 202.500000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex2/carved.png
+
+newmtl ceramic
+Ns 774.400024
+Ka 1.000000 1.000000 1.000000
+Kd 0.930000 0.920000 0.880000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
 newmtl clay
 Ns 39.999996
 Ka 1.000000 1.000000 1.000000
@@ -100,6 +170,16 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
+
+newmtl copper_t
+Ns 490.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex2/copper.png
 
 newmtl darkglass
 Ns 846.400024
@@ -131,6 +211,106 @@ Ni 1.500000
 d 1.000000
 illum 2
 
+newmtl dometile_t
+Ns 202.500000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex2/dometile.png
+
+newmtl ember
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 0.300000 0.050000
+Ks 0.500000 0.500000 0.500000
+Ke 6.000000 1.680000 0.240000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl ep_khorezm_uv
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex2/ep_khorezm.png
+
+newmtl ep_margil_uv
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex2/ep_margil.png
+
+newmtl ep_pamir_uv
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex2/ep_pamir.png
+
+newmtl ep_saman_uv
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex2/ep_saman.png
+
+newmtl ep_sasan_uv
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex2/ep_sasan.png
+
+newmtl ep_shahr_uv
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex2/ep_shahr.png
+
+newmtl ep_sogd_uv
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex2/ep_sogd.png
+
+newmtl ep_timur_uv
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex2/ep_timur.png
+
 newmtl fire
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
@@ -144,32 +324,32 @@ illum 2
 newmtl floor2
 Ns 360.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.620000 0.450000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex/floor.png
 
-newmtl gaj
-Ns 39.999996
+newmtl gajbrick_t
+Ns 22.499992
 Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.640000 0.440000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex2/gajbrick.png
 
 newmtl girih2
 Ns 562.500000
 Ka 1.000000 1.000000 1.000000
-Kd 0.628692 0.526377 0.477650
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex/girih.png
 
 newmtl glass
 Ns 960.400024
@@ -204,19 +384,39 @@ illum 2
 newmtl ikat2_t
 Ns 22.499992
 Ka 1.000000 1.000000 1.000000
-Kd 0.400000 0.050000 0.060000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex/ikat.png
 
 newmtl jali
 Ns 202.500000
 Ka 1.000000 1.000000 1.000000
-Kd 0.230927 0.141252 0.075801
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex/jali.png
+
+newmtl kilim_f_t
+Ns 22.499992
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex2/kilim.png
+
+newmtl lampglow
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 0.750000 0.450000
+Ks 0.500000 0.500000 0.500000
+Ke 8.000000 4.960000 2.400000
 Ni 1.500000
 d 1.000000
 illum 2
@@ -261,6 +461,16 @@ Ni 1.500000
 d 1.000000
 illum 2
 
+newmtl lotus
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.160000 0.420000 0.140000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
 newmtl magenta
 Ns 159.999985
 Ka 1.000000 1.000000 1.000000
@@ -274,7 +484,17 @@ illum 2
 newmtl majolica2
 Ns 722.500000
 Ka 1.000000 1.000000 1.000000
-Kd 0.216698 0.335246 0.556963
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex/majolica.png
+
+newmtl meat
+Ns 159.999985
+Ka 1.000000 1.000000 1.000000
+Kd 0.420000 0.160000 0.080000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
@@ -285,6 +505,16 @@ newmtl oak2
 Ns 302.500000
 Ka 1.000000 1.000000 1.000000
 Kd 0.466667 0.306667 0.170000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl pinkfl
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.950000 0.550000 0.650000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
@@ -361,6 +591,16 @@ Ni 1.500000
 d 1.000000
 illum 2
 
+newmtl rope
+Ns 10.000005
+Ka 1.000000 1.000000 1.000000
+Kd 0.550000 0.420000 0.250000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
 newmtl rubber
 Ns 10.000005
 Ka 1.000000 1.000000 1.000000
@@ -414,12 +654,22 @@ illum 3
 newmtl suzani2_t
 Ns 22.499992
 Ka 1.000000 1.000000 1.000000
-Kd 0.550000 0.160000 0.100000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex/suzani.png
+
+newmtl tent_f_t
+Ns 22.499992
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex2/tentstripe.png
 
 newmtl terrazzo
 Ns 640.000000
@@ -450,6 +700,16 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
+
+newmtl velvet_f_t
+Ns 22.499992
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /tmp/claude-0/-home-user-zerotwelve/1b150d8a-25e8-5370-b86d-453a7d8bda62/scratchpad/r3d/tex2/velvet.png
 
 newmtl walnut2
 Ns 302.500000

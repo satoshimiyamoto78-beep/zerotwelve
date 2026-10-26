@@ -195,8 +195,11 @@ HT = {  # kind: (z0, z1, material, collection)   heights above the item's own fl
     'rotunda': (0, 0.15, 'oak', 'Bukhara_dome'), 'drum': (0.15, 2.3, 'jali', 'Bukhara_dome'), 'rbox': (0.15, 1.05, 'glass', 'Bukhara_dome'),
 }
 counter = {}
+DETAIL = os.environ.get('DETAIL', '1') == '1'
+SKIP = {'chair', 'lantern', 'screen', 'bportal', 'drum', 'rbox', 'woodstack', 'tandoor', 'kazan'} if DETAIL else set()
 for it in D['items']:
     k = it['kind']
+    if k in SKIP: continue
     if k == 'table':                                       # modular table: top + pedestal(s)
         for r in it['poly']:
             base = 0.0 if on_plat(r) else TER; x0, y0, x1, y1 = bbox(r)
@@ -251,7 +254,7 @@ for it in D['items']:
         if z0 == 'S': prism(k, [r], SID, SID + z1, m[mn], cn); continue
         base = 0.0 if on_plat(r) else TER
         if k in ('ascreen', 'abench', 'atable'): base = 0.0
-        prism(k, [r], base + z0, base + z1, m[mn] if mn in m else mat(mn), cn)
+        if not (DETAIL and k == 'hood'): prism(k, [r], base + z0, base + z1, m[mn] if mn in m else mat(mn), cn)
         if k in ('btable', 'atable'):
             cx, cy = cen(r); boxes(k + '_leg', [(cx - .05, cy - .05, base, cx + .05, cy + .05, base + 0.72)], m['bronze'], cn)
         if k == 'tapchan':
@@ -285,6 +288,7 @@ for it in D['items']:
 # tent: fabric walls on W/N/S + pyramid canopy
 for tx0, ty0, tx1, ty1 in D.get('tents', [D['tent']]):
   tz = TER + 2.3; apex = TER + 2.95
+  if DETAIL: continue
   boxes('tent_walls', [(tx0 - 0.05, ty0 - 0.05, TER, tx0, ty1 + 0.05, tz), (tx0, ty0 - 0.05, TER, tx1 + 0.05, ty0, tz), (tx0, ty1, TER, tx1 + 0.05, ty1 + 0.05, tz)], m['suzani'], 'Tapchans_tent')
   bm = bmesh.new(); c = [bm.verts.new(v) for v in ((tx0 - .05, ty0 - .05, tz), (tx1 + .05, ty0 - .05, tz), (tx1 + .05, ty1 + .05, tz), (tx0 - .05, ty1 + .05, tz))]
   ap = bm.verts.new(((tx0 + tx1) / 2, (ty0 + ty1) / 2, apex))
@@ -296,7 +300,7 @@ for x in [t0 + 0.3 + 0.7 * i for i in range(int((t1 - t0) / 0.7))]:
     for j in range(8):
         y = e0 + 0.1 + j * (e1 - e0 - 0.2) / 8; z = TER + 2.55 - 0.35 * math.sin(math.pi * (j + .5) / 8)
         sw_.append((x - 0.25, y, z - 0.03, x + 0.25, y + (e1 - e0 - 0.2) / 8, z))
-boxes('corridor_swags', sw_, m['velvet'], 'Corridor')
+if not DETAIL: boxes('corridor_swags', sw_, m['velvet'], 'Corridor')
 
 # ======================= TREES + PLANTING =======================
 rr = random.Random(7)
@@ -428,6 +432,8 @@ if 'rot' in D:
     boxes('gate_beam', [(g0 - 0.25, 36.35, TER + 2.85, g1 + 0.25, 36.5, TER + 3.25)], m['walnut'], 'North_gate')
     boxes('gate_arch_panel', [(g0, 36.38, TER + 2.55, g1, 36.47, TER + 2.85)], m['jali'], 'North_gate')
 
+if DETAIL: exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'detail_r12.py')).read())
+
 def flatten_materials():
     """glTF/FBX/OBJ cannot carry procedural shaders: bake each material to one representative flat colour"""
     for mm in bpy.data.materials:
@@ -436,8 +442,7 @@ def flatten_materials():
         if not b or not b.inputs['Base Color'].is_linked: continue
         src = b.inputs['Base Color'].links[0].from_node; col = None
         if src.type == 'TEX_IMAGE' and src.image:
-            px = list(src.image.pixels[:]); n = len(px) // 4
-            col = [sum(px[i::4][:n]) / n for i in range(3)]
+            continue                                     # textured: exported with UVs by export_prep()
         elif src.type == 'VALTORGB':
             e = src.color_ramp.elements; col = [(e[0].color[i] + 2 * e[-1].color[i]) / 3 for i in range(3)]
         elif src.type == 'MIX':
@@ -449,6 +454,39 @@ def flatten_materials():
             if key in mm.name: col = c
         if col: b.inputs['Base Color'].default_value = (*col, 1)
 
+def export_prep():
+    """image textures for glTF: box-projected (Object coords) textures -> UV map; box UVs computed per face from world coords"""
+    boxmats = {}
+    for mm in bpy.data.materials:
+        if not mm.use_nodes: continue
+        N, Lk = mm.node_tree.nodes, mm.node_tree.links
+        for it in list(N):
+            if it.type == 'TEX_IMAGE' and it.projection == 'BOX':
+                size = 1.0
+                if it.inputs['Vector'].is_linked:
+                    mp = it.inputs['Vector'].links[0].from_node
+                    if mp.type == 'MAPPING': size = 1 / max(1e-6, mp.inputs['Scale'].default_value[0])
+                    for l in list(it.inputs['Vector'].links): Lk.remove(l)
+                it.projection = 'FLAT'; uvn = N.new('ShaderNodeUVMap'); uvn.uv_map = 'UVMap'; Lk.new(uvn.outputs['UV'], it.inputs['Vector'])
+                boxmats[mm.name] = size
+    for o in bpy.data.objects:
+        if o.type != 'MESH': continue
+        me = o.data; names = [ms.name if ms else '' for ms in me.materials]
+        if not any(n in boxmats for n in names): continue
+        bm = bmesh.new(); bm.from_mesh(me)
+        uv = bm.loops.layers.uv.get('UVMap') or bm.loops.layers.uv.new('UVMap')
+        mw = o.matrix_world
+        for f in bm.faces:
+            n = names[f.material_index] if f.material_index < len(names) else ''
+            if n not in boxmats: continue
+            sz = boxmats[n]; nr = f.normal; ax = max(range(3), key=lambda i: abs(nr[i]))
+            for lp in f.loops:
+                co = mw @ lp.vert.co
+                lp[uv].uv = ((co.y, co.z) if ax == 0 else (co.x, co.z) if ax == 1 else (co.x, co.y))[0] / sz, ((co.y, co.z) if ax == 0 else (co.x, co.z) if ax == 1 else (co.x, co.y))[1] / sz
+        bm.to_mesh(me); bm.free()
+        if me.uv_layers.get('UVMap'): me.uv_layers.active = me.uv_layers['UVMap']
+    print('export_prep: textured materials', len(boxmats))
+
 # ======================= SAVE / EXPORT =======================
 for o in bpy.data.objects: o.select_set(False)
 base = os.path.join(OUTD, f'samarkand-base3d-{REV}')
@@ -459,6 +497,12 @@ if DO_RENDER:
     VIEWS = [('aerial', (30, -7, 21), (6, 17.5, 0), 28, [], -1.3),
              ('domes_street', (24, 6, 9), (6, 20, 3.5), 24, [], -1.3),
              ('dome_inside', (8.9, 9.6, 1.0), (6.0, 12.7, 4.6), 14, [], 0.9),
+             ('booths', (6.4, 17.2, 1.2), (8.6, 24.5, 0.6), 20, [], 1.3),
+             ('corridor', (11.0, 16.8, 0.95), (7.0, 16.8, 1.0), 17, [], -0.4),
+             ('tents', (7.2, 30.2, 1.3), (3.0, 34.0, 0.3), 18, [], 0.6),
+             ('mangal', (7.4, 11.4, 1.3), (10.6, 6.0, 0.5), 18, [], 0.9),
+             ('bukhara', (5.0, 30.5, 1.4), (6.1, 35.3, 0.8), 20, [], 0.6),
+             ('aivan', (3.0, 16.0, 1.2), (1.0, 23.5, 0.6), 18, [], 0.9),
              ('aerial_cutaway', (28, -5, 19), (5.5, 18, 0), 28, ['Roof_skin'], -1.3),
              ('street', (17.5, 9.0, 0.4), (6.0, 18.5, 0.9), 22, [], -1.3),
              ('alley_north', (7.3, 17.0, 1.15), (5.0, 30.0, 0.9), 20, [], 0.4)]
@@ -471,8 +515,9 @@ if DO_RENDER:
         bl.render(os.path.join(OUTD, f'samarkand-base3d-{REV}-{name}.png'), W, H, S)
 
 # ======================= EXPORT (flat colours) =======================
-flatten_materials()
-bpy.ops.export_scene.gltf(filepath=base + '.glb', export_format='GLB', export_apply=True, export_yup=True)
+export_prep(); flatten_materials()
+try: bpy.ops.export_scene.gltf(filepath=base + '.glb', export_format='GLB', export_apply=True, export_yup=True, export_image_format='JPEG', export_image_quality=78)
+except TypeError: bpy.ops.export_scene.gltf(filepath=base + '.glb', export_format='GLB', export_apply=True, export_yup=True)
 bpy.ops.export_scene.fbx(filepath=base + '.fbx', apply_unit_scale=True, axis_forward='-Z', axis_up='Y', mesh_smooth_type='FACE')
 bpy.ops.wm.obj_export(filepath=base + '.obj', forward_axis='NEGATIVE_Z', up_axis='Y', export_materials=True)
 print('saved', base, len(bpy.data.objects), 'objects')

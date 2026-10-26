@@ -33,7 +33,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 <div id="stage"></div>
 <div id="status">Загружаю модель…</div>
-<header class="bar"><h1>SAMARKAND</h1><span>Крытая терраса · 3D-модель R12 · купола · 171 место</span></header>
+<header class="bar"><h1>SAMARKAND</h1><span>Крытая терраса · 3D-модель R12 · детализация · 171 место</span></header>
 <nav class="dock" aria-label="Управление моделью">
   <div class="row" id="views"><span class="lbl">Вид</span>
     <button class="view" data-v="overview" aria-pressed="true">Сверху</button>
@@ -44,6 +44,9 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     <button class="view" data-v="domes">Купола</button>
     <button class="view" data-v="underdome">Под куполом</button>
     <button class="view" data-v="bukhara">Бухарский купол</button>
+    <button class="view" data-v="corridor">Коридор</button>
+    <button class="view" data-v="booths">Кабинки</button>
+    <button class="view" data-v="mangal">Мангал</button>
   </div>
   <div class="row" id="layers"><span class="lbl">Слои</span>
     <button data-l="skin" aria-pressed="true">Кровля</button>
@@ -84,14 +87,15 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     street: [P(17.5, 9, 0.4), P(6, 18.5, 0.9)], aivan: [P(3.0, 15.8, 1.6), P(1.2, 27, 0.6)],
     tapchan: [P(7.4, 27.4, 1.6), P(3.5, 33.5, 0.4)],
     domes: [P(24, 6, 9), P(6, 20, 3.5)], underdome: [P(8.9, 9.6, 1.0), P(6, 12.7, 4.6)],
-    bukhara: [P(4.9, 29.6, 2.8), P(6.1, 35.3, 1.1)]
+    bukhara: [P(5.0, 30.4, 1.6), P(6.1, 35.3, 0.9)],
+    corridor: [P(11.0, 16.8, 0.95), P(7.0, 16.8, 1.0)], booths: [P(6.4, 17.2, 1.2), P(8.6, 24.5, 0.6)], mangal: [P(7.4, 11.4, 1.3), P(10.6, 6.0, 0.5)]
   };
   const groups = { skin: [], domes: [], structure: [], furniture: [], planting: [], building: [] };
   const rules = [
     ['skin', /^roof_panel/], ['domes', /^dome_/], ['structure', /^(roof_beam|purlin|facade_ledger|column_|gutter|court_gutter)/],
     ['planting', /^(chinar_canopy|chinar_branch|pomegranate|plumeria|areca|banana|herbs|jasmine|planter_shrubs|bougainvillea)/],
     ['building', /^(building_hall|parapet|facade_|slab_F2|balcony_rail)/],
-    ['furniture', /^(table|chair|bar_stool|abench|atable|bench|btable|sofa|otable|tapchan|kurpacha|pouf|ltable)/]
+    ['furniture', /^(chairs_carved|tables_tableware|booth_tableware|table|chair|bar_stool|abench|atable|bench|btable|sofa|otable|tapchan|kurpacha|pouf|ltable)/]
   ];
   function setView(v) {
     const [p, t] = VIEWS[v];
