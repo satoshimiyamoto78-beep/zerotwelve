@@ -109,7 +109,7 @@ The owner said the R8 aivan (10 two-tops in a line on a banquette) felt odd and 
 - Web viewer: https://claude.ai/artifact/7NGDiBpaXwuSr9gytuvAtm
 - Coordinates: metres, origin axis 6 × A'. The README lists levels and collections.
 
-## Layout R10 (2026-10-27, current)
+## Layout R10 (2026-10-27)
 Owner markup on the 3D cutaway changed the north zone.
 - **Kept:** one tapchan (y 28550–30750).
 - **Removed:** the planting bed and the second tapchan.
@@ -127,3 +127,22 @@ Owner markup on the 3D cutaway changed the north zone.
   - a plaque RU/EN/VN.
 
   Themes, from the street entrance northward: Sogdiana · Sasanids · Samanids · Khorezm · Timurids · Shahrisabz · Margilan · Pamir · Bukhara. Budget about 30 M VND per booth (economy 22 M); the estimate R10 total becomes about 4.07 bn VND.
+
+## Layout R11 (2026-10-28, current)
+Owner review of R10: mangal narrower and longer, aryk looked skewed, vitrine jammed in the corner, check the staff passage at the kids zone. Script `samarkand/site/tools/layout_r11.py`.
+- **Mangal kitchen** 3.3 × 5.8 m (x 9000–12300, y 3200–9000), a linear show line.
+  - East hot line from south to north: kazan Ø800 (gas), mangal 2.0 m, copper tandoor Ø900 next to the pass. The tandoor is the show piece seen from the plaza and the corridor exit.
+  - West side: firewood show wall 300 (facing the room) + cold prep 650 with under-counter fridges. Cook aisle 1250.
+  - South end: hand wash, pot sink and bins right inside the staff door (900, west wall, y 3900–4800).
+  - North end: pass 3.15 m with heat lamps and glass; waiter pickup gap to the plaza tables is 1.57 m.
+  - Staff lane 1.2 m on the west (x 7800–9000) joins the staff door, the pass and the service route along y 5250.
+  - Plaza rows moved to cy 11500 / 13800.
+- **Aryk** straight on the hauz axis (x 6070), 0.3 × 5.75 m; it springs from under the vitrine plinth. Stone bridges at both tent entries.
+- **Tents** narrowed to 3.0 × 2.75 m (8 seats each).
+- **Khiva gate**: posts at x 4500–4750 and 7415–7665. A slim vitrine 600 × 450 stands on the axis as the central pier, leaving two passes of 1.02 / 1.05 m. This is a placeholder until the owner chooses the stand format (see below).
+- **Kids zone / back passage.** The kids corner is fenced (h 900, gate from the passage) at x −7100…−150, y 150–2600 (17 m²). A 1.45 m clear staff/guest passage runs along the hall glazing (y 2650–4100) from the terrace to the back: exterior stair, WCs, back door, kitchen and rear parking. Beyond axis 5 the route follows the DWG and must be checked on site.
+- Totals: 175 seats. Estimate R11 ≈ 4.09 bn VND (economy ≈ 3.52 bn).
+- **Owner references 2026-10-28.**
+  - Stand: a round rotunda vitrine (lattice drum with hanging objects, display boxes, podium Ø ~2 m, ring canopy).
+  - Tree: a ring of carved plywood panels with coloured acrylic around a stepped round seat, plus a geometric floor.
+  - A Ø ≥1.8 m rotunda does not fit at the aryk head while the 9th booth (Bukhara) stays, because the strip between the tents and the booths is only 2.9 m. The decision is pending with the owner.
