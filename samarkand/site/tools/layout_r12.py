@@ -115,7 +115,7 @@ add('sinkbins', R(9300, BY0, 11000, BY0 + 600), 'SMK-R12-BBQ')
 add('woodstack', R(BX0, 4900, BX0 + 300, 8350), 'SMK-R12-BBQ')
 add('prep', R(BX0 + 300, 4900, BX0 + 950, 8150), 'SMK-R12-BBQ')
 add('pass', R(BX0, 8350, 12150, BY1), 'SMK-R12-BBQ')
-add('glass', R(BX0, BY1, 12150, BY1 + 40), 'SMK-R12-BBQ')
+add('glass', R(BX0, BY1 - 40, 12150, BY1), 'SMK-R12-BBQ')
 HOOD = R(11100, 3250, 12250, 7950); add('hood', HOOD, 'SMK-R12-BBQ')
 STAFF_DOOR = (3900, 4800)                     # 900 door in the west wall, opens onto the staff lane
 add('storage', Polygon([(BX0, ys(BX0) + 150), (11000, ys(11000) + 150), (11000, BY0 - 50), (BX0, BY0 - 50)]), 'SMK-R12-BBQ')
@@ -226,7 +226,7 @@ for c in ((3900, 36950), (8900, 36500)): PL.append(('banana', *c, 450))   # gree
 for yy in range(4100, 8300, 700): PL.append(('herb', xb(yy) - 450, yy, 220))
 for yy in (15250, 18350): PL.append(('jas', xb(yy) - 400, yy, 260))
 # TWO MAJLIS TENTS side by side along the ramp (owner markup R9): 3.2 x 2.8 m each, U-sofa, open to the east, 8 guests
-TENTS = [(1450, 30950, 4050, 33700), (1450, 33850, 4050, 36650)]
+TENTS = [(1450, 31000, 4050, 33700), (1450, 33850, 4050, 36650)]
 for TX0, TY0, TX1, TY1 in TENTS:
     add('tentroof', R(TX0 - 50, TY0 - 50, TX1 + 50, TY1 + 50), 'SMK-R12-TENT')
     add('carpet', R(TX0 + 650, TY0 + 650, TX1 - 100, TY1 - 650), 'SMK-R12-TENT')
@@ -253,7 +253,7 @@ ARYK = R(HZC[0] - AW / 2, 30200, HZC[0] + AW / 2, ROTC[1] - ROTR); add('aryk', A
 BRIDGE_Y = [(TENTS[0][1] + TENTS[0][3]) / 2]
 for yc in BRIDGE_Y: add('bridge', R(HZC[0] - 300, yc - 450, HZC[0] + 300, yc + 450), 'SMK-R12-TREE')
 # KHIVA GATE at the north entrance from the parking: carved elm posts + beam, bells, lanterns
-GATE = (4350, 8450)                           # inner faces of the posts: west post at the tent corner, east post at the planter
+GATE = (4400, 8450)                           # inner faces of the posts: west post at the tent corner, east post at the planter
 for x0_ in (GATE[0] - 250, GATE[1]): add('gatepost', R(x0_, 36300, x0_ + 250, 36550), 'SMK-R12-DECO')
 for c in ((4900, 36425), (7900, 36425)): add('lantern', C(*c, 150, 20), 'SMK-R12-DECO')
 

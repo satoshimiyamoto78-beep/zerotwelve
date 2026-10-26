@@ -62,7 +62,12 @@ def new_obj(name, bm, mats, cname):
     o = bpy.data.objects.new(name, me); coll(cname).objects.link(o); return o
 def _prism(bm, pts, z0, z1, mi=0, top_mi=None):
     if len(pts) < 3: return
-    if pts[0] == pts[-1]: pts = pts[:-1]
+    q = []
+    for p in pts:
+        if not q or abs(p[0] - q[-1][0]) + abs(p[1] - q[-1][1]) > 1e-5: q.append(p)
+    pts = q
+    if len(pts) > 1 and abs(pts[0][0] - pts[-1][0]) + abs(pts[0][1] - pts[-1][1]) < 1e-5: pts = pts[:-1]
+    if len(pts) < 3: return
     a = [bm.verts.new((x, y, z0)) for x, y in pts]; b = [bm.verts.new((x, y, z1)) for x, y in pts]
     try:
         f = bm.faces.new(list(reversed(a))); f.material_index = mi
@@ -149,9 +154,17 @@ boxes('facade_mullions', mull, m['bronze'], 'Building')
 boxes('slab_F2_balcony', [(0.0, 4.1, 3.85, 1.5, 32.1, 4.2), (-0.3, 4.1, 7.45, 0.3, 37.1, 7.8)], m['plaster_l'], 'Building')
 boxes('balcony_rail', [(1.45, 4.1, 4.2, 1.5, 32.1, 5.2), (1.4, 4.1, 5.15, 1.5, 32.1, 5.22)], m['bronze'], 'Building')
 # ======================= TERRACE FLOORS =======================
-prism('terrace_floor', D['floor'], -1.45, TER, m['floor'], 'Floors')
-prism('alley_girih', D['alley'], TER, TER + 0.012, m['girih'], 'Floors')
-prism('kids_rubber', D['kids'], -1.45, TER + 0.03, m['rubber'], 'Floors')
+if 'inlays' in D:                                       # inlays sit flush in the slab (the main floor has them cut out)
+    IN = D['inlays']
+    prism('terrace_floor', D['floor_main'], -1.45, TER, m['floor'], 'Floors')
+    prism('alley_girih', IN['alley'], -1.45, TER, m['girih'], 'Floors'); prism('kids_rubber', IN['kids'], -1.45, TER, m['rubber'], 'Floors')
+    prism('bbq_floor_slate', IN['bbq'], -1.45, TER, m['slate'], 'Floors'); prism('medallion_mosaic', IN['medallion'], -1.45, TER, m['majolica'], 'Floors')
+    prism('aryk_channel', IN['aryk'], -1.45, TER - 0.08, m['majolica'], 'Fountain'); prism('aryk_water', IN['aryk'], TER - 0.08, TER - 0.03, m['water'], 'Fountain')
+    prism('hauz_rim', D['hauz_ring'], TER, TER + 0.45, m['majolica'], 'Fountain')
+else:
+    prism('terrace_floor', D['floor'], -1.45, TER, m['floor'], 'Floors')
+    prism('alley_girih', D['alley'], TER, TER + 0.012, m['girih'], 'Floors')
+    prism('kids_rubber', D['kids'], -1.45, TER + 0.03, m['rubber'], 'Floors')
 prism('aivan_deck', D['plat'], TER, 0.0, m['deck'], 'Floors')
 # planter band: retaining wall to the sidewalk, soil top
 prism('planter_band', D['planter'], -1.45, TER + 0.2, m['concrete'], 'Street_facade')
@@ -196,7 +209,11 @@ HT = {  # kind: (z0, z1, material, collection)   heights above the item's own fl
 }
 counter = {}
 DETAIL = os.environ.get('DETAIL', '1') == '1'
-SKIP = {'chair', 'lantern', 'screen', 'bportal', 'drum', 'rbox', 'woodstack', 'tandoor', 'kazan'} if DETAIL else set()
+SKIP = {'chair', 'lantern', 'screen', 'bportal', 'drum', 'rbox', 'woodstack', 'tandoor', 'kazan', 'table', 'bench', 'btable', 'rug', 'pole', 'gatepost',
+        'flamp', 'medallion', 'bbqfloor', 'aryk', 'hauzborder'} if DETAIL else set()
+if DETAIL:                                              # things that rest on something else start on its top
+    HT_FIX = {'otable': (0.015, 0.465), 'tapchantable': (0.47, 0.78), 'bridge': (0.06, 0.2)}
+else: HT_FIX = {}
 for it in D['items']:
     k = it['kind']
     if k in SKIP: continue
@@ -250,6 +267,7 @@ for it in D['items']:
         continue
     if k not in HT: continue
     z0, z1, mn, cn = HT[k]
+    if k in HT_FIX: z0, z1 = HT_FIX[k]
     for r in it['poly']:
         if z0 == 'S': prism(k, [r], SID, SID + z1, m[mn], cn); continue
         base = 0.0 if on_plat(r) else TER
@@ -257,7 +275,7 @@ for it in D['items']:
         if not (DETAIL and k == 'hood'): prism(k, [r], base + z0, base + z1, m[mn] if mn in m else mat(mn), cn)
         if k in ('btable', 'atable'):
             cx, cy = cen(r); boxes(k + '_leg', [(cx - .05, cy - .05, base, cx + .05, cy + .05, base + 0.72)], m['bronze'], cn)
-        if k == 'tapchan':
+        if k == 'tapchan' and not DETAIL:
             x0, y0, x1, y1 = bbox(r); boxes('tapchan_rail', [(x0, y0, base + 0.45, x1, y0 + 0.05, base + 0.75), (x0, y1 - 0.05, base + 0.45, x1, y1, base + 0.75), (x0, y0, base + 0.45, x0 + 0.05, y1, base + 0.75)], m['walnut'], cn)
         if k == 'firebowl':
             cx, cy = cen(r); cylinder('fire', cx, cy, base + 0.4, base + 0.75, 0.22, m['fire'], 'Lights', n=12, r2=0.02)
@@ -281,7 +299,7 @@ for it in D['items']:
         boxes(it['kind'], st, m['oak'], 'Aivan')
     if it['kind'] == 'ramp':
         x0, y0, x1, y1 = bbox(it['poly'][0])
-        bm = bmesh.new(); vs = [bm.verts.new(v) for v in ((x0, y0, 0), (x1, y0, 0), (x1, y1, TER), (x0, y1, TER), (x0, y0, TER - 0.1), (x1, y0, TER - 0.1), (x1, y1, TER - 0.1), (x0, y1, TER - 0.1))]
+        bm = bmesh.new(); vs = [bm.verts.new(v) for v in ((x0, y0, 0), (x1, y0, 0), (x1, y1, TER + 0.005), (x0, y1, TER + 0.005), (x0, y0, TER), (x1, y0, TER), (x1, y1, TER), (x0, y1, TER))]   # wedge resting on the slab
         for f in ((0, 1, 2, 3), (7, 6, 5, 4), (0, 4, 5, 1), (1, 5, 6, 2), (2, 6, 7, 3), (3, 7, 4, 0)): bm.faces.new([vs[i] for i in f])
         bmesh.ops.recalc_face_normals(bm, faces=bm.faces); new_obj('ramp_1_12', bm, [m['concrete']], 'Aivan')
 
@@ -307,9 +325,9 @@ rr = random.Random(7)
 for i, (x, y) in enumerate(D['trees']):
     cylinder(f'chinar_trunk_{i}', x, y, TER, 6.4, 0.32, m['bark'], 'Trees', n=16, r2=0.2)
     for a in [k * 1.257 for k in range(5)]: cylinder(f'chinar_branch_{i}', x + 0.5 * math.cos(a), y + 0.5 * math.sin(a), 5.6, 6.6, 0.1, m['bark'], 'Trees', n=6, r2=0.06)
-    rc = 2.6 if i == 1 else 2.0
-    pts = [(x + rc * math.cos(a) * rr.uniform(.75, 1), y + rc * math.sin(a) * rr.uniform(.75, 1), 6.7 + rr.uniform(-.2, .5), rr.uniform(1.2, 1.7)) for a in [k * 0.785 for k in range(8)]]
-    pts.append((x, y, 7.6, 1.9)); blob(f'chinar_canopy_{i}', pts, m['leaf'], 'Trees')
+    rc, zc, r0_, r1_ = ((2.0, 7.2, 1.1, 1.5) if i == 0 else (1.6, 6.6, 0.95, 1.25))
+    pts = [(x + rc * math.cos(a) * rr.uniform(.85, 1), y + rc * math.sin(a) * rr.uniform(.85, 1), zc + rr.uniform(0.0, .3), rr.uniform(r0_, r1_)) for a in [k * 0.785 for k in range(8)]]
+    pts.append((x, y, zc + 0.9, r1_ + 0.3)); blob(f'chinar_canopy_{i}', pts, m['leaf'], 'Trees')
 for sp, x, y, r in D['plants']:
     zb = TER + (0.22 if sp in ('pom', 'plum', 'jas', 'herb') and x > 8 else 0.0)
     if sp == 'pom':
@@ -368,53 +386,78 @@ for x, y in D['cols']:
     if y < 0.6 and x < 0: continue
     zt = top(x) - 0.55
     boxes('column_steel', [(x - 0.075, y - 0.075, TER, x + 0.075, y + 0.075, zt)], m['bronze'], 'Roof_structure')
-    boxes('column_wood_clad', [(x - 0.15, y - 0.15, TER + 0.2, x + 0.15, y + 0.15, TER + 2.4)], m['oak'], 'Roof_structure')
+    z0c, z1c = TER + 0.2, TER + 2.4                     # wood sleeve: 4 boards around the steel column, flush, no overlap
+    boxes('column_wood_clad', [(x - 0.15, y - 0.15, z0c, x + 0.15, y - 0.075, z1c), (x - 0.15, y + 0.075, z0c, x + 0.15, y + 0.15, z1c),
+                               (x - 0.15, y - 0.075, z0c, x - 0.075, y + 0.075, z1c), (x + 0.075, y - 0.075, z0c, x + 0.15, y + 0.075, z1c)], m['oak'], 'Roof_structure')
 gut = [(xb(y) - 0.3, y, top(xb(y)) - 0.28, xb(y), y + 0.6, top(xb(y)) - 0.02) for y in [0.6 * k for k in range(-2, 63)]]
 boxes('gutter_street', gut, m['bronze'], 'Roof_structure')
 # ======================= ROOF DOMES (R12) =======================
 ZR = D.get('dome_ring', 3.9); SEG = 48
-def dz(d, rho): return ZR + d['rise'] * math.sqrt(max(0.0, 1 - (rho / d['r']) ** 2))
-def revolve(name, d, prof, mm, cname):
-    """surface of revolution: prof = [(rho, z), ...] from inside out; closed ring of SEG segments"""
-    bm = bmesh.new(); cx, cy = d['c']; rows = []
-    for rho, z in prof: rows.append([bm.verts.new((cx + rho * math.cos(2 * math.pi * j / SEG), cy + rho * math.sin(2 * math.pi * j / SEG), z)) for j in range(SEG)])
-    for a, b in zip(rows[:-1], rows[1:]):
-        for j in range(SEG): bm.faces.new((a[j], a[(j + 1) % SEG], b[(j + 1) % SEG], b[j]))
-    bmesh.ops.recalc_face_normals(bm, faces=bm.faces); return new_obj(name, bm, [mm], cname)
-for d in D.get('domes', []):
-    r0 = d['oc'] or d['lantern']; N = 16; T_ = 0.12
-    rhos = [r0 + (d['r'] - r0) * (1 - math.cos(math.pi / 2 * k / N)) for k in range(N + 1)]   # denser near the ring
-    outer = [(rh + T_ * 0.4, dz(d, rh) + T_) for rh in rhos]; inner = [(rh, dz(d, rh)) for rh in rhos]
-    revolve(f'dome_shell_{d["key"]}', d, outer, m['dometile'], 'Domes')
-    revolve(f'dome_inner_{d["key"]}', d, inner[::-1], m['gaj'], 'Domes')
-    revolve(f'dome_lip_{d["key"]}', d, [inner[0], outer[0]], m['dometile'], 'Domes')            # oculus / lantern edge
-    # drum: from the sloping roof skin up to the level ring (jali band), ring beam on top
-    bm = bmesh.new(); cx, cy = d['c']; rows = []
-    for rad in (d['r'] + T_ * 0.4, d['r']):
-        lo = [bm.verts.new((cx + rad * math.cos(2 * math.pi * j / SEG), cy + rad * math.sin(2 * math.pi * j / SEG), top(cx + rad * math.cos(2 * math.pi * j / SEG)) - 0.05)) for j in range(SEG)]
-        hi = [bm.verts.new((cx + rad * math.cos(2 * math.pi * j / SEG), cy + rad * math.sin(2 * math.pi * j / SEG), ZR + T_)) for j in range(SEG)]
-        for j in range(SEG): bm.faces.new((lo[j], lo[(j + 1) % SEG], hi[(j + 1) % SEG], hi[j]))
-    bmesh.ops.recalc_face_normals(bm, faces=bm.faces); new_obj(f'dome_drum_{d["key"]}', bm, [m['jali']], 'Domes')
-    revolve(f'dome_ring_{d["key"]}', d, [(d['r'] - 0.15, ZR - 0.25), (d['r'] - 0.15, ZR), (d['r'] + 0.2, ZR), (d['r'] + 0.2, ZR - 0.25)], m['bronze'], 'Domes')
-    # 12 ribs under the inner surface
+T_ = 0.12
+def dome_solid(d):
+    """closed shell between the inner ellipsoid (r, rise) and the outer one (r+T, rise+T); flat annulus at the springing
+    level ZR (the drum's top), conical lip at the oculus / lantern ring"""
+    cx, cy = d['c']; r, h = d['r'], d['rise']; r0 = d['oc'] or d['lantern']
+    th0 = math.asin(min(0.999, r0 / r)); N = 18
+    ths = [th0 + (math.pi / 2 - th0) * k / N for k in range(N + 1)]
     bm = bmesh.new()
+    def ringv(rad, z): return [bm.verts.new((cx + rad * math.cos(2 * math.pi * j / SEG), cy + rad * math.sin(2 * math.pi * j / SEG), z)) for j in range(SEG)]
+    O = [ringv((r + T_) * math.sin(t), ZR + (h + T_) * math.cos(t)) for t in ths]; I = [ringv(r * math.sin(t), ZR + h * math.cos(t)) for t in ths]
+    fo, fi, fl = [], [], []
+    for a, b in zip(O[:-1], O[1:]):
+        for j in range(SEG): fo.append(bm.faces.new((a[j], a[(j + 1) % SEG], b[(j + 1) % SEG], b[j])))
+    for a, b in zip(I[:-1], I[1:]):
+        for j in range(SEG): fi.append(bm.faces.new((b[j], b[(j + 1) % SEG], a[(j + 1) % SEG], a[j])))
+    for a, b in ((I[0], O[0]), (O[-1], I[-1])):
+        for j in range(SEG): fl.append(bm.faces.new((a[j], a[(j + 1) % SEG], b[(j + 1) % SEG], b[j])))
+    for f in fi: f.material_index = 1
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    for f in bm.faces: f.smooth = True
+    o = new_obj(f'dome_shell_{d["key"]}', bm, [m['dometile'], m['gaj']], 'Domes')
+    return o, ths
+for d in D.get('domes', []):
+    cx, cy = d['c']; r0 = d['oc'] or d['lantern']
+    o, ths = dome_solid(d)
+    # drum: closed annulus r .. r+T from the sloping roof skin up to ZR (the shell's flat base)
+    bm = bmesh.new(); rows = []
+    for rad in (d['r'], d['r'] + T_):
+        rows.append(([bm.verts.new((cx + rad * math.cos(2 * math.pi * j / SEG), cy + rad * math.sin(2 * math.pi * j / SEG), top(cx + rad * math.cos(2 * math.pi * j / SEG)))) for j in range(SEG)],
+                     [bm.verts.new((cx + rad * math.cos(2 * math.pi * j / SEG), cy + rad * math.sin(2 * math.pi * j / SEG), ZR)) for j in range(SEG)]))
+    (il, ih), (ol, oh) = rows
+    for j in range(SEG):
+        k = (j + 1) % SEG
+        bm.faces.new((ol[j], ol[k], oh[k], oh[j])); bm.faces.new((ih[j], ih[k], il[k], il[j]))
+        bm.faces.new((oh[j], oh[k], ih[k], ih[j])); bm.faces.new((il[j], il[k], ol[k], ol[j]))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces); new_obj(f'dome_drum_{d["key"]}', bm, [m['jali']], 'Domes')
+    # ring beam inside the drum, under the springing line
+    bm = bmesh.new(); prof = [(d['r'] - 0.15, ZR - 0.25), (d['r'], ZR - 0.25), (d['r'], ZR), (d['r'] - 0.15, ZR)]
+    rg = [[bm.verts.new((cx + rr_ * math.cos(2 * math.pi * j / SEG), cy + rr_ * math.sin(2 * math.pi * j / SEG), zz)) for j in range(SEG)] for rr_, zz in prof]
+    for a, b in zip(rg, rg[1:] + rg[:1]):
+        for j in range(SEG): bm.faces.new((a[j], a[(j + 1) % SEG], b[(j + 1) % SEG], b[j]))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces); new_obj(f'dome_ring_{d["key"]}', bm, [m['bronze']], 'Domes')
+    # 12 ribs: closed 100 x 120 bars following the inner surface, stopping above the ring beam
+    bm = bmesh.new(); r, h = d['r'], d['rise']
     for k in range(12):
         a = 2 * math.pi * k / 12; ca, sa = math.cos(a), math.sin(a); tx_, ty_ = -sa * 0.05, ca * 0.05; st_ = []
-        for rh in rhos:
-            z = dz(d, rh); px, py = cx + (rh - 0.01) * ca, cy + (rh - 0.01) * sa
-            st_.append([bm.verts.new((px + tx_, py + ty_, z)), bm.verts.new((px - tx_, py - ty_, z)), bm.verts.new((px - tx_, py - ty_, z - 0.14)), bm.verts.new((px + tx_, py + ty_, z - 0.14))])
+        for t in ths:
+            if ZR + h * math.cos(t) < ZR + 0.14: break
+            rho, z = r * math.sin(t), ZR + h * math.cos(t)
+            nr = Vector((math.sin(t) / r, 0, math.cos(t) / h)).normalized()          # outward normal in the (rho, z) plane
+            ri, zi = rho - nr.x * 0.12, z - nr.z * 0.12
+            st_.append([bm.verts.new((cx + rho * ca + tx_, cy + rho * sa + ty_, z)), bm.verts.new((cx + rho * ca - tx_, cy + rho * sa - ty_, z)),
+                        bm.verts.new((cx + ri * ca - tx_, cy + ri * sa - ty_, zi)), bm.verts.new((cx + ri * ca + tx_, cy + ri * sa + ty_, zi))])
+        if len(st_) < 2: continue
         for p_, q_ in zip(st_[:-1], st_[1:]):
             for i in range(4): bm.faces.new((p_[i], p_[(i + 1) % 4], q_[(i + 1) % 4], q_[i]))
+        bm.faces.new(list(reversed(st_[0]))); bm.faces.new(st_[-1])
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces); new_obj(f'dome_ribs_{d["key"]}', bm, [m['gaj']], 'Domes')
     if d['lantern']:
-        lz = dz(d, 0)
-        cylinder(f'dome_lantern_{d["key"]}', cx, cy, lz - 0.05, lz + 0.5, d['lantern'], m['glass'], 'Domes', n=16)
-        cylinder(f'dome_lantern_cap_{d["key"]}', cx, cy, lz + 0.5, lz + 0.85, d['lantern'] + 0.1, m['dometile'], 'Domes', n=16, r2=0.05)
-    else:
-        revolve(f'dome_oculus_ring_{d["key"]}', d, [(r0 - 0.05, dz(d, r0) - 0.1), (r0 - 0.05, dz(d, r0) + T_ + 0.05), (r0 + 0.15, dz(d, r0) + T_ + 0.05)], m['bronze'], 'Domes')
+        ro = (d['r'] + T_) * math.sin(ths[0]); lz = ZR + (d['rise'] + T_) * math.cos(ths[0])
+        cylinder(f'dome_lantern_{d["key"]}', cx, cy, lz, lz + 0.5, ro, m['glass'], 'Domes', n=SEG)
+        cylinder(f'dome_lantern_cap_{d["key"]}', cx, cy, lz + 0.5, lz + 0.85, ro + 0.1, m['dometile'], 'Domes', n=SEG, r2=0.05)
 
 # ======================= BUKHARA DOME (rotunda vitrine + shop) + KHIVA GATE =======================
-if 'rot' in D:
+if 'rot' in D and not DETAIL:
     rx, ry, rr_ = D['rot']
     for k in range(8):                                                   # hanging plates / lanterns in the lattice drum
         a = 2 * math.pi * k / 8; cylinder('rot_plate', rx + 0.3 * math.cos(a), ry + 0.3 * math.sin(a), TER + 1.2 + 0.25 * (k % 3), TER + 1.23 + 0.25 * (k % 3), 0.12, m['majolica'], 'Bukhara_dome', n=12)
@@ -472,6 +515,7 @@ def export_prep():
     for o in bpy.data.objects:
         if o.type != 'MESH': continue
         me = o.data; names = [ms.name if ms else '' for ms in me.materials]
+        if me.get('kit'): continue                                        # kit assets carry their own UVs
         if not any(n in boxmats for n in names): continue
         bm = bmesh.new(); bm.from_mesh(me)
         uv = bm.loops.layers.uv.get('UVMap') or bm.loops.layers.uv.new('UVMap')

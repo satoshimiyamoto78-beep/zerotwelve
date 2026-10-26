@@ -18,6 +18,8 @@ def rings(g):
         if p.is_empty or p.geom_type != 'Polygon': continue
         out.append([[round(x * k, 4), round(y * k, 4)] for x, y in p.exterior.coords[:-1]])
     return out
+def solid_pieces(g):
+    return [q for q in holefree(g) if q.area > 1e3]
 def holefree(g):
     """split polygons with holes into hole-free pieces (cuts along y through every hole)"""
     res = []
@@ -57,6 +59,17 @@ D = dict(
     domes=[dict(key=d['key'], c=[d['c'][0] * k, d['c'][1] * k], r=d['r'] * k, oc=d['oc'] * k, rise=d['rise'] * k, lantern=d.get('lantern', 0) * k) for d in G['DOMES']],
     dome_ring=G['DOME_RING'] * k, rot=[G['ROTC'][0] * k, G['ROTC'][1] * k, G['ROTR'] * k], gate=[G['GATE'][0] * k, G['GATE'][1] * k],
     staff=rings(G['STAFF']),
+    **(lambda: (lambda FL, MED, BBQ, AR, HB, HZ: dict(
+        floor_main=[rings(q)[0] for q in solid_pieces(FL.difference(unary_union([G['ALLEY'], G['KIDS'], BBQ, MED, AR])))],
+        inlays=dict(alley=[rings(q)[0] for q in solid_pieces(G['ALLEY'])], kids=[rings(q)[0] for q in solid_pieces(G['KIDS'])], bbq=rings(BBQ),
+                    medallion=[rings(q)[0] for q in solid_pieces(MED.difference(AR))], aryk=rings(AR)),
+        hauz_ring=[rings(q)[0] for q in solid_pieces(HB.difference(HZ))], hauz_rim_y1=HB.bounds[3] * k))(
+        G['FLOOR'], [it['geom'] for it in G['items'] if it['kind'] == 'medallion'][0], G['R'](G['BX0'], G['BY0'], G['BX1'], G['BY1']), G['ARYK'],
+        [it['geom'] for it in G['items'] if it['kind'] == 'hauzborder'][0], [it['geom'] for it in G['items'] if it['kind'] == 'hauz'][0]))(),
+    booths=[[a * k, b * k, xw * k, G['xi'](b) * k, th] for (a, b, xw), th in zip(G['booth_west'], ['sogd', 'sasan', 'saman', 'khorezm', 'timur', 'shahr', 'margil', 'pamir'])],
+    booth_names=G['T']['ru']['themes'][:8] if 'T' in G else [],
+    bbq=[v * k for v in (G['BX0'], G['BX1'], G['BY0'], G['BY1'])], tap=[y * k for y in G['TAP']], hzc=[G['HZC'][0] * k, G['HZC'][1] * k],
+    ab=dict(y=[y * k for y in G['AB_Y']], x1=G['AB_X1'] * k),
     rail=[[[a[0] * k, a[1] * k], [b[0] * k, b[1] * k]] for a, b in G['RAIL']],
     drive=rings(Polygon([(0, G['yr'](0)), (xb(36500), G['yr'](xb(36500))), tuple(G['Z2']), (0, G['V']['Z1_NW'][1])])),
     seats=G['total'],
