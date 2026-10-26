@@ -76,3 +76,22 @@ The owner said: legal setback is not a concern, so the roof goes to the street. 
 - Seats: 164, plus about 35 on the street benches.
 - Roof (`roof_r7.py`): beams on the column lines 4100/9850/15300/18300/21350/25600/29100/32100/36300. Steel ledger under the balcony slab (top of skin +3.750), 5% fall to the street (eave about +3.16). PU 50 mm sandwich panel with a wood-look underside, box gutter along the street, downpipes in the columns. About 9.8 t of steel, 419.5 m² of roof.
 - Estimate (`samarkand/estimate/samarkand-estimate-R7.xlsx`, live formulas): about 3.67 bn VND (~141k USD at 26,000) including 10% contingency. The all-economy option is about 3.2 bn VND. Prices are Da Nang 2026 indicative, ±20%.
+
+## Layout R8 (2026-10-26, current)
+Owner asked for 2-tops mixed with 4-tops ("rows of 4 on both sides, 2-tops in the middle"), 170–175 seats, a beautiful fountain and plants. Script: `layout_r8.py`, with `roof_r8.py` and `estimate_r8.py`.
+- Aivan: 10 two-tops on the banquette at an 800 pitch (they push together into 4–8). 20 seats.
+- Dining north: rows of 4-tops at y 19300 / 23900, with a middle row of three 2-tops at y 21600.
+- Dining south: row 1 is 4 + 2 + 4, row 2 is 4 + 4.
+- Lounge: 12 poufs.
+- Totals: 14 two-tops, 12 four-tops, 38 modules, **171 seats** (+~35 on the street benches).
+- Hauz: Ø1.2 m incl. a 200 mm majolica rim at h 450 that people can sit on, centred at (6070, 29650). Under it sits an 8-point star mosaic Ø2.6 m, with 8 uplights, lotus and a jet.
+- Planting:
+  - Pomegranate (entrance planter ×2, pot by the bar).
+  - Plumeria ×5 in the street planter.
+  - Bougainvillea on the bench backs.
+  - Jasmine at the portal.
+  - Areca in the lounge.
+  - Banana / Strelitzia green wall behind the tapchans and tent.
+  - Herb bed (reyhan, mint, basil) by the mangal.
+  - Lotus in the hauz.
+- Estimate R8: about 3.78 bn VND (~145k USD) including 10% contingency; all-economy option about 3.29 bn.
