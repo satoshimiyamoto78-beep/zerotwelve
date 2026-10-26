@@ -128,7 +128,7 @@ Owner markup on the 3D cutaway changed the north zone.
 
   Themes, from the street entrance northward: Sogdiana · Sasanids · Samanids · Khorezm · Timurids · Shahrisabz · Margilan · Pamir · Bukhara. Budget about 30 M VND per booth (economy 22 M); the estimate R10 total becomes about 4.07 bn VND.
 
-## Layout R11 (2026-10-28, current)
+## Layout R11 (2026-10-28)
 Owner review of R10: mangal narrower and longer, aryk looked skewed, vitrine jammed in the corner, check the staff passage at the kids zone. Script `samarkand/site/tools/layout_r11.py`.
 - **Mangal kitchen** 3.3 × 5.8 m (x 9000–12300, y 3200–9000), a linear show line.
   - East hot line from south to north: kazan Ø800 (gas), mangal 2.0 m, copper tandoor Ø900 next to the pass. The tandoor is the show piece seen from the plaza and the corridor exit.
@@ -146,3 +146,22 @@ Owner review of R10: mangal narrower and longer, aryk looked skewed, vitrine jam
   - Stand: a round rotunda vitrine (lattice drum with hanging objects, display boxes, podium Ø ~2 m, ring canopy).
   - Tree: a ring of carved plywood panels with coloured acrylic around a stepped round seat, plus a geometric floor.
   - A Ø ≥1.8 m rotunda does not fit at the aryk head while the 9th booth (Bukhara) stays, because the strip between the tents and the booths is only 2.9 m. The decision is pending with the owner.
+
+## Layout R12 (2026-10-28, current): Bukhara dome + roof domes
+Script `samarkand/site/tools/layout_r12.py`.
+- **Owner chose variant A.** The 9th booth ("Bukhara") is removed, leaving 8 themed booths. In its place, at the head of the aryk, stands the **"Bukhara trade dome"** rotunda Ø1.8 m at x 6070, y 35300. It is the museum vitrine and the "Samarkand shop" in one, so the shop-location question is closed. The rotunda has:
+  - a podium;
+  - a lattice drum Ø0.9 with hanging plates and textiles;
+  - 4 lit display boxes;
+  - a ring canopy Ø2.3 at h 2.6.
+  - Passes around it are 1.07 m (tent side) and 1.84 m (street side).
+  - The tents are narrowed to 2.6 × 2.75 m (8 seats each). The Khiva gate is 4.1 m wide (posts at x 4100–4350 and 8450–8700). The aryk ends under the rotunda podium, with one bridge at tent 1.
+- **Owner request: roof domes** (reference: a brick dome with an oculus, muqarnas squinches).
+  - Over the chinars: south dome Ø6.0 with an open oculus Ø3.6; north dome Ø4.4 with an oculus Ø2.4, sized to stay clear of the F2 overhang at x < 4.4, y > 28.66. The crowns grow out through the oculi and rain falls into the tree pits.
+  - Between them: a closed dome Ø5.6 with a glazed lantern Ø1.0, centred at (6.0, 19.9).
+  - Construction: level springing ring at +3.900; a drum with jali windows from the sloping roof skin up to the ring (light + hot-air exhaust); 12 bent ribs 100×50; GRC "brick-girih" panels inside; terracotta skin on a membrane outside. Rise: S 1.8, C 1.7, N 1.3. Tops: S oculus rim about +5.34, C about +6.3, N about +5.0.
+  - The F2 balcony projects only 1.5 m, so there is no clash.
+  - Roof beams are trimmed at the dome rings. Panel roof area falls to 378 m².
+- Totals: 171 seats. Estimate R12 ≈ 4.80 bn VND, of which the domes are ≈ 0.6 bn. The all-economy option is ≈ 3.99 bn, with a timber girih lattice inside the domes and a copper-look standing-seam skin.
+- 3D model R12 with the domes is in the viewer artifact https://claude.ai/artifact/7NGDiBpaXwuSr9gytuvAtm (views "Купола", "Под куполом", "Бухарский купол").
+- Still to decide: the ring of carved coloured-glass panels around the south chinar (owner reference: a ring of panels around a tree with a stepped round seat).
