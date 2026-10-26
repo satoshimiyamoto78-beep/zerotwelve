@@ -95,3 +95,10 @@ Owner asked for 2-tops mixed with 4-tops ("rows of 4 on both sides, 2-tops in th
   - Herb bed (reyhan, mint, basil) by the mangal.
   - Lotus in the hauz.
 - Estimate R8: about 3.78 bn VND (~145k USD) including 10% contingency; all-economy option about 3.29 bn.
+
+## Layout R9 (2026-10-27, current)
+The owner said the R8 aivan (10 two-tops in a line on a banquette) felt odd and inconvenient.
+- R9 replaces it with **4 sedir booths for 6**, perpendicular to the hall wall in front of the closed doors: carved partition 60, bench 470, table 1600×700 with a lantern, bench 470, giving a 1820 module. Booths at y 18550 / 20370 / 22190 / 25950. Aisle 1.4 m along the rail.
+- Totals: **175 seats**. Tables: 4 two-tops, 12 four-tops (each splits into 2 × 2), and 4 booths for 6.
+- Fixed the sheet header, which showed "R6" (now uses REV).
+- Estimate R9: about 3.78 bn VND including 10% contingency.
