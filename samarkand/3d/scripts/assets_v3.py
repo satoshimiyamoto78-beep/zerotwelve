@@ -76,13 +76,7 @@ def a_booth_open(theme):
         for zz, wdt, tie in ((2.066, 0.46, 0), (1.6, 0.24, 0), (1.05, 0.07, 1), (0.55, 0.15, 0), (0.01, 0.24, 0)):
             rows.append([(0.035 + 0.025 * math.sin(c / 8 * math.pi * 3 + (0.6 if tie else 0)), ya + sg * (0.05 + wdt * c / 8 if tie else wdt * c / 8), zz) for c in range(9)])
         rows.reverse(); b.sheet(rows, X['velvet'], 0.006, picture=False)
-    # benches with seat pads + theme back cushions against the niche walls, table on a pedestal
-    for y0, y1, yb0, yb1 in ((TH, TH + 0.5, TH, TH + 0.14), (Wd - 0.5, Wd, Wd - 0.14, Wd)):
-        b.box(0.08, y0, 0, 1.14, y1, 0.38, W, 0.003)
-        b.box(0.1, y0 + 0.01, 0.38, 1.12, y1 - 0.01, 0.45, cm, 0.015)
-        b.box(0.12, yb0, 0.45, 1.1, yb1, 0.9, cm, 0.02)
-    b.box(0.15, 0.73, 0.72, 1.05, 1.43, 0.76, m['oak'], 0.004)
-    b.box(0.4, 0.88, 0, 0.8, 1.28, 0.025, m['bronze'], 0.003); b.box(0.56, 1.04, 0.025, 0.64, 1.12, 0.72, m['bronze'], 0.002)
+    # banquettes + tiled table are separate assets (assets_v4), placed by detail_r12
     return b.mesh(f'Booth_open_{theme}')
 
 # ---------------------------------------------------------------- VASES + THEME OBJECTS

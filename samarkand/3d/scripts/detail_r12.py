@@ -5,7 +5,7 @@ Zone-unique pieces (corridor ceiling, firewood wall, hood, portal arch...) are b
 import os, math, random
 HERE = os.path.dirname(os.path.abspath(__file__))
 TEX2 = os.path.join(HERE, 'tex2')
-for f_ in ('kit.py', 'assets_r12.py', 'assets_v3.py'): exec(open(os.path.join(HERE, f_)).read())
+for f_ in ('kit.py', 'assets_r12.py', 'assets_v3.py', 'assets_v4.py'): exec(open(os.path.join(HERE, f_)).read())
 RD = random.Random(42)
 
 # ---------------- materials ----------------
@@ -36,6 +36,23 @@ X.update(kilim2=bl2.fabric('kilim2_f', os.path.join(TEX2, 'kilim2.png'), 0.6), s
          rattan=tex2('rattan_t', 'rattan.png', 0.25, rough=0.7, bump=0.5), domeglaze=tex2('domeglaze_t', 'domeglaze.png', 0.9, rough=0.15, bump=0.2, coat=0.6),
          rishtan=uvmat('rishtan_uv', 'rishtan.png', rough=0.12, sheen=0.0), plov=tex2('plov_t', 'plov.png', 0.12, rough=0.6), bread=uvmat('bread_uv', 'bread.png', rough=0.7, sheen=0.0))
 for th in ('sogd', 'sasan', 'saman', 'khorezm', 'timur', 'shahr', 'margil', 'pamir'): X['ep_' + th] = uvmat('ep_' + th + '_uv', 'ep_' + th + '.png', rough=0.5, sheen=0.1)
+def pierced_mat(name):
+    """pierced brass: metallic brass from pierced.png, the holes glow warm (pierced_mask -> emission)"""
+    if name in bl._mats: return bl._mats[name]
+    mm = tex2(name, 'pierced.png', 0.22, rough=0.3, bump=0.4); N = mm.node_tree.nodes; Lk = mm.node_tree.links; b = N['Principled BSDF']
+    b.inputs['Metallic'].default_value = 0.9
+    src_c = [l for l in Lk if l.to_socket == b.inputs['Base Color']][0].from_socket                 # deeper antique brass
+    mul = N.new('ShaderNodeMix'); mul.data_type = 'RGBA'; mul.blend_type = 'MULTIPLY'; mul.inputs['Factor'].default_value = 1.0
+    mul.inputs['B'].default_value = (0.62, 0.42, 0.18, 1); Lk.new(src_c, mul.inputs['A']); Lk.new(mul.outputs['Result'], b.inputs['Base Color'])
+    it = N.new('ShaderNodeTexImage'); it.image = bpy.data.images.load(os.path.join(TEX2, 'pierced_mask.png'), check_existing=True); it.projection = 'BOX'; it.projection_blend = 0.15
+    src = [l.from_socket for l in Lk if l.to_node.type == 'TEX_IMAGE' and l.to_socket.name == 'Vector'][0]; Lk.new(src, it.inputs['Vector'])
+    b.inputs['Emission Color'].default_value = (1.0, 0.6, 0.28, 1)
+    mth = N.new('ShaderNodeMath'); mth.operation = 'MULTIPLY'; mth.inputs[1].default_value = 14.0
+    Lk.new(it.outputs['Color'], mth.inputs[0]); Lk.new(mth.outputs[0], b.inputs['Emission Strength'])
+    return mm
+for c_ in ('terra', 'navy', 'emerald', 'wine'): X['velvet_' + c_] = bl2.fabric('velvet_%s_f' % c_, os.path.join(TEX2, 'velvet_%s.png' % c_), 0.5)
+for c_ in ('linen', 'denim', 'silk_ikat', 'white', 'olive', 'black', 'rose', 'sand', 'terra'): X['cloth_' + c_] = bl2.fabric('cloth_%s_f' % c_, os.path.join(TEX2, 'cloth_%s.png' % c_), 0.35)
+X.update(zellige=tex2('zellige_t', 'zellige.png', 0.32, rough=0.12, bump=0.35, coat=0.6), pierced=pierced_mat('pierced_t'))
 for mm, sz in ((m['ikat'], 0.5), (m['suzani'], 0.6), (m['jali'], 0.5), (m['majolica'], 0.6), (m['band'], 1.2), (m['girih'], 0.6), (m['floor'], 1.2),
                (X['carved'], 0.9), (X['kilim'], 0.6), (X['kilim2'], 0.6), (X['suzani2'], 0.9), (X['quilt'], 0.5), (X['plaster'], 1.5), (X['rattan'], 0.25), (X['domeglaze'], 0.9), (X['plov'], 0.12), (X['velvet'], 0.8), (X['tent'], 1.2), (X['copper'], 0.5), (X['gajbrick'], 1.4), (X['dometile'], 0.7)):
     register_uv_size(mm, sz)
@@ -53,34 +70,36 @@ for k, (y0, y1, xw, xe, th) in enumerate(BO):
     inst(a_booth_open(th), f'Booth{k + 1}_{th}', (xw, y0, TER), 0, 'Booths')
     inst(a_monument(th), f'Booth{k + 1}_object_{th}', (xw + 1.21, y0 + (TH + 2.0) / 2, TER + 0.78), math.pi / 2, 'Booths')
     for i_, yy in enumerate((y0 + TH + 0.12, y0 + 2.0 - 0.12)): inst(a_vase((k + 2 * i_ + 1) % 4), f'Booth{k + 1}_parapet_vase_{i_ + 1}', (xw + 1.21, yy, TER + 0.78), 0, 'Booths')
+    pil = CUSH[th]
+    inst(a_banquette(1.03, 0.5, 'emerald', pil), f'Booth{k + 1}_banquette_S', (xw + 0.08, y0 + TH, TER), 0.0, 'Booths')
+    inst(a_banquette(1.03, 0.5, 'emerald', pil), f'Booth{k + 1}_banquette_N', (xw + 1.11, y0 + 2.0, TER), math.pi, 'Booths')
+    inst(a_tiletable(1.3), f'Booth{k + 1}_table', (xw + 0.6, y0 + 1.08, TER), 0.0, 'Booths')
     inst(a_boothset(), f'Booth{k + 1}_tableset', (xw, y0, TER), 0, 'Booths')
-    inst(a_rattan(), f'Booth{k + 1}_rattan', (xw + 0.6, y0 + 1.08, TER + 1.62), 0, 'Booths')
-    inst(a_rod(), 'Rod_booth', (xw + 0.6, y0 + 1.08, TER + 1.92), 0, 'Booths', scale=(1, 1, round(2.165 - 1.92, 4)))
-    if k in (0, 2, 3, 5, 7):                                                    # guests on the benches
-        for j_, (px, sy) in enumerate(((0.38, 1), (0.85, 1), (0.38, -1), (0.85, -1))[: (4 if k % 2 == 0 else 2)]):
-            yb = y0 + (TH + 0.25 if sy > 0 else 2.0 - 0.25)
-            PEOPLE.append(('bench', (xw + px, yb - sy * 0.03, TER), 0.0 if sy > 0 else math.pi, k * 4 + j_))
+    inst(a_pendant_cluster(3, (0.1, 0.2, 0.15)), f'Booth{k + 1}_pendant', (xw + 0.6, y0 + 1.08, TER + 2.165), 0, 'Booths')
+    if k == 2:                                                                  # one couple in a booth
+        PEOPLE.append(('chair', (xw + 0.55, y0 + TH + 0.36, TER - 0.08), 0.0, ('silk_ikat', 'sand', 2, 1, True, 'short')))
+        PEOPLE.append(('chair', (xw + 0.6, y0 + 2.0 - 0.36, TER - 0.08), math.pi, ('linen', 'denim', 0, 0, False, 'long')))
 y0, y1, xw, xe, th = BO[-1]
 inst(a_nichewall(1.3, th, None), f'Booth{len(BO)}_wall_N', (xw, y1, TER), 0, 'Booths')
 inst(a_vase(1), f'Booth{len(BO)}_niche_vase_N', (xw + 1.3 - 0.4, y1 + TH / 2, TER + 1.0), 0, 'Booths')
 
 # =============== 2. CHAIRS / TABLES / TABLEWARE (one object per piece) ===============
 ROT_BACK = {'s': 0.0, 'n': math.pi, 'e': math.pi / 2, 'w': -math.pi / 2}
-nc = nt = 0
+nc = nt = 0; CHAIRS = []
 for it in D['items']:
     if it['kind'] == 'chair':
         for r in it['poly']:
             base = 0.0 if on_plat(r) else TER; x0, y0, x1, y1 = bbox(r)
-            nc += 1; inst(a_chair(), f'Chair_{nc:03d}', ((x0 + x1) / 2, (y0 + y1) / 2, base), ROT_BACK[it.get('back', 'n')], 'Furniture')
-            if RD.random() < 0.42: PEOPLE.append(('sit', ((x0 + x1) / 2, (y0 + y1) / 2, base), ROT_BACK[it.get('back', 'n')], nc))
+            nc += 1; inst(a_tubchair('terra' if (y0 < 15.3 or nc % 5) else 'navy'), f'Chair_{nc:03d}', ((x0 + x1) / 2, (y0 + y1) / 2, base), ROT_BACK[it.get('back', 'n')], 'Furniture')
+            CHAIRS.append(((x0 + x1) / 2, (y0 + y1) / 2, base, ROT_BACK[it.get('back', 'n')]))
     if it['kind'] == 'table':
         for r in it['poly']:
             base = 0.0 if on_plat(r) else TER; x0, y0, x1, y1 = bbox(r); n = it.get('mods', 1); rz = 0.0 if it.get('axis', 'x') == 'x' else math.pi / 2
             nt += 1; c_ = ((x0 + x1) / 2, (y0 + y1) / 2, base)
-            inst(a_table(n), f'Table_{nt:03d}', c_, rz, 'Furniture'); inst(a_tableset(n), f'Tableset_{nt:03d}', c_, rz, 'Furniture')
+            inst(a_tiletable(n), f'Table_{nt:03d}', c_, rz, 'Furniture'); inst(a_tableset(n), f'Tableset_{nt:03d}', c_, rz, 'Furniture')
 
 # =============== 3. AIVAN SEDIR BOOTHS: back cushions, wall carpets, tableware, lanterns ===============
-scr = [bbox(it['poly'][0]) for it in D['items'] if it['kind'] == 'ascreen']
+scr = [bbox(it['poly'][0]) for it in D['items'] if it['kind'] == 'ascreen']; AIV = []
 ats = [bbox(it['poly'][0]) for it in D['items'] if it['kind'] == 'atable']
 for i_, it in enumerate([it for it in D['items'] if it['kind'] == 'abench']):
     x0, y0, x1, y1 = bbox(it['poly'][0]); cy = (y0 + y1) / 2
@@ -88,12 +107,15 @@ for i_, it in enumerate([it for it in D['items'] if it['kind'] == 'abench']):
     yo = y0 if away < 0 else y1                                        # outer edge of the bench
     for sx0, sy0, sx1, sy1 in scr:                                     # a screen over the bench edge: start at its face
         if sx0 < x1 and sx1 > x0 and sy0 - 1e-6 <= yo <= sy1 + 1e-6: yo = sy1 if away < 0 else sy0
-    yc = yo - away * 0.07; cx0, cx1 = x0 + 0.17, x1 - 0.05                 # clear of the wall carpet (x 0.14..0.152)
-    inst(a_cushion(round(cx1 - cx0, 3), 0.14, 0.42, 'kilim'), f'Aivan_backcushion_{i_ + 1}', ((cx0 + cx1) / 2, yc, 0.45), 0, 'Aivan')
+    yf = y1 if away < 0 else y0; bx0 = 0.16; Lb = round(x1 - bx0, 3); Db = round(abs(yf - yo), 3)       # clear of the wall carpet (x 0.14..0.152)
+    if away < 0: inst(a_banquette(Lb, Db, 'navy', 'kilim2'), f'Aivan_banquette_{i_ + 1}', (bx0, yo, 0.0), 0.0, 'Aivan')
+    else: inst(a_banquette(Lb, Db, 'navy', 'kilim2'), f'Aivan_banquette_{i_ + 1}', (x1, yo, 0.0), math.pi, 'Aivan')
+    AIV.append((bx0, x1, yo, away))
 for i_, (x0, y0, x1, y1) in enumerate(ats):
     cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
     mb = MB(); mb.picture_box(0.0, -0.85, 0.75, 0.012, 0.85, 2.25, X['carpet%d' % (1 + i_ % 4)], '+x'); mb.box(0.0, -0.9, 2.25, 0.03, 0.9, 2.29, m['brass'])
     inst(mb.mesh(f'Aivan_wallcarpet_{i_ + 1}'), f'Aivan_wallcarpet_{i_ + 1}', (0.14, cy, 0.0), 0, 'Aivan')
+    inst(a_tiletable(round((x1 - x0) / 0.7, 4)), f'Aivan_table_{i_ + 1}', (cx, cy, 0.0), 0.0, 'Aivan')
     inst(a_tableset(2), f'Aivan_tableset_{i_ + 1}', (cx, cy, 0.0), 0.0 if (x1 - x0) >= (y1 - y0) else math.pi / 2, 'Aivan')
     lantern_at(cx, cy, 1.95, 1.0, ceil_at(cx, cy), 'Aivan', f'Aivan_lantern_{i_ + 1}')
 
@@ -123,10 +145,13 @@ print('flying carpets', nfc)
 for i_, (tx0, ty0, tx1, ty1) in enumerate(D.get('tents', [D['tent']])):
     w, d = round(tx1 - tx0, 3), round(ty1 - ty0, 3)
     inst(a_tent(w, d), f'Tent_{i_ + 1}', (tx0, ty0, TER), 0, 'Tapchans_tent')
-    sofa_top = TER + 0.42
-    inst(a_cushion(0.13, round(d - 0.02, 3), 0.42, 'kilim'), f'Tent{i_ + 1}_cushion_W', (tx0 + 0.065, ty0 + d / 2, sofa_top), 0, 'Tapchans_tent')
-    for yy, nm in ((ty0 + 0.065, 'S'), (ty1 - 0.065, 'N')):
-        inst(a_cushion(round(w - 0.25 - 0.65 - 0.02, 3), 0.13, 0.42, 'kilim'), f'Tent{i_ + 1}_cushion_{nm}', (tx0 + 0.65 + (w - 0.25 - 0.65) / 2, yy, sofa_top), 0, 'Tapchans_tent')
+    for j_, it in enumerate([it for it in D['items'] if it['kind'] == 'sofa']):
+        sx0, sy0, sx1, sy1 = bbox(it['poly'][0])
+        if not (tx0 - 0.05 <= sx0 and sx1 <= tx1 + 0.05 and ty0 - 0.05 <= sy0 and sy1 <= ty1 + 0.05): continue
+        dW, dS, dN = sx0 - tx0, sy0 - ty0, ty1 - sy1
+        if dW < 0.05 and (sy1 - sy0) > (sx1 - sx0): inst(a_banquette(round(sy1 - sy0, 3), round(sx1 - sx0, 3), 'wine', 'kilim2'), f'Tent{i_ + 1}_banquette_W', (sx0, sy1, TER), -math.pi / 2, 'Tapchans_tent')
+        elif dS < dN: inst(a_banquette(round(sx1 - sx0, 3), round(sy1 - sy0, 3), 'wine', 'kilim2'), f'Tent{i_ + 1}_banquette_S', (sx0, sy0, TER), 0.0, 'Tapchans_tent')
+        else: inst(a_banquette(round(sx1 - sx0, 3), round(sy1 - sy0, 3), 'wine', 'kilim2'), f'Tent{i_ + 1}_banquette_N', (sx1, sy1, TER), math.pi, 'Tapchans_tent')
     for it in D['items']:
         if it['kind'] == 'otable':
             ox, oy = cen(it['poly'][0])
@@ -285,10 +310,12 @@ for ya, yb in zip(TY[:-1], TY[1:]):
 for ya, yb in ((4.1, 9.85),):
     for x0, x1 in ((1.0, 3.4), (3.6, 6.0), (6.2, 8.6)):
         ceiling_carpet(x0, x1, ya + 0.1, yb - 0.1, int(x0))
-        for dx, dy in ((0.0, -0.9), (0.35, 0.0), (-0.3, 0.9)):                                          # rattan pendant clusters
-            cx, cy = (x0 + x1) / 2 + dx, (ya + yb) / 2 + dy; zt = top(cx) - 0.25 - 0.012
-            inst(a_rattan(), 'Rattan_pendant', (cx, cy, zt - 0.95 - 0.3 * abs(dy)), 0, 'Lights')
-            inst(a_rod(), 'Rod_rattan', (cx, cy, zt - 0.95 - 0.3 * abs(dy) + 0.3), 0, 'Lights', scale=(1, 1, round(0.95 + 0.3 * abs(dy) - 0.3, 4)))
+        for dx, dy in ((0.0, -1.2), (0.0, 1.2)):                                                        # pierced-brass pendant clusters
+            cx, cy = (x0 + x1) / 2 + dx, (ya + yb) / 2 + dy
+            rows_x = [x0 + (x1 - x0) * c / 6 for c in range(7)]; c_ = max(i for i, xx in enumerate(rows_x) if xx <= cx)
+            xa_, xb_ = rows_x[c_], rows_x[min(6, c_ + 1)]; t_ = (cx - xa_) / max(1e-6, xb_ - xa_)
+            zt = (1 - t_) * (top(xa_) - 0.25) + t_ * (top(xb_) - 0.25) - 0.012                         # exact underside of the faceted carpet
+            inst(a_pendant_cluster(3), 'Pendant_cluster', (cx, cy, zt - 0.013), 0, 'Lights')          # canopy r 0.24 under a 5 % slope
 print('ceiling carpets', ncc)
 
 # =============== 13b. VELVET SWAGS over the plaza (beam to beam), CARPET FRIEZE over the aivan ===============
@@ -305,18 +332,44 @@ for i_, (ya, yb) in enumerate(((15.62, 21.9), (21.9, 28.4))):
     mb = MB(); mb.sheet([bot_row, top_row], X['carpet3'], 0.008, picture=True)
     inst(mb.mesh(f'Carpet_frieze_{i_ + 1}'), f'Carpet_frieze_{i_ + 1}', (0, 0, 0), 0, 'Aivan')
 
-# =============== 13c. PEOPLE ===============
-for i_, (pose, (x, y, z), rz, seed) in enumerate(PEOPLE):
-    r_ = random.Random(seed * 7 + 3); fem = r_.random() < 0.5
-    inst(a_person(pose, r_.randrange(4), r_.randrange(8), r_.randrange(8), r_.randrange(3), fem), f'Person_{i_ + 1:03d}', (x, y, z), rz, 'People')
-STAND = [((7.3, 14.4, TER), math.pi * 0.6, 1), ((8.3, 14.6, TER), -math.pi / 2, 2), ((10.6, 9.4, TER), math.pi, 3), ((10.0, 9.4, TER), math.pi, 4),
-         ((7.0, 34.6, TER), math.pi / 2, 5), ((5.2, 35.6, TER), -math.pi / 3, 6), ((6.9, 33.8, TER), math.pi, 7), ((5.6, 33.3, TER), math.pi / 2, 8),
-         ((5.0, 21.8, TER), 0.0, 9), ((8.1, 6.2, TER), math.pi / 2, 10), ((xb(17.0) + 1.4, 17.2, SID), math.pi / 2, 11), ((xb(16.0) + 2.6, 14.5, SID), 0.0, 12),
-         ((xb(23.0) + 2.2, 23.0, SID), math.pi, 13), ((xb(30.0) + 1.8, 29.5, SID), 0.0, 14)]
-for i_, ((x, y, z), rz, seed) in enumerate(STAND):
-    r_ = random.Random(seed * 13 + 1); fem = r_.random() < 0.5
-    inst(a_person('stand', r_.randrange(4), r_.randrange(8), r_.randrange(8), r_.randrange(3), fem), f'Person_stand_{i_ + 1:02d}', (x, y, z), rz, 'People')
-print('people', len(PEOPLE) + len(STAND))
+# =============== 13c. PEOPLE — a few well-built figures, placed on real seats ===============
+def chair_near(px, py, side):
+    """the chair nearest to (px, py) whose sitter faces +Y (side 's') or -Y (side 'n')"""
+    want = 0.0 if side == 's' else math.pi
+    return min([c for c in CHAIRS if abs(c[3] - want) < 1e-6], key=lambda c: math.hypot(c[0] - px, c[1] - py))
+for (px, py), side, look in (((3.0, 6.8), 's', ('white', 'olive', 1, 0, False, 'short')), ((3.0, 6.8), 'n', ('rose', 'black', 2, 1, True, 'long')),
+                             ((7.0, 22.5), 's', ('terra', 'sand', 0, 2, True, 'long')), ((7.0, 22.5), 'n', ('black', 'linen', 3, 0, False, 'short'))):
+    x, y, z, rz = chair_near(px, py, side); PEOPLE.append(('chair', (x, y, z), rz, look))
+if AIV:
+    bx0, bx1, yo, away = AIV[1]
+    PEOPLE.append(('chair', ((bx0 + bx1) / 2 + 0.15, yo - away * 0.36, -0.08), 0.0 if away < 0 else math.pi, ('olive', 'denim', 1, 0, False, 'long')))
+if 'rot' in D:
+    rx, ry, _ = D['rot']; PEOPLE.append(('stand', (rx + 1.25, ry - 0.9, TER), math.pi * 0.72, ('linen', 'denim', 2, 2, False, 'long')))
+PEOPLE.append(('stand', (D['hzc'][0] + 1.6, D['hzc'][1] - 1.2, TER), math.pi * 0.85, ('silk_ikat', 'sand', 0, 1, True, 'short')))
+for i_, (pose, (x, y, z), rz, look) in enumerate(PEOPLE):
+    inst(a_human(pose, *look), f'Person_{i_ + 1:02d}', (x, y, z), rz, 'People')
+print('people', len(PEOPLE))
+
+# =============== 14. KHIVA ARCADE: the aivan / hall divider (carved columns, tiled parapets, jali + myrtle bays, arched heads) ===============
+XA = 3.18; ZB = 3.02; ZC = ZB - 0.24                                  # arcade axis on the aivan edge, beam top under the roof beams, capital top
+COLY = [15.45, 18.17] + [18.17 + (24.18 - 18.17) * k / 5 for k in range(1, 5)] + [24.18, 25.92, 27.13, 28.34]
+for i_, y in enumerate(COLY): inst(a_khiva_column(ZC), f'Khiva_column_{i_ + 1:02d}', (XA, y, 0.0), 0, 'Aivan')
+nb_ = 0
+for i_, (ya, yb) in enumerate(zip(COLY[:-1], COLY[1:])):
+    L = round(yb - ya, 4); opening = (ya, yb) in ((15.45, 18.17), (24.18, 25.92))
+    inst(a_arcade_head(L, 0.0, opening), f'Khiva_arcade_head_{i_ + 1:02d}', (XA, ya, ZC), 0, 'Aivan')
+    if not opening:
+        nb_ += 1; inst(a_arcade_bay(L, 'jali' if nb_ % 2 else 'plant'), f'Khiva_arcade_bay_{i_ + 1:02d}', (XA, ya, 0.0), 0, 'Aivan')
+mb = MB(); mb.box(XA - 0.13, COLY[0] - 0.15, ZC, XA + 0.13, COLY[-1] + 0.15, ZB, m['walnut'], 0.006)
+mb.box(XA + 0.13, COLY[0] - 0.15, ZC + 0.04, XA + 0.15, COLY[-1] + 0.15, ZB - 0.04, X['carved'])                    # carved frieze, hall face
+for zz in (ZC + 0.02, ZB - 0.04): mb.box(XA + 0.15, COLY[0] - 0.15, zz, XA + 0.16, COLY[-1] + 0.15, zz + 0.02, m['brass'])
+inst(mb.mesh('Khiva_arcade_beam'), 'Khiva_arcade_beam', (0, 0, 0), 0, 'Aivan')
+
+# =============== 15. DOME CHANDELIER under the central dome's lantern ===============
+for d in D['domes']:
+    if not d['lantern']: continue
+    th0 = math.asin(min(0.999, d['lantern'] / d['r'])); lz = ZR + (d['rise'] + T_) * math.cos(th0) + 0.5      # underside of the lantern cap
+    inst(a_chandelier(round(lz - (TER + 3.65), 3), 0.95, 12), f'Chandelier_dome_{d["key"]}', (d['c'][0], d['c'][1], lz), 0, 'Lights')
 
 # =============== 13. DOME FINISHES ===============
 for o in bpy.data.objects:

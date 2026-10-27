@@ -53,3 +53,14 @@ What the pass adds:
 - **Tableware:** Rishtan plates, plov on a lagan, lepyoshka, teapot, tea glasses.
 - **Context and people:** 55 people, a beach promenade with palms, sand and sea.
 - **Renders:** 16 client renders in `samarkand/renders/R12-client/`.
+
+## R12 v4 — quality pass (soft furniture, people, chandeliers, Khiva arcade)
+- New asset module `scripts/assets_v4.py`: velvet tub armchairs, walnut tables with zellige inlay and turned legs,
+  channel-tufted banquettes (booths emerald, aivan navy, tents wine; kilim pillows), pierced-brass lanterns, pendant
+  clusters and a 12-lantern dome chandelier, Khiva carved column arcade between the aivan and the hall
+  (tiled parapets, backlit jali / myrtle bays, carved arch heads, carved frieze beam), 9 skin-modifier people.
+- Upholstery and figures are Catmull-Clark subdivided closed shells (still watertight).
+- Audit (`qa/qa-R12-v4.json`): 518/518 clean mesh datablocks, 0 open / non-manifold edges, 0 flipped, 0 inside-out,
+  0 penetrations, 0 floating; 750 objects, 439k triangles.
+- Web viewer: model split into `m/model.json` + base64 geometry `m/geo1.txt`, `m/geo2.txt` + `m/tex*.jpg`.
+  OBJ export dropped from the repo (81 MB); use GLB / FBX / BLEND.

@@ -133,8 +133,8 @@ def xb(y): return xb0 + (xb1 - xb0) * (y - yb0) / (yb1 - yb0)
 boxes('ground', [(-45, -25, -1.6, 32.0, 75, -1.45)], m['ground'], 'Context')
 boxes('road', [(14.9, -25, -1.32, 32, 75, -1.30)], m['asphalt'], 'Context')
 boxes('beach_promenade', [(32.0, -25, -1.45, 36.0, 75, -1.17)], m['sidewalk'], 'Context')
-boxes('beach_sand', [(36.0, -60, -1.9, 95.0, 110, -1.5)], mat('sand', (0.86, 0.78, 0.62), rough=0.95, noise_var=0.04), 'Context')
-boxes('sea', [(95.0, -400, -2.2, 900.0, 500, -1.6)], mat('sea', (0.03, 0.22, 0.30), rough=0.04, coat=1.0), 'Context')
+boxes('beach_sand', [(36.0, -60, -1.9, 95.0, 110, -1.5)], mat('sand', (0.72, 0.63, 0.48), rough=0.95, noise_var=0.04), 'Context')
+boxes('sea', [(95.0, -400, -2.2, 900.0, 500, -1.6)], mat('sea', (0.02, 0.24, 0.32), rough=0.12, coat=0.3), 'Context')
 for yy in range(-20, 74, 9):
     cylinder('beach_palm_trunk', 34.0, yy, -1.17, 5.5, 0.16, m['bark'], 'Context', n=10, r2=0.11)
     for a_ in range(6): blob('beach_palm_leaf', [(34.0 + 1.2 * math.cos(a_) * t_, yy + 1.2 * math.sin(a_) * t_, 5.5 - 0.5 * t_ * t_, 0.28 - 0.08 * t_) for t_ in (0.3, 0.7, 1.0)], m['leaf'], 'Context', 1)
@@ -216,7 +216,7 @@ HT = {  # kind: (z0, z1, material, collection)   heights above the item's own fl
 counter = {}
 DETAIL = os.environ.get('DETAIL', '1') == '1'
 SKIP = {'chair', 'lantern', 'screen', 'bportal', 'drum', 'rbox', 'woodstack', 'tandoor', 'kazan', 'table', 'bench', 'btable', 'rug', 'pole', 'gatepost',
-        'flamp', 'medallion', 'bbqfloor', 'aryk', 'hauzborder'} if DETAIL else set()
+        'flamp', 'medallion', 'bbqfloor', 'aryk', 'hauzborder', 'abench', 'sofa', 'atable'} if DETAIL else set()
 if DETAIL:                                              # things that rest on something else start on its top
     HT_FIX = {'otable': (0.015, 0.465), 'tapchantable': (0.47, 0.78), 'bridge': (0.06, 0.2)}
 else: HT_FIX = {}
@@ -294,6 +294,7 @@ for it in D['items']:
 rails = []
 for (a, b) in D['rail']:
     (x0, y0), (x1, y1) = a, b
+    if DETAIL and abs(x0 - 3.3) < 1e-3 and abs(x1 - 3.3) < 1e-3: continue          # replaced by the Khiva arcade (detail pass)
     rails.append((min(x0, x1) - 0.025, min(y0, y1) - 0.025, 0.0, max(x0, x1) + 0.025, max(y0, y1) + 0.025, 1.0))
 boxes('aivan_rail_jali', rails, m['jali'], 'Aivan')
 for it in D['items']:
@@ -575,7 +576,9 @@ if DO_RENDER:
              ('13_tents_tapchan', (7.3, 30.1, 1.3), (2.8, 34.2), 17, 0.04, [], -0.1),
              ('14_khiva_gate', (6.9, 40.8, 0.9), (6.1, 33.0), 20, 0.12, [], -0.5),
              ('15_aerial_street', (40.0, 6.0, 20.0), (7.0, 20.0), 26, 0.0, [], -0.7),
-             ('16_aerial_sea', (30.0, 62.0, 28.0), (16.0, 14.0), 24, 0.0, [], -0.7)]
+             ('16_aerial_sea', (104.0, -2.0, 16.0), (8.0, 21.0), 40, 0.0, [], -0.9),
+             ('17_khiva_arcade', (6.2, 23.4, 1.0), (3.2, 19.6), 18, 0.12, [], -0.1),
+             ('18_dining_chairs', (5.3, 4.5, 0.75), (2.5, 7.5), 22, 0.06, [], -0.1)]
     only = os.environ.get('VIEWS')
     for name, loc, tgt, lens, shift, hide, ev in VIEWS:
         if only and not any(name.startswith(v) for v in only.split(',')): continue
