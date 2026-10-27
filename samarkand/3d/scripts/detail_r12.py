@@ -783,3 +783,4 @@ for o in bpy.data.objects:
         if ms == m.get('gaj'): o.data.materials[i_] = X['bannai']
         if ms == m.get('dometile'): o.data.materials[i_] = X['domeglaze']
 print('detail v2 ok: chairs', nc, 'tables', nt, 'lanterns', nl, 'assets', len(ASSETS))
+exec(open(os.path.join(HERE, 'detail_v82.py')).read())                    # rev. 8.2: owner review (logo, ad display, draped alley, tapchan, majlis, booth trim)

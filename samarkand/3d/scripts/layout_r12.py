@@ -145,7 +145,8 @@ def mtable(cx, cy, key, n=2, axis='x'):
                 x0 = cx + sg * (MD / 2 - 25); add('chair', R(x0, cy + m - 290, x0 + sg * 550, cy + m + 290), back=('e' if sg > 0 else 'w'), t=len(tables))
     seat(key, 2 * n)
 # dining south: row 1 = 4 + 2 + 4 (aisles 900), row 2 = 4 + 4 (west table clears the bar stools by 900+)
-for cx, n in ((3200, 2), (5150, 1), (7100, 2)): mtable(cx, 6800, 'south', n)
+# rev. 8.2 (owner): the 4-top against the bar's back cabinet is split into two 2-tops; the 4-top moves to mid-row
+for cx, n in ((2850, 1), (4200, 1), (6300, 2)): mtable(cx, 6800, 'south', n)
 for cx, n in ((4650, 2), (7100, 2)): mtable(cx, 9300, 'south', n)
 def ring(c, r0, r1, a0=0, a1=360):
     an = C(c[0], c[1], r1, 96).difference(C(c[0], c[1], r0, 96))
@@ -153,10 +154,10 @@ def ring(c, r0, r1, a0=0, a1=360):
     return an.intersection(Polygon([c] + [(c[0] + 6000 * math.cos(math.radians(a)), c[1] + 6000 * math.sin(math.radians(a))) for a in range(a0, a1 + 1, 5)]))
 add('pit', C(*TREE_S, 1000), 'SMK-R12-TREE'); add('ringbench', ring(TREE_S, 1000, 1450), 'SMK-R12-TREE'); seat('chinar_s', 10)
 # plaza tables facing the mangal pass; each pair can be pushed together into a table for 8
-PLAZA = ((11500, (8650, 10400)), (13950, (8350, 9950)))       # rev. 8: host moved away -> second row +150: 600 back to back
+PLAZA = ((11500, ((8650, 2), (10450, 1))), (13950, ((8350, 2), (10150, 1))))   # rev. 8.2: the outer (street-side) tables are 2-tops
 for cy, cxs in PLAZA:
-    for cx in cxs:
-        mtable(cx, cy, 'plaza')
+    for cx, n in cxs:
+        mtable(cx, cy, 'plaza', n)
 add('host', R(5550, 14800, 6150, 15350), 'SMK-R12-SERV')         # rev. 8: off the entrance path and 1.9 m from the plaza tables
 
 # ======================= ENTRANCE CORRIDOR (owner ref.: draped velvet tunnel) =======================
@@ -212,9 +213,10 @@ add('screen', R(booth_west[-1][2], B_Y0 + B_N * B_W, xi(B_Y0 + B_N * B_W), B_Y0 
 # south row two 4-tops with 440 between the table ends, north row one 6-top; 2.55 m clear under the karbandi dome
 # rev. 8.1 (owner): no 6-tops in the hall -- every row is a 4-top + a 2-top, 950 / 700 between the table ends so two parties
 # sit apart; 2.55 m clear under the dome, 1.25 m aisle to the hauz row, >= 1.35 m to the booth fronts
-mtable(4750, 19400, 'north', 2); mtable(6750, 19400, 'north', 1)
-mtable(4950, 23800, 'north', 2); mtable(6650, 23800, 'north', 1)        # 200 east: the west chairs stay off the aivan steps
-mtable(4650, 26900, 'north', 2); mtable(6400, 26900, 'north', 1)
+# rev. 8.2 (owner): the 2-top goes to the aivan side, the 4-top to the booth side
+mtable(4400, 19400, 'north', 1); mtable(6500, 19400, 'north', 2)
+mtable(4750, 23800, 'north', 1); mtable(6350, 23800, 'north', 2)        # 2-top held east: its chairs stay off the aivan steps
+mtable(4300, 26900, 'north', 1); mtable(6000, 26900, 'north', 2)
 # TAPCHANS 2.0 x 2.2 m for 6: kurpacha mattresses on three sides, low table 900 x 700, open to the path (east)
 TAP = (28550,)
 for y0 in TAP:
@@ -386,14 +388,14 @@ T = {
  'ru': dict(sub='Крытая терраса  ·  планировка R12 · ред. 8', cuisine='Таджикская и узбекская кухня  ·  Võ Nguyên Giáp, 254, Дананг',
             hall='ОСНОВНОЙ ЗАЛ  ·  ±0.000', drive='ЗАЕЗД 8% → ПАРКОВКА (авто, скутеры)', street='УЛ. ВÕ NGUYÊN GIÁP  ·  15 М  ·  → МОРЕ', sidewalk='ТРОТУАР',
             zones='ЗОНЫ', seats='ПОСАДКА', total='Итого мест в ресторане', key='ОБОЗНАЧЕНИЯ', erg='ЭРГОНОМИКА  ·  норма / по плану',
-            L=[('Главный вход · портал-пештак', 'проём 2,5 м, 4 ступени с тротуара'), ('Коридор-драпировка', 'бархат, ковровая дорожка, хумы, фонари'),
-               ('Аллея к залу', 'гирих, 2,5 м, хостес у выхода'), ('Айван-платформа ±0.000', '4 седир-кабинки на 6 у стены, проход 1,4 м'),
+            L=[('Главный вход · портал-пештак', 'проём 2,5 м, 4 ступени с тротуара'), ('Коридор-драпировка', 'бархатные сваги крест-накрест, ковры внахлёст, кувшины, свечи'),
+               ('Аллея к залу', 'гирих, 2,5 м, хостес у выхода'), ('Айван-платформа ±0.000', '4 седир-кабинки на 6, резные экраны, монитор 65″ к аллее'),
                ('Тематические кабинки', '8 закрытых залов: эпохи и города, шторы-порталы'), ('Столы у фонтана', 'на 4 + на 2, на месте северного чинара'),
-               ('Топчан 2,0 × 2,2 м', '6 гостей, курпачи с 3 сторон, у фонтана'), ('Два шатра-маджлиса 2,6 × 2,75 м', 'по 8 гостей, вход по мостику через арык'),
+               ('Топчан 2,0 × 2,2 м', '6 гостей, балясины, курпачи, столик на точёных ножках'), ('Два шатра-маджлиса 2,6 × 2,75 м', 'по 8 гостей, напольный маджлис, восьмигранные столики'),
                ('Фонтан-хауз и арык', 'хауз Ø1,2 м, арык 0,3 м ведёт от северного входа'), ('Северный вход · «Хивинские ворота»', 'ворота 4,1 м, Бухарский купол — витрина и лавка, пандус 1:12'),
                ('Зал север', 'ряды 4 + 2, центр под куполом свободен'), ('Бар', 'чай, самовар, кофе · 9 стульев'), ('Станция персонала', 'стеллажи, касса, вода, лёд, посуда'),
                ('Зал юг', 'ряд 4 + 2 + 4 и ряд 4 + 4'), ('Чинар под фонарём + столы у входа', 'дерево под навесом, зенитный фонарь 3 × 3 м; 4 стола у мангала'),
-               ('Мангальная 3,3 × 5,8 м', 'тандыр · мангал · казан · раздача к гостям'), ('Фото-лаунж «Очаг»', 'драпировки, ковры, огонь-чаша, 3 столика, 12 пуфов'),
+               ('Мангальная 3,3 × 5,8 м', 'тандыр · мангал · казан · раздача · вывеска SAMARKAND'), ('Фото-лаунж «Очаг»', 'драпировки, ковры, огонь-чаша, 3 столика, 12 пуфов'),
                ('Детская зона', 'у стекла зала — дети видны из зала; мягкое покрытие'), ('Уличные скамьи', 'литой бетон в стенке клумбы, майолика'),
                ('Фонтан-себиль', 'майоликовая стена, латунный носик, чаша'), ('Уличная фото-арка', 'ниша со скамьёй, подсветка, пальмы')],
             S={'platform': 'Айван: седир-кабинки (4 × 6)', 'booths': 'Тематические кабинки', 'north': 'Зал север + столы у фонтана', 'tapchans': 'Топчан',
@@ -431,14 +433,14 @@ T = {
  'en': dict(sub='Covered terrace  ·  Layout R12 · rev. 8', cuisine='Tajik & Uzbek national cuisine  ·  254 Võ Nguyên Giáp, Đà Nẵng',
             hall='MAIN HALL  ·  ±0.000', drive='DRIVEWAY 8% → PARKING (cars, scooters)', street='VÕ NGUYÊN GIÁP  ·  15 M  ·  → SEA', sidewalk='SIDEWALK',
             zones='ZONES', seats='SEATS', total='Total restaurant seats', key='KEY', erg='ERGONOMICS  ·  standard / as planned',
-            L=[('Street entrance · pishtaq portal', '2.5 m opening, 4 steps from the sidewalk'), ('Draped corridor', 'velvet swags, runner, clay jars, lanterns'),
-               ('Alley to the hall', 'girih paving, 2.5 m, host at the exit'), ('Aivan platform ±0.000', '4 sedir booths for 6 on the wall, 1.4 m aisle'),
+            L=[('Street entrance · pishtaq portal', '2.5 m opening, 4 steps from the sidewalk'), ('Draped corridor', 'crossed velvet swags, layered rugs, terracotta jars, pillar candles'),
+               ('Alley to the hall', 'girih paving, 2.5 m, host at the exit'), ('Aivan platform ±0.000', '4 sedir booths for 6, carved screens, 65" display to the alley'),
                ('Themed booths', '8 closed rooms: epochs and cities, curtained portals'), ('Tables by the fountain', 'a 4-top + a 2-top, where the north chinar stood'),
-               ('Tapchan 2.0 × 2.2 m', '6 guests, kurpacha on 3 sides, by the fountain'), ('Two majlis tents 2.6 × 2.75 m', '8 guests each, entered over a bridge across the aryk'),
+               ('Tapchan 2.0 × 2.2 m', '6 guests, balustrade, kurpacha, turned-leg table'), ('Two majlis tents 2.6 × 2.75 m', '8 guests each, floor majlis seating, octagonal tables'),
                ('Hauz fountain and aryk', 'hauz Ø1.2 m, 0.3 m aryk leads from the north entrance'), ('North entrance · "Khiva gate"', '4.1 m gate, Bukhara dome — vitrine and shop, ramp 1:12'),
                ('Dining north', 'rows of a 4-top + a 2-top, the space under the dome kept open'), ('Bar', 'tea, samovar, coffee · 9 stools'), ('Staff station', 'shelving, POS, water, ice, dishes'),
                ('Dining south', 'row 4 + 2 + 4 and row 4 + 4'), ('Chinar under the lantern + entrance tables', 'tree under the roof, 3 × 3 m skylight; 4 tables by the mangal'),
-               ('Mangal kitchen 3.3 × 5.8 m', 'tandoor · mangal · kazan · pass to guests'), ('Photo lounge "Ochag"', 'drapes, carpets, fire bowl, 3 low tables, 12 poufs'),
+               ('Mangal kitchen 3.3 × 5.8 m', 'tandoor · mangal · kazan · pass · SAMARKAND sign'), ('Photo lounge "Ochag"', 'drapes, carpets, fire bowl, 3 low tables, 12 poufs'),
                ('Kids zone', 'against the hall glazing — seen from inside; soft floor'), ('Street benches', 'cast concrete in the planter wall, majolica'),
                ('Sebil fountain', 'majolica wall, brass spout, basin'), ('Street photo arch', 'bench niche, uplight, palms')],
             S={'platform': 'Aivan: sedir booths (4 × 6)', 'booths': 'Themed booths', 'north': 'Dining north + tables by the hauz', 'tapchans': 'Tapchan',

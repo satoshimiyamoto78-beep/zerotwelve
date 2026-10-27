@@ -99,7 +99,7 @@ if PLACE_COLLS is not None:
             if any(n.startswith('Street_pishtaq') for n in (oi.name, oj.name)) and any(n.startswith(('roof_beam_y15', 'roof_beam_y18')) for n in (oi.name, oj.name)): continue   # beam ends encased in the portal pylons
             if bi.overlap(bj): pen.append([oi.name, oj.name])
     # floating: every standing piece must rest on something (a floor, deck or another piece) within 2 mm
-    HANG = ('Lantern', 'Zardevor', 'Rod', 'Flying_carpet', 'Heat_lamp', 'Corridor_niche', 'Aivan_wallcarpet', 'Corridor_velvet', 'Mangal_hood', 'Mangal_skewers',
+    HANG = ('Lantern', 'Zardevor', 'Corridor_swag', 'Mangal_signboard', 'Logo_', 'Rod', 'Flying_carpet', 'Heat_lamp', 'Corridor_niche', 'Aivan_wallcarpet', 'Corridor_velvet', 'Mangal_hood', 'Mangal_skewers',
             'Khiva_gate', 'Street_pishtaq', 'Booth', 'dome_', 'Tent_', 'Corridor_arch', 'Carpet_frieze', 'Ceiling_carpet', 'Rattan', 'Velvet_swag', 'Pendant', 'Chandelier', 'Khiva_arcade_head', 'Khiva_arcade_beam', 'Reed_fringe', 'Bar_cornice', 'Bar_drum', 'Bar_wallcarpet', 'Sconce', 'Skylight', 'Chinar_crown')
     sup = []
     for o in objs:

@@ -53,7 +53,7 @@ body.rot .bar span { display: none; }
 <div id="stage"></div><div id="dims" class="off"></div>
 <div id="status">Загружаю модель…</div>
 <div class="tools"><button id="dim-toggle" aria-pressed="false" title="Показать основные размеры">Размеры</button><button id="fs-toggle" aria-pressed="false" title="Во весь экран, горизонтально">Во весь экран</button><button id="ui-toggle" aria-pressed="false" title="Скрыть / показать панели (клавиша H)">Скрыть кнопки</button></div>
-<header class="bar"><h1>SAMARKAND</h1><span>Крытая терраса · 3D-модель R12-v8.1 · один купол-карбанди, столы только на 4 и на 2, чинар под зенитным фонарём · 161 место</span></header>
+<header class="bar"><h1>SAMARKAND</h1><span>Крытая терраса · 3D-модель R12-v8.2 · столы на 4 и на 2, драпированная аллея, топчан и маджлисы по референсам, вывеска SAMARKAND · 155 мест</span></header>
 <nav class="dock" aria-label="Управление моделью">
   <div class="row" id="views"><span class="lbl">Вид</span>
     <button class="view" data-v="overview" aria-pressed="true">Сверху</button>
@@ -117,9 +117,9 @@ body.rot .bar span { display: none; }
   const groups = { skin: [], domes: [], structure: [], furniture: [], planting: [], building: [], people: [] };
   const rules = [
     ['people', /^Person/], ['skin', /^roof_panel/], ['domes', /^dome_/], ['structure', /^(roof_beam|purlin|facade_ledger|column_|gutter|court_gutter)/],
-    ['planting', /^(Chinar_|Pomegranate|Plumeria|Areca|Banana|Herbs|Jasmine|Planter_shrub|Bougainvillea|Street_palm|chinar_canopy|chinar_branch)/],
+    ['planting', /^(Chinar_|Pomegranate|Plumeria|Areca|Banana|Herbs|Jasmine|Planter_shrub|Bougainvillea|Street_palm|chinar_canopy|chinar_branch|Aivan_shrub)/],
     ['building', /^(building_hall|parapet|facade_|slab_F2|balcony_rail|Hall_door|Lift_portal)/],
-    ['furniture', /^(Host_cabinet|Station_|Kids_|Tapchan_lowtable|Booth\d_banquette|Booth\d_table|Aivan_banquette|Aivan_table|Tent\d_banquette|Tableset|Boothset|Chair_|Table_|Tableware_|Aivan_tableware|Tent\d_tray|Tapchan_|Aivan_backcushion|Tent\d_cushion|chairs_carved|tables_tableware|booth_tableware|table|chair|bar_stool|abench|atable|bench|btable|sofa|otable|tapchan|kurpacha|pouf|ltable)/]
+    ['furniture', /^(Host_cabinet|Station_|Kids_|Tapchan_lowtable|Booth\d_banquette|Booth\d_table|Aivan_banquette|Aivan_table|Tent\d_banquette|Tent\d_majlis|Tent_octatable|Aivan_screen|Tableset|Boothset|Chair_|Table_|Tableware_|Aivan_tableware|Tent\d_tray|Tapchan_|Aivan_backcushion|Tent\d_cushion|chairs_carved|tables_tableware|booth_tableware|table|chair|bar_stool|abench|atable|bench|btable|sofa|otable|tapchan|kurpacha|pouf|ltable)/]
   ];
   function setView(v) {
     const [p, t] = VIEWS[v];

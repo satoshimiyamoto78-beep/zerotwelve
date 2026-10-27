@@ -1,24 +1,24 @@
 {
  "blend": "r12v8/samarkand-base3d-R12.blend",
- "objects": 710,
- "mesh_datablocks": 427,
+ "objects": 738,
+ "mesh_datablocks": 435,
  "totals": {
-  "boundary_edges": 0,
+  "boundary_edges": 17128,
   "nonmanifold_edges": 0,
   "wire_edges": 0,
   "loose_verts": 0,
   "zero_area_faces": 0,
   "zero_len_edges": 0,
   "flipped_edges": 0,
-  "inside_out_shells": 0,
+  "inside_out_shells": 92,
   "coincident_verts": 0,
-  "verts": 249333,
-  "faces": 292637,
-  "tris": 494094,
-  "ngons": 2373,
-  "shells": 4342
+  "verts": 255855,
+  "faces": 296649,
+  "tris": 489926,
+  "ngons": 2465,
+  "shells": 4677
  },
- "clean_meshes": 427,
+ "clean_meshes": 431,
  "unapplied_transforms": [
   "Bougainvillea",
   "Bougainvillea.001",
@@ -91,6 +91,20 @@
    }
   ],
   [
+   "Logo_subtitle_E_c",
+   {
+    "boundary_edges": 4824,
+    "inside_out_shells": 36
+   }
+  ],
+  [
+   "Logo_subtitle_W_c",
+   {
+    "boundary_edges": 4824,
+    "inside_out_shells": 30
+   }
+  ],
+  [
    "Areca_foliage",
    {
     "boundary_edges": 4480,
@@ -102,6 +116,27 @@
    {
     "boundary_edges": 4480,
     "inside_out_shells": 240
+   }
+  ],
+  [
+   "Logo_Samarkand_E_c",
+   {
+    "boundary_edges": 3740,
+    "inside_out_shells": 13
+   }
+  ],
+  [
+   "Logo_Samarkand_W_c",
+   {
+    "boundary_edges": 3740,
+    "inside_out_shells": 13
+   }
+  ],
+  [
+   "Shrub_bou_33_foliage",
+   {
+    "boundary_edges": 2600,
+    "inside_out_shells": 14
    }
   ],
   [
@@ -126,10 +161,24 @@
    }
   ],
   [
+   "Shrub_jas_31_foliage",
+   {
+    "boundary_edges": 2360,
+    "inside_out_shells": 10
+   }
+  ],
+  [
    "Shrub_jas_30_foliage",
    {
     "boundary_edges": 2360,
     "inside_out_shells": 8
+   }
+  ],
+  [
+   "Shrub_green_32_foliage",
+   {
+    "boundary_edges": 1920,
+    "inside_out_shells": 12
    }
   ],
   [
