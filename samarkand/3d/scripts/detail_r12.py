@@ -5,7 +5,7 @@ Zone-unique pieces (corridor ceiling, firewood wall, hood, portal arch...) are b
 import os, math, random
 HERE = os.path.dirname(os.path.abspath(__file__))
 TEX2 = os.path.join(HERE, 'tex2')
-for f_ in ('kit.py', 'assets_r12.py', 'assets_v3.py', 'assets_v4.py'): exec(open(os.path.join(HERE, f_)).read())
+for f_ in ('kit.py', 'assets_r12.py', 'assets_v3.py', 'assets_v4.py', 'assets_v5.py'): exec(open(os.path.join(HERE, f_)).read())
 RD = random.Random(42)
 
 # ---------------- materials ----------------
@@ -30,7 +30,7 @@ X = dict(
     meat=mat('meat', (0.42, 0.16, 0.08), rough=0.6), ember=mat('ember', (1, .3, .05), emit=(1.0, 0.28, 0.04), strength=6.0),
     lampglow=mat('lampglow', (1, .75, .45), emit=(1.0, 0.62, 0.30), strength=8.0),
 )
-for k, fn in (('carpet1', 'rug_persian'), ('carpet2', 'rug_bukhara'), ('carpet3', 'suzani2'), ('carpet4', 'carpet1')): X[k] = uvmat(k + '_uv', fn + '.png')
+for k, fn in (('carpet1', 'rug_oldpersian'), ('carpet2', 'rug_bukhara'), ('carpet3', 'suzani2'), ('carpet4', 'carpet1')): X[k] = uvmat(k + '_uv', fn + ('.jpg' if fn == 'rug_oldpersian' else '.png'))
 X.update(kilim2=bl2.fabric('kilim2_f', os.path.join(TEX2, 'kilim2.png'), 0.6), suzani2=bl2.fabric('suzani2_f', os.path.join(TEX2, 'suzani2.png'), 0.9),
          quilt=bl2.fabric('quilt_f', os.path.join(TEX2, 'quilt.png'), 0.5), plaster=tex2('plaster_t', 'plaster.png', 1.5, rough=0.85, bump=0.15),
          rattan=tex2('rattan_t', 'rattan.png', 0.25, rough=0.7, bump=0.5), domeglaze=tex2('domeglaze_t', 'domeglaze.png', 0.9, rough=0.15, bump=0.2, coat=0.6),
@@ -53,6 +53,13 @@ def pierced_mat(name):
 for c_ in ('terra', 'navy', 'emerald', 'wine'): X['velvet_' + c_] = bl2.fabric('velvet_%s_f' % c_, os.path.join(TEX2, 'velvet_%s.png' % c_), 0.5)
 for c_ in ('linen', 'denim', 'silk_ikat', 'white', 'olive', 'black', 'rose', 'sand', 'terra'): X['cloth_' + c_] = bl2.fabric('cloth_%s_f' % c_, os.path.join(TEX2, 'cloth_%s.png' % c_), 0.35)
 X.update(zellige=tex2('zellige_t', 'zellige.png', 0.32, rough=0.12, bump=0.35, coat=0.6), pierced=pierced_mat('pierced_t'))
+X.update(bannai=tex2('bannai_t', 'bannai.png', 1.0, rough=0.7, bump=0.45, coat=0.15), bannai2=tex2('bannai2_t', 'bannai2.png', 1.4, rough=0.7, bump=0.45, coat=0.15),
+         hazarbaf=tex2('hazarbaf_t', 'hazarbaf.png', 1.5, rough=0.6, bump=0.4, coat=0.25), kufic=tex2('kufic_t', 'kufic.png', 1.2, rough=0.25, bump=0.35, coat=0.5),
+         majcobalt=tex2('majcobalt_t', 'majcobalt.png', 1.0, rough=0.15, bump=0.25, coat=0.7), majisfahan=tex2('majisfahan_t', 'majisfahan.png', 0.9, rough=0.15, bump=0.25, coat=0.7),
+         girihstar=tex2('girihstar_t', 'girihstar.png', 0.8, rough=0.25, bump=0.35, coat=0.5),
+         brickpave=tex2('brickpave_t', 'brickpave.png', 2.5, rough=0.8, bump=0.5), stone=tex2('stone_t', 'stone.png', 1.0, rough=0.6, bump=0.2),
+         epigraph_uv=uvmat('epigraph_uv', 'epigraph.png', rough=0.15, sheen=0.0), runner_uv=uvmat('runner_uv', 'runner_malayer.jpg'), oldrug_uv=uvmat('oldrug_uv', 'rug_oldpersian.jpg'))
+for k_, sz in (('bannai', 1.0), ('bannai2', 1.4), ('hazarbaf', 1.5), ('kufic', 1.2), ('majcobalt', 1.0), ('majisfahan', 0.9), ('girihstar', 0.8), ('brickpave', 2.5), ('stone', 1.0)): register_uv_size(X[k_], sz)
 for mm, sz in ((m['ikat'], 0.5), (m['suzani'], 0.6), (m['jali'], 0.5), (m['majolica'], 0.6), (m['band'], 1.2), (m['girih'], 0.6), (m['floor'], 1.2),
                (X['carved'], 0.9), (X['kilim'], 0.6), (X['kilim2'], 0.6), (X['suzani2'], 0.9), (X['quilt'], 0.5), (X['plaster'], 1.5), (X['rattan'], 0.25), (X['domeglaze'], 0.9), (X['plov'], 0.12), (X['velvet'], 0.8), (X['tent'], 1.2), (X['copper'], 0.5), (X['gajbrick'], 1.4), (X['dometile'], 0.7)):
     register_uv_size(mm, sz)
@@ -284,10 +291,7 @@ for it in D['items']:
         lantern_at(cx, cy, min(base + 2.0, ceil - 0.5), 1.0, ceil, 'Lights', f'Lantern_{nl:02d}')
 
 # =============== 12. STREET PISHTAQ ARCH, tree uplights, kids chests ===============
-e0, e1 = D['ent']; xs_ = xb((e0 + e1) / 2) - 0.75; mb = MB()
-for poly in spandrel_polys((e0 + e1) / 2, e1 - e0, SID + 2.55, SID + 3.2, SID + 3.4): mb.extrude(poly, xs_ - 0.15, xs_ + 0.15, m['majolica'], 'yz')
-mb.box(xs_ - 0.17, e0 - 0.7, SID + 3.4, xs_ + 0.17, e1 + 0.7, SID + 3.62, m['band'], 0.004)
-inst(mb.mesh('Street_pishtaq_arch'), 'Street_pishtaq_arch', (0, 0, 0), 0, 'Street_facade')
+e0, e1 = D['ent']
 mb = MB(); mb.cyl(0, 0, 0, 0.05, 0.07, m['steel'], 16); mb.cyl(0, 0, 0.05, 0.055, 0.06, X['lampglow'], 16); up = mb.mesh('Uplight')
 for x, y in D['trees']:
     for a in (0.5, 2.6, 4.7): inst(up, 'Tree_uplight', (x + 0.75 * math.cos(a), y + 0.75 * math.sin(a), TER + 0.08), 0, 'Lights')
@@ -320,7 +324,7 @@ print('ceiling carpets', ncc)
 
 # =============== 13b. VELVET SWAGS over the plaza (beam to beam), CARPET FRIEZE over the aivan ===============
 for i_, xc in enumerate((9.6, 10.35, 11.1)):
-    ya, yb = 9.85 + 0.1, 15.3 - 0.1; rows = []
+    ya, yb = 9.85 + 0.1, 14.6; rows = []                                   # stop clear of the street portal
     for c in (0, 1):
         xx = xc - 0.35 + 0.7 * c
         rows.append([(xx, ya + (yb - ya) * j / 14, top(xx) - 0.55 - 0.65 * math.sin(math.pi * j / 14)) for j in range(15)])
@@ -371,10 +375,57 @@ for d in D['domes']:
     th0 = math.asin(min(0.999, d['lantern'] / d['r'])); lz = ZR + (d['rise'] + T_) * math.cos(th0) + 0.5      # underside of the lantern cap
     inst(a_chandelier(round(lz - (TER + 3.65), 3), 0.95, 12), f'Chandelier_dome_{d["key"]}', (d['c'][0], d['c'][1], lz), 0, 'Lights')
 
+# =============== 16. SAMARKAND COMMON AREAS (Shah-i-Zinda / Gur-e-Amir) ===============
+# 16a. majolica columns cladding the steel columns, muqarnas capitals under the roof beams
+e0, e1 = D['ent']
+for i_, (x, y) in enumerate(D['cols']):
+    if y < 0.6 and x < 0: continue
+    if any(a <= y <= b for a, b in ((e0 - 0.7, e0), (e1, e1 + 0.7))): continue
+    zt = top(x) - 0.55; inst(a_sam_column(round(zt - TER, 4)), f'Sam_column_{i_ + 1:02d}', (x, y, TER), 0, 'Columns')
+# 16b. Gur-e-Amir pishtaq at the street entrance, aligned with the street line
+e0, e1 = D['ent']; yc_ = (e0 + e1) / 2; dx_, dy_ = xb1 - xb0, yb1 - yb0
+Hp_ = round(min(top(xb(y_) - t_) - 0.55 for y_ in (e0 - 0.7, e1 + 0.7) for t_ in (0.0, 1.5)) - SID, 3)   # pylons carry the roof beams: top = beam underside
+pm = a_pishtaq(round(e1 - e0, 3), Hp_, 1.5, round(TER - SID, 3)).copy(); pm.name = 'Pishtaq_sheared'
+for v in pm.vertices: v.co.x += dx_ / dy_ * v.co.y                      # shear the plan to the street line: pylons = the plan's parallelograms
+inst(pm, 'Street_pishtaq', (xb(yc_) - 0.75, yc_, SID), 0, 'Street_facade')
+SKIPCOL = [(e0 - 0.7, e0), (e1, e1 + 0.7)]                               # columns inside the pylons are encased by them
+# 16c. epigraphic frieze on the facade ledger (room face x = 0.18)
+inst(a_frieze(32.8, 0.55), 'Facade_frieze', (0.18, 4.2, top(0) - 0.6), 0, 'Building')
+# 16d. corridor runner: the Malayer carpet
+for it in D['items']:
+    if it['kind'] == 'runner':
+        x0, y0, x1, y1 = bbox(it['poly'][0]); mb = MB(); mb.picture_box(x0, y0, TER, x1, y1, TER + 0.012, X['runner_uv'], '+z')
+        inst(mb.mesh('Corridor_runner_malayer'), 'Corridor_runner_malayer', (0, 0, 0), 0, 'Corridor')
+# 16e. karbandi dome interior in the central dome (imported mesh, closed 20 mm shell), chandelier from its crown
+for d in D['domes']:
+    if not d['lantern']: continue
+    gb = gonbad(d['c'][0], d['c'][1], ZR, d['r'] - 0.04, os.path.join(HERE, 'gonbad.obj'))
+    o_ = bpy.data.objects.get(f'dome_ribs_{d["key"]}')
+    if o_: bpy.data.objects.remove(o_)
+    bpy.context.view_layer.update()
+    hit = gb.ray_cast(Vector((d['c'][0], d['c'][1], ZR + 0.2)), Vector((0, 0, 1)))
+    zc_ = hit[1].z if hit[0] else ZR + 1.5
+    ch = bpy.data.objects.get(f'Chandelier_dome_{d["key"]}')
+    if ch: bpy.data.objects.remove(ch)
+    inst(a_chandelier(round(zc_ - (TER + 3.65), 3), 0.95, 12), f'Chandelier_dome_{d["key"]}', (d['c'][0], d['c'][1], zc_), 0, 'Lights')
+    print('karbandi crown z', round(zc_, 3))
+# 16f. common-area surfaces: Samarkand brick, majolica and girih instead of plain concrete / plaster
+SWAP = {'planter_band': X['hazarbaf'], 'firewall': X['bannai'], 'barbody': X['majcobalt'], 'barreturn': X['girihstar'], 'terrace_floor': X['brickpave'],
+        'alley_girih': X['girihstar'], 'sebil': X['majcobalt'], 'sback': X['kufic'], 'sbench': X['stone'], 'street_steps': X['stone'], 'host': X['majcobalt'],
+        'photo_plant': X['hazarbaf'], 'bbq_plant': X['hazarbaf'], 'kazanblock': X['bannai2'], 'tandoorblock': X['majcobalt'], 'stepsA': X['stone'], 'stepsB': X['stone']}
+for o in bpy.data.objects:
+    if o.type != 'MESH': continue
+    k_ = next((k for k in SWAP if o.name == k or o.name.startswith(k + '.') or o.name.startswith(k + '_')), None)
+    if k_ and not o.name.startswith(('photo_plant_soil', 'bbq_plant_soil')):
+        for i_ in range(len(o.data.materials)): o.data.materials[i_] = SWAP[k_]
+for d in D['domes']:                                                     # oculus domes: Samarkand brick inside, kufic drums
+    o_ = bpy.data.objects.get(f'dome_drum_{d["key"]}')
+    if o_: o_.data.materials[0] = X['kufic']
+
 # =============== 13. DOME FINISHES ===============
 for o in bpy.data.objects:
     if o.type != 'MESH' or not o.name.startswith('dome_'): continue
     for i_, ms in enumerate(o.data.materials):
-        if ms == m.get('gaj'): o.data.materials[i_] = X['gajbrick']
+        if ms == m.get('gaj'): o.data.materials[i_] = X['bannai']
         if ms == m.get('dometile'): o.data.materials[i_] = X['domeglaze']
 print('detail v2 ok: chairs', nc, 'tables', nt, 'lanterns', nl, 'assets', len(ASSETS))

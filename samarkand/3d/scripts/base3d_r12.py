@@ -173,8 +173,8 @@ else:
     prism('kids_rubber', D['kids'], -1.45, TER + 0.03, m['rubber'], 'Floors')
 prism('aivan_deck', D['plat'], TER, 0.0, m['deck'], 'Floors')
 # planter band: retaining wall to the sidewalk, soil top
-prism('planter_band', D['planter'], -1.45, TER + 0.2, m['concrete'], 'Street_facade')
-prism('planter_soil', D['planter'], TER + 0.2, TER + 0.22, m['soil'], 'Planting')
+prism('planter_band', D['planter'], -1.45, TER - 0.03, m['concrete'], 'Street_facade')     # flush with the terrace: posts / walls stand on it
+prism('planter_soil', D['planter'], TER - 0.03, TER, m['soil'], 'Planting')
 for nm in ('photo_plant', 'bbq_plant'):
     prism(nm, D[nm], TER, TER + 0.3, m['concrete'], 'Planting'); prism(nm + '_soil', D[nm], TER + 0.3, TER + 0.32, m['soil'], 'Planting')
 # entrance steps from the sidewalk (4 risers) in the planter gap
@@ -216,7 +216,7 @@ HT = {  # kind: (z0, z1, material, collection)   heights above the item's own fl
 counter = {}
 DETAIL = os.environ.get('DETAIL', '1') == '1'
 SKIP = {'chair', 'lantern', 'screen', 'bportal', 'drum', 'rbox', 'woodstack', 'tandoor', 'kazan', 'table', 'bench', 'btable', 'rug', 'pole', 'gatepost',
-        'flamp', 'medallion', 'bbqfloor', 'aryk', 'hauzborder', 'abench', 'sofa', 'atable'} if DETAIL else set()
+        'flamp', 'medallion', 'bbqfloor', 'aryk', 'hauzborder', 'abench', 'sofa', 'atable', 'portal', 'runner'} if DETAIL else set()
 if DETAIL:                                              # things that rest on something else start on its top
     HT_FIX = {'otable': (0.015, 0.465), 'tapchantable': (0.47, 0.78), 'bridge': (0.06, 0.2)}
 else: HT_FIX = {}
@@ -393,6 +393,7 @@ for x, y in D['cols']:
     if y < 0.6 and x < 0: continue
     zt = top(x) - 0.55
     boxes('column_steel', [(x - 0.075, y - 0.075, TER, x + 0.075, y + 0.075, zt)], m['bronze'], 'Roof_structure')
+    if DETAIL: continue                                 # detail pass clads the column (Samarkand majolica column)
     z0c, z1c = TER + 0.2, TER + 2.4                     # wood sleeve: 4 boards around the steel column, flush, no overlap
     boxes('column_wood_clad', [(x - 0.15, y - 0.15, z0c, x + 0.15, y - 0.075, z1c), (x - 0.15, y + 0.075, z0c, x + 0.15, y + 0.15, z1c),
                                (x - 0.15, y - 0.075, z0c, x - 0.075, y + 0.075, z1c), (x + 0.075, y - 0.075, z0c, x + 0.15, y + 0.075, z1c)], m['oak'], 'Roof_structure')

@@ -19,9 +19,9 @@ def coll(name):
     return COLS[name]
 src = open(os.path.join(HERE, 'detail_r12.py')).read(); __file__ = os.path.join(HERE, 'detail_r12.py')
 exec(src[:src.index('def ceil_at')])
-exec(open(os.path.join(HERE, 'assets_v4.py')).read())
+exec(open(os.path.join(HERE, 'assets_v4.py')).read()); exec(open(os.path.join(HERE, 'assets_v5.py')).read())
 exec(open(os.path.join(HERE, 'qa.py')).read().split("meshes, objs = {}, []")[0].split("bpy.ops.wm.open_mainfile(filepath=BLEND)")[1])
-B = [('chair_terra', lambda: a_tubchair('terra')), ('chair_navy', lambda: a_tubchair('navy')), ('table4', lambda: a_tiletable(2)),
+B = [('samcol', lambda: a_sam_column(3.0)), ('pishtaq', lambda: a_pishtaq(2.5, 3.9, 1.5)), ('frieze', lambda: a_frieze(3.2)), ('chair_terra', lambda: a_tubchair('terra')), ('chair_navy', lambda: a_tubchair('navy')), ('table4', lambda: a_tiletable(2)),
      ('banq', lambda: a_banquette(1.6, 0.62, 'emerald', 'kilim2')), ('pend', lambda: a_pendant_cluster(3)), ('chand', lambda: a_chandelier(0.6)),
      ('col', lambda: a_khiva_column(2.6)), ('bay_p', lambda: a_arcade_bay(1.2, 'plant')), ('bay_j', lambda: a_arcade_bay(1.2, 'jali')),
      ('man', lambda: a_human('stand', 'linen', 'denim', 0, 0, False, 'long')), ('woman', lambda: a_human('stand', 'silk_ikat', 'sand', 2, 1, True, 'short')),

@@ -259,12 +259,12 @@ for c in ((4900, 36425), (7900, 36425)): add('lantern', C(*c, 150, 20), 'SMK-R12
 
 # ======================= STREET FAÇADE (owner red strip) =======================
 # outer 550: cast-in-place tinted concrete bench (seat +450 above the sidewalk), 150 back wall with majolica band, 800 planter
-SB = [(9000, 12300), (18750, 21100), (21600, 25300), (28400, 31800), (32300, 35900)]
+SB = [(10150, 12300), (18750, 21000), (21700, 25300), (29400, 31800), (32450, 35900)]     # clear of the roof columns (+-300 for the majolica column bases)
 for a, b in SB:
     add('sbench', BP(a, b, 0, 550), 'SMK-R12-STREET'); add('sback', BP(a, b, 550, 700), 'SMK-R12-STREET')
 SEBIL = (12700, 14300)                              # wall fountain beside the entrance
 add('sebil', BP(SEBIL[0], SEBIL[1], 550, 950), 'SMK-R12-STREET'); add('sebilbasin', BP(SEBIL[0] + 250, SEBIL[1] - 250, 0, 550), 'SMK-R12-STREET')
-SARCH = (25800, 27800)                              # street photo arch with a bench niche
+SARCH = (25950, 27950)                              # street photo arch with a bench niche
 add('sarch', BP(SARCH[0], SARCH[1], 550, 1000), 'SMK-R12-STREET'); add('sbench', BP(SARCH[0] + 250, SARCH[1] - 250, 0, 550), 'SMK-R12-STREET')
 for yy in (SARCH[0] - 250, SARCH[1] + 250, 12450, 14550 + 0): add('spalm', C(xb(yy) - 300, yy, 250, 24), 'SMK-R12-STREET')
 for a in (ENT[0] - 700, ENT[1]): add('portal', BP(a, a + 700, 0, 1500), 'SMK-R12-STREET')

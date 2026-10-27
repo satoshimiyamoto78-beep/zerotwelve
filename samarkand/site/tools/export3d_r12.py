@@ -19,6 +19,7 @@ def rings(g):
         out.append([[round(x * k, 4), round(y * k, 4)] for x, y in p.exterior.coords[:-1]])
     return out
 def solid_pieces(g):
+    g = g.buffer(-2, join_style=2).buffer(2, join_style=2)          # open pinch points (self-touching rings) and drop < 4 mm slivers
     return [q for q in holefree(g) if q.area > 1e3]
 def holefree(g):
     """split polygons with holes into hole-free pieces (cuts along y through every hole)"""
@@ -45,7 +46,7 @@ D = dict(
     items=[dict(kind=it['kind'], poly=rings(it['geom']) if it['geom'].geom_type != 'LineString' else [[[round(x * k, 4), round(y * k, 4)] for x, y in it['geom'].coords]],
                 **({'back': it['back']} if 'back' in it else {}), **({'mods': it['mods'], 'axis': it['axis']} if 'mods' in it else {}))
            for it in G['items']],
-    floor=rings(G['FLOOR']), plat=rings(G['PLAT']), alley=rings(G['ALLEY']), kids=rings(G['KIDS']), planter=rings(G['planter']),
+    floor=rings(G['FLOOR']), plat=rings(G['PLAT']), alley=rings(G['ALLEY']), kids=rings(G['KIDS']), planter=[rings(q)[0] for q in solid_pieces(G['planter'].difference(box(G['BX0'], G['BY0'], G['BX1'], G['BY1'])))],
     photo_plant=rings(G['photo_plant']), bbq_plant=rings(G['bbq_plant']), zone=rings(U),
     roof=[rings(q)[0] for q in holefree(roof)], courts=[rings(c)[0] for c in COURTS],
     beams=[[round(y * k, 4), round(xb(y) * k, 4)] for y in G['TRUSS_Y']],
@@ -60,7 +61,7 @@ D = dict(
     dome_ring=G['DOME_RING'] * k, rot=[G['ROTC'][0] * k, G['ROTC'][1] * k, G['ROTR'] * k], gate=[G['GATE'][0] * k, G['GATE'][1] * k],
     staff=rings(G['STAFF']),
     **(lambda: (lambda FL, MED, BBQ, AR, HB, HZ: dict(
-        floor_main=[rings(q)[0] for q in solid_pieces(FL.difference(unary_union([G['ALLEY'], G['KIDS'], BBQ, MED, AR])))],
+        floor_main=[rings(q)[0] for q in solid_pieces(FL.difference(unary_union([G['ALLEY'], G['KIDS'], BBQ, MED, AR, box(G['xi'](G['ENT'][0]) - 200, G['ENT'][0], xb(G['ENT'][0]) + 300, G['ENT'][1])])))],
         inlays=dict(alley=[rings(q)[0] for q in solid_pieces(G['ALLEY'])], kids=[rings(q)[0] for q in solid_pieces(G['KIDS'])], bbq=rings(BBQ),
                     medallion=[rings(q)[0] for q in solid_pieces(MED.difference(AR))], aryk=rings(AR)),
         hauz_ring=[rings(q)[0] for q in solid_pieces(HB.difference(HZ))], hauz_rim_y1=HB.bounds[3] * k))(
