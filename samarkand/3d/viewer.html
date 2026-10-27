@@ -29,10 +29,13 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 #status { position: fixed; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: .95rem; pointer-events: none; }
 .hint { color: var(--muted); font-size: .72rem; }
 [hidden] { display: none !important; }
+#ui-toggle { position: fixed; z-index: 5; top: calc(env(safe-area-inset-top, 0px) + 8px); right: max(16px, env(safe-area-inset-right, 0px)); }
+body.clean .bar, body.clean .dock { display: none; }
 </style>
 
 <div id="stage"></div>
 <div id="status">Загружаю модель…</div>
+<button id="ui-toggle" aria-pressed="false" title="Скрыть / показать панели (клавиша H)">Скрыть кнопки</button>
 <header class="bar"><h1>SAMARKAND</h1><span>Крытая терраса · 3D-модель R12-v5 · самаркандский стиль, портал, купол-карбанди, бар · 171 место</span></header>
 <nav class="dock" aria-label="Управление моделью">
   <div class="row" id="views"><span class="lbl">Вид</span>
@@ -112,6 +115,10 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     groups[l].forEach(o => { o.visible = on; });
     const b = document.querySelector(`#layers button[data-l="${l}"]`); if (b) b.setAttribute('aria-pressed', String(on));
   }
+  const uiBtn = document.getElementById('ui-toggle');
+  function setClean(on) { document.body.classList.toggle('clean', on); uiBtn.setAttribute('aria-pressed', String(on)); uiBtn.textContent = on ? 'Показать кнопки' : 'Скрыть кнопки'; uiBtn.style.opacity = on ? '.55' : ''; }
+  uiBtn.addEventListener('click', () => setClean(!document.body.classList.contains('clean')));
+  window.addEventListener('keydown', e => { if (e.key === 'h' || e.key === 'H' || e.key === 'р' || e.key === 'Р') setClean(!document.body.classList.contains('clean')); });
   document.getElementById('views').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setView(b.dataset.v); });
   document.getElementById('layers').addEventListener('click', e => { const b = e.target.closest('button'); if (b) toggle(b.dataset.l, b.getAttribute('aria-pressed') !== 'true'); });
 
