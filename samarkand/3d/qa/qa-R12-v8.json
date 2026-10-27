@@ -1,0 +1,186 @@
+{
+ "blend": "r12v8/samarkand-base3d-R12.blend",
+ "objects": 708,
+ "mesh_datablocks": 429,
+ "totals": {
+  "boundary_edges": 0,
+  "nonmanifold_edges": 0,
+  "wire_edges": 0,
+  "loose_verts": 0,
+  "zero_area_faces": 0,
+  "zero_len_edges": 0,
+  "flipped_edges": 0,
+  "inside_out_shells": 0,
+  "coincident_verts": 0,
+  "verts": 253851,
+  "faces": 297625,
+  "tris": 502862,
+  "ngons": 2397,
+  "shells": 4409
+ },
+ "clean_meshes": 429,
+ "unapplied_transforms": [
+  "Bougainvillea",
+  "Bougainvillea.001",
+  "Bougainvillea.002",
+  "Bougainvillea.003",
+  "Bougainvillea.004",
+  "Bougainvillea.005",
+  "Bougainvillea.006",
+  "Bougainvillea.007",
+  "Bougainvillea.008",
+  "Bougainvillea.009",
+  "Bougainvillea.010",
+  "Bougainvillea.011",
+  "Bougainvillea.012",
+  "Bougainvillea.013",
+  "Bougainvillea.014",
+  "Bougainvillea.015",
+  "Bougainvillea.016",
+  "Bougainvillea.017",
+  "Jasmine",
+  "Jasmine.001",
+  "Jasmine.002",
+  "Jasmine.003",
+  "Jasmine.004",
+  "Jasmine.005",
+  "Jasmine.006",
+  "Jasmine.007",
+  "Jasmine.008",
+  "Jasmine.009",
+  "Jasmine.010",
+  "Jasmine.011",
+  "Khiva_gate",
+  "Planter_shrub",
+  "Planter_shrub.001",
+  "Planter_shrub.002",
+  "Planter_shrub.003",
+  "Planter_shrub.004",
+  "Planter_shrub.005",
+  "Planter_shrub.006",
+  "Pomegranate.002",
+  "Street_palm",
+  "Street_palm.001",
+  "Street_palm.002",
+  "Street_palm.003"
+ ],
+ "n_unapplied": 43,
+ "penetrations": [],
+ "n_penetrations": 0,
+ "floating": [],
+ "n_floating": 0,
+ "worst": [
+  [
+   "Chinar_trained_foliage",
+   {
+    "boundary_edges": 30404
+   }
+  ],
+  [
+   "Pomegranate_foliage",
+   {
+    "boundary_edges": 8088,
+    "inside_out_shells": 1
+   }
+  ],
+  [
+   "Pomegranate_foliage.001",
+   {
+    "boundary_edges": 8088,
+    "inside_out_shells": 1
+   }
+  ],
+  [
+   "Areca_foliage",
+   {
+    "boundary_edges": 4480,
+    "inside_out_shells": 240
+   }
+  ],
+  [
+   "Areca_foliage.001",
+   {
+    "boundary_edges": 4480,
+    "inside_out_shells": 240
+   }
+  ],
+  [
+   "Shrub_bou_20_foliage",
+   {
+    "boundary_edges": 2600,
+    "inside_out_shells": 12
+   }
+  ],
+  [
+   "Shrub_bou_21_foliage",
+   {
+    "boundary_edges": 2600,
+    "inside_out_shells": 10
+   }
+  ],
+  [
+   "Shrub_bou_22_foliage",
+   {
+    "boundary_edges": 2600,
+    "inside_out_shells": 7
+   }
+  ],
+  [
+   "Shrub_jas_30_foliage",
+   {
+    "boundary_edges": 2360,
+    "inside_out_shells": 8
+   }
+  ],
+  [
+   "Shrub_green_10_foliage",
+   {
+    "boundary_edges": 1920,
+    "inside_out_shells": 12
+   }
+  ],
+  [
+   "Shrub_green_11_foliage",
+   {
+    "boundary_edges": 1920,
+    "inside_out_shells": 7
+   }
+  ],
+  [
+   "Shrub_green_12_foliage",
+   {
+    "boundary_edges": 1920,
+    "inside_out_shells": 6
+   }
+  ],
+  [
+   "Shrub_green_13_foliage",
+   {
+    "boundary_edges": 1920,
+    "inside_out_shells": 6
+   }
+  ],
+  [
+   "Plumeria_foliage",
+   {
+    "boundary_edges": 1520
+   }
+  ],
+  [
+   "Shrub_herb_6_foliage",
+   {
+    "boundary_edges": 920,
+    "inside_out_shells": 1
+   }
+  ],
+  [
+   "Banana_foliage",
+   {
+    "boundary_edges": 194,
+    "loose_verts": 7,
+    "inside_out_shells": 10,
+    "coincident_verts": 13
+   }
+  ]
+ ]
+}

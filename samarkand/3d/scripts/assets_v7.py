@@ -432,3 +432,51 @@ def a_lowtable(L, W, H):
         x_ = sx * (hx - a - lg / 2)
         for q in arch_apron(-hy + a + lg, H - t - 0.12, hy - a - lg, H - t, H - t - 0.07, H - t - 0.02, 0.01, 2): b.extrude(list(q.exterior.coords)[:-1], x_ - 0.01, x_ + 0.01, XW['cv'], 'yz')
     return b.mesh(f'Lowtable_{int(L * 100)}x{int(W * 100)}')
+
+# ---------------------------------------------------------------- HALL DOORS + LIFT PORTAL (rev. 8, from the as-built DWG door layer)
+@cached
+def a_hall_door(W, H=2.55, main=False):
+    """double door filling a facade opening W wide (local y 0..W), face at local x 0 towards the terrace (+x), floor at z 0.
+    main: carved walnut leaves (jali upper panel over glass, carved lower panel, bronze ring pulls) in a carved architrave
+    with a kufic band; otherwise bronze-framed glass leaves with brass bar pulls"""
+    b = MB(); BR = m['bronze']; G = m['darkglass']; lw = W / 2
+    for k in range(2):
+        y0, y1 = k * lw + 0.004, (k + 1) * lw - 0.004; x0, x1 = 0.0, 0.05
+        if main:
+            WD = XW['wd']; st = 0.11
+            b.box(x0, y0, 0.0, x1, y0 + st, H, WD, 0.003); b.box(x0, y1 - st, 0.0, x1, y1, H, WD, 0.003)
+            for z0, z1 in ((0.0, 0.16), (0.95, 1.08), (H - 0.14, H)): b.box(x0, y0 + st, z0, x1, y1 - st, z1, WD, 0.003)
+            b.box(x0 + 0.012, y0 + st, 0.16, x1 - 0.012, y1 - st, 0.95, XW['cv'])                                    # carved lower panel
+            b.box(x0 + 0.02, y0 + st, 1.08, x0 + 0.026, y1 - st, H - 0.14, G)                                        # glass behind the jali
+            for q in jali(y0 + st, 1.08, y1 - st, H - 0.14, 0.12, 0.02): ext_holes(b, q, x0 + 0.03, x1, WD, 'yz')
+            yc = y1 - st - 0.08 if k == 0 else y0 + st + 0.08
+            b.cyl(x1, yc, 1.05, 1.07, 0.03, BR, 16) if False else None
+            b.rod((x1, yc, 1.1), (x1 + 0.03, yc, 1.1), 0.022, BR, 12)
+            b.ring(x1 + 0.03, yc, 1.0, [(0.055, 0.0), (0.065, 0.0), (0.065, 0.012), (0.055, 0.012)], BR, 24) if False else None
+            b.lathe(x1 + 0.04, yc, 0.98, [(0.0, 0.0), (0.012, 0.0), (0.012, 0.12), (0.0, 0.12)], BR, 10)              # ring-pull drop
+        else:
+            st = 0.06
+            b.box(x0, y0, 0.0, x1, y0 + st, H, BR, 0.003); b.box(x0, y1 - st, 0.0, x1, y1, H, BR, 0.003)
+            for z0, z1 in ((0.0, 0.18), (1.0, 1.06), (H - 0.07, H)): b.box(x0, y0 + st, z0, x1, y1 - st, z1, BR, 0.003)
+            b.box(x0 + 0.02, y0 + st, 0.18, x0 + 0.03, y1 - st, H - 0.07, G)
+            yc = y1 - st - 0.06 if k == 0 else y0 + st + 0.06
+            b.rod((x1, yc, 0.8), (x1 + 0.05, yc, 0.8), 0.012, m['brass'], 8); b.rod((x1, yc, 1.5), (x1 + 0.05, yc, 1.5), 0.012, m['brass'], 8)
+            b.cyl(x1 + 0.05, yc, 0.78, 1.52, 0.016, m['brass'], 12)
+    if main:                                                                                   # carved architrave + kufic crest
+        WD = XW['wd']
+        b.box(0.05, -0.16, 0.0, 0.11, 0.0, H + 0.12, XW['cv'], 0.004); b.box(0.05, W, 0.0, 0.11, W + 0.16, H + 0.12, XW['cv'], 0.004)
+        b.box(0.05, -0.16, H + 0.12, 0.11, W + 0.16, H + 0.3, X['kufic'], 0.004)
+        b.box(0.05, -0.2, H + 0.3, 0.14, W + 0.2, H + 0.35, WD, 0.004)
+    return b.mesh(f'Hall_door_{int(W * 1000)}_{"main" if main else "glass"}')
+
+@cached
+def a_lift_portal(W=1.1, H=2.3):
+    """passenger lift landing door on the hall face (owner: lift per the as-built drawings): bronze portal with a majolica
+    band, two brushed-steel sliding panels, call panel; face at local x 0 (+x towards the terrace), local y 0..W"""
+    b = MB(); BR = m['bronze']; S_ = m['steel']
+    b.box(0.0, 0.0, 0.0, 0.08, 0.1, H + 0.15, BR, 0.004); b.box(0.0, W - 0.1, 0.0, 0.08, W, H + 0.15, BR, 0.004)
+    b.box(0.0, 0.1, H, 0.08, W - 0.1, H + 0.15, BR, 0.004); b.box(0.0, 0.0, H + 0.15, 0.06, W, H + 0.45, X['majcobalt'], 0.004)
+    for k in range(2): b.box(0.0, 0.1 + k * (W - 0.2) / 2 + 0.003, 0.0, 0.03, 0.1 + (k + 1) * (W - 0.2) / 2 - 0.003, H, S_, 0.002)
+    b.box(0.0, W + 0.08, 1.05, 0.02, W + 0.2, 1.3, S_, 0.003); b.cyl(0.02, W + 0.14, 1.12, 1.13, 0.018, m['brass'], 12) if False else None
+    b.rod((0.02, W + 0.14, 1.12), (0.035, W + 0.14, 1.12), 0.015, m['brass'], 12); b.rod((0.02, W + 0.14, 1.22), (0.035, W + 0.14, 1.22), 0.015, m['brass'], 12)
+    return b.mesh('Lift_portal')

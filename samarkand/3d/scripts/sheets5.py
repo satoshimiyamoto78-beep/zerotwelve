@@ -9,7 +9,7 @@ V = json.load(open(LINES)); D = json.load(open(DATA))
 TER, SID = -0.45, -1.17
 def top(x): return 3.75 - 0.05 * x
 W, H = 841.0, 594.0
-REV = 'R12-v7'; DATE = '2026-10-27'
+REV = 'R12-v8'; DATE = '2026-10-27'
 
 class Sheet:
     def __init__(s, code, title):
@@ -257,14 +257,18 @@ M, k = s.view('S05a_pishtaq_elevation', (e0 - 2.5, SID - 0.1, e1 + 1.2, 2.75), 2
 s.dim(M, (e0 - 0.7, SID), (e0, SID), -10); s.dim(M, (e0, SID), (e1, SID), -10); s.dim(M, (e1, SID), (e1 + 0.7, SID), -10)
 s.level(M, (e1 + 0.9, SID), f'{SID - TER:+.3f} sidewalk', 1); s.level(M, (e1 + 0.9, TER), '+0.000 terrace', 1)
 xp = 0
-Hp = min(top(11.387 + 0.75 - t) - 0.55 for t in (0.0, 1.5)) - SID
-s.level(M, (e1 + 0.9, SID + Hp), f'{SID + Hp - TER:+.3f} top = beam underside', 1)
-M2, _ = s.view('S05b_pishtaq_section', (9.4, SID - 0.3, 13.6, 2.75), 25, (30, 70), 'SECTION C-C ON THE PORTAL AXIS', 'entrance steps 4 x 180, muqarnas half-vault (6 tiers of niche cells)')
+Hp = min(top(x_) - 0.242 for x_ in (10.8, 11.8)) - 0.01 - SID                  # rev. 8: flat-top portal up to the purlin underside
+s.level(M, (e1 + 0.9, SID + Hp), f'{SID + Hp - TER:+.3f} top = purlin underside', 1)
+ZMQ = 1.868                                                                   # lowest muqarnas cell (model, QA probe)
+s.level(M, (e1 + 0.9, ZMQ), f'{ZMQ - TER:+.3f} clear under the muqarnas', 1)
+M2, _ = s.view('S05b_pishtaq_section', (9.4, SID - 0.3, 13.6, 2.75), 25, (30, 70), 'SECTION C-C ON THE PORTAL AXIS', 'entrance steps 4 x 180, muqarnas half-vault (3 tiers of niche cells)')
+s.dim(M2, (12.6, TER), (12.6, ZMQ), 8, f'{(ZMQ - TER) * 1000:.0f} clear')
 M3, _ = s.view('S05c_pishtaq_plan_cut', (10.3, e0 - 0.9, 12.7, e1 + 0.9), 25, (360, 260), 'PLAN AT +1.050 ABOVE THE SIDEWALK', 'pylons follow the street line (sheared 5.6°)')
 s.notes_block(560, 260, 'NOTES', [
     'Pylons: RC core 400 + glazed brick facing (hazarbaf), stone plinth 550; they carry the roof beams at gridlines 3 and 4 (encasing columns C1).',
     'Front: kufic glazed-brick frames 100, majolica panels with pointed niches, epigraphic band; turquoise roll on the arch edge.',
-    'Muqarnas: 6 tiers of GRC niche cells (cobalt / turquoise glazed), precast from the model, hung on a steel cradle from the lintel.',
+    'Muqarnas: 3 tiers of GRC niche cells (cobalt / turquoise glazed), precast from the model, hung on a steel cradle from the lintel.',
+    'Rev. 8: headroom raised from 1 480 to 2 320 clear above the terrace at the lowest muqarnas cell (portal top taken to the purlin underside).',
     'Sebil: wall fountain, glazed brick + majolica tympanum, bronze spout, stone basin with recirculating pump.',
 ], 260)
 sheets.append(s.finish())

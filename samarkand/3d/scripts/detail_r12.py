@@ -107,6 +107,37 @@ def retex(mm, file, size, rough=0.5, bump=0.15):
     register_uv_size(mm, size)
 for k_, f_, sz_ in (('walnut', 'walnutgrain.png', 0.6), ('oak', 'oakgrain.png', 0.7), ('deck', 'oakgrain.png', 0.9)):
     if k_ in m: retex(m[k_], f_, sz_)
+# rev. 8 textiles (textures8.py): woven / embroidered images replace the flat vector cloths in every existing material
+def swapimg(mm, file, size=None, bump=None):
+    """point a material's image node(s) at a new texture; optionally change its box-map tile size and relief"""
+    N = mm.node_tree.nodes
+    for n_ in N:
+        if n_.type == 'TEX_IMAGE' and 'mask' not in (n_.image.name if n_.image else ''): n_.image = bpy.data.images.load(os.path.join(TEX2, file), check_existing=True)
+        if size and n_.type == 'MAPPING': n_.inputs['Scale'].default_value = (1 / size,) * 3
+        if bump is not None and n_.type == 'BUMP': n_.inputs['Strength'].default_value = bump
+    if size: register_uv_size(mm, size)
+def pile_shader(mm, sheen=1.0, rough=0.95, bump=0.35):
+    """knotted pile: velvety sheen, matt, pattern relief from the image luminance"""
+    N = mm.node_tree.nodes; Lk = mm.node_tree.links; b = N['Principled BSDF']
+    b.inputs['Sheen Weight'].default_value = sheen; b.inputs['Sheen Roughness'].default_value = 0.35; b.inputs['Roughness'].default_value = rough
+    it = [n_ for n_ in N if n_.type == 'TEX_IMAGE'][0]
+    if not any(n_.type == 'BUMP' for n_ in N):
+        bw = N.new('ShaderNodeRGBToBW'); Lk.new(it.outputs['Color'], bw.inputs['Color'])
+        bp = N.new('ShaderNodeBump'); bp.inputs['Strength'].default_value = bump; bp.inputs['Distance'].default_value = 0.003
+        Lk.new(bw.outputs['Val'], bp.inputs['Height']); Lk.new(bp.outputs['Normal'], b.inputs['Normal'])
+for k_, f_ in (('carpet2', 'rug_tekke.png'), ('carpet3', 'suzani_w.png'), ('carpet4', 'palas1.png')): swapimg(X[k_], f_)
+for k_ in ('carpet1', 'carpet2', 'carpet4', 'runner_uv', 'oldrug_uv'): pile_shader(X[k_], sheen=0.8 if k_ == 'carpet4' else 1.0)
+pile_shader(X['carpet3'], sheen=0.5, rough=0.8, bump=0.5)
+X['zardevor'] = uvmat('zardevor_uv', 'zardevor.png', rough=0.8, sheen=0.5); pile_shader(X['zardevor'], 0.5, 0.8, 0.6)
+X['fringe'] = mat('wool_fringe', (0.80, 0.74, 0.62), rough=0.9)
+X['tassel_red'] = mat('wool_tassel', (0.42, 0.05, 0.06), rough=0.85)
+swapimg(m['suzani'], 'suzani_w.png', 1.0, 0.5); swapimg(m['ikat'], 'adras.png', 0.6, 0.15)
+m['ikat'].node_tree.nodes['Principled BSDF'].inputs['Sheen Weight'].default_value = 0.9; m['ikat'].node_tree.nodes['Principled BSDF'].inputs['Roughness'].default_value = 0.5
+swapimg(X['tent'], 'tentstripe_w.png', None, 0.2); swapimg(X['velvet'], 'velvet_w.png')
+for c_ in ('terra', 'navy', 'emerald', 'wine'): swapimg(X['velvet_' + c_], 'velvet_%s_w.png' % c_)
+for k_ in ('kilim', 'kilim2'): swapimg(X[k_], k_ + '_w.png', None, 0.5)
+exec(open(os.path.join(HERE, 'assets_v8.py')).read())                    # rev. 8: tea service, rotunda collection, draped carpets, zardevor
+
 def ceil_at(x, y):
     """underside of whatever is overhead: balcony slab (x < 1.5), a roof beam (IPE 300 bottom flange), a purlin (C200 bottom)
     or the roof sandwich panel between them"""
@@ -129,7 +160,7 @@ for k, (y0, y1, xw, xe, th) in enumerate(BO):
     inst(a_banquette(1.03, 0.5, 'emerald', pil), f'Booth{k + 1}_banquette_S', (xw + 0.08, y0 + TH, TER), 0.0, 'Booths')
     inst(a_banquette(1.03, 0.5, 'emerald', pil), f'Booth{k + 1}_banquette_N', (xw + 1.11, y0 + 2.0, TER), math.pi, 'Booths')
     inst(a_tiletable(1.3), f'Booth{k + 1}_table', (xw + 0.6, y0 + 1.08, TER), 0.0, 'Booths')
-    inst(a_boothset(), f'Booth{k + 1}_tableset', (xw, y0, TER), 0, 'Booths')
+    inst(a_boothset2(), f'Booth{k + 1}_tableset', (xw, y0, TER), 0, 'Booths')
     inst(a_pendant_cluster(3, (0.1, 0.2, 0.15)), f'Booth{k + 1}_pendant', (xw + 0.6, y0 + 1.08, TER + 2.165), 0, 'Booths')
     if k == 2:                                                                  # one couple in a booth
         PEOPLE.append(('chair', (xw + 0.46, y0 + TH + 0.40, TER - 0.08), 0.0, ('silk_ikat', 'sand', 2, 1, True, 'short')))       # clear of the pillows,
@@ -152,7 +183,7 @@ for it in D['items']:
         for r in it['poly']:
             base = 0.0 if on_plat(r) else TER; x0, y0, x1, y1 = bbox(r); n = it.get('mods', 1); rz = 0.0 if it.get('axis', 'x') == 'x' else math.pi / 2
             nt += 1; c_ = ((x0 + x1) / 2, (y0 + y1) / 2, base)
-            inst(a_carvedtable(n), f'Table_{nt:03d}', c_, rz, 'Furniture'); inst(a_tableset(n), f'Tableset_{nt:03d}', c_, rz, 'Furniture')
+            inst(a_carvedtable(n), f'Table_{nt:03d}', c_, rz, 'Furniture'); inst(a_tableset2(n), f'Tableset_{nt:03d}', c_, rz, 'Furniture')
 
 bpy.context.view_layer.update()
 for o_ in [o for o in bpy.data.objects if o.name.startswith('Chair_')]:          # carved chairs are wider: keep them off the entrance steps
@@ -194,7 +225,7 @@ for i_, (x0, y0, x1, y1) in enumerate(ats):
     mb = MB(); mb.picture_box(0.0, -0.85, 0.75, 0.012, 0.85, 2.25, X['carpet%d' % (1 + i_ % 4)], '+x'); mb.box(0.0, -0.9, 2.25, 0.03, 0.9, 2.29, m['brass'])
     inst(mb.mesh(f'Aivan_wallcarpet_{i_ + 1}'), f'Aivan_wallcarpet_{i_ + 1}', (0.14, cy, 0.0), 0, 'Aivan')
     inst(a_carvedtable(round((x1 - x0) / 0.7, 4)), f'Aivan_table_{i_ + 1}', (cx, cy, 0.0), 0.0, 'Aivan')
-    inst(a_tableset(2), f'Aivan_tableset_{i_ + 1}', (cx, cy, 0.0), 0.0 if (x1 - x0) >= (y1 - y0) else math.pi / 2, 'Aivan')
+    inst(a_tableset2(2), f'Aivan_tableset_{i_ + 1}', (cx, cy, 0.0), 0.0 if (x1 - x0) >= (y1 - y0) else math.pi / 2, 'Aivan')
     lantern_at(cx, cy, 1.95, 1.0, ceil_at(cx, cy), 'Aivan', f'Aivan_lantern_{i_ + 1}')
 
 # =============== 4. FLYING CARPETS under the roof ===============
@@ -208,12 +239,10 @@ for zx0, zx1, zy0, zy1 in ZONES:
         while x < zx1 - 0.6:
             if clear_of_domes(x, y, 1.0):
                 rot = math.pi / 2 if (zx1 - zx0) > 2.5 and nfc % 2 else 0.0; z = top(x + 1.0) - 0.8 + RD.uniform(-0.06, 0.04)
-                nfc += 1; inst(a_flycarpet(1 + nfc % 4), f'Flying_carpet_{nfc:02d}', (x, y, z), rot, 'Carpet_ceiling')
+                nfc += 1; inst(a_flycarpet2(('carpet1', 'carpet2', 'carpet4', 'carpet2')[nfc % 4]), f'Flying_carpet_{nfc:02d}', (x, y, z), rot, 'Carpet_ceiling')
                 c_, s_ = math.cos(rot), math.sin(rot)
                 for u, v in ((-0.55, -0.85), (0.55, -0.85), (0.55, 0.85), (-0.55, 0.85)):
-                    px, py = x + u * c_ - v * s_, y + u * s_ + v * c_
-                    j_ = min(7, int((v + 0.95) / (1.9 / 8))); va = -0.95 + 1.9 * j_ / 8; vb = va + 1.9 / 8; t_ = (v - va) / (vb - va)
-                    pz = z + 0.05 * ((1 - t_) * math.sin(va / 1.9 * 2 * math.pi) + t_ * math.sin(vb / 1.9 * 2 * math.pi)) + 0.0005   # exact top of the faceted carpet
+                    px, py = x + u * c_ - v * s_, y + u * s_ + v * c_; pz = z + fc_z(u, v) + 0.0005          # hanger on the exact top vertex
                     inst(a_rod(), 'Rod_carpet', (px, py, pz), 0, 'Carpet_ceiling', scale=(0.7, 0.7, ceil_at(px, py) - pz))
             x += 1.6
         y += 2.3
@@ -353,9 +382,9 @@ for it in D['items']:
 # =============== 10. BUKHARA DOME + KHIVA GATE ===============
 if 'rot' in D:
     rx, ry, rr_ = D['rot']
-    inst(a_rotunda(), 'Bukhara_rotunda', (rx, ry, TER + 0.15), 0, 'Bukhara_dome')
+    inst(a_rotunda2(), 'Bukhara_rotunda', (rx, ry, TER + 0.15), 0, 'Bukhara_dome')
     for k in range(4):
-        a = math.pi / 4 + k * math.pi / 2; inst(a_vitrine(), f'Bukhara_vitrine_{k + 1}', (rx + 0.7 * math.cos(a), ry + 0.7 * math.sin(a), TER + 0.15), a, 'Bukhara_dome')
+        a = math.pi / 4 + k * math.pi / 2; inst(a_vitrine2(k % 4), f'Bukhara_vitrine_{k + 1}', (rx + 0.7 * math.cos(a), ry + 0.7 * math.sin(a), TER + 0.15), a, 'Bukhara_dome')
     g0, g1 = D['gate']
     inst(a_gate(round(g1 - g0, 3)), 'Khiva_gate', (g0 - 0.25, 36.425, TER), 0, 'North_gate', scale=(1, 1, 0.975))     # rev. 7: crest clears the IPE 300 at the east post
 
@@ -412,11 +441,11 @@ for i_, xc in enumerate((9.6, 10.35, 11.1)):
         rows.append([(xx, ya + (yb - ya) * j / 14, top(xx) - 0.55 - 0.65 * math.sin(math.pi * j / 14)) for j in range(15)])
     mb = MB(); mb.sheet(rows, X['velvet'], 0.008, picture=False)
     inst(mb.mesh(f'Velvet_swag_{i_ + 1}'), f'Velvet_swag_{i_ + 1}', (0, 0, 0), 0, 'Carpet_ceiling')
-for i_, (ya, yb) in enumerate(((15.62, 21.9), (21.9, 28.4))):
-    n = int((yb - ya) / 0.4); top_row = [(0.152, ya + (yb - ya) * j / n, 3.14) for j in range(n + 1)]
-    bot_row = [(0.152, ya + (yb - ya) * j / n, 2.45 + (0.12 if j % 2 else 0.0)) for j in range(n + 1)]
-    mb = MB(); mb.sheet([bot_row, top_row], X['carpet3'], 0.008, picture=True)
-    inst(mb.mesh(f'Carpet_frieze_{i_ + 1}'), f'Carpet_frieze_{i_ + 1}', (0, 0, 0), 0, 'Aivan')
+# rev. 8: embroidered zardevor with tabs + tassels (was a stretched suzani) on the blank wall stretches between the hall doors,
+# its brass rod tight under the epigraphic facade frieze (x 0.18, underside z 3.32)
+dr_ = sorted((a_, b_) for a_, b_, _ in D['doors']); gaps_ = [(15.62, dr_[0][0])] + [(b0, a1) for (_, b0), (a1, _) in zip(dr_, dr_[1:])] + [(dr_[-1][1], 28.4)]
+for i_, (ya, yb) in enumerate([g for g in gaps_ if g[1] - g[0] > 0.9]):
+    inst(a_zardevor(round(yb - ya - 0.1, 3)), f'Zardevor_{i_ + 1}', (0.18, ya + 0.05, 3.32 - 0.574), 0, 'Aivan')
 
 # =============== 13c. PEOPLE — a few well-built figures, placed on real seats ===============
 def chair_near(px, py, side):
@@ -484,8 +513,10 @@ for i_, (x, y) in enumerate(D['cols']):
     zt = top(x + 0.36) - 0.55 - 0.002; inst(a_sam_column(round(zt - TER, 4)), f'Sam_column_{i_ + 1:02d}', (x, y, TER), 0, 'Columns')      # capital clears the 5 % sloped beam flange
 # 16b. Gur-e-Amir pishtaq at the street entrance, aligned with the street line
 e0, e1 = D['ent']; yc_ = (e0 + e1) / 2; dx_, dy_ = xb1 - xb0, yb1 - yb0
-Hp_ = round(min(top(xb(y_) - t_) - 0.55 for y_ in (e0 - 0.7, e1 + 0.7) for t_ in (0.0, 1.5)) - SID, 3)   # pylons carry the roof beams: top = beam underside
-pm = a_pishtaq(round(e1 - e0, 3), Hp_, 1.5, round(TER - SID, 3)).copy(); pm.name = 'Pishtaq_sheared'
+# rev. 7: the portal rises to the purlin underside (the beam ends are encased in the pylons, like the columns), flatter arch:
+# >= 2.3 m clear over the terrace floor under the muqarnas hood (was 1.48 m)
+Hp_ = round(min(top(x_) - 0.242 for x_ in (10.8, 11.8) if xb(yc_) - 1.5 < x_ < xb(yc_)) - 0.01 - SID, 3)
+pm = a_pishtaq(round(e1 - e0, 3), Hp_, 1.5, round(TER - SID, 3), True).copy(); pm.name = 'Pishtaq_sheared'
 for v in pm.vertices: v.co.x += dx_ / dy_ * v.co.y                      # shear the plan to the street line: pylons = the plan's parallelograms
 inst(pm, 'Street_pishtaq', (xb(yc_) - 0.75, yc_, SID), 0, 'Street_facade')
 SKIPCOL = [(e0 - 0.7, e0), (e1, e1 + 0.7)]                               # columns inside the pylons are encased by them
@@ -657,6 +688,14 @@ for z0, z1 in ((0.12, 0.18), (1.48, 1.56)): sb_.box(xs_ - 0.025, y0s_ + 0.04, TE
 for k_ in range(n_):
     for q in jali(y0s_ + k_ * st_ + 0.04, TER + 0.18, y0s_ + (k_ + 1) * st_ - 0.04, TER + 1.48, 0.13, 0.025): ext_holes(sb_, q, xs_ - 0.012, xs_ + 0.012, XW['wd'], 'yz')
 inst(sb_.mesh('Station_screen'), 'Station_screen', (0, 0, 0), 0, 'Furniture')
+# rev. 8 hall doors (as-built DWG door layer, D['doors']) and the lift landing door by the ramp
+for nm_, (a_, b_, op_) in zip(('cd_s', 'cd_n', 'de_s', 'de_n', 'ef'), D['doors']):
+    zf_ = 0.0                                                                            # the aivan deck / hall level
+    inst(a_hall_door(round(b_ - a_ - 0.2, 3), 2.55, nm_ == 'cd_s'), f'Hall_door_{nm_}', ((0.14 if op_ else 0.075), a_ + 0.1, zf_), 0, 'Building')   # closed doors sit flush behind the sedir booths
+LIFT_Y = 34.086 - 0.26                                                                 # landing door on the DWG opening y 34.09..34.67 (shaft x -2.16..-0.2)
+bpy.context.view_layer.update(); hl_ = bpy.context.scene.ray_cast(bpy.context.evaluated_depsgraph_get(), Vector((0.5, LIFT_Y + 0.55, 1.0)), Vector((0, 0, -1)))
+inst(a_lift_portal(1.1, 2.3), 'Lift_portal', (0.06, LIFT_Y, hl_[1].z if hl_[0] else 0.0), 0, 'Building')
+print('lift landing z', round(hl_[1].z, 3) if hl_[0] else None, hl_[4].name if hl_[0] else None)
 # rev. 7 planting: leaf-card plants replace the low-poly blobs / boxes of the base model (positions unchanged)
 for o_ in [o for o in bpy.data.objects if o.name.startswith(('pomegranate_', 'plumeria_', 'areca_leaf', 'banana_leaf', 'herbs', 'jasmine', 'planter_shrubs', 'bougainvillea'))]:
     bpy.data.objects.remove(o_)

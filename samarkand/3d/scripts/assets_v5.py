@@ -62,11 +62,12 @@ def _muqarnas(b, cx, R, zs, za, T=5, depth=None):
     b.lathe(cx - 0.02, 0, za, [(0.0, 0.0), (0.1, 0.0), (0.0, 0.08)], X['domeglaze'], 16)
 
 @cached
-def a_pishtaq(W, Hp, D, zfloor=0.0):
+def a_pishtaq(W, Hp, D, zfloor=0.0, flat=False):
     """portal: opening width W (along local Y), pylons 0.7 wide, depth D (local X, +X = street face), total height Hp.
-    Origin: opening centre on the pylon mid-depth at the sidewalk level."""
+    Origin: opening centre on the pylon mid-depth at the sidewalk level.
+    flat (rev. 7): slimmer lintel band and a flatter arch so the muqarnas hood clears 2.3 m over the terrace floor"""
     b = MB(); hw = W / 2; P = 0.7; xf, xr = D / 2, -D / 2; ST = X['stone']
-    zl = Hp - 0.75; za = zl - 0.1; zs = za - 0.7                                     # lintel bottom, arch apex, springing
+    zl = Hp - (0.62 if flat else 0.75); za = zl - (0.06 if flat else 0.1); zs = za - (0.36 if flat else 0.7)      # lintel bottom, arch apex, springing
     for sg in (-1, 1):
         y0, y1 = sorted((sg * hw, sg * (hw + P)))
         b.box(xr, y0, 0.0, xf, y1, 0.55, ST, 0.01)                                   # stone plinth
@@ -83,9 +84,10 @@ def a_pishtaq(W, Hp, D, zfloor=0.0):
         b.box(xr + 0.02, ix - (0.015 if sg > 0 else 0.0), max(0.55, zfloor), xf - 0.02, ix + (0.0 if sg > 0 else 0.015), zs, X['girihstar'])
     # lintel block over the opening and the pylons
     b.box(xr, -hw - P, zl, xf, hw + P, Hp - 0.35, X['bannai'])
-    b.picture_box(xf, -hw - P + 0.1, zl + 0.1, xf + 0.03, hw + P - 0.1, Hp - 0.45, X['epigraph_uv'], '+x')
-    b.box(xf, -hw - P, zl, xf + 0.03, hw + P, zl + 0.1, X['kufic']); b.box(xf, -hw - P, Hp - 0.45, xf + 0.03, hw + P, Hp - 0.35, X['kufic'])
-    b.box(xf, -hw - P, zl + 0.1, xf + 0.03, -hw - P + 0.1, Hp - 0.45, X['kufic']); b.box(xf, hw + P - 0.1, zl + 0.1, xf + 0.03, hw + P, Hp - 0.45, X['kufic'])
+    b.picture_box(xf, -hw - P + 0.1, zl + (0.06 if flat else 0.1), xf + 0.03, hw + P - 0.1, Hp - (0.41 if flat else 0.45), X['epigraph_uv'], '+x')
+    kb_, kt_ = (0.06, 0.41) if flat else (0.1, 0.45)
+    b.box(xf, -hw - P, zl, xf + 0.03, hw + P, zl + kb_, X['kufic']); b.box(xf, -hw - P, Hp - kt_, xf + 0.03, hw + P, Hp - 0.35, X['kufic'])
+    b.box(xf, -hw - P, zl + kb_, xf + 0.03, -hw - P + 0.1, Hp - kt_, X['kufic']); b.box(xf, hw + P - 0.1, zl + kb_, xf + 0.03, hw + P, Hp - kt_, X['kufic'])
     # cornice: stepped stone mouldings + turquoise crenellation
     b.box(xr - 0.04, -hw - P - 0.04, Hp - 0.35, xf + 0.08, hw + P + 0.04, Hp - 0.25, ST, 0.01)
     b.box(xr - 0.08, -hw - P - 0.08, Hp - 0.25, xf + 0.12, hw + P + 0.08, Hp - 0.15, X['domeglaze'], 0.01)
@@ -99,7 +101,7 @@ def a_pishtaq(W, Hp, D, zfloor=0.0):
     L_ = arch_left(0.0, W, zs, za, 12); R_ = [(-u, z) for u, z in L_][::-1]
     for (u0, z0), (u1, z1) in zip(L_ + R_[1:], (L_ + R_[1:])[1:]):
         b.rod((xf + 0.005, u0, z0), (xf + 0.005, u1, z1), 0.035, X['domeglaze'], 10)
-    _muqarnas(b, xf - 0.12, hw - 0.02, zs, za + 0.05, 6)
+    _muqarnas(b, xf - 0.12, hw - 0.02, zs, za + 0.05, 3 if flat else 6)
     b.box(xr, -hw, zs, xr + 0.12, hw, zl, X['girihstar'])                            # back tympanum over the passage
     return b.mesh(f'Pishtaq_{int(W * 1000)}')
 

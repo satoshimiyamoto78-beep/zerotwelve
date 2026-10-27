@@ -646,7 +646,11 @@ if DO_RENDER:
              ('17_khiva_arcade', (6.2, 23.4, 1.0), (3.2, 19.6), 18, 0.12, [], -0.1),
              ('18_dining_chairs', (5.3, 4.5, 0.75), (2.5, 7.5), 22, 0.06, [], -0.1),
              ('19_bar', (4.3, 14.6, 0.85), (0.6, 10.6), 20, 0.1, [], -0.1),
-             ('20_kids_corner', (-0.5, 0.45, 1.65), (-4.6, 3.3), 16, -0.08, [], -0.1)]
+             ('20_kids_corner', (-0.5, 0.45, 1.65), (-4.6, 3.3), 16, -0.08, [], -0.1),
+             ('21_hall_door', (4.2, 15.0, 1.15), (0.1, 17.6), 18, 0.1, [], -0.1),
+             ('22_lift', (0.95, 31.2, 1.25), (0.1, 34.6), 18, 0.06, [], -0.1),
+             ('23_tea_table', (5.45, 18.55, 0.95), (4.85, 19.4, 0.3), 30, 0.0, [], -0.1),
+             ('24_rotunda_close', (6.9, 32.6, 1.35), (6.1, 35.3, 0.9), 24, 0.0, [], -0.1)]
     only = os.environ.get('VIEWS')
     for name, loc, tgt, lens, shift, hide, ev in VIEWS:
         if only and not any(name.startswith(v) for v in only.split(',')): continue
@@ -654,6 +658,7 @@ if DO_RENDER:
         for cn, c in COLS.items(): c.hide_render = cn in hide
         if name.startswith(('15', '16')):
             bl2.camera(loc, (tgt[0], tgt[1], 0.0), lens=lens)
+        elif len(tgt) == 3: bl2.camera(loc, tgt, lens=lens)
         else: cam2p(loc, tgt, lens, shift)
         bl.render(os.path.join(OUTD, f'samarkand-R12-{name}.png'), W, H, S)
 

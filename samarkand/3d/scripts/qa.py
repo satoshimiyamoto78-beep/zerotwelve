@@ -96,9 +96,10 @@ if PLACE_COLLS is not None:
             oj, loj, hij, bj = info[j]
             if any(loi[k] > hij[k] or loj[k] > hii[k] for k in range(3)): continue
             if 'foliage' in oi.data.name or 'foliage' in oj.data.name: continue   # leaves among twigs / around limbs
+            if any(n.startswith('Street_pishtaq') for n in (oi.name, oj.name)) and any(n.startswith(('roof_beam_y15', 'roof_beam_y18')) for n in (oi.name, oj.name)): continue   # beam ends encased in the portal pylons
             if bi.overlap(bj): pen.append([oi.name, oj.name])
     # floating: every standing piece must rest on something (a floor, deck or another piece) within 2 mm
-    HANG = ('Lantern', 'Rod', 'Flying_carpet', 'Heat_lamp', 'Corridor_niche', 'Aivan_wallcarpet', 'Corridor_velvet', 'Mangal_hood', 'Mangal_skewers',
+    HANG = ('Lantern', 'Zardevor', 'Rod', 'Flying_carpet', 'Heat_lamp', 'Corridor_niche', 'Aivan_wallcarpet', 'Corridor_velvet', 'Mangal_hood', 'Mangal_skewers',
             'Khiva_gate', 'Street_pishtaq', 'Booth', 'dome_', 'Tent_', 'Corridor_arch', 'Carpet_frieze', 'Ceiling_carpet', 'Rattan', 'Velvet_swag', 'Pendant', 'Chandelier', 'Khiva_arcade_head', 'Khiva_arcade_beam', 'Reed_fringe', 'Bar_cornice', 'Bar_drum', 'Bar_wallcarpet', 'Sconce', 'Skylight', 'Chinar_crown')
     sup = []
     for o in objs:

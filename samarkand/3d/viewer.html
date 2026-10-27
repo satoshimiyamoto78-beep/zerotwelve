@@ -1,3 +1,5 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Samarkand Terrace 3D</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Manrope:wght@400;600&display=swap">
@@ -29,14 +31,29 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 #status { position: fixed; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: .95rem; pointer-events: none; }
 .hint { color: var(--muted); font-size: .72rem; }
 [hidden] { display: none !important; }
-#ui-toggle { position: fixed; z-index: 5; top: calc(env(safe-area-inset-top, 0px) + 8px); right: max(16px, env(safe-area-inset-right, 0px)); }
+#app { position: fixed; inset: 0; }
+#dims { position: fixed; inset: 0; pointer-events: none; z-index: 3; overflow: hidden; }
+body.rot #app { inset: auto; top: 0; transform: rotate(90deg); transform-origin: top left; }
+.tools { position: fixed; z-index: 5; top: calc(env(safe-area-inset-top, 0px) + 8px); right: max(16px, env(safe-area-inset-right, 0px)); display: flex; gap: 6px; }
 body.clean .bar, body.clean .dock { display: none; }
+body.clean .tools button { opacity: .6; }
+.dim-label { position: absolute; transform: translate(-50%, -50%); pointer-events: none; font: 700 11px/1.1 var(--body); color: #fff; background: rgba(142, 31, 36, .9);
+  padding: 2px 6px; border-radius: 6px; white-space: nowrap; box-shadow: 0 1px 3px rgba(0,0,0,.35); transition: opacity .2s; }
+.dim-label small { display: block; font-weight: 400; font-size: 9.5px; opacity: .9; }
+#dims.off .dim-label, #dims.moving .dim-label { opacity: 0; }
+@media (max-width: 700px) {            /* phone: tools drop under the title, the subtitle hides, buttons get tighter */
+  .bar span { display: none; }
+  .tools { top: calc(env(safe-area-inset-top, 0px) + 50px); left: max(16px, env(safe-area-inset-left, 0px)); right: auto; flex-wrap: wrap; }
+  button { padding: 6px 10px; font-size: .78rem; }
+}
+body.rot .bar span { display: none; }
 </style>
 
-<div id="stage"></div>
+<div id="app">
+<div id="stage"></div><div id="dims" class="off"></div>
 <div id="status">Загружаю модель…</div>
-<button id="ui-toggle" aria-pressed="false" title="Скрыть / показать панели (клавиша H)">Скрыть кнопки</button>
-<header class="bar"><h1>SAMARKAND</h1><span>Крытая терраса · 3D-модель R12-v7 · один купол-карбанди, чинар под зенитным фонарём, детская у зала, резная мебель · 171 место</span></header>
+<div class="tools"><button id="dim-toggle" aria-pressed="false" title="Показать основные размеры">Размеры</button><button id="fs-toggle" aria-pressed="false" title="Во весь экран, горизонтально">Во весь экран</button><button id="ui-toggle" aria-pressed="false" title="Скрыть / показать панели (клавиша H)">Скрыть кнопки</button></div>
+<header class="bar"><h1>SAMARKAND</h1><span>Крытая терраса · 3D-модель R12-v8 · один купол-карбанди, чинар под зенитным фонарём, детская у зала, резная мебель · 163 места</span></header>
 <nav class="dock" aria-label="Управление моделью">
   <div class="row" id="views"><span class="lbl">Вид</span>
     <button class="view" data-v="overview" aria-pressed="true">Сверху</button>
@@ -62,8 +79,9 @@ body.clean .bar, body.clean .dock { display: none; }
     <button data-l="planting" aria-pressed="true">Растения</button>
     <button data-l="building" aria-pressed="true">Здание</button>
   </div>
-  <div class="hint">Вращение — один палец, масштаб — два пальца, сдвиг — правая кнопка или два пальца.</div>
+  <div class="hint">Вращение — один палец, масштаб — два пальца, сдвиг — правая кнопка или два пальца. «Размеры» — основные габариты и проходы; при вращении они скрываются.</div>
 </nav>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -99,9 +117,9 @@ body.clean .bar, body.clean .dock { display: none; }
   const groups = { skin: [], domes: [], structure: [], furniture: [], planting: [], building: [], people: [] };
   const rules = [
     ['people', /^Person/], ['skin', /^roof_panel/], ['domes', /^dome_/], ['structure', /^(roof_beam|purlin|facade_ledger|column_|gutter|court_gutter)/],
-    ['planting', /^(chinar_canopy|chinar_branch|pomegranate|plumeria|areca|banana|herbs|jasmine|planter_shrubs|bougainvillea)/],
-    ['building', /^(building_hall|parapet|facade_|slab_F2|balcony_rail)/],
-    ['furniture', /^(Booth\d_banquette|Booth\d_table|Aivan_banquette|Aivan_table|Tent\d_banquette|Tableset|Boothset|Chair_|Table_|Tableware_|Aivan_tableware|Tent\d_tray|Tapchan_|Aivan_backcushion|Tent\d_cushion|chairs_carved|tables_tableware|booth_tableware|table|chair|bar_stool|abench|atable|bench|btable|sofa|otable|tapchan|kurpacha|pouf|ltable)/]
+    ['planting', /^(Chinar_|Pomegranate|Plumeria|Areca|Banana|Herbs|Jasmine|Planter_shrub|Bougainvillea|Street_palm|chinar_canopy|chinar_branch)/],
+    ['building', /^(building_hall|parapet|facade_|slab_F2|balcony_rail|Hall_door|Lift_portal)/],
+    ['furniture', /^(Host_cabinet|Station_|Kids_|Tapchan_lowtable|Booth\d_banquette|Booth\d_table|Aivan_banquette|Aivan_table|Tent\d_banquette|Tableset|Boothset|Chair_|Table_|Tableware_|Aivan_tableware|Tent\d_tray|Tapchan_|Aivan_backcushion|Tent\d_cushion|chairs_carved|tables_tableware|booth_tableware|table|chair|bar_stool|abench|atable|bench|btable|sofa|otable|tapchan|kurpacha|pouf|ltable)/]
   ];
   function setView(v) {
     const [p, t] = VIEWS[v];
@@ -143,8 +161,98 @@ body.clean .bar, body.clean .dock { display: none; }
     });
   }).catch(fail);
 
+  // ---------- dimensions overlay: key sizes as red dimension lines + labels; hidden while the model moves, back when it stops
+  const TER = -0.45, dimsEl = document.getElementById('dims'), dimGroup = new THREE.Group(); dimGroup.visible = false; scene.add(dimGroup);
+  const DIMS = [   // plan coords (x east from the hall face, y north along it, z level), label, note
+    [[0.25, 0, TER + 0.06], [0.25, 37.1, TER + 0.06], 'Терраса вдоль зала'], [[0, 15.3, TER + 0.06], [12.14, 15.3, TER + 0.06], 'Глубина у входа'],
+    [[11.4, 15.55, 1.0], [11.4, 18.05, 1.0], 'Проём портала'], [[11.1, 16.8, TER], [11.1, 16.8, 1.868], 'В свету под аркой'], [[0.3, 16.9, 0.0], [0.3, 18.375, 0.0], 'Главная дверь зала'],
+    [[5.0, 15.55, TER + 0.06], [5.0, 18.05, TER + 0.06], 'Аллея'], [[3.2, 19.9, 3.9], [8.8, 19.9, 3.9], 'Купол-карбанди Ø'],
+    [[5.7, 20.325, TER + 0.55], [5.7, 22.875, TER + 0.55], 'Под куполом, спинка — спинка'], [[6.66, 29.45, TER + 0.3], [8.0, 29.45, TER + 0.3], 'Проход к кабинкам'],
+    [[8.2, 26.3, TER + 1.3], [8.2, 28.3, TER + 1.3], 'Кабинка'], [[4.5, 12.72, 3.2], [7.5, 12.72, 3.2], 'Зенитный фонарь'],
+    [[-7.1, 2.9, TER + 0.95], [-0.15, 2.9, TER + 0.95], 'Детская зона'], [[-3.6, 0, TER + 0.06], [-3.6, 1.6, TER + 0.06], 'Служебный проход'],
+    [[2.9, 8.6, TER + 1.15], [2.9, 14.3, TER + 1.15], 'Барная стойка'], [[9.0, 2.7, TER + 0.06], [12.3, 2.7, TER + 0.06], 'Мангальная'],
+    [[2.0, 10.5, TER], [2.0, 10.5, 3.1], 'Высота под балкой'], [[1.45, 33.9, TER + 0.5], [4.05, 33.9, TER + 0.5], 'Шатёр'],
+    [[4.4, 36.0, TER + 0.06], [8.45, 36.0, TER + 0.06], 'Хивинские ворота'], [[0.0, 31.4, TER + 0.06], [1.3, 31.4, TER + 0.06], 'Пандус 1:12']];
+  const dimMat = new THREE.LineBasicMaterial({ color: 0x8e1f24, depthTest: false, transparent: true });
+  const labels = [];
+  DIMS.forEach(([a, b, name]) => {
+    const A = P(...a), B = P(...b), d = B.clone().sub(A), L = d.length(); d.normalize();
+    const side = Math.abs(d.y) > 0.9 ? new THREE.Vector3(1, 0, 0) : new THREE.Vector3(0, 1, 0), t = side.clone().cross(d).normalize().multiplyScalar(0.12);
+    const pts = [A, B, A.clone().add(t), A.clone().sub(t), B.clone().add(t), B.clone().sub(t)];
+    const g = new THREE.BufferGeometry().setFromPoints([pts[0], pts[1], pts[2], pts[3], pts[4], pts[5]]);
+    const ln = new THREE.LineSegments(g, dimMat); ln.renderOrder = 999; dimGroup.add(ln);
+    const el = document.createElement('div'); el.className = 'dim-label'; el.innerHTML = `${Math.round(L * 1000).toLocaleString('ru-RU')}<small>${name}</small>`;
+    dimsEl.appendChild(el); labels.push([A.clone().add(B).multiplyScalar(0.5), el]);
+  });
+  const dimBtn = document.getElementById('dim-toggle'); let moveTimer = null;
+  function setDims(on) { dimGroup.visible = on; dimsEl.classList.toggle('off', !on); dimBtn.setAttribute('aria-pressed', String(on)); }
+  dimBtn.addEventListener('click', () => setDims(!dimGroup.visible));
+  function moving(on) {
+    clearTimeout(moveTimer);
+    if (on) { dimsEl.classList.add('moving'); dimGroup.children.forEach(c => c.visible = false); }
+    else moveTimer = setTimeout(() => { dimsEl.classList.remove('moving'); dimGroup.children.forEach(c => c.visible = true); }, 350);
+  }
+  controls.addEventListener('start', () => moving(true)); controls.addEventListener('end', () => moving(false));
+  const v3 = new THREE.Vector3();
+  function placeLabels() {
+    if (!dimGroup.visible) return;
+    const w = stage.clientWidth, h = stage.clientHeight;
+    const placed = [];                                        // declutter: a label that would overlap one already shown waits for a closer view
+    labels.forEach(([p, el]) => { v3.copy(p).project(camera); let vis = v3.z < 1 && Math.abs(v3.x) < 1.05 && Math.abs(v3.y) < 1.05;
+      const x = (v3.x + 1) / 2 * w, y = (1 - v3.y) / 2 * h, hw = (el.offsetWidth || 90) / 2 + 3, hh = (el.offsetHeight || 28) / 2 + 2;
+      if (vis && placed.some(([px, py, pw, ph]) => Math.abs(px - x) < pw + hw && Math.abs(py - y) < ph + hh)) vis = false;
+      el.style.visibility = vis ? 'visible' : 'hidden'; if (vis) { el.style.left = x + 'px'; el.style.top = y + 'px'; placed.push([x, y, hw, hh]); } });
+  }
+
+  // ---------- full screen, landscape: Fullscreen API + orientation lock where the browser allows it; otherwise (iPhone) the whole
+  // page is turned 90° so the phone can be held sideways, with its own touch handling (orbit / pinch / pan in the turned frame)
+  const app = document.getElementById('app'), fsBtn = document.getElementById('fs-toggle');
+  let rot = false;
+  function layoutRot() {
+    if (rot) { app.style.width = innerHeight + 'px'; app.style.height = innerWidth + 'px'; app.style.left = innerWidth + 'px'; }
+    else { app.style.width = app.style.height = app.style.left = ''; }
+    resize();
+  }
+  function setRot(on) { rot = on; document.body.classList.toggle('rot', on); controls.enabled = !on; layoutRot(); }
+  function isFull() { return !!(document.fullscreenElement || document.webkitFullscreenElement); }
+  async function toggleFull() {
+    if (isFull()) { try { await (document.exitFullscreen || document.webkitExitFullscreen).call(document); } catch (e) {} return; }
+    if (rot) { setRot(false); setClean(false); fsBtn.setAttribute('aria-pressed', 'false'); fsBtn.textContent = 'Во весь экран'; return; }
+    const el = document.documentElement; let ok = false;
+    try { if (el.requestFullscreen) { await Promise.race([el.requestFullscreen({ navigationUI: 'hide' }), new Promise((_, no) => setTimeout(no, 1500))]); ok = isFull(); } else if (el.webkitRequestFullscreen) { el.webkitRequestFullscreen(); await new Promise(r => setTimeout(r, 400)); ok = isFull(); } } catch (e) { ok = false; }
+    if (ok) { try { await screen.orientation.lock('landscape'); } catch (e) { if (innerHeight > innerWidth) setRot(true); } }
+    else if (innerHeight > innerWidth) setRot(true);
+    fsBtn.setAttribute('aria-pressed', 'true'); fsBtn.textContent = 'Обычный вид'; setClean(true);   // whole screen for the model; panels come back with «Показать кнопки»
+  }
+  fsBtn.addEventListener('click', toggleFull);
+  ['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, () => {
+    if (!isFull()) { try { screen.orientation.unlock(); } catch (e) {} setRot(false); setClean(false); fsBtn.setAttribute('aria-pressed', 'false'); fsBtn.textContent = 'Во весь экран'; }
+    setTimeout(layoutRot, 120);
+  }));
+  // touch control in the turned frame: screen (sx, sy) -> app (sy, W - sx)
+  const cv = renderer.domElement, sph = new THREE.Spherical(); let tA = null;
+  const toApp = t => ({ x: t.clientY, y: innerWidth - t.clientX });
+  function rd(e) { return Array.from(e.touches).map(toApp); }
+  cv.addEventListener('touchstart', e => { if (!rot) return; e.preventDefault(); tA = rd(e); moving(true); }, { passive: false });
+  cv.addEventListener('touchend', e => { if (!rot) return; tA = e.touches.length ? rd(e) : null; if (!tA) moving(false); });
+  cv.addEventListener('touchmove', e => {
+    if (!rot || !tA) return; e.preventDefault(); const tB = rd(e); const h = stage.clientHeight;
+    sph.setFromVector3(camera.position.clone().sub(controls.target));
+    if (tB.length === 1 && tA.length === 1) {
+      sph.theta -= 2 * Math.PI * (tB[0].x - tA[0].x) / h; sph.phi = Math.min(controls.maxPolarAngle, Math.max(0.05, sph.phi - 2 * Math.PI * (tB[0].y - tA[0].y) / h));
+    } else if (tB.length >= 2 && tA.length >= 2) {
+      const dA = Math.hypot(tA[0].x - tA[1].x, tA[0].y - tA[1].y), dB = Math.hypot(tB[0].x - tB[1].x, tB[0].y - tB[1].y);
+      sph.radius = Math.min(controls.maxDistance, Math.max(controls.minDistance, sph.radius * dA / Math.max(dB, 1)));
+      const mx = (tB[0].x + tB[1].x - tA[0].x - tA[1].x) / 2, my = (tB[0].y + tB[1].y - tA[0].y - tA[1].y) / 2;
+      const k = 2 * sph.radius * Math.tan(camera.fov * Math.PI / 360) / h, right = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 0), up = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 1);
+      controls.target.add(right.multiplyScalar(-mx * k)).add(up.multiplyScalar(my * k));
+    }
+    camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(sph)); camera.lookAt(controls.target); tA = tB;
+  }, { passive: false });
+  window.addEventListener('orientationchange', () => setTimeout(layoutRot, 250));
+
   function resize() { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
-  window.addEventListener('resize', resize); resize();
-  (function loop() { requestAnimationFrame(loop); controls.update(); renderer.render(scene, camera); })();
+  window.addEventListener('resize', () => (rot ? layoutRot() : resize())); resize();
+  (function loop() { requestAnimationFrame(loop); if (!rot) controls.update(); renderer.render(scene, camera); placeLabels(); })();
 })();
 </script>
