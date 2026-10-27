@@ -33,7 +33,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 <div id="stage"></div>
 <div id="status">Загружаю модель…</div>
-<header class="bar"><h1>SAMARKAND</h1><span>Крытая терраса · 3D-модель R12 · бархатная мебель, хивинская колоннада, люстры · 171 место</span></header>
+<header class="bar"><h1>SAMARKAND</h1><span>Крытая терраса · 3D-модель R12-v5 · самаркандский стиль, портал, купол-карбанди, бар · 171 место</span></header>
 <nav class="dock" aria-label="Управление моделью">
   <div class="row" id="views"><span class="lbl">Вид</span>
     <button class="view" data-v="overview" aria-pressed="true">Сверху</button>
@@ -48,6 +48,8 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     <button class="view" data-v="corridor">Коридор</button>
     <button class="view" data-v="booths">Кабинки</button>
     <button class="view" data-v="mangal">Мангал</button>
+    <button class="view" data-v="bar">Бар</button>
+    <button class="view" data-v="portal">Портал</button>
   </div>
   <div class="row" id="layers"><span class="lbl">Слои</span>
     <button data-l="skin" aria-pressed="true">Кровля</button>
@@ -89,7 +91,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     tapchan: [P(7.4, 27.4, 1.6), P(3.5, 33.5, 0.4)],
     domes: [P(24, 6, 9), P(6, 20, 3.5)], underdome: [P(8.9, 9.6, 1.0), P(6, 12.7, 4.6)],
     bukhara: [P(5.0, 30.4, 1.6), P(6.1, 35.3, 0.9)],
-    corridor: [P(11.0, 16.8, 0.95), P(7.0, 16.8, 1.0)], booths: [P(6.4, 17.2, 1.2), P(8.6, 24.5, 0.6)], mangal: [P(7.4, 11.4, 1.3), P(10.6, 6.0, 0.5)]
+    corridor: [P(11.0, 16.8, 0.95), P(7.0, 16.8, 1.0)], booths: [P(6.4, 17.2, 1.2), P(8.6, 24.5, 0.6)], mangal: [P(7.4, 11.4, 1.3), P(10.6, 6.0, 0.5)], bar: [P(4.3, 14.6, 1.3), P(0.6, 10.6, 1.0)], portal: [P(17.6, 12.6, 0.8), P(11.4, 16.8, 1.0)]
   };
   const groups = { skin: [], domes: [], structure: [], furniture: [], planting: [], building: [] };
   const rules = [
@@ -126,9 +128,12 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   };
   const fail = () => { status.textContent = 'Не удалось загрузить модель. Обновите страницу.'; };
   const get = (u, how) => fetch(u).then(r => { if (!r.ok) throw new Error(u + ' ' + r.status); return r[how](); });
-  Promise.all([get('m/model.json', 'json'), get('m/geo1.txt', 'text'), get('m/geo2.txt', 'text')]).then(([g, a, b]) => {
-    g.buffers[0].uri = 'data:application/octet-stream;base64,' + a.trim() + b.trim();
-    new THREE.GLTFLoader().parse(JSON.stringify(g), 'm/', onModel, fail);
+  get('m/model.json', 'json').then(g => {
+    const parts = (g.extras && g.extras.geo_parts) || ['geo1.txt', 'geo2.txt'];
+    return Promise.all(parts.map(p => get('m/' + p, 'text'))).then(txt => {
+      g.buffers[0].uri = 'data:application/octet-stream;base64,' + txt.map(t => t.trim()).join('');
+      new THREE.GLTFLoader().parse(JSON.stringify(g), 'm/', onModel, fail);
+    });
   }).catch(fail);
 
   function resize() { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
