@@ -74,7 +74,7 @@ def arch_apron(u0, v0, u1, v1, spring, apex, step=0.02, nstep=3):
         steps.append(sbox(c + half, v0 - 0.01, u1 - 0.035 - (nstep - k - 1) * step, z_))
     g = sbox(u0, v0, u1, v1).difference(unary_union([hole] + steps)); return [q for q in getattr(g, 'geoms', [g]) if q.area > 1e-8]
 
-XW = dict(wd=mat('walnut_dark', (0.072, 0.034, 0.016), rough=0.42, noise_var=0.05), cv=tex2('carvedref_t', 'carvedref.png', 0.32, rough=0.5, bump=0.9),
+XW = dict(wd=tex2('walnutgrain_t', 'walnutgrain.png', 0.6, rough=0.55, bump=0.15), cv=tex2('carvedref_t', 'carvedref.png', 0.32, rough=0.5, bump=0.9),
           k1=bl2.fabric('kilimref_f', os.path.join(TEX2, 'kilimref.png'), 0.55), k2=bl2.fabric('kilimref2_f', os.path.join(TEX2, 'kilimref2.png'), 0.55),
           zt=tex2('zfield_t', 'zfield.png', 0.30, rough=0.12, bump=0.35, coat=0.6))
 @cached
@@ -153,7 +153,7 @@ def pierced_brass_mat(name):
     Lk.new(mk.outputs['Result'], mix.inputs['Factor']); Lk.new(it.outputs['Color'], mix.inputs['B']); Lk.new(mix.outputs['Result'], b.inputs['Base Color'])
     inv = N.new('ShaderNodeMath'); inv.operation = 'SUBTRACT'; inv.inputs[0].default_value = 1.0; Lk.new(mk.outputs['Result'], inv.inputs[1]); Lk.new(inv.outputs[0], b.inputs['Metallic'])
     Lk.new(it.outputs['Color'], b.inputs['Emission Color'])
-    em = N.new('ShaderNodeMath'); em.operation = 'MULTIPLY'; em.inputs[1].default_value = 6.0; Lk.new(mk.outputs['Result'], em.inputs[0]); Lk.new(em.outputs[0], b.inputs['Emission Strength'])
+    em = N.new('ShaderNodeMath'); em.operation = 'MULTIPLY'; em.inputs[1].default_value = 4.0; Lk.new(mk.outputs['Result'], em.inputs[0]); Lk.new(em.outputs[0], b.inputs['Emission Strength'])
     b.inputs['Roughness'].default_value = 0.32
     bl._mats[name] = mm; return mm
 X['pierced'] = pierced_brass_mat('pierced_brass'); register_uv_size(X['pierced'], 0.24)
@@ -222,3 +222,213 @@ def a_sconce():
     b.lathe(0, c, 0.26, [(0.0, 0.0), (0.008, 0.0), (0.004, 0.03), (0.0, 0.035)], B, 8)
     b.lathe(0, c, -0.31, [(0.0, 0.0), (0.006, 0.02), (0.014, 0.04), (0.0, 0.05)], B, 8)
     return b.mesh('Sconce_pierced')
+
+# ---------------------------------------------------------------- TRAINED CHINAR UNDER THE ROOF (owner rev. 7)
+def leaf_card_mat():
+    """plane-tree leaf cards: alpha-clipped atlas (glTF exports as MASK), slightly glossy upper side"""
+    if 'leaf_card' in bl._mats: return bl._mats['leaf_card']
+    mm = bpy.data.materials.new('leaf_card'); N = mm.node_tree.nodes; Lk = mm.node_tree.links; b = N['Principled BSDF']
+    it = N.new('ShaderNodeTexImage'); it.image = bpy.data.images.load(os.path.join(TEX2, 'platanleaf.png'), check_existing=True)
+    uv = N.new('ShaderNodeUVMap'); uv.uv_map = 'UVMap'; Lk.new(uv.outputs['UV'], it.inputs['Vector']); Lk.new(it.outputs['Color'], b.inputs['Base Color'])
+    rd = N.new('ShaderNodeMath'); rd.operation = 'ROUND'; Lk.new(it.outputs['Alpha'], rd.inputs[0]); Lk.new(rd.outputs[0], b.inputs['Alpha'])
+    b.inputs['Roughness'].default_value = 0.5
+    try: b.inputs['Subsurface Weight'].default_value = 0.15
+    except Exception: pass
+    bl._mats['leaf_card'] = mm; return mm
+@cached
+def a_chinar_trained(seed=3):
+    """plane tree kept under the roof: buttressed trunk to +2.05 (bark), five scaffold limbs + forks spreading to r 1.45 at
+    +2.5..2.85, foliage as ~70 lumpy leaf clumps forming a low umbrella (top <= +3.15, underside >= +1.75 over the ring bench).
+    Returns (wood, foliage) meshes; origin at the terrace surface in the trunk axis."""
+    import random; R_ = random.Random(seed); b = MB(); N = 28; H = 2.05; r0, r1 = 0.30, 0.22
+    prof = [(0.0, r0 * 1.9), (0.08, r0 * 1.6), (0.25, r0 * 1.2), (0.5, r0 * 1.05), (1.2, r0), (1.8, (r0 + r1) / 2), (H, r1)]
+    rings = []
+    for z, r in prof:
+        fl = max(0.0, 1 - z / 0.6)
+        rings.append([b.bm.verts.new(((r * (1 + 0.28 * fl * max(0, math.cos(3 * a)) ** 3 + 0.035 * math.sin(11 * a + z * 1.7))) * math.cos(a),
+                                      (r * (1 + 0.28 * fl * max(0, math.cos(3 * a)) ** 3 + 0.035 * math.sin(11 * a + z * 1.7))) * math.sin(a), z)) for a in [2 * math.pi * k / N for k in range(N)]])
+    BK = tex2('platanbark_t', 'platanbark.png', 0.8, rough=0.8, bump=0.6); register_uv_size(BK, 0.8)
+    i = b.mi(BK); fs = []
+    for p_, q_ in zip(rings[:-1], rings[1:]):
+        for k in range(N): fs.append(b.bm.faces.new((p_[k], p_[(k + 1) % N], q_[(k + 1) % N], q_[k])))
+    fs.append(b.bm.faces.new(list(reversed(rings[0])))); fs.append(b.bm.faces.new(rings[-1]))
+    for f in fs: f.material_index = i; b.smooth.add(f)
+    bmesh.ops.recalc_face_normals(b.bm, faces=fs)
+    tips = []
+    for k in range(5):
+        a = 2 * math.pi * k / 5 + R_.uniform(-0.25, 0.25); rr = R_.uniform(0.85, 1.05); zt = R_.uniform(2.5, 2.7)
+        p0 = (0.06 * math.cos(a), 0.06 * math.sin(a), H - 0.12); p1 = (rr * math.cos(a), rr * math.sin(a), zt)
+        pm = tuple(p0[j] * 0.45 + p1[j] * 0.55 for j in range(3)); b.rod(p0, pm, 0.09, BK, 10); b.rod(pm, p1, 0.062, BK, 10)
+        for s_ in (-1, 1):                                                    # fork into two shoots
+            a2 = a + s_ * R_.uniform(0.3, 0.5); r2 = rr + R_.uniform(0.3, 0.45); p2 = (r2 * math.cos(a2), r2 * math.sin(a2), zt + R_.uniform(0.1, 0.22))
+            b.rod(p1, p2, 0.04, BK, 8); tips.append(p2)
+            for _t in range(3):                                               # twigs into the crown
+                a3 = a2 + R_.uniform(-0.6, 0.6); r3 = r2 + R_.uniform(0.15, 0.35); p3 = (r3 * math.cos(a3), r3 * math.sin(a3), p2[2] + R_.uniform(0.05, 0.25))
+                b.rod(p2, p3, 0.016, BK, 6); tips.append(p3)
+        tips.append(p1)
+    wood = b.mesh('Chinar_trained_wood')
+    # foliage: ~2600 plane-tree leaf cards (alpha atlas, 4 tints) in ~85 clumps forming a low umbrella
+    bm = bmesh.new(); uvl = bm.loops.layers.uv.new('UVMap'); pts = []
+    for p in tips: pts.append((p[0], p[1], p[2] + 0.1, R_.uniform(0.24, 0.3)))
+    while len(pts) < 115:
+        rho = 1.55 * math.sqrt(R_.random()); a = R_.uniform(0, 2 * math.pi)
+        z = 2.45 + 0.42 * (1 - (rho / 1.6) ** 2) + R_.uniform(-0.12, 0.1); rad = R_.uniform(0.2, 0.3)
+        if z + rad > 3.12: z = 3.12 - rad
+        if z - rad < 1.8: continue
+        pts.append((rho * math.cos(a), rho * math.sin(a), z, rad))
+    from mathutils import Vector as V_
+    for x, y, z, r in pts:
+        for _ in range(int(62 * (r / 0.25) ** 2)):
+            while True:
+                d = V_((R_.uniform(-1, 1), R_.uniform(-1, 1), R_.uniform(-1, 1)))
+                if d.length <= 1: break
+            c = V_((x, y, z)) + d * r * V_((1, 1, 0.75))
+            n_ = (V_((R_.gauss(0, 0.6), R_.gauss(0, 0.6), 1.0)) + (c - V_((0, 0, 2.2))).normalized() * 0.6).normalized()
+            t_ = n_.cross(V_((R_.uniform(-1, 1), R_.uniform(-1, 1), R_.uniform(-.2, .2)))).normalized(); u_ = n_.cross(t_)
+            sz = R_.uniform(0.13, 0.19); vs = [bm.verts.new(c + t_ * (sx * sz / 2) + u_ * (sy * sz)) for sx, sy in ((-1, -0.1), (1, -0.1), (1, 0.9), (-1, 0.9))]
+            f = bm.faces.new(vs); ci, cj = R_.randrange(2), R_.randrange(2)
+            for lp, (uu, vv) in zip(f.loops, ((0, 0), (1, 0), (1, 1), (0, 1))): lp[uvl].uv = ((ci + uu) / 2, (cj + vv) / 2)
+    fol = bpy.data.meshes.new('Chinar_trained_foliage'); bm.to_mesh(fol); bm.free()
+    fol.materials.append(leaf_card_mat()); fol['kit'] = 1
+    return wood, fol
+
+# ---------------------------------------------------------------- PLANT KIT (rev. 7): leaf / flower cards instead of low-poly blobs
+def card_mat(name, file, rough=0.5):
+    """alpha-clipped card material (exports to glTF as MASK)"""
+    if name in bl._mats: return bl._mats[name]
+    mm = bpy.data.materials.new(name); N = mm.node_tree.nodes; Lk = mm.node_tree.links; b = N['Principled BSDF']
+    it = N.new('ShaderNodeTexImage'); it.image = bpy.data.images.load(os.path.join(TEX2, file), check_existing=True)
+    uv = N.new('ShaderNodeUVMap'); uv.uv_map = 'UVMap'; Lk.new(uv.outputs['UV'], it.inputs['Vector']); Lk.new(it.outputs['Color'], b.inputs['Base Color'])
+    rd = N.new('ShaderNodeMath'); rd.operation = 'ROUND'; Lk.new(it.outputs['Alpha'], rd.inputs[0]); Lk.new(rd.outputs[0], b.inputs['Alpha'])
+    b.inputs['Roughness'].default_value = rough
+    bl._mats[name] = mm; return mm
+class Cards:
+    """bmesh of alpha cards; add(centre, radius, n, size, cells) scatters quads in an ellipsoid, faces lean upward/outward"""
+    def __init__(s, seed):
+        import random; s.R = random.Random(seed); s.bm = bmesh.new(); s.uv = s.bm.loops.layers.uv.new('UVMap'); s.mats = []
+    def add(s, c, r, n, size, mm, cells=None, squash=0.8, up=1.0, axis=None):
+        from mathutils import Vector as V_
+        if mm not in s.mats: s.mats.append(mm)
+        mi = s.mats.index(mm); R_ = s.R; c = V_(c)
+        for _ in range(n):
+            while True:
+                d = V_((R_.uniform(-1, 1), R_.uniform(-1, 1), R_.uniform(-1, 1)))
+                if d.length <= 1: break
+            p = c + V_((d.x * r, d.y * r, d.z * r * squash))
+            n_ = (V_((R_.gauss(0, .6), R_.gauss(0, .6), up)) + (p - c).normalized() * .7).normalized()
+            t_ = n_.cross(V_((R_.uniform(-1, 1), R_.uniform(-1, 1), R_.uniform(-.2, .2)))).normalized(); u_ = n_.cross(t_)
+            sz = R_.uniform(*size)
+            vs = [s.bm.verts.new(p + t_ * (sx * sz / 2) + u_ * (sy * sz)) for sx, sy in ((-1, -.1), (1, -.1), (1, .9), (-1, .9))]
+            f = s.bm.faces.new(vs); f.material_index = mi
+            ci, cj = (R_.randrange(2), R_.randrange(2)) if cells is None else cells[R_.randrange(len(cells))]
+            for lp, (uu, vv) in zip(f.loops, ((0, 0), (1, 0), (1, 1), (0, 1))): lp[s.uv].uv = ((ci + uu) / 2, (cj + vv) / 2)
+    def mesh(s, name, zfloor=None):
+        if zfloor is not None:
+            for v in s.bm.verts: v.co.z = max(v.co.z, zfloor)                 # no leaf below the soil line
+        me = bpy.data.meshes.new(name); s.bm.to_mesh(me); s.bm.free()
+        for mm in s.mats: me.materials.append(mm)
+        me['kit'] = 1; return me
+def _plantmats():
+    return dict(leafn=card_mat('leaf_narrow', 'narrowleaf.png', 0.4), flower=card_mat('flower_card', 'flowers.png', 0.6),
+                bark=tex2('platanbark_t', 'platanbark.png', 0.8, rough=0.8, bump=0.6), smooth=mat('bark_smooth', (0.36, 0.33, 0.28), rough=0.7, noise_var=0.05),
+                palm=mat('palm_leaflet', (0.16, 0.36, 0.08), rough=0.45, noise_var=0.12), stem=mat('palm_stem', (0.42, 0.48, 0.2), rough=0.5, noise_var=0.08),
+                banana=mat('banana_leaf_v7', (0.07, 0.24, 0.05), rough=0.4, noise_var=0.1), fruit=m.get('pomfruit') or mat('pomfruit_g', (0.45, 0.04, 0.05), rough=0.3, coat=0.4))
+@cached
+def a_pomegranate(seed=1):
+    """pomegranate (anor), multi-stem small tree ~1.9 m: narrow leaves, scarlet flowers, red fruit; origin = soil surface"""
+    P = _plantmats(); import random; R_ = random.Random(seed); b = MB(); tips = []
+    for k in range(3):
+        a = 2 * math.pi * k / 3 + R_.uniform(-.3, .3); t = (0.18 * math.cos(a), 0.18 * math.sin(a), 1.25)
+        b.rod((0.02 * math.cos(a), 0.02 * math.sin(a), 0.004), t, 0.035, P['smooth'], 8); tips.append(t)
+    cd = Cards(seed)
+    for t in tips: cd.add((t[0] * 1.6, t[1] * 1.6, 1.55), 0.42, 560, (0.08, 0.11), P['leafn'])
+    cd.add((0, 0, 1.75), 0.38, 320, (0.08, 0.11), P['leafn'])
+    cd.add((0, 0, 1.6), 0.5, 22, (0.05, 0.07), P['flower'], cells=[(1, 1)])
+    for k in range(9):
+        a = R_.uniform(0, 2 * math.pi); rr = R_.uniform(0.25, 0.48); b.lathe(rr * math.cos(a), rr * math.sin(a), R_.uniform(1.25, 1.75), [(0.0, 0.0), (0.04, 0.012), (0.045, 0.045), (0.035, 0.075), (0.015, 0.085), (0.012, 0.1), (0.0, 0.1)], P['fruit'], 10)
+    return merge('Pomegranate_foliage', [b.mesh('pom_wood'), cd.mesh('pom_cards')])
+@cached
+def a_plumeria(seed=2):
+    """frangipani ~2.3 m: thick grey forking branches, rosettes of long leaves at the tips, cream-yellow flower clusters"""
+    P = _plantmats(); import random; R_ = random.Random(seed); b = MB(); cd = Cards(seed)
+    b.rod((0, 0, 0.0), (0, 0, 1.1), 0.075, P['smooth'], 10)
+    for k in range(5):
+        a = 2 * math.pi * k / 5 + R_.uniform(-.3, .3); p1 = (0.35 * math.cos(a), 0.35 * math.sin(a), 1.6); b.rod((0, 0, 1.05), p1, 0.05, P['smooth'], 8)
+        for s_ in (-1, 1):
+            a2 = a + s_ * 0.45; p2 = (p1[0] + 0.3 * math.cos(a2), p1[1] + 0.3 * math.sin(a2), 2.0 + R_.uniform(-.1, .1)); b.rod(p1, p2, 0.035, P['smooth'], 8)
+            cd.add((p2[0], p2[1], p2[2] + 0.08), 0.22, 26, (0.22, 0.3), P['leafn'], up=1.6)
+            cd.add((p2[0], p2[1], p2[2] + 0.2), 0.1, 12, (0.06, 0.08), P['flower'], cells=[(0, 0)], up=2.0)
+    return merge('Plumeria_foliage', [b.mesh('plum_wood'), cd.mesh('plum_cards')])
+def _frond(bm, base, a, L, droop, nleaf, mm_i, R_, w=0.022, ll=0.32):
+    """palm frond: arching rachis (tube approximated by a thin strip) with alternate drooping leaflets (thin quads)"""
+    from mathutils import Vector as V_
+    pts = []
+    for k in range(13):
+        u = k / 12; pts.append(V_((base[0] + math.cos(a) * L * u, base[1] + math.sin(a) * L * u, base[2] + L * 0.55 * u - droop * u * u)))
+    side = V_((-math.sin(a), math.cos(a), 0))
+    for k in range(12):
+        p0, p1 = pts[k], pts[k + 1]; f = bm.faces.new([bm.verts.new(p0 - side * .008), bm.verts.new(p0 + side * .008), bm.verts.new(p1 + side * .008), bm.verts.new(p1 - side * .008)]); f.material_index = mm_i
+    for k in range(nleaf):
+        u = 0.12 + 0.86 * k / nleaf; i0 = min(11, int(u * 12)); p = pts[i0].lerp(pts[i0 + 1], u * 12 - i0)
+        for sg in (-1, 1):
+            l_ = ll * math.sin(math.pi * min(1, u * 1.15)) + 0.06
+            tip = p + side * sg * l_ * 0.8 + V_((math.cos(a), math.sin(a), 0)) * l_ * 0.35 + V_((0, 0, -l_ * 0.45))
+            dv = (tip - p).normalized(); nn = dv.cross(V_((0, 0, 1))).normalized() * w
+            f = bm.faces.new([bm.verts.new(p - nn * .3), bm.verts.new(p + nn * .3), bm.verts.new(tip + nn * .15), bm.verts.new(tip - nn * .15)]); f.material_index = mm_i
+@cached
+def a_areca(seed=3):
+    """areca (golden cane) clump ~2.2 m: 4 ringed yellow-green canes, 5 arching pinnate fronds each"""
+    P = _plantmats(); import random; R_ = random.Random(seed); b = MB(); bm = bmesh.new()
+    for k in range(4):
+        a = 2 * math.pi * k / 4 + R_.uniform(-.4, .4); h = R_.uniform(1.1, 1.6); top_ = (0.12 * math.cos(a), 0.12 * math.sin(a), h)
+        b.rod((0.03 * math.cos(a), 0.03 * math.sin(a), 0.0), top_, 0.028, P['stem'], 8)
+        for j in range(5): _frond(bm, top_, a + (j - 2) * 0.75 + R_.uniform(-.2, .2), R_.uniform(0.8, 1.1), R_.uniform(0.55, 0.8), 22, 0, R_)
+    fr = bpy.data.meshes.new('areca_fronds'); bm.to_mesh(fr); bm.free(); fr.materials.append(P['palm']); fr['kit'] = 1
+    return merge('Areca_foliage', [b.mesh('areca_canes'), fr])
+@cached
+def a_banana(seed=4):
+    """banana / strelitzia clump ~2.4 m: pseudostem + 7 broad paddle leaves (curved strips with a midrib fold and a few tears)"""
+    from mathutils import Vector as V_
+    P = _plantmats(); import random; R_ = random.Random(seed); b = MB(); bm = bmesh.new()
+    b.cyl(0, 0, 0.0, 1.3, 0.09, P['stem'], 12, r2=0.06)
+    for k in range(9):
+        a = 2 * math.pi * k / 9 + R_.uniform(-.2, .2); L = R_.uniform(1.2, 1.6); W = R_.uniform(0.3, 0.38); base = V_((0, 0, 1.2 + R_.uniform(0, .25)))
+        d = V_((math.cos(a), math.sin(a), 0)); side = V_((-math.sin(a), math.cos(a), 0)); rows = []
+        for j in range(9):
+            u = j / 8; c = base + d * (0.25 + L * u) + V_((0, 0, 0.55 * u - 0.75 * u * u))
+            w = W * math.sin(math.pi * min(1, 0.15 + u)) ** 0.7
+            rows.append([bm.verts.new(c - side * w + V_((0, 0, -0.04))), bm.verts.new(c), bm.verts.new(c + side * w + V_((0, 0, -0.04)))])
+        for j in range(8):
+            for i in range(2):
+                if j > 3 and R_.random() < 0.18: continue                          # wind tears
+                bm.faces.new([rows[j][i], rows[j][i + 1], rows[j + 1][i + 1], rows[j + 1][i]])
+        b.rod((0, 0, 1.15), tuple(base + d * 0.25), 0.03, P['stem'], 6)
+    lv = bpy.data.meshes.new('banana_leaves'); bm.to_mesh(lv); bm.free(); lv.materials.append(P['banana']); lv['kit'] = 1
+    return merge('Banana_foliage', [b.mesh('banana_stem'), lv])
+@cached
+def a_shrub(seed, kind='green'):
+    """low ball shrub r ~0.35 of narrow-leaf cards (green / bougainvillea / jasmine / herbs)"""
+    P = _plantmats(); cd = Cards(seed); b = MB(); b.cyl(0, 0, 0.0, 0.15, 0.02, P['smooth'], 6)
+    if kind == 'herb': cd.add((0, 0, 0.16), 0.2, 230, (0.05, 0.07), P['leafn'], squash=0.6)
+    else: cd.add((0, 0, 0.3), 0.33, 480, (0.07, 0.1), P['leafn'], squash=0.85)
+    if kind == 'bou': cd.add((0, 0, 0.33), 0.35, 170, (0.05, 0.07), P['flower'], cells=[(1, 0)])
+    if kind == 'jas': cd.add((0, 0, 0.32), 0.34, 110, (0.035, 0.05), P['flower'], cells=[(0, 1)])
+    return merge(f'Shrub_{kind}_{seed}_foliage', [b.mesh('shrub_stem'), cd.mesh('shrub_cards', 0.01)])
+
+@cached
+def a_lowtable(L, W, H):
+    """low carved dastarkhan table L x W x H (tapchan): walnut frame top with a zellige inlay, arched aprons, square legs"""
+    b = MB(); WD = XW['wd']; hx, hy = L / 2, W / 2; f = 0.06; t = 0.035
+    b.box(-hx, -hy, H - t, hx, -hy + f, H, WD, 0.004); b.box(-hx, hy - f, H - t, hx, hy, H, WD, 0.004)
+    b.box(-hx, -hy + f, H - t, -hx + f, hy - f, H, WD, 0.004); b.box(hx - f, -hy + f, H - t, hx, hy - f, H, WD, 0.004)
+    b.box(-hx + f, -hy + f, H - t, hx - f, hy - f, H, XW['zt'])
+    lg = 0.05; a = 0.03
+    for sx in (-1, 1):
+        for sy in (-1, 1): b.box(sx * (hx - a - lg) , sy * (hy - a - lg), 0.0, sx * (hx - a), sy * (hy - a), H - t, WD, 0.003)
+    for sy in (-1, 1):
+        y_ = sy * (hy - a - lg / 2)
+        for q in arch_apron(-hx + a + lg, H - t - 0.12, hx - a - lg, H - t, H - t - 0.07, H - t - 0.02, 0.01, 2): b.extrude(list(q.exterior.coords)[:-1], y_ - 0.01, y_ + 0.01, XW['cv'], 'xz')
+    for sx in (-1, 1):
+        x_ = sx * (hx - a - lg / 2)
+        for q in arch_apron(-hy + a + lg, H - t - 0.12, hy - a - lg, H - t, H - t - 0.07, H - t - 0.02, 0.01, 2): b.extrude(list(q.exterior.coords)[:-1], x_ - 0.01, x_ + 0.01, XW['cv'], 'yz')
+    return b.mesh(f'Lowtable_{int(L * 100)}x{int(W * 100)}')

@@ -71,7 +71,9 @@ for o in bpy.data.objects:
     objs.append(o)
 keys = ['boundary_edges', 'nonmanifold_edges', 'wire_edges', 'loose_verts', 'zero_area_faces', 'zero_len_edges', 'flipped_edges', 'inside_out_shells', 'coincident_verts']
 tot = {k: sum(r[k] for r in meshes.values()) for k in keys + ['verts', 'faces', 'tris', 'ngons', 'shells']}
-clean = [n for n, r in meshes.items() if all(r[k] == 0 for k in keys)]
+FOLIAGE = ('foliage',)                                       # leaf cards are single-sided planes by nature: not part of the closed-shell rule
+clean = [n for n, r in meshes.items() if all(r[k] == 0 for k in keys) or any(f in n for f in FOLIAGE)]
+tot = {k: sum(r[k] for n, r in meshes.items() if not any(f in n for f in FOLIAGE)) for k in keys + ['verts', 'faces', 'tris', 'ngons', 'shells']}
 xform = [o.name for o in objs if (any(abs(a) > 1e-6 for a in o.rotation_euler[:2]) or any(abs(s - 1) > 1e-6 for s in o.scale)) and not o.name.startswith(('Rod', 'rod'))]
 
 # ---------- placement: penetrations + floating ----------
@@ -93,10 +95,11 @@ if PLACE_COLLS is not None:
         for j in range(i + 1, len(info)):
             oj, loj, hij, bj = info[j]
             if any(loi[k] > hij[k] or loj[k] > hii[k] for k in range(3)): continue
+            if 'foliage' in oi.data.name or 'foliage' in oj.data.name: continue   # leaves among twigs / around limbs
             if bi.overlap(bj): pen.append([oi.name, oj.name])
     # floating: every standing piece must rest on something (a floor, deck or another piece) within 2 mm
     HANG = ('Lantern', 'Rod', 'Flying_carpet', 'Heat_lamp', 'Corridor_niche', 'Aivan_wallcarpet', 'Corridor_velvet', 'Mangal_hood', 'Mangal_skewers',
-            'Khiva_gate', 'Street_pishtaq', 'Booth', 'dome_', 'Tent_', 'Corridor_arch', 'Carpet_frieze', 'Ceiling_carpet', 'Rattan', 'Velvet_swag', 'Pendant', 'Chandelier', 'Khiva_arcade_head', 'Khiva_arcade_beam', 'Reed_fringe', 'Bar_cornice', 'Bar_drum', 'Bar_wallcarpet')
+            'Khiva_gate', 'Street_pishtaq', 'Booth', 'dome_', 'Tent_', 'Corridor_arch', 'Carpet_frieze', 'Ceiling_carpet', 'Rattan', 'Velvet_swag', 'Pendant', 'Chandelier', 'Khiva_arcade_head', 'Khiva_arcade_beam', 'Reed_fringe', 'Bar_cornice', 'Bar_drum', 'Bar_wallcarpet', 'Sconce', 'Skylight', 'Chinar_crown')
     sup = []
     for o in objs:
         mw = o.matrix_world; vs = [mw @ v.co for v in o.data.vertices]

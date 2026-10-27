@@ -288,7 +288,8 @@ for it in D['items']:
         if k == 'portal':
             x0, y0, x1, y1 = bbox(r); prism('portal_cap', [r], SID + 3.0, SID + 3.4, m['majolica'], cn)
         if k == 'hood':
-            cx, cy = cen(r); boxes('mangal_stack', [(cx - 0.2, cy - 0.2, base + 2.45, cx + 0.2, cy + 0.2, 5.2)], m['steel'], 'Mangal')
+            cx, cy = cen(r); cx = min(cx, 11.3)                 # rev. 7: flue between the purlins at x 10.8 / 11.8
+            boxes('mangal_stack', [(cx - 0.2, cy - 0.2, base + 2.45, cx + 0.2, cy + 0.2, 5.2)], m['steel'], 'Mangal')
 
 # aivan rails + steps (terrace -> aivan) + bar steps + ramp
 rails = []
@@ -330,11 +331,11 @@ if not DETAIL: boxes('corridor_swags', sw_, m['velvet'], 'Corridor')
 # ======================= TREES + PLANTING =======================
 rr = random.Random(7)
 for i, (x, y) in enumerate(D['trees']):
-    cylinder(f'chinar_trunk_{i}', x, y, TER, 6.4, 0.32, m['bark'], 'Trees', n=16, r2=0.2)
-    for a in [k * 1.257 for k in range(5)]: cylinder(f'chinar_branch_{i}', x + 0.5 * math.cos(a), y + 0.5 * math.sin(a), 5.6, 6.6, 0.1, m['bark'], 'Trees', n=6, r2=0.06)
-    rc, zc, r0_, r1_ = ((2.0, 7.2, 1.1, 1.5) if i == 0 else (1.6, 6.6, 0.95, 1.25))
+    # rev. 7: the chinar stays under the roof — trunk to +2.0, crown trained as a low umbrella between +1.8 and +3.25 over the terrace
+    cylinder(f'chinar_trunk_{i}', x, y, TER, TER + 2.0, 0.32, m['bark'], 'Trees', n=16, r2=0.24)
+    rc, zc, r0_, r1_ = (1.05, TER + 2.45, 0.55, 0.72)
     pts = [(x + rc * math.cos(a) * rr.uniform(.85, 1), y + rc * math.sin(a) * rr.uniform(.85, 1), zc + rr.uniform(0.0, .3), rr.uniform(r0_, r1_)) for a in [k * 0.785 for k in range(8)]]
-    pts.append((x, y, zc + 0.9, r1_ + 0.3)); blob(f'chinar_canopy_{i}', pts, m['leaf'], 'Trees')
+    pts.append((x, y, zc + 0.12, r1_)); blob(f'chinar_canopy_{i}', pts, m['leaf'], 'Trees')
 for sp, x, y, r in D['plants']:
     zb = TER + (0.22 if sp in ('pom', 'plum', 'jas', 'herb') and x > 8 else 0.0)
     if sp == 'pom':
@@ -370,9 +371,11 @@ for it in D['items']:
         while y < y1: bou.append((xb(y) - 0.62, y, SID + 1.05, 0.16)); y += 0.45
 blob('bougainvillea', bou, m['magenta'], 'Planting', 1)
 # kids play elements
-boxes('play_block', [(-6.8, 0.45, TER, -4.9, 1.5, TER + 0.7)], m['play_o'], 'Kids'); boxes('play_sand', [(-3.0, 0.45, TER, -0.9, 1.45, TER + 0.35)], m['play_b'], 'Kids')
-cylinder('play_drum', -4.0, 1.3, TER, TER + 0.6, 0.55, m['play_g'], 'Kids'); cylinder('play_seat', -2.3, 2.0, TER, TER + 0.45, 0.38, m['play_y'], 'Kids')
-boxes('kids_fence', [(-7.25, 2.6, TER, -4.3, 2.65, TER + 0.9), (-3.4, 2.6, TER, -0.15, 2.65, TER + 0.9), (-0.2, 0.15, TER, -0.15, 2.65, TER + 0.9)], m['oak'], 'Kids')
+# rev. 7: kids corner against the hall glazing (y 1.65..4.1), fence + 900 gate on the staff-passage side
+boxes('play_block', [(-6.8, 2.95, TER, -4.9, 3.9, TER + 0.7)], m['play_o'], 'Kids'); boxes('play_sand', [(-3.0, 2.95, TER, -0.9, 3.9, TER + 0.35)], m['play_b'], 'Kids')
+cylinder('play_drum', -4.0, 2.65, TER, TER + 0.6, 0.55, m['play_g'], 'Kids'); cylinder('play_seat', -2.1, 2.3, TER, TER + 0.45, 0.38, m['play_y'], 'Kids')
+boxes('kids_fence', [(-7.25, 1.6, TER, -4.3, 1.65, TER + 0.9), (-3.4, 1.6, TER, -0.15, 1.65, TER + 0.9), (-0.2, 1.65, TER, -0.15, 4.1, TER + 0.9),
+                     (-7.25, 1.65, TER, -7.2, 4.1, TER + 0.9)], m['oak'], 'Kids')
 
 # ======================= ROOF =======================
 for i, r in enumerate(D['roof']):
@@ -628,7 +631,7 @@ if DO_RENDER:
              ('02_entrance_pishtaq', (17.6, 12.6, 0.4), (9.0, 17.4), 20, 0.12, [], -0.4),
              ('03_corridor_teleport', (10.35, 16.8, 1.0), (6.0, 16.8), 17, 0.08, [], -0.1),
              ('04_plaza_mangal', (5.6, 15.4, 1.55), (11.4, 7.0), 18, 0.14, [], -0.1),
-             ('05_south_dome', (8.9, 9.6, 1.05), (4.8, 13.6), 15, 0.3, [], -0.1),
+             ('05_chinar_lantern', (9.3, 9.0, 1.1), (5.6, 13.2), 16, 0.16, [], -0.1),
              ('06_booth_alley', (6.7, 17.6, 1.2), (8.2, 27.0), 19, 0.1, [], -0.1),
              ('07_booth_sea_view', (b4[2] - 0.45, (b4[0] + b4[1]) / 2 + 0.25, 0.75), (b4[3] + 4.0, (b4[0] + b4[1]) / 2), 17, 0.08, [], -0.1),
              ('08_booth_front', (BO_[2][2] - 2.2, BO_[2][0] + 0.7, 1.25), (BO_[2][2] + 0.9, BO_[2][0] + 1.1), 19, 0.08, [], -0.1),
@@ -642,7 +645,8 @@ if DO_RENDER:
              ('16_aerial_sea', (104.0, -2.0, 16.0), (8.0, 21.0), 40, 0.0, [], -0.9),
              ('17_khiva_arcade', (6.2, 23.4, 1.0), (3.2, 19.6), 18, 0.12, [], -0.1),
              ('18_dining_chairs', (5.3, 4.5, 0.75), (2.5, 7.5), 22, 0.06, [], -0.1),
-             ('19_bar', (4.3, 14.6, 0.85), (0.6, 10.6), 20, 0.1, [], -0.1)]
+             ('19_bar', (4.3, 14.6, 0.85), (0.6, 10.6), 20, 0.1, [], -0.1),
+             ('20_kids_corner', (-0.5, 0.45, 1.65), (-4.6, 3.3), 16, -0.08, [], -0.1)]
     only = os.environ.get('VIEWS')
     for name, loc, tgt, lens, shift, hide, ev in VIEWS:
         if only and not any(name.startswith(v) for v in only.split(',')): continue

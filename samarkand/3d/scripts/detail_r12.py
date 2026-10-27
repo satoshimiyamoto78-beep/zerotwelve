@@ -89,15 +89,29 @@ for mm, sz in ((m['ikat'], 0.5), (m['suzani'], 0.6), (m['jali'], 0.5), (m['majol
                (X['carved'], 0.9), (X['kilim'], 0.6), (X['kilim2'], 0.6), (X['suzani2'], 0.9), (X['quilt'], 0.5), (X['plaster'], 1.5), (X['rattan'], 0.25), (X['domeglaze'], 0.9), (X['plov'], 0.12), (X['velvet'], 0.8), (X['tent'], 1.2), (X['copper'], 0.5), (X['gajbrick'], 1.4), (X['dometile'], 0.7)):
     register_uv_size(mm, sz)
 exec(open(os.path.join(HERE, 'assets_v7.py')).read())                    # R12-v6: carved chairs / tables, floor tiles
-for k_, sz in (('cv', 0.32), ('k1', 0.55), ('k2', 0.55), ('zt', 0.30)): register_uv_size(XW[k_], sz)
+for k_, sz in (('cv', 0.32), ('k1', 0.55), ('k2', 0.55), ('zt', 0.30), ('wd', 0.6)): register_uv_size(XW[k_], sz)
 XW.update(marble=tex2('marblegrid_t', 'marblegrid.png', float(open(os.path.join(TEX2, 'marblegrid.size')).read()), rough=0.18, bump=0.3, coat=0.4),
           zcarpet=uvmat('zcarpet_uv', 'zcarpet.png', rough=0.2, sheen=0.0), alleyrun=uvmat('alleyrun_uv', 'alleyrun.png', rough=0.3, sheen=0.0))
 register_uv_size(XW['marble'], float(open(os.path.join(TEX2, 'marblegrid.size')).read()))
+def retex(mm, file, size, rough=0.5, bump=0.15):
+    """rev. 7: replace a procedural material's nodes by a box-mapped image texture (keeps every user of the material)"""
+    N = mm.node_tree.nodes; Lk = mm.node_tree.links
+    for n_ in list(N):
+        if n_.type not in ('BSDF_PRINCIPLED', 'OUTPUT_MATERIAL'): N.remove(n_)
+    b = N['Principled BSDF']; b.inputs['Roughness'].default_value = rough
+    tc = N.new('ShaderNodeTexCoord'); mp = N.new('ShaderNodeMapping'); mp.inputs['Scale'].default_value = (1 / size,) * 3; Lk.new(tc.outputs['Object'], mp.inputs['Vector'])
+    it = N.new('ShaderNodeTexImage'); it.image = bpy.data.images.load(os.path.join(TEX2, file), check_existing=True); it.projection = 'BOX'; it.projection_blend = 0.15
+    Lk.new(mp.outputs['Vector'], it.inputs['Vector']); Lk.new(it.outputs['Color'], b.inputs['Base Color'])
+    bw = N.new('ShaderNodeRGBToBW'); Lk.new(it.outputs['Color'], bw.inputs['Color']); bp = N.new('ShaderNodeBump'); bp.inputs['Strength'].default_value = bump; bp.inputs['Distance'].default_value = 0.002
+    Lk.new(bw.outputs['Val'], bp.inputs['Height']); Lk.new(bp.outputs['Normal'], b.inputs['Normal'])
+    register_uv_size(mm, size)
+for k_, f_, sz_ in (('walnut', 'walnutgrain.png', 0.6), ('oak', 'oakgrain.png', 0.7), ('deck', 'oakgrain.png', 0.9)):
+    if k_ in m: retex(m[k_], f_, sz_)
 def ceil_at(x, y):
     """underside of whatever is overhead: balcony slab (x < 1.5), a roof beam (IPE 300 bottom flange), a purlin (C200 bottom)
     or the roof sandwich panel between them"""
+    if any(abs(y - yb_) < 0.085 for yb_, _ in D['beams']) and x > 0.18: return top(x) - 0.55     # beams run under the balcony slab too
     if x < 1.5: return 3.85
-    if any(abs(y - yb_) < 0.085 for yb_, _ in D['beams']): return top(x) - 0.55
     if any(abs(x - px_) < 0.06 and py0 - 0.05 < y < py1 + 0.05 for px_, py0, py1 in D['purlins']): return top(x) - 0.25
     return top(x) - 0.05
 
@@ -131,8 +145,9 @@ for it in D['items']:
     if it['kind'] == 'chair':
         for r in it['poly']:
             base = 0.0 if on_plat(r) else TER; x0, y0, x1, y1 = bbox(r)
-            nc += 1; inst(a_carvedchair('k1' if nc % 3 else 'k2'), f'Chair_{nc:03d}', ((x0 + x1) / 2, (y0 + y1) / 2, base), ROT_BACK[it.get('back', 'n')], 'Furniture')
-            CHAIRS.append(((x0 + x1) / 2, (y0 + y1) / 2, base, ROT_BACK[it.get('back', 'n')]))
+            bk_ = it.get('back', 'n'); ox_, oy_ = {'n': (0, 0.015), 's': (0, -0.015), 'e': (0.015, 0), 'w': (-0.015, 0)}[bk_]   # footprint rect 580 x 550 -> asset origin
+            nc += 1; inst(a_carvedchair('k1' if nc % 3 else 'k2'), f'Chair_{nc:03d}', ((x0 + x1) / 2 + ox_, (y0 + y1) / 2 + oy_, base), ROT_BACK[bk_], 'Furniture')
+            CHAIRS.append(((x0 + x1) / 2 + ox_, (y0 + y1) / 2 + oy_, base, ROT_BACK[bk_]))
     if it['kind'] == 'table':
         for r in it['poly']:
             base = 0.0 if on_plat(r) else TER; x0, y0, x1, y1 = bbox(r); n = it.get('mods', 1); rz = 0.0 if it.get('axis', 'x') == 'x' else math.pi / 2
@@ -160,7 +175,7 @@ for it in D['items']:                                                           
 fw_ = next((it for it in D['items'] if it['kind'] == 'firewall'), None)        # pierced-brass sconces on the mangal firewall (owner ref)
 if fw_:
     x0, y0, x1, y1 = bbox(fw_['poly'][0])
-    for k_, yy in enumerate((y0 + 0.45, y1 - 0.45)): inst(a_sconce(), f'Sconce_firewall_{k_ + 1}', (x0, yy, TER + 1.95), math.pi / 2, 'Lights')
+    inst(a_sconce(), 'Sconce_firewall_1', (x0, y1 - 0.45, TER + 1.95), math.pi / 2, 'Lights')       # north of the mangal hood
 # =============== 3. AIVAN SEDIR BOOTHS: back cushions, wall carpets, tableware, lanterns ===============
 scr = [bbox(it['poly'][0]) for it in D['items'] if it['kind'] == 'ascreen']; AIV = []
 ats = [bbox(it['poly'][0]) for it in D['items'] if it['kind'] == 'atable']
@@ -249,6 +264,17 @@ for xa, xb2 in zip(xs[:-1], xs[1:]):
         rows.append(zrow)
     mb.sheet(rows, X['velvet'], 0.006, picture=False)
 inst(mb.mesh('Corridor_velvet_ceiling'), 'Corridor_velvet_ceiling', (0, 0, 0), 0, 'Corridor')
+# rev. 7: the corridor's outer faces (seen from the plaza and the dining) get pleated wine velvet drapes on a brass rod
+for yw_, sg_ in ((15.55, -1), (18.05, 1)):
+    x0_, x1_ = 7.7, (10.5 if sg_ < 0 else 10.42); n_ = int((x1_ - x0_) / 0.012); pts_ = []
+    for j_ in range(n_ + 1):
+        xx = x0_ + (x1_ - x0_) * j_ / n_; pts_.append((xx, yw_ + sg_ * (0.035 + 0.028 * math.sin(2 * math.pi * (xx - x0_) / 0.17))))
+    poly_ = [(x0_, yw_), (x1_, yw_)] + pts_[::-1]
+    mb = MB(); mb.extrude(poly_, TER, TER + 2.52, X['velvet_wine'])                     # hem just kisses the floor
+    mb.rod((x0_ - 0.03, yw_ + sg_ * 0.04, TER + 2.56), (x1_ + 0.03, yw_ + sg_ * 0.04, TER + 2.56), 0.018, m['brass'], 12)
+    for xx in (x0_ - 0.03, x1_ + 0.03): mb.lathe(xx, yw_ + sg_ * 0.04, TER + 2.53, [(0.0, 0.0), (0.03, 0.0), (0.035, 0.03), (0.0, 0.06)], m['brass'], 12)
+    mb.box(x0_, yw_, TER + 2.52, x1_, yw_ + sg_ * 0.022, TER + 2.56, m['brass'])                    # rod bracket strip on the wall
+    inst(mb.mesh(f'Corridor_drape_{"S" if sg_ < 0 else "N"}'), f'Corridor_drape_{"S" if sg_ < 0 else "N"}', (0, 0, 0), 0, 'Corridor')
 nn = 0
 for xa, xb2 in zip(xs[:-1], xs[1:]):
     xm = (xa + 0.08 + xb2) / 2
@@ -331,7 +357,7 @@ if 'rot' in D:
     for k in range(4):
         a = math.pi / 4 + k * math.pi / 2; inst(a_vitrine(), f'Bukhara_vitrine_{k + 1}', (rx + 0.7 * math.cos(a), ry + 0.7 * math.sin(a), TER + 0.15), a, 'Bukhara_dome')
     g0, g1 = D['gate']
-    inst(a_gate(round(g1 - g0, 3)), 'Khiva_gate', (g0 - 0.25, 36.425, TER), 0, 'North_gate')
+    inst(a_gate(round(g1 - g0, 3)), 'Khiva_gate', (g0 - 0.25, 36.425, TER), 0, 'North_gate', scale=(1, 1, 0.975))     # rev. 7: crest clears the IPE 300 at the east post
 
 # =============== 11. LANTERNS from the plan (gate etc.; booths, aivan and tents have their own) ===============
 nl = 0
@@ -350,8 +376,8 @@ for it in D['items']:
 e0, e1 = D['ent']
 mb = MB(); mb.cyl(0, 0, 0, 0.05, 0.07, m['steel'], 16); mb.cyl(0, 0, 0.05, 0.055, 0.06, X['lampglow'], 16); up = mb.mesh('Uplight')
 for x, y in D['trees']:
-    for a in (0.5, 2.6, 4.7): inst(up, 'Tree_uplight', (x + 0.75 * math.cos(a), y + 0.75 * math.sin(a), TER + 0.08), 0, 'Lights')
-for i_, ((x0, y0), mm) in enumerate((((-6.6, 1.8), m['majolica']), ((-5.6, 1.8), X['carved']), ((-1.0, 1.75), m['turq']))):
+    for a in (0.5, 2.6, 4.7): inst(up, 'Tree_uplight', (x + 0.89 * math.cos(a), y + 0.89 * math.sin(a), TER + 0.06), 0, 'Lights')      # on the mulch ring
+for i_, ((x0, y0), mm) in enumerate((((-7.1, 1.75), m['majolica']), ((-7.1, 2.3), X['carved']), ((-0.95, 1.75), m['turq']))):     # rev. 7 kids corner
     mb = MB(); mb.box(0, 0, 0, 0.7, 0.45, 0.45, mm, 0.004); mb.box(-0.02, -0.02, 0.45, 0.72, 0.47, 0.5, m['brass'], 0.004)
     inst(mb.mesh(f'Kids_chest_{i_ + 1}'), f'Kids_chest_{i_ + 1}', (x0, y0, TER), 0, 'Kids')
 
@@ -369,7 +395,7 @@ for ya, yb in zip(TY[:-1], TY[1:]):
     if 15.0 < ya < 29.0: ceiling_carpet(1.6, 3.0, ya + 0.1, yb - 0.1, int(ya))                       # aivan (outside the balcony slab)
 for ya, yb in ((4.1, 9.85),):
     for x0, x1 in ((1.0, 3.4), (3.6, 6.0), (6.2, 8.6)):
-        ceiling_carpet(x0, x1, ya + 0.1, yb - (0.1 if x1 < 3.5 else 0.42), int(x0))      # clear of the south dome ring girder
+        ceiling_carpet(x0, x1, ya + 0.1, yb - 0.1, int(x0))
         for dx, dy in (((0.0, -1.2), (0.0, 1.2)) if x0 > 1.0 else ((0.0, -1.2),)):                                                        # pierced-brass pendant clusters
             cx, cy = (x0 + x1) / 2 + dx, (ya + yb) / 2 + dy
             rows_x = [x0 + (x1 - x0) * c / 6 for c in range(7)]; c_ = max(i for i, xx in enumerate(rows_x) if xx <= cx)
@@ -497,10 +523,9 @@ def _uv_top(o, x0, y0, x1, y1):
             v_ = me_.vertices[me_.loops[li].vertex_index].co; uvl.data[li].uv = ((v_.x - x0) / (x1 - x0), (v_.y - y0) / (y1 - y0))
 FM = SUnion([SPoly(r).buffer(0) for r in D['floor_main']])
 CARP = {}
-for d in D['domes']:
-    if d['key'] not in ('S', 'C'): continue
-    cx_, cy_ = d['c']; h_ = 1.8; sq = SBox(cx_ - h_, cy_ - h_, cx_ + h_, cy_ + h_)
-    print('carpet', d['key'], 'inside floor', round(sq.intersection(FM).area / sq.area, 4)); CARP[d['key']] = (sq.intersection(FM), (cx_ - h_, cy_ - h_, cx_ + h_, cy_ + h_))
+for key_, (cx_, cy_) in [(d['key'], d['c']) for d in D['domes']] + [('T%d' % (k_ + 1), t_) for k_, t_ in enumerate(D['trees'])]:   # under the dome + around the chinar
+    h_ = 1.8; sq = SBox(cx_ - h_, cy_ - h_, cx_ + h_, cy_ + h_)
+    print('carpet', key_, 'inside floor', round(sq.intersection(FM).area / sq.area, 4)); CARP[key_] = (sq.intersection(FM), (cx_ - h_, cy_ - h_, cx_ + h_, cy_ + h_))
 o_ = bpy.data.objects.get('terrace_floor'); bpy.data.objects.remove(o_)
 rest = FM.difference(SUnion([v[0] for v in CARP.values()]))
 prism('terrace_floor', [list(q.exterior.coords)[:-1] for q in _pieces(rest)], -1.45, TER, XW['marble'], 'Floors')
@@ -545,10 +570,148 @@ for i_, yy in enumerate((9.2, 10.6, 12.0, 13.4)):
 y0s = 12.7; pm = a_sebil(1.6, 0.4, 0.55, round(TER - SID + 0.03, 3)).copy(); pm.name = 'Sebil_sheared'
 for v in pm.vertices: v.co.x += dx_ / dy_ * v.co.y
 inst(pm, 'Street_sebil', (xb(y0s) - 0.95, y0s, SID), 0, 'Street_facade')
-for i_, (x, y) in enumerate(D['trees']):
-    o_ = bpy.data.objects.get(f'chinar_trunk_{i_}')
+for i_, (x, y) in enumerate(D['trees']):                               # rev. 7: the chinar is kept under the roof, crown trained low
+    for nm_ in (f'chinar_trunk_{i_}', f'chinar_canopy_{i_}'):
+        o_ = bpy.data.objects.get(nm_)
+        if o_: bpy.data.objects.remove(o_)
+    wd_, fo_ = a_chinar_trained()
+    inst(wd_, f'Chinar_trained_{i_ + 1}', (x, y, TER), 0.3, 'Trees'); inst(fo_, f'Chinar_crown_{i_ + 1}', (x, y, TER), 0.3, 'Trees')
+    for nm_ in ('ringbench', 'pit'):                                   # the layout prisms were full discs: rebuild as rings around the trunk
+        for o_ in [o for o in bpy.data.objects if o.name == nm_ or o.name.startswith(nm_ + '.')]:
+            if o_.type == 'MESH' and abs(sum((o_.matrix_world @ Vector(c)).x for c in o_.bound_box) / 8 - x) < 0.3: bpy.data.objects.remove(o_)
+    mb = MB(); mb.ring(x, y, TER, [(0.78, 0.0), (1.0, 0.0), (1.0, 0.06), (0.78, 0.06)], X['brickpave'], 64)                    # gravel / brick mulch ring
+    mb.ring(x, y, TER, [(1.0, 0.0), (1.45, 0.0), (1.45, 0.40), (1.0, 0.40)], X['majcobalt'], 96)                               # majolica ring bench
+    mb.ring(x, y, TER + 0.40, [(0.97, 0.0), (1.48, 0.0), (1.48, 0.045), (0.97, 0.045)], XW['wd'], 96)                         # walnut seat cap
+    inst(mb.mesh('Chinar_ringbench'), f'Chinar_ringbench_{i_ + 1}', (0, 0, 0), 0, 'Trees')
+# rev. 7 photo lounge backdrop: carved walnut portal with a pleated terracotta velvet drape (was a flat velvet slab)
+o_ = bpy.data.objects.get('phdrape')
+if o_: bpy.data.objects.remove(o_)
+mb = MB(); X0p, X1p, Yc = 1.4, 5.2, 1.9; ZT = TER + 2.8
+for xp in (X0p, X1p - 0.14):
+    mb.box(xp, Yc - 0.08, TER, xp + 0.14, Yc + 0.08, ZT - 0.18, XW['wd'], 0.004)
+    mb.box(xp - 0.02, Yc - 0.1, TER, xp + 0.16, Yc + 0.1, TER + 0.12, XW['cv'], 0.004)                  # plinth
+mb.box(X0p - 0.08, Yc - 0.11, ZT - 0.18, X1p + 0.08, Yc + 0.11, ZT, XW['cv'], 0.006)                    # carved lintel
+n_ = int((X1p - 0.14 - X0p - 0.14) / 0.012); fr_, bk_ = [], []
+for j_ in range(n_ + 1):
+    xx = X0p + 0.14 + (X1p - X0p - 0.28) * j_ / n_; w_ = math.sin(2 * math.pi * (xx - X0p) / 0.19)
+    fr_.append((xx, Yc + 0.03 + 0.035 * (1 + w_))); bk_.append((xx, Yc - 0.03 - 0.035 * (1 - w_)))
+mb.extrude(bk_ + fr_[::-1], TER, ZT - 0.18, X['velvet_terra'])
+inst(mb.mesh('Photo_portal_drape'), 'Photo_portal_drape', (0, 0, 0), 0, 'Photo_lounge')
+# rev. 7: the corridor keeps its two khums and the niche jars; the loose layout jars (which hit the arches) go
+bpy.context.view_layer.update()
+for o_ in [o for o in bpy.data.objects if o.name.startswith('jar')]:
+    cy_ = sum((o_.matrix_world @ Vector(c)).y for c in o_.bound_box) / 8
+    if D['ent'][0] < cy_ < D['ent'][1]: bpy.data.objects.remove(o_)
+# rev. 7: everything that stands on the photo-lounge rug starts on the rug (15 mm), not inside it
+rug_ = bpy.data.objects.get('phrug')
+if rug_:
+    bpy.context.view_layer.update(); rb_ = [rug_.matrix_world @ Vector(c) for c in rug_.bound_box]
+    rx0, rx1, ry0, ry1, rz1 = min(c.x for c in rb_), max(c.x for c in rb_), min(c.y for c in rb_), max(c.y for c in rb_), max(c.z for c in rb_)
+    for o_ in [o for o in bpy.data.objects if o.type == 'MESH' and o is not rug_ and o.name.startswith(('candle', 'firebowl', 'ltable', 'pouf', 'jar', 'Photo_', 'Lounge'))]:
+        cs_ = [o_.matrix_world @ Vector(c) for c in o_.bound_box]; cx_, cy_ = sum(c.x for c in cs_) / 8, sum(c.y for c in cs_) / 8; z0_ = min(c.z for c in cs_)
+        if rx0 < cx_ < rx1 and ry0 < cy_ < ry1 and abs(z0_ - TER) < 0.005: o_.location.z += rz1 - TER
+    for o_ in [o for o in bpy.data.objects if o.name == 'fire' or o.name.startswith('fire.')]: o_.location.z += rz1 - TER     # flames ride on the bowl
+# rev. 7 kids corner (against the hall glazing): carved walnut fence with jali infill + brass finials, star-pattern soft floor, play pieces in the house palette
+o_ = bpy.data.objects.get('kids_fence')
+if o_: bpy.data.objects.remove(o_)
+ok_ = bpy.data.objects.get('kids_rubber')
+if ok_: ok_.data.materials[0] = tex2('kidsfloor_t', 'kidsfloor.png', 2.0, rough=0.9, bump=0.3)
+def _fence(b, ax, a0, a1, c, zb):
+    """straight fence run along x (ax='x', at y = c) or y (ax='y', at x = c) from a0 to a1: posts @ <= 1.0, rails, jali infill"""
+    n_ = max(1, math.ceil((a1 - a0) / 1.0)); st = (a1 - a0) / n_
+    for k in range(n_ + 1):
+        u = a0 + k * st; x_, y_ = (u, c) if ax == 'x' else (c, u)
+        b.box(x_ - 0.03, y_ - 0.03, zb, x_ + 0.03, y_ + 0.03, zb + 0.9, XW['wd'], 0.003)
+        b.lathe(x_, y_, zb + 0.9, [(0.0, 0.0), (0.03, 0.0), (0.035, 0.02), (0.02, 0.05), (0.008, 0.07), (0.0, 0.08)], m['brass'], 12)
+    for z0, z1 in ((0.10, 0.14), (0.80, 0.86)):
+        if ax == 'x': b.box(a0 + 0.03, c - 0.022, zb + z0, a1 - 0.03, c + 0.022, zb + z1, XW['wd'], 0.002)
+        else: b.box(c - 0.022, a0 + 0.03, zb + z0, c + 0.022, a1 - 0.03, zb + z1, XW['wd'], 0.002)
+    for k in range(n_):
+        u0, u1 = a0 + k * st + 0.03, a0 + (k + 1) * st - 0.03
+        for q in jali(u0, zb + 0.14, u1, zb + 0.80, 0.11, 0.02): ext_holes(b, q, c - 0.01, c + 0.01, XW['wd'], 'xz' if ax == 'x' else 'yz')
+kb_ = MB(); KY = 1.625
+_fence(kb_, 'x', -7.22, -4.3, KY, TER); _fence(kb_, 'x', -3.4, -0.15, KY, TER)              # 900 gate from the staff passage
+_fence(kb_, 'y', KY + 0.03, 4.08, -0.15, TER); _fence(kb_, 'y', KY + 0.03, 4.08, -7.22, TER)
+inst(kb_.mesh('Kids_fence_carved'), 'Kids_fence_carved', (0, 0, 0), 0, 'Kids')
+for nm_, col_ in (('play_o', (0.80, 0.52, 0.12)), ('play_b', (0.05, 0.12, 0.42)), ('play_g', (0.08, 0.45, 0.47)), ('play_y', (0.62, 0.12, 0.10))):
+    mm_ = m.get(nm_)
+    if mm_ and mm_.node_tree.nodes.get('Principled BSDF'):
+        b_ = mm_.node_tree.nodes['Principled BSDF']; b_.inputs['Base Color'].default_value = (*col_, 1); b_.inputs['Roughness'].default_value = 0.55
+# rev. 7 tapchan: carved low table (walnut, zellige inlay, arched aprons) instead of the plain box
+for o_ in [o for o in bpy.data.objects if o.name.startswith('tapchantable')]:
+    cs_ = [o_.matrix_world @ Vector(c) for c in o_.bound_box]; x0_, x1_ = min(c.x for c in cs_), max(c.x for c in cs_); y0_, y1_ = min(c.y for c in cs_), max(c.y for c in cs_); z0_, z1_ = min(c.z for c in cs_), max(c.z for c in cs_)
+    bpy.data.objects.remove(o_)
+    inst(a_lowtable(round(x1_ - x0_, 3), round(y1_ - y0_, 3), round(z1_ - z0_, 3)), 'Tapchan_lowtable', ((x0_ + x1_) / 2, (y0_ + y1_) / 2, z0_), 0, 'Tapchans_tent')
+# rev. 7 staff station: three carved jali cabinets (h 2150) instead of the open shelving, carved jali screen instead of the printed one
+for nm_ in ('shelving', 'screenwall'):
+    o_ = bpy.data.objects.get(nm_)
     if o_: bpy.data.objects.remove(o_)
-    inst(a_chinar_trunk(round(6.4 - TER, 3), 0.32, 0.2), f'Chinar_trunk_{i_ + 1}', (x, y, TER), 0, 'Trees')
+for k_ in range(3):
+    inst(a_jali_cabinet(1.28, 0.45, 2.15, 2), f'Station_cabinet_{k_ + 1}', (0.385, 4.31 + 0.675 + k_ * 1.35, TER), -math.pi / 2, 'Furniture')
+sb_ = MB(); y0s_, y1s_, xs_ = 5.3, 7.68, 2.04            # stops 60 short of the bar return (counter from y 7.74)
+n_ = 3; st_ = (y1s_ - y0s_) / n_
+for k_ in range(n_ + 1):
+    yy = y0s_ + k_ * st_; sb_.box(xs_ - 0.04, yy - 0.04, TER, xs_ + 0.04, yy + 0.04, TER + 1.6, XW['wd'], 0.003)
+    sb_.lathe(xs_, yy, TER + 1.6, [(0.0, 0.0), (0.04, 0.0), (0.045, 0.025), (0.025, 0.06), (0.0, 0.08)], m['brass'], 12)
+for z0, z1 in ((0.12, 0.18), (1.48, 1.56)): sb_.box(xs_ - 0.025, y0s_ + 0.04, TER + z0, xs_ + 0.025, y1s_ - 0.04, TER + z1, XW['cv'], 0.002)
+for k_ in range(n_):
+    for q in jali(y0s_ + k_ * st_ + 0.04, TER + 0.18, y0s_ + (k_ + 1) * st_ - 0.04, TER + 1.48, 0.13, 0.025): ext_holes(sb_, q, xs_ - 0.012, xs_ + 0.012, XW['wd'], 'yz')
+inst(sb_.mesh('Station_screen'), 'Station_screen', (0, 0, 0), 0, 'Furniture')
+# rev. 7 planting: leaf-card plants replace the low-poly blobs / boxes of the base model (positions unchanged)
+for o_ in [o for o in bpy.data.objects if o.name.startswith(('pomegranate_', 'plumeria_', 'areca_leaf', 'banana_leaf', 'herbs', 'jasmine', 'planter_shrubs', 'bougainvillea'))]:
+    bpy.data.objects.remove(o_)
+bpy.context.view_layer.update(); dg_ = bpy.context.evaluated_depsgraph_get(); RP_ = random.Random(17)
+GROUND_ = ('sidewalk', 'pot', 'photo_plant_soil', 'bbq_plant_soil', 'planter_soil', 'terrace_floor', 'sback', 'Street_bench', 'aivan_deck', 'Banana_planter', 'medallion', 'zellige_carpet', 'alley_girih')
+def _ground(x, y, z0):
+    """top of the soil / pot / floor under (x, y): ray-cast down, skipping anything that is not a ground surface"""
+    p_ = Vector((x, y, z0))
+    for _ in range(60):
+        h_ = bpy.context.scene.ray_cast(dg_, p_, Vector((0, 0, -1)))
+        if not h_[0]: return None
+        if h_[4].name.startswith(GROUND_): return h_[1].z + 0.002             # tilted stem ends must not dip into the soil
+        p_ = h_[1] - Vector((0, 0, 0.002))
+    return None
+for sp, x, y, r in D['plants']:
+    zg = _ground(x, y, TER + 1.2); zg = TER if zg is None else zg; rz = RP_.uniform(0, 2 * math.pi)
+    if sp == 'pom': inst(a_pomegranate(1 + int(x * 7) % 2), 'Pomegranate', (x, y, zg), rz, 'Planting', scale=(max(.6, min(1.1, r / .6)),) * 3)
+    elif sp == 'plum': inst(a_plumeria(2), 'Plumeria', (x, y, zg), rz, 'Planting')
+    elif sp == 'areca': inst(a_areca(3), 'Areca', (x, y, zg), rz, 'Planting')
+    elif sp == 'banana' and zg > TER - 0.06: inst(a_banana(4), 'Banana', (x, y, zg), rz, 'Planting')     # planted straight in the planter soil
+    elif sp == 'banana':                                                     # majolica planter box at the Khiva gate, banana in it
+        mb_ = MB(); mb_.box(-0.35, -0.35, 0.0, 0.35, 0.35, 0.5, X['majcobalt'], 0.004); mb_.box(-0.38, -0.38, 0.5, 0.38, 0.38, 0.55, XW['wd'], 0.004)
+        mb_.box(-0.3, -0.3, 0.55, 0.3, 0.3, 0.56, m['soil'])
+        zf_ = _ground(x, y, TER + 0.3); zf_ = TER if zf_ is None else zf_
+        inst(mb_.mesh('Banana_planter'), 'Banana_planter', (x, y, zf_), 0, 'Planting'); inst(a_banana(4), 'Banana', (x, y, zf_ + 0.56), rz, 'Planting')
+    elif sp == 'jas': inst(a_shrub(5, 'jas'), 'Jasmine', (x, y, zg), rz, 'Planting', scale=(.85,) * 3)
+    elif sp == 'herb': inst(a_shrub(6, 'herb'), 'Herbs', (x, y, zg), rz, 'Planting')
+for o_ in [o for o in bpy.data.objects if o.name.startswith('spalm')]: bpy.data.objects.remove(o_)     # street palms: planted in the planter soil
+for it in D['items']:
+    if it['kind'] == 'spalm':
+        cx_, cy_ = cen(it['poly'][0])
+        for dx_ in (0.0, -0.3, -0.6):                                       # find planter soil at or just inside the palm mark
+            zg_ = _ground(cx_ + dx_, cy_, TER + 1.2)
+            if zg_ is not None and zg_ > TER - 0.06: break
+        else: continue
+        inst(a_areca(7), 'Street_palm', (cx_ + dx_, cy_, zg_), RP_.uniform(0, 6.3), 'Planting', scale=(1.15,) * 3)
+for k_, (x, y, z, r) in enumerate(shr):
+    inst(a_shrub(10 + k_ % 4), 'Planter_shrub', (x, y, _ground(x, y, TER + 0.9) or TER), RP_.uniform(0, 6.3), 'Planting', scale=(r / 0.36,) * 3)
+for x, y, z, r in bou:
+    jas_ = int(y / 0.45) % 3 == 0                                            # every third plant on the bench backs is jasmine sambac
+    inst(a_shrub(30, 'jas') if jas_ else a_shrub(20 + int(y * 10) % 3, 'bou'), 'Jasmine' if jas_ else 'Bougainvillea', (x, y, _ground(x, y, z + 0.6) or z), RP_.uniform(0, 6.3), 'Planting', scale=(0.55,) * 3)
+# skylight over the chinar: glass in the roof plane between the purlins, aluminium frame, carved panjara grille hung from the purlins
+if D.get('skylight'):
+    sx0, sy0, sx1, sy1 = D['skylight']
+    def _slope(me_, dz):
+        for v in me_.vertices: v.co.z += top(v.co.x) + dz
+        return me_
+    mb = MB(); mb.box(sx0, sy0, -0.05, sx1, sy1, 0.0, m['glass']); inst(_slope(mb.mesh('Skylight_glass'), 0.0), 'Skylight_glass', (0, 0, 0), 0, 'Roof_structure')
+    mb = MB()
+    for a_ in ((sx0 - 0.08, sy0 - 0.08, sx1 + 0.08, sy0), (sx0 - 0.08, sy1, sx1 + 0.08, sy1 + 0.08), (sx0 - 0.08, sy0, sx0, sy1), (sx1, sy0, sx1 + 0.08, sy1)):
+        mb.box(a_[0], a_[1], 0.0, a_[2], a_[3], 0.05, m['bronze'], 0.003)                  # upstand frame on the panel edges
+    inst(_slope(mb.mesh('Skylight_frame'), 0.0), 'Skylight_frame', (0, 0, 0), 0, 'Roof_structure')
+    mb = MB()
+    for q in jali(sx0 + 0.05, sy0 + 0.05, sx1 - 0.05, sy1 - 0.05, 0.215, 0.07): ext_holes(mb, q, -0.035, 0.0, XW['cv'], 'xy')
+    inst(_slope(mb.mesh('Skylight_panjara'), -0.262), 'Skylight_panjara', (0, 0, 0), 0, 'Roof_structure')
 
 # =============== 19. HAUZ COPING, STREET BENCH SEATS AND COPINGS ===============
 from shapely.geometry import Polygon as SPoly
