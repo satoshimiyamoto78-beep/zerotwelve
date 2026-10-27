@@ -216,7 +216,7 @@ HT = {  # kind: (z0, z1, material, collection)   heights above the item's own fl
 counter = {}
 DETAIL = os.environ.get('DETAIL', '1') == '1'
 SKIP = {'chair', 'lantern', 'screen', 'bportal', 'drum', 'rbox', 'woodstack', 'tandoor', 'kazan', 'table', 'bench', 'btable', 'rug', 'pole', 'gatepost',
-        'flamp', 'medallion', 'bbqfloor', 'aryk', 'hauzborder', 'abench', 'sofa', 'atable', 'portal', 'runner', 'backbar', 'barbody', 'bartop', 'barreturn', 'stool', 'coffee', 'sink', 'samovar', 'sebil', 'sebilbasin'} if DETAIL else set()
+        'flamp', 'medallion', 'bbqfloor', 'aryk', 'hauzborder', 'abench', 'sofa', 'atable', 'portal', 'runner', 'backbar', 'barbody', 'bartop', 'barreturn', 'stool', 'coffee', 'sink', 'samovar', 'sebil', 'sebilbasin', 'host', 'station'} if DETAIL else set()
 if DETAIL:                                              # things that rest on something else start on its top
     HT_FIX = {'otable': (0.015, 0.465), 'tapchantable': (0.47, 0.78), 'bridge': (0.06, 0.2)}
 else: HT_FIX = {}

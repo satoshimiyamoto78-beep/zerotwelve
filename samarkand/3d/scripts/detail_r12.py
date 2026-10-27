@@ -88,6 +88,11 @@ for k_, sz in (('bannai', 1.0), ('bannai2', 1.4), ('hazarbaf', 1.5), ('kufic', 1
 for mm, sz in ((m['ikat'], 0.5), (m['suzani'], 0.6), (m['jali'], 0.5), (m['majolica'], 0.6), (m['band'], 1.2), (m['girih'], 0.6), (m['floor'], 1.2),
                (X['carved'], 0.9), (X['kilim'], 0.6), (X['kilim2'], 0.6), (X['suzani2'], 0.9), (X['quilt'], 0.5), (X['plaster'], 1.5), (X['rattan'], 0.25), (X['domeglaze'], 0.9), (X['plov'], 0.12), (X['velvet'], 0.8), (X['tent'], 1.2), (X['copper'], 0.5), (X['gajbrick'], 1.4), (X['dometile'], 0.7)):
     register_uv_size(mm, sz)
+exec(open(os.path.join(HERE, 'assets_v7.py')).read())                    # R12-v6: carved chairs / tables, floor tiles
+for k_, sz in (('cv', 0.32), ('k1', 0.55), ('k2', 0.55), ('zt', 0.30)): register_uv_size(XW[k_], sz)
+XW.update(marble=tex2('marblegrid_t', 'marblegrid.png', float(open(os.path.join(TEX2, 'marblegrid.size')).read()), rough=0.18, bump=0.3, coat=0.4),
+          zcarpet=uvmat('zcarpet_uv', 'zcarpet.png', rough=0.2, sheen=0.0), alleyrun=uvmat('alleyrun_uv', 'alleyrun.png', rough=0.3, sheen=0.0))
+register_uv_size(XW['marble'], float(open(os.path.join(TEX2, 'marblegrid.size')).read()))
 def ceil_at(x, y):
     """underside of whatever is overhead: balcony slab (x < 1.5), a roof beam (IPE 300 bottom flange), a purlin (C200 bottom)
     or the roof sandwich panel between them"""
@@ -126,14 +131,36 @@ for it in D['items']:
     if it['kind'] == 'chair':
         for r in it['poly']:
             base = 0.0 if on_plat(r) else TER; x0, y0, x1, y1 = bbox(r)
-            nc += 1; inst(a_tubchair('terra' if (y0 < 15.3 or nc % 5) else 'navy'), f'Chair_{nc:03d}', ((x0 + x1) / 2, (y0 + y1) / 2, base), ROT_BACK[it.get('back', 'n')], 'Furniture')
+            nc += 1; inst(a_carvedchair('k1' if nc % 3 else 'k2'), f'Chair_{nc:03d}', ((x0 + x1) / 2, (y0 + y1) / 2, base), ROT_BACK[it.get('back', 'n')], 'Furniture')
             CHAIRS.append(((x0 + x1) / 2, (y0 + y1) / 2, base, ROT_BACK[it.get('back', 'n')]))
     if it['kind'] == 'table':
         for r in it['poly']:
             base = 0.0 if on_plat(r) else TER; x0, y0, x1, y1 = bbox(r); n = it.get('mods', 1); rz = 0.0 if it.get('axis', 'x') == 'x' else math.pi / 2
             nt += 1; c_ = ((x0 + x1) / 2, (y0 + y1) / 2, base)
-            inst(a_tiletable(n), f'Table_{nt:03d}', c_, rz, 'Furniture'); inst(a_tableset(n), f'Tableset_{nt:03d}', c_, rz, 'Furniture')
+            inst(a_carvedtable(n), f'Table_{nt:03d}', c_, rz, 'Furniture'); inst(a_tableset(n), f'Tableset_{nt:03d}', c_, rz, 'Furniture')
 
+bpy.context.view_layer.update()
+for o_ in [o for o in bpy.data.objects if o.name.startswith('Chair_')]:          # carved chairs are wider: keep them off the entrance steps
+    for sn_ in ('stepsA', 'stepsB'):
+        st_ = bpy.data.objects.get(sn_)
+        if not st_: continue
+        A_ = [o_.matrix_world @ Vector(c) for c in o_.bound_box]; B_ = [st_.matrix_world @ Vector(c) for c in st_.bound_box]
+        ox = min(max(c.x for c in A_), max(c.x for c in B_)) - max(min(c.x for c in A_), min(c.x for c in B_))
+        oy = min(max(c.y for c in A_), max(c.y for c in B_)) - max(min(c.y for c in A_), min(c.y for c in B_))
+        oz = min(max(c.z for c in A_), max(c.z for c in B_)) - max(min(c.z for c in A_), min(c.z for c in B_))
+        if ox > 0 and oy > 0 and oz > 0:
+            if ox < oy: o_.location.x += (ox + 0.01) * (1 if o_.location.x > (min(c.x for c in B_) + max(c.x for c in B_)) / 2 else -1)
+            else: o_.location.y += (oy + 0.01) * (1 if o_.location.y > (min(c.y for c in B_) + max(c.y for c in B_)) / 2 else -1)
+            print('chair nudged off', sn_, o_.name)
+for it in D['items']:                                                            # host stand + waiter station: carved jali cabinets (owner ref)
+    if it['kind'] in ('host', 'station'):
+        for r in it['poly']:
+            x0, y0, x1, y1 = bbox(r); H_ = 1.05 if it['kind'] == 'host' else 0.95
+            inst(a_jali_cabinet(round(y1 - y0 - 0.05, 3), round(x1 - x0 - 0.05, 3), H_, 1), f"{it['kind'].capitalize()}_cabinet", ((x0 + x1) / 2, (y0 + y1) / 2, 0.0 if on_plat(r) else TER), -math.pi / 2, 'Furniture')
+fw_ = next((it for it in D['items'] if it['kind'] == 'firewall'), None)        # pierced-brass sconces on the mangal firewall (owner ref)
+if fw_:
+    x0, y0, x1, y1 = bbox(fw_['poly'][0])
+    for k_, yy in enumerate((y0 + 0.45, y1 - 0.45)): inst(a_sconce(), f'Sconce_firewall_{k_ + 1}', (x0, yy, TER + 1.95), math.pi / 2, 'Lights')
 # =============== 3. AIVAN SEDIR BOOTHS: back cushions, wall carpets, tableware, lanterns ===============
 scr = [bbox(it['poly'][0]) for it in D['items'] if it['kind'] == 'ascreen']; AIV = []
 ats = [bbox(it['poly'][0]) for it in D['items'] if it['kind'] == 'atable']
@@ -151,7 +178,7 @@ for i_, (x0, y0, x1, y1) in enumerate(ats):
     cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
     mb = MB(); mb.picture_box(0.0, -0.85, 0.75, 0.012, 0.85, 2.25, X['carpet%d' % (1 + i_ % 4)], '+x'); mb.box(0.0, -0.9, 2.25, 0.03, 0.9, 2.29, m['brass'])
     inst(mb.mesh(f'Aivan_wallcarpet_{i_ + 1}'), f'Aivan_wallcarpet_{i_ + 1}', (0.14, cy, 0.0), 0, 'Aivan')
-    inst(a_tiletable(round((x1 - x0) / 0.7, 4)), f'Aivan_table_{i_ + 1}', (cx, cy, 0.0), 0.0, 'Aivan')
+    inst(a_carvedtable(round((x1 - x0) / 0.7, 4)), f'Aivan_table_{i_ + 1}', (cx, cy, 0.0), 0.0, 'Aivan')
     inst(a_tableset(2), f'Aivan_tableset_{i_ + 1}', (cx, cy, 0.0), 0.0 if (x1 - x0) >= (y1 - y0) else math.pi / 2, 'Aivan')
     lantern_at(cx, cy, 1.95, 1.0, ceil_at(cx, cy), 'Aivan', f'Aivan_lantern_{i_ + 1}')
 
@@ -390,6 +417,7 @@ def human_lib(pose, look, idx):
     mats = [mat(f'h_skin_{skin}', SKINC[skin], rough=0.45), mat(f'h_hair_{hair}', HAIR[hair], rough=0.4), X[CLOTHES[top_]], X[CLOTHES[bot]], mat('h_shoe', (0.12, 0.07, 0.045), rough=0.35)]
     for k, mm in enumerate(mats): me.materials[k] = mm
     return me
+if os.environ.get('PEOPLE', '0') != '1': PEOPLE = []       # owner: no people in the model for now
 for i_, (pose, (x, y, z), rz, look) in enumerate(PEOPLE):
     if pose == 'stand': fl = z; lp = 'stand'
     else:
@@ -458,8 +486,32 @@ for d in D['domes']:
     inst(a_chandelier(round(zc_ - (TER + 3.65), 3), 0.95, 12), f'Chandelier_dome_{d["key"]}', (d['c'][0], d['c'][1], zc_), 0, 'Lights')
     print('karbandi crown z', round(zc_, 3))
 # 16f. common-area surfaces: Samarkand brick, majolica and girih instead of plain concrete / plaster
-SWAP = {'planter_band': X['hazarbaf'], 'firewall': X['bannai'], 'barbody': X['majcobalt'], 'barreturn': X['girihstar'], 'terrace_floor': X['brickpave'],
-        'alley_girih': X['girihstar'], 'sebil': X['majcobalt'], 'sback': X['kufic'], 'sbench': X['stone'], 'street_steps': X['stone'], 'host': X['majcobalt'],
+# 16e. floor after the owner's floor references (R12-v6): marble slabs on the diagonal with cobalt / zellige-chip bands,
+#      framed zellige carpets inlaid under the south and karbandi domes, a cream tile runner with a star-tile border in the alley
+from shapely.geometry import Polygon as SPoly, box as SBox
+from shapely.ops import unary_union as SUnion
+def _uv_top(o, x0, y0, x1, y1):
+    me_ = o.data; uvl = me_.uv_layers.get('UVMap') or me_.uv_layers.new(name='UVMap')
+    for p_ in me_.polygons:
+        for li in p_.loop_indices:
+            v_ = me_.vertices[me_.loops[li].vertex_index].co; uvl.data[li].uv = ((v_.x - x0) / (x1 - x0), (v_.y - y0) / (y1 - y0))
+FM = SUnion([SPoly(r).buffer(0) for r in D['floor_main']])
+CARP = {}
+for d in D['domes']:
+    if d['key'] not in ('S', 'C'): continue
+    cx_, cy_ = d['c']; h_ = 1.8; sq = SBox(cx_ - h_, cy_ - h_, cx_ + h_, cy_ + h_)
+    print('carpet', d['key'], 'inside floor', round(sq.intersection(FM).area / sq.area, 4)); CARP[d['key']] = (sq.intersection(FM), (cx_ - h_, cy_ - h_, cx_ + h_, cy_ + h_))
+o_ = bpy.data.objects.get('terrace_floor'); bpy.data.objects.remove(o_)
+rest = FM.difference(SUnion([v[0] for v in CARP.values()]))
+prism('terrace_floor', [list(q.exterior.coords)[:-1] for q in _pieces(rest)], -1.45, TER, XW['marble'], 'Floors')
+for k_, (g_, bb_) in CARP.items():
+    o_ = prism(f'zellige_carpet_{k_}', [list(q.exterior.coords)[:-1] for q in _pieces(g_)], -1.45, TER, XW['zcarpet'], 'Floors'); _uv_top(o_, *bb_)
+o_ = bpy.data.objects.get('alley_girih')
+if o_:
+    xs_ = [v.co.x for v in o_.data.vertices]; ys_ = [v.co.y for v in o_.data.vertices]
+    o_.data.materials[0] = XW['alleyrun']; _uv_top(o_, min(xs_), min(ys_), max(xs_), max(ys_))
+SWAP = {'planter_band': X['hazarbaf'], 'firewall': X['bannai'], 'barbody': X['majcobalt'], 'barreturn': X['girihstar'], 'terrace_floor': XW['marble'],
+        'medallion_mosaic': XW['zt'], 'sebil': X['majcobalt'], 'sback': X['kufic'], 'sbench': X['stone'], 'street_steps': X['stone'], 'host': X['majcobalt'],
         'photo_plant': X['hazarbaf'], 'bbq_plant': X['hazarbaf'], 'kazanblock': X['bannai2'], 'tandoorblock': X['majcobalt'], 'stepsA': X['stone'], 'stepsB': X['stone']}
 for o in bpy.data.objects:
     if o.type != 'MESH': continue
