@@ -24,64 +24,76 @@ def _pieces(poly):
 def _rr(y0, z0, y1, z1, r):
     return sbox(y0, z0, y1, z1).buffer(-r, join_style=1).buffer(r, resolution=6, join_style=1)
 
-BAR_NICHES = [  # (rect list in (y0, z0, y1, z1) along the wall, corner radius) — organic stepped openings as in the references
-    ([(0.25, 1.25, 1.25, 2.75)], 0.14),
-    ([(1.55, 1.25, 2.05, 2.62), (1.55, 1.25, 2.6, 1.86)], 0.11),
-    ([(2.9, 2.02, 4.45, 2.75), (2.9, 1.25, 3.7, 2.1), (3.55, 1.6, 4.0, 2.2)], 0.12),
-    ([(3.95, 1.25, 4.55, 1.72)], 0.1),
-]
+BAR_NICHES = [  # Timurid pointed-arch niches: (y0, y1, sill, springing, apex) along the wall (local metres from the bar floor)
+    (0.25, 1.15, 1.2, 2.3, 2.75), (1.45, 2.15, 1.2, 2.1, 2.45), (2.45, 3.55, 1.2, 2.35, 2.85), (3.85, 4.55, 1.2, 2.1, 2.45)]
 @cached
 def a_barwall(L, Hw):
-    """back-bar: plastered back counter (x 0..0.55, top +0.95) + sculpted clay wall (x 0..0.32) with rounded niches,
-    shelves, warm LED strips, bottles / jars / samovar; local y 0..L along the building face, x = 0 at the glass"""
-    b = MB(); P = X['clayplaster']; W = m['walnut']
+    """back-bar in the Samarkand manner: tiled back counter (x 0..0.55, top +0.96), bannai glazed-brick wall (x 0..0.32) with
+    pointed-arch niches in kufic frames, cobalt majolica niche backs, walnut shelves with warm LED, bottles / jars / samovar;
+    local y 0..L along the building face, x = 0 at the wall line"""
+    b = MB(); W = m['walnut']; BR = X['bannai']
     b.box(0.0, 0.0, 0.0, 0.55, L, 0.12, X['stone'], 0.004)
-    b.box(0.0, 0.0, 0.12, 0.53, L, 0.92, P, 0.01); b.box(0.0, -0.01, 0.92, 0.57, L + 0.01, 0.96, W, 0.004)
-    b.box(0.0, 0.0, 0.96, 0.10, L, Hw, P)                                                           # back skin of the niches
-    holes = [unary_union([_rr(*r_, rad) for r_ in rects]).buffer(-rad * 0.6, resolution=6).buffer(rad * 0.6, resolution=6) for rects, rad in BAR_NICHES]
+    b.box(0.0, 0.0, 0.12, 0.53, L, 0.92, X['girihstar'], 0.004); b.box(0.0, -0.01, 0.92, 0.57, L + 0.01, 0.96, W, 0.004)
+    b.box(0.0, 0.0, 0.96, 0.10, L, Hw, X['majcobalt'])                                               # back skin = niche backs
+    holes = []
+    for y0, y1, zs, zsp, za in BAR_NICHES:
+        c, w = (y0 + y1) / 2, y1 - y0; Lp = arch_left(c, w, zsp, za, 12); Rp = [(2 * c - u, z) for u, z in Lp]
+        from shapely.geometry import Polygon as _Poly
+        holes.append(_Poly([(y0, zs), (y1, zs)] + Rp + Lp[::-1][1:]))
     wall = sbox(0.0, 0.96, L, Hw).difference(unary_union(holes))
-    for q in _pieces(wall): b.extrude(list(q.exterior.coords)[:-1], 0.10, 0.32, P, 'yz')
+    for q in _pieces(wall): b.extrude(list(q.exterior.coords)[:-1], 0.10, 0.32, BR, 'yz')
+    for h in holes:                                                                                     # kufic glazed-brick frame, 20 mm proud
+        fr = h.buffer(0.075, join_style=2, mitre_limit=2.5).difference(h).intersection(sbox(0.0, 0.96, L, Hw))
+        for q in _pieces(fr): b.extrude(list(q.exterior.coords)[:-1], 0.32, 0.34, X['kufic'], 'yz')
     rnd = random.Random(5)
-    for h in holes:
-        y0h, z0h, y1h, z1h = h.bounds
-        levels = [z0h] + [z0h + k * 0.43 for k in range(1, 4) if z0h + k * 0.43 < z1h - 0.3]
+    for h, (y0n, y1n, zs, zsp, za) in zip(holes, BAR_NICHES):
+        levels = [zs] + [zs + k * 0.42 for k in range(1, 4) if zs + k * 0.42 < zsp - 0.05]
         for zl in levels:
-            seg = h.intersection(LineString([(-1, zl + 0.035), (L + 1, zl + 0.035)]))
-            for s in getattr(seg, 'geoms', [seg]):
-                if s.is_empty or s.length < 0.15: continue
-                ya, yb = s.bounds[0] + 0.004, s.bounds[2] - 0.004
-                if zl > z0h:                                                                  # walnut shelf board + LED strip under its front
-                    b.box(0.10, ya, zl, 0.30, yb, zl + 0.03, W, 0.003); b.box(0.27, ya + 0.02, zl - 0.008, 0.29, yb - 0.02, zl, X['lampglow'])
-                zt = zl + (0.03 if zl > z0h else 0.0); y = ya + 0.05
-                while y < yb - 0.08:                                                          # bottles, jars and tins on the shelf
-                    k = rnd.random()
-                    if k < 0.45: b.lathe(0.2, y, zt, [(0.0, 0.0), (0.032, 0.0), (0.032, 0.2), (0.012, 0.25), (0.011, 0.29), (0.0, 0.29)], m['glass'], 12); y += 0.075
-                    elif k < 0.8: b.lathe(0.2, y, zt, [(0.0, 0.0), (0.045, 0.0), (0.045, 0.1), (0.04, 0.115), (0.0, 0.115)], m['black'], 14); y += 0.1
-                    else: b.lathe(0.2, y, zt, [(0.0, 0.0), (0.05, 0.0), (0.06, 0.08), (0.04, 0.16), (0.045, 0.18), (0.0, 0.19)], m['clay'], 14); y += 0.12
-        seg = h.intersection(LineString([(-1, z1h - 0.012), (L + 1, z1h - 0.012)]))            # glow at the niche head
-        for s in getattr(seg, 'geoms', [seg]):
-            if not s.is_empty and s.length > 0.1: b.box(0.12, s.bounds[0] + 0.03, z1h - 0.03, 0.14, s.bounds[2] - 0.03, z1h - 0.012, X['lampglow'])
-    # samovar in the second niche
-    y0h, z0h, y1h, z1h = holes[1].bounds
-    b.lathe(0.2, 1.8, z0h, [(0.0, 0.0), (0.06, 0.0), (0.05, 0.04), (0.1, 0.1), (0.11, 0.2), (0.08, 0.3), (0.04, 0.33), (0.05, 0.36), (0.0, 0.38)], m['brass'], 20)
+            ya, yb = y0n + 0.004, y1n - 0.004
+            if zl > zs:
+                b.box(0.10, ya, zl, 0.30, yb, zl + 0.03, W, 0.003); b.box(0.27, ya + 0.02, zl - 0.008, 0.29, yb - 0.02, zl, X['lampglow'])
+            zt = zl + (0.03 if zl > zs else 0.0); y = ya + 0.05
+            while y < yb - 0.08:
+                k = rnd.random()
+                if k < 0.4: b.lathe(0.2, y, zt, [(0.0, 0.0), (0.032, 0.0), (0.032, 0.2), (0.012, 0.25), (0.011, 0.29), (0.0, 0.29)], m['glass'], 12); y += 0.075
+                elif k < 0.75: b.lathe(0.2, y, zt, [(0.0, 0.0), (0.04, 0.0), (0.06, 0.05), (0.05, 0.12), (0.025, 0.16), (0.03, 0.18), (0.0, 0.18)], X['rishtan'] if 'rishtan' in X else m['clay'], 16); y += 0.12
+                else: b.lathe(0.2, y, zt, [(0.0, 0.0), (0.05, 0.0), (0.06, 0.08), (0.04, 0.16), (0.045, 0.18), (0.0, 0.19)], m['clay'], 14); y += 0.12
+        b.box(0.12, y0n + 0.06, zsp - 0.02, 0.14, y1n - 0.06, zsp, X['lampglow'])                     # warm glow at the springing line
+    y0h, y1h = BAR_NICHES[2][0], BAR_NICHES[2][1]                                                       # samovar in the central niche
+    b.lathe(0.2, (y0h + y1h) / 2, 1.2, [(0.0, 0.0), (0.06, 0.0), (0.05, 0.04), (0.1, 0.1), (0.11, 0.2), (0.08, 0.3), (0.04, 0.33), (0.05, 0.36), (0.0, 0.38)], m['brass'], 20)
     return b.mesh(f'Barwall_{int(L * 1000)}')
+
+@cached
+def a_bar_cornice(L, ztop):
+    """carved walnut frieze with a row of stepped muqarnas corbels under it (Khiva carving), hung on the wall face;
+    local x 0..0.14 out from the wall face, y 0..L, top at ztop"""
+    b = MB(); W = m['walnut']; C = X['carved']
+    b.box(0.0, 0.0, ztop - 0.22, 0.06, L, ztop, C, 0.003)
+    b.box(0.0, 0.0, ztop - 0.03, 0.14, L, ztop, W, 0.004)
+    n = int(L / 0.16)
+    for k in range(n):
+        yc = (k + 0.5) * L / n
+        for t, (d, hz) in enumerate(((0.025, 0.05), (0.05, 0.05), (0.08, 0.05))):
+            z1 = ztop - 0.03 - t * 0.05; b.box(0.06 if t == 0 else 0.0, yc - 0.055 + 0.012 * t, z1 - hz, 0.06 + d, yc + 0.055 - 0.012 * t, z1, W if t % 2 else C, 0.003)
+    return b.mesh(f'Bar_cornice_{int(L * 1000)}')
 
 def _flutes(b, y0, y1, z0, z1, xf, axis_y=True, rows=3, sgn=1):
     """terracotta baguette cladding on the plane x = xf (or y = xf), growing towards +sgn: rows of vertical glazed sticks,
     deep and shallow alternating in a checker (as in the references)"""
     w, g = 0.046, 0.008; n = int((y1 - y0) / (w + g)); off = ((y1 - y0) - n * (w + g) + g) / 2
-    TC = X['terracotta']; hz = (z1 - z0) / rows
+    hz = (z1 - z0) / rows
     for r in range(rows):
         for k in range(n):
             a = y0 + off + k * (w + g); d = 0.075 if (k // 2 + r) % 2 else 0.04
             za, zb = z0 + r * hz + 0.004, z0 + (r + 1) * hz - 0.004
+            TC = X['glazeturq'] if d > 0.05 else X['glazecob']                                   # Shah-i-Zinda glazed bricks: deep turquoise / shallow cobalt
             if axis_y: b.box(xf, a, za, xf + sgn * d, a + w, zb, TC, 0.004)
             else: b.box(a, xf, za, a + w, xf + sgn * d, zb, TC, 0.004)
 @cached
 def a_barcounter(L, Lr):
     """front bar: plastered body x 0..0.62, y 0..L (+ return y -Lr..0 with x 0..0.9), terracotta baguette front on x = 0.62
     and on the return face y = -Lr, toe-kick LED, walnut top with a 0.26 overhang; origin at the body's back corner"""
-    b = MB(); P = X['clayplaster']; W = m['walnut']; t = 0.1
+    b = MB(); P = X['bannai']; W = m['walnut']; t = 0.1
     b.box(0.0, 0.0, 0.0, 0.62, L, 1.03, P, 0.004)
     b.box(0.0, -Lr, 0.0, 0.9, 0.0, 1.03, P, 0.004)
     b.box(0.62, 0.0, t - 0.012, 0.64, L, t, X['lampglow'])

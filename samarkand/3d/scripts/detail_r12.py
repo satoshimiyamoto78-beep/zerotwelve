@@ -52,13 +52,35 @@ def pierced_mat(name):
     return mm
 for c_ in ('terra', 'navy', 'emerald', 'wine'): X['velvet_' + c_] = bl2.fabric('velvet_%s_f' % c_, os.path.join(TEX2, 'velvet_%s.png' % c_), 0.5)
 for c_ in ('linen', 'denim', 'silk_ikat', 'white', 'olive', 'black', 'rose', 'sand', 'terra'): X['cloth_' + c_] = bl2.fabric('cloth_%s_f' % c_, os.path.join(TEX2, 'cloth_%s.png' % c_), 0.35)
-X.update(zellige=tex2('zellige_t', 'zellige.png', 0.32, rough=0.12, bump=0.35, coat=0.6), pierced=pierced_mat('pierced_t'))
+def mosaic_mat(name):
+    """mosaic-glass lamp: Voronoi tesserae, random cobalt / turquoise / amber / ruby / milk-white per cell, glowing from inside,
+    thin brass grout between the tiles (shader-built, no painted texture)"""
+    if name in bl._mats: return bl._mats[name]
+    mm = bpy.data.materials.new(name); N = mm.node_tree.nodes; Lk = mm.node_tree.links; b = N['Principled BSDF']
+    tc = N.new('ShaderNodeTexCoord'); vo = N.new('ShaderNodeTexVoronoi'); vo.inputs['Scale'].default_value = 26.0
+    Lk.new(tc.outputs['Object'], vo.inputs['Vector'])
+    ramp = N.new('ShaderNodeValToRGB'); ramp.color_ramp.interpolation = 'CONSTANT'; cr = ramp.color_ramp
+    pal = [(0.01, 0.03, 0.4), (0.0, 0.3, 0.38), (0.75, 0.28, 0.01), (0.01, 0.03, 0.4), (0.45, 0.01, 0.03), (0.0, 0.3, 0.38), (0.01, 0.03, 0.4), (0.75, 0.28, 0.01)]
+    cr.elements[0].color = (*pal[0], 1); cr.elements[1].position = 1.0 / len(pal); cr.elements[1].color = (*pal[1], 1)
+    for k, c in enumerate(pal[2:], 2): e = cr.elements.new(k / len(pal)); e.color = (*c, 1)
+    sep = N.new('ShaderNodeSeparateColor'); Lk.new(vo.outputs['Color'], sep.inputs['Color']); Lk.new(sep.outputs['Red'], ramp.inputs['Fac'])
+    ed = N.new('ShaderNodeTexVoronoi'); ed.feature = 'DISTANCE_TO_EDGE'; ed.inputs['Scale'].default_value = 26.0; Lk.new(tc.outputs['Object'], ed.inputs['Vector'])
+    gr = N.new('ShaderNodeMath'); gr.operation = 'GREATER_THAN'; gr.inputs[1].default_value = 0.05; Lk.new(ed.outputs['Distance'], gr.inputs[0])   # 1 = glass, 0 = grout
+    mix = N.new('ShaderNodeMix'); mix.data_type = 'RGBA'; mix.inputs['A'].default_value = (0.75, 0.55, 0.22, 1)
+    Lk.new(gr.outputs[0], mix.inputs['Factor']); Lk.new(ramp.outputs['Color'], mix.inputs['B']); Lk.new(mix.outputs['Result'], b.inputs['Base Color'])
+    b.inputs['Roughness'].default_value = 0.12; b.inputs['Coat Weight'].default_value = 0.8
+    Lk.new(ramp.outputs['Color'], b.inputs['Emission Color'])
+    em = N.new('ShaderNodeMath'); em.operation = 'MULTIPLY'; em.inputs[1].default_value = 2.2; Lk.new(gr.outputs[0], em.inputs[0]); Lk.new(em.outputs[0], b.inputs['Emission Strength'])
+    met = N.new('ShaderNodeMath'); met.operation = 'SUBTRACT'; met.inputs[0].default_value = 1.0; Lk.new(gr.outputs[0], met.inputs[1]); Lk.new(met.outputs[0], b.inputs['Metallic'])
+    bl._mats[name] = mm; return mm
+X.update(zellige=tex2('zellige_t', 'zellige.png', 0.32, rough=0.12, bump=0.35, coat=0.6), pierced=mosaic_mat('mosaic_glass'))
 X.update(bannai=tex2('bannai_t', 'bannai.png', 1.0, rough=0.7, bump=0.45, coat=0.15), bannai2=tex2('bannai2_t', 'bannai2.png', 1.4, rough=0.7, bump=0.45, coat=0.15),
          hazarbaf=tex2('hazarbaf_t', 'hazarbaf.png', 1.5, rough=0.6, bump=0.4, coat=0.25), kufic=tex2('kufic_t', 'kufic.png', 1.2, rough=0.25, bump=0.35, coat=0.5),
          majcobalt=tex2('majcobalt_t', 'majcobalt.png', 0.6, rough=0.15, bump=0.25, coat=0.7), majisfahan=tex2('majisfahan_t', 'majisfahan.png', 0.9, rough=0.15, bump=0.25, coat=0.7),
          girihstar=tex2('girihstar_t', 'girihstar.png', 0.8, rough=0.25, bump=0.35, coat=0.5),
          brickpave=tex2('brickpave_t', 'brickpave.png', 2.5, rough=0.8, bump=0.5), stone=tex2('stone_t', 'stone.png', 1.0, rough=0.6, bump=0.2),
          epigraph_uv=uvmat('epigraph_uv', 'epigraph.png', rough=0.15, sheen=0.0), runner_uv=uvmat('runner_uv', 'runner_malayer.jpg'), oldrug_uv=uvmat('oldrug_uv', 'rug_oldpersian.jpg'))
+X.update(glazeturq=mat('glaze_turq', (0.03, 0.42, 0.46), rough=0.18, coat=0.8, noise_var=0.05), glazecob=mat('glaze_cob', (0.02, 0.06, 0.38), rough=0.18, coat=0.8, noise_var=0.04))
 X.update(terracotta=mat('terracotta_glaze', (0.32, 0.085, 0.04), rough=0.3, coat=0.4, noise_var=0.06), clayplaster=mat('clay_plaster', (0.56, 0.43, 0.33), rough=0.85, bump=0.35, noise_var=0.03), leather=mat('leather_tan', (0.38, 0.19, 0.1), rough=0.45, bump=0.15),
          reed=mat('reed_dry', (0.5, 0.38, 0.22), rough=0.75, noise_var=0.06), bark2=mat('bark_plane', (0.3, 0.27, 0.2), rough=0.9, bump=1.2, noise_var=0.13),
          beadikat=uvmat('beadikat_uv', 'beadikat.jpg', rough=0.3, sheen=0.2))
@@ -455,11 +477,11 @@ inst(a_barwall(LB, HW), 'Bar_backwall', (BX_, BAR_Y0, TER), 0, 'Bar')
 mb = MB(); mb.picture_box(0.32, 4.75, 1.2, 0.335, 5.55, 2.95, X['oldrug_uv'], '+x'); mb.rod((0.345, 4.7, 2.98), (0.345, 5.6, 2.98), 0.01, m['brass'], 10)
 mb.box(0.32, 4.68, 2.975, 0.335, 4.69, 2.985, m['brass']); mb.box(0.32, 5.61, 2.975, 0.335, 5.62, 2.985, m['brass'])
 inst(mb.mesh('Bar_wallcarpet'), 'Bar_wallcarpet', (BX_, BAR_Y0, TER), 0, 'Bar')
-mb = MB(); mb.box(0.33, 1.55, 0.96, 0.53, 2.25, 1.38, m['steel'], 0.01); mb.box(0.33, 1.6, 1.38, 0.5, 2.2, 1.4, m['brass'], 0.004)
-for yy in (1.72, 1.9, 2.08): mb.rod((0.53, yy, 1.2), (0.6, yy, 1.17), 0.012, m['black'], 8)
+mb = MB(); mb.box(0.35, 1.55, 0.96, 0.55, 2.25, 1.38, m['steel'], 0.01); mb.box(0.35, 1.6, 1.38, 0.52, 2.2, 1.4, m['brass'], 0.004)
+for yy in (1.72, 1.9, 2.08): mb.rod((0.55, yy, 1.2), (0.62, yy, 1.17), 0.012, m['black'], 8)
 inst(mb.mesh('Bar_espresso'), 'Bar_espresso', (BX_, BAR_Y0, TER), 0, 'Bar')
 inst(a_barcounter(LB, 0.6), 'Bar_counter', (1.5, BAR_Y0, TER), 0, 'Bar')
-inst(a_fringe(LB, 0.36), 'Reed_fringe_bar', (BX_ + 0.32, BAR_Y0, 3.10), 0, 'Bar')
+inst(a_bar_cornice(LB, round(HW, 3)), 'Bar_cornice', (BX_ + 0.34, BAR_Y0, TER), 0, 'Bar')        # carved frieze + muqarnas corbels
 for it in D['items']:
     if it['kind'] == 'stool':
         cx, cy = cen(it['poly'][0]); inst(a_barstool(), 'Barstool', (cx, cy, TER), math.pi / 2, 'Bar')

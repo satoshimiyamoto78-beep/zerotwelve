@@ -280,19 +280,17 @@ sheets.append(s.finish())
 s = Sheet('S-07', 'Bar — plan, back wall, counter, section')
 M, k = s.view('S07a_bar_plan_cut', (0.0, 7.6, 3.2, 14.45), 25, (30, 60), 'PLAN AT +1.200', '')
 s.dim(M, (0.14, 14.35), (0.14 + 0.55, 14.35), 6); s.dim(M, (1.5, 14.35), (2.38, 14.35), 6, '880 incl. 260 overhang')
-M2, _ = s.view('S07b_bar_backwall_elevation', (8.5, -0.5, 14.4, 3.2), 25, (190, 360), 'BACK WALL ELEVATION', 'sculpted clay plaster with rounded niches, oak shelves + warm LED, reed fringe, wall carpet')
-for nm, (rects, rad) in zip('N1 N2 N3 N4'.split(), [([(0.25, 1.25, 1.25, 2.75)], 0.14), ([(1.55, 1.25, 2.05, 2.62), (1.55, 1.25, 2.6, 1.86)], 0.11),
-                                                   ([(2.9, 2.02, 4.45, 2.75), (2.9, 1.25, 3.7, 2.1), (3.55, 1.6, 4.0, 2.2)], 0.12), ([(3.95, 1.25, 4.55, 1.72)], 0.1)]):
-    y0 = min(r_[0] for r_ in rects) + 8.6; y1 = max(r_[2] for r_ in rects) + 8.6; z1 = max(r_[3] for r_ in rects) + TER
-    s.dim(M2, (y0, z1), (y1, z1), 5, f'{nm} {(y1 - y0) * 1000:.0f}')
+M2, _ = s.view('S07b_bar_backwall_elevation', (8.5, -0.5, 14.4, 3.2), 25, (190, 360), 'BACK WALL ELEVATION', 'bannai glazed brick, pointed-arch niches in kufic frames, cobalt majolica backs, walnut shelves + warm LED, carved cornice, wall carpet')
+for nm, (y0, y1, zs, zsp, za) in zip('N1 N2 N3 N4'.split(), [(0.25, 1.15, 1.2, 2.3, 2.75), (1.45, 2.15, 1.2, 2.1, 2.45), (2.45, 3.55, 1.2, 2.35, 2.85), (3.85, 4.55, 1.2, 2.1, 2.45)]):
+    s.dim(M2, (y0 + 8.6, za + TER), (y1 + 8.6, za + TER), 5, f'{nm} {(y1 - y0) * 1000:.0f}')
 s.level(M2, (14.35, TER + 0.96), '+0.960 back counter', 1); s.level(M2, (14.35, TER + 1.25), '+1.250 niche sills', 1); s.level(M2, (14.35, 3.10), '+3.550 wall top', 1)
-M3, _ = s.view('S07c_bar_counter_elevation', (7.6, -0.5, 14.4, 0.7), 25, (190, 250), 'COUNTER FRONT ELEVATION', 'terracotta glazed baguettes 46 x 40/75 in 3 checkered rows, toe-kick LED, walnut top 60')
+M3, _ = s.view('S07c_bar_counter_elevation', (7.6, -0.5, 14.4, 0.7), 25, (190, 250), 'COUNTER FRONT ELEVATION', 'glazed bricks 46 wide — turquoise 75 deep / cobalt 40 deep in 3 checkered rows, toe-kick LED, walnut top 60')
 s.level(M3, (14.35, TER + 1.09), '+1.090 bar top', 1)
 M4, _ = s.view('S07d_bar_section', (-0.1, -0.55, 3.2, 3.8), 20, (560, 250), 'SECTION E-E', '')
 s.notes_block(560, 200, 'NOTES', [
-    'Back wall: steel stud + cement board, sculpted clay (tadelakt-type) plaster; niche returns formed in bent board; shelves solid oak 30 on hidden brackets.',
-    'Counter: plastered blockwork body, terracotta glazed baguettes on adhesive + mechanical clips, LED strip 2700 K in the toe kick; top walnut 60 with a 260 overhang.',
-    'Stools: walnut frame, leather seat at +760, foot rail at +260. Pendants: beaded ikat drums Ø440 h300 on brass rods, bottom at +2.350.',
+    'Back wall: blockwork 220 faced with bannai glazed brick (buff + turquoise crosses); pointed-arch niches 200 deep, backs in cobalt majolica, kufic glazed-brick frames 75 proud 20; walnut shelves 30 on hidden brackets, LED 2700 K.',
+    'Counter: blockwork body in bannai brick; front of glazed brick slips (turquoise / cobalt, Shah-i-Zinda colours) on adhesive + clips; toe-kick LED; walnut top 60, 260 overhang. Cornice: carved walnut frieze 220 with 3-step muqarnas corbels @ 160.',
+    'Stools: walnut frame, leather seat at +760, foot rail at +260. Pendants: beaded ikat drums Ø440 h300 on brass rods, bottom at +2.350. Hall lamps: mosaic-glass globes in brass.',
 ], 260)
 sheets.append(s.finish())
 

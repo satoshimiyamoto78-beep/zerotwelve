@@ -111,11 +111,13 @@ def a_banquette(L, D, col, pillow):
 
 # ---------------------------------------------------------------- PIERCED BRASS LANTERNS + CHANDELIER (refs 11, 01)
 def _pierced(b, x, y, z, s=1.0):
-    """onion lantern hanging from (x, y, z): cap + chain stub at the top, pierced globe below"""
+    """mosaic-glass globe lamp hanging from (x, y, z) — cobalt / turquoise / amber tesserae in a brass setting
+    (same 0.5*s envelope as the earlier pierced lantern): ring hook, bell cap, globe, brass drop finial"""
     b.cyl(x, y, z - 0.03 * s, z, 0.008, m['brass'], 6)
-    b.lathe(x, y, z - 0.09 * s, [(0.0, 0.0), (0.05 * s, 0.0), (0.03 * s, 0.04 * s), (0.012 * s, 0.06 * s), (0.0, 0.06 * s)], m['brass'], 16)
-    b.lathe(x, y, z - 0.42 * s, [(0.0, 0.0), (0.04 * s, 0.01 * s), (0.11 * s, 0.1 * s), (0.13 * s, 0.18 * s), (0.1 * s, 0.27 * s), (0.05 * s, 0.33 * s), (0.0, 0.33 * s)], X['pierced'], 24)
-    b.lathe(x, y, z - 0.5 * s, [(0.0, 0.0), (0.012 * s, 0.0), (0.03 * s, 0.06 * s), (0.04 * s, 0.08 * s), (0.0, 0.08 * s)], m['brass'], 12)
+    b.lathe(x, y, z - 0.09 * s, [(0.0, 0.0), (0.05 * s, 0.0), (0.052 * s, 0.01 * s), (0.035 * s, 0.035 * s), (0.014 * s, 0.055 * s), (0.0, 0.06 * s)], m['brass'], 20)
+    b.lathe(x, y, z - 0.43 * s, [(0.0, 0.0), (0.03 * s, 0.004 * s), (0.085 * s, 0.035 * s), (0.122 * s, 0.1 * s), (0.13 * s, 0.17 * s), (0.118 * s, 0.24 * s),
+                                 (0.08 * s, 0.3 * s), (0.048 * s, 0.33 * s), (0.0, 0.34 * s)], X['pierced'], 28)
+    b.lathe(x, y, z - 0.5 * s, [(0.0, 0.0), (0.006 * s, 0.0), (0.018 * s, 0.035 * s), (0.03 * s, 0.06 * s), (0.032 * s, 0.07 * s), (0.0, 0.07 * s)], m['brass'], 16)
 @cached
 def a_pendant_cluster(k, Ls=(0.35, 0.6, 0.85)):
     """k pierced lanterns (spaced 0.3 apart on a 0.17 circle) on rods of lengths Ls from one brass canopy; origin = canopy top (ceiling contact)"""
