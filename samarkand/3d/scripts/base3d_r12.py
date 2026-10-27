@@ -166,7 +166,7 @@ if 'inlays' in D:                                       # inlays sit flush in th
     prism('alley_girih', IN['alley'], -1.45, TER, m['girih'], 'Floors'); prism('kids_rubber', IN['kids'], -1.45, TER, m['rubber'], 'Floors')
     prism('bbq_floor_slate', IN['bbq'], -1.45, TER, m['slate'], 'Floors'); prism('medallion_mosaic', IN['medallion'], -1.45, TER, m['majolica'], 'Floors')
     prism('aryk_channel', IN['aryk'], -1.45, TER - 0.08, m['majolica'], 'Fountain'); prism('aryk_water', IN['aryk'], TER - 0.08, TER - 0.03, m['water'], 'Fountain')
-    prism('hauz_rim', D['hauz_ring'], TER, TER + 0.45, m['majolica'], 'Fountain')
+    prism('hauz_rim', D['hauz_ring'], TER, TER + (0.38 if os.environ.get('DETAIL', '1') == '1' else 0.45), m['majolica'], 'Fountain')     # detail pass adds the stone coping
 else:
     prism('terrace_floor', D['floor'], -1.45, TER, m['floor'], 'Floors')
     prism('alley_girih', D['alley'], TER, TER + 0.012, m['girih'], 'Floors')
@@ -216,7 +216,7 @@ HT = {  # kind: (z0, z1, material, collection)   heights above the item's own fl
 counter = {}
 DETAIL = os.environ.get('DETAIL', '1') == '1'
 SKIP = {'chair', 'lantern', 'screen', 'bportal', 'drum', 'rbox', 'woodstack', 'tandoor', 'kazan', 'table', 'bench', 'btable', 'rug', 'pole', 'gatepost',
-        'flamp', 'medallion', 'bbqfloor', 'aryk', 'hauzborder', 'abench', 'sofa', 'atable', 'portal', 'runner'} if DETAIL else set()
+        'flamp', 'medallion', 'bbqfloor', 'aryk', 'hauzborder', 'abench', 'sofa', 'atable', 'portal', 'runner', 'backbar', 'barbody', 'bartop', 'barreturn', 'stool', 'coffee', 'sink', 'samovar', 'sebil', 'sebilbasin'} if DETAIL else set()
 if DETAIL:                                              # things that rest on something else start on its top
     HT_FIX = {'otable': (0.015, 0.465), 'tapchantable': (0.47, 0.78), 'bridge': (0.06, 0.2)}
 else: HT_FIX = {}
@@ -355,7 +355,13 @@ for sp, x, y, r in D['plants']:
 shr = []
 for y in [0.6 * k for k in range(1, 64)]:
     if D['ent'][0] - 0.8 < y < D['ent'][1] + 0.8: continue
-    shr.append((xb(y) - 1.15 + rr.uniform(-.15, .15), y, TER + 0.45, rr.uniform(0.28, 0.42)))
+    sx_, sr_ = xb(y) - 1.15 + rr.uniform(-.15, .15), rr.uniform(0.28, 0.42)
+    if DETAIL:                                                     # shrubs only where the planter soil is, clear of walls / benches / columns
+        from shapely.geometry import Point as _P, Polygon as _Poly
+        if '_PL' not in globals(): globals()['_PL'] = [_Poly(r_) for r_ in D['planter']]
+        if not any(q_.contains(_P(sx_, y).buffer(sr_ * 0.9)) for q_ in _PL): continue
+        if any(math.hypot(sx_ - cx_, y - cy_) < sr_ + 0.3 for cx_, cy_ in D['cols']): continue
+    shr.append((sx_, y, TER + 0.45, sr_))
 blob('planter_shrubs', shr, m['leaf'], 'Planting', 1)
 bou = []
 for it in D['items']:
@@ -377,27 +383,65 @@ for i, r in enumerate(D['roof']):
     n = len(pts)
     for j in range(n): bm.faces.new((a[j], a[(j + 1) % n], b[(j + 1) % n], b[j]))
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces); new_obj(f'roof_panel_{i}', bm, [m['bronze'], m['roofwood']], 'Roof_skin')
+STEEL_DETAIL = os.environ.get('DETAIL', '1') == '1'
+def sloped_parts(name, parts, mm, cname):
+    """one closed object from several boxes whose tops follow linear z(x): parts = [(x0, x1, y0, y1, ztop_fn, depth)]"""
+    bm = bmesh.new()
+    for x0, x1, y0, y1, fn, dep in parts:
+        pts = [(x0, y0), (x1, y0), (x1, y1), (x0, y1)]
+        a = [bm.verts.new((x, y, fn(x) - dep)) for x, y in pts]; b = [bm.verts.new((x, y, fn(x))) for x, y in pts]
+        bm.faces.new(list(reversed(a))); bm.faces.new(b)
+        for i in range(4): bm.faces.new((a[i], a[(i + 1) % 4], b[(i + 1) % 4], b[i]))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    return new_obj(name, bm, [mm], cname)
+def I_parts(x0, x1, yc, fn, D=0.3, B=0.15, tf=0.0107, tw=0.0071):
+    """IPE-type section along x (IPE 300: 300 x 150, tf 10.7, tw 7.1), top following fn"""
+    return [(x0, x1, yc - B / 2, yc + B / 2, fn, tf), (x0, x1, yc - tw / 2, yc + tw / 2, lambda x: fn(x) - tf, D - 2 * tf),
+            (x0, x1, yc - B / 2, yc + B / 2, lambda x: fn(x) - D + tf, tf)]
+RING_R = lambda d: d['r'] + 0.06                         # dome ring girder centre line (under the drum)
 for y, xe in D['beams']:
-    segs = [(0.0, xe)]
-    for d in D.get('domes', []):                      # beams are trimmed at the dome ring beams
-        dy = abs(y - d['c'][1])
-        if dy < d['r'] + 0.2:
-            h = math.sqrt((d['r'] + 0.2) ** 2 - dy ** 2); c0, c1 = d['c'][0] - h, d['c'][0] + h
+    segs = [(0.18 if STEEL_DETAIL else 0.0, xe)]       # beams bear on the facade ledger face (x = 0.18)
+    for d in D.get('domes', []):                      # beams frame into the dome ring girders (the beam's inner corner stops at the girder's outer flange edge)
+        dy = abs(y - d['c'][1]); rt = (RING_R(d) + 0.075) if STEEL_DETAIL else (d['r'] + 0.2)
+        dye = max(0.0, dy - 0.075) if STEEL_DETAIL else dy
+        if dye < rt:
+            h = math.sqrt(rt ** 2 - dye ** 2); c0, c1 = d['c'][0] - h, d['c'][0] + h
             segs = [(p, min(q, c0)) for p, q in segs if p < c0] + [(max(p, c1), q) for p, q in segs if q > c1]
     for p, q in segs:
-        sloped_box(f'roof_beam_y{y:.1f}', p, q, y - 0.1, y + 0.1, lambda x: top(x) - 0.25, 0.3, m['bronze'], 'Roof_structure')
+        if STEEL_DETAIL: sloped_parts(f'roof_beam_y{y:.1f}', I_parts(p, q, y, lambda x: top(x) - 0.25), m['bronze'], 'Roof_structure')
+        else: sloped_box(f'roof_beam_y{y:.1f}', p, q, y - 0.1, y + 0.1, lambda x: top(x) - 0.25, 0.3, m['bronze'], 'Roof_structure')
+def trim_to_domes(x, y0, y1, extra):
+    """purlin segment minus every dome curb disc (radius r + extra, widened by the purlin's half width): list of (y0, y1)"""
+    segs = [(y0, y1)]
+    for d in D.get('domes', []):
+        cx, cy = d['c']; R = d['r'] + extra; dx = max(0.0, abs(x - cx) - 0.04)
+        if dx >= R: continue
+        h = math.sqrt(R ** 2 - dx ** 2); a, b = cy - h, cy + h
+        segs = [(p, min(q, a)) for p, q in segs if p < a] + [(max(p, b), q) for p, q in segs if q > b]
+    return [(p, q) for p, q in segs if q - p > 0.1]
+cleats = []
 for x, y0, y1 in D['purlins']:
-    sloped_box('purlin', x - 0.04, x + 0.04, y0, y1, lambda xx: top(xx) - 0.05, 0.2, m['bronze'], 'Roof_structure')
-boxes('facade_ledger', [(0.0, 0.0, top(0) - 0.6, 0.18, 37.1, top(0) - 0.05)], m['bronze'], 'Roof_structure')
+    if STEEL_DETAIL:
+        fn = lambda xx: top(xx) - 0.05                    # C200 purlin: web on the high side, flanges towards the street
+        for y0, y1 in trim_to_domes(x, y0, y1, 0.125):
+            sloped_parts('purlin', [(x - 0.04, x + 0.035, y0, y1, fn, 0.008), (x - 0.04, x - 0.034, y0, y1, lambda xx: fn(xx) - 0.008, 0.184),
+                                    (x - 0.04, x + 0.035, y0, y1, lambda xx: fn(xx) - 0.192, 0.008)], m['bronze'], 'Roof_structure')
+            for yb_, _ in D['beams']:
+                if y0 + 0.05 < yb_ < y1 - 0.05: cleats.append((x - 0.05, x - 0.04, yb_ - 0.04, yb_ + 0.04, lambda xx: top(xx) - 0.13, 0.12))
+    else: sloped_box('purlin', x - 0.04, x + 0.04, y0, y1, lambda xx: top(xx) - 0.05, 0.2, m['bronze'], 'Roof_structure')
+cleats = list({(round(c[0], 4), round(c[1], 4)): c for c in cleats}.values())          # one cleat per crossing
+if cleats: sloped_parts('purlin_cleats', cleats, m['steel'], 'Roof_structure')
+boxes('facade_ledger', [(0.0, 0.0, 3.25, 0.18, 37.1, top(0) - 0.05)], m['bronze'], 'Roof_structure')        # ledger channel above the F1 glazing
 for x, y in D['cols']:
     if y < 0.6 and x < 0: continue
+    if DETAIL and any(a <= y <= b for a, b in ((D['ent'][0] - 0.7, D['ent'][0]), (D['ent'][1], D['ent'][1] + 0.7))): continue   # carried by the portal pylons
     zt = top(x) - 0.55
     boxes('column_steel', [(x - 0.075, y - 0.075, TER, x + 0.075, y + 0.075, zt)], m['bronze'], 'Roof_structure')
     if DETAIL: continue                                 # detail pass clads the column (Samarkand majolica column)
     z0c, z1c = TER + 0.2, TER + 2.4                     # wood sleeve: 4 boards around the steel column, flush, no overlap
     boxes('column_wood_clad', [(x - 0.15, y - 0.15, z0c, x + 0.15, y - 0.075, z1c), (x - 0.15, y + 0.075, z0c, x + 0.15, y + 0.15, z1c),
                                (x - 0.15, y - 0.075, z0c, x - 0.075, y + 0.075, z1c), (x + 0.075, y - 0.075, z0c, x + 0.15, y + 0.075, z1c)], m['oak'], 'Roof_structure')
-gut = [(xb(y) - 0.3, y, top(xb(y)) - 0.28, xb(y), y + 0.6, top(xb(y)) - 0.02) for y in [0.6 * k for k in range(-2, 63)]]
+gut = [(xb(y), y, top(xb(y)) - 0.2, xb(y) + 0.25, y + 0.6, top(xb(y)) - 0.04) for y in [0.6 * k for k in range(-2, 63)]]   # box gutter hung on the street edge
 boxes('gutter_street', gut, m['bronze'], 'Roof_structure')
 # ======================= ROOF DOMES (R12) =======================
 ZR = D.get('dome_ring', 3.9); SEG = 48
@@ -437,6 +481,22 @@ for d in D.get('domes', []):
         bm.faces.new((ol[j], ol[k], oh[k], oh[j])); bm.faces.new((ih[j], ih[k], il[k], il[j]))
         bm.faces.new((oh[j], oh[k], ih[k], ih[j])); bm.faces.new((il[j], il[k], ol[k], ol[j]))
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces); new_obj(f'dome_drum_{d["key"]}', bm, [m['band']], 'Domes')
+    if STEEL_DETAIL:                                  # ring girder (rolled IPE 300 in the roof plane) + drum curb (C200 ring) on it
+        bm = bmesh.new(); Rg = RING_R(d); NS = 96
+        def zt_(a, rr): return top(cx + rr * math.cos(a)) - 0.25
+        for loop in ([(Rg - 0.075, 0.0), (Rg + 0.075, 0.0), (Rg + 0.075, -0.0107), (Rg - 0.075, -0.0107)],
+                     [(Rg - 0.0036, -0.0107), (Rg + 0.0036, -0.0107), (Rg + 0.0036, -0.2893), (Rg - 0.0036, -0.2893)],
+                     [(Rg - 0.075, -0.2893), (Rg + 0.075, -0.2893), (Rg + 0.075, -0.3), (Rg - 0.075, -0.3)]):
+            rings_ = [[bm.verts.new((cx + rr * math.cos(2 * math.pi * j / NS), cy + rr * math.sin(2 * math.pi * j / NS), zt_(2 * math.pi * j / NS, rr) + hh)) for j in range(NS)] for rr, hh in loop]
+            for a_, b_ in zip(rings_, rings_[1:] + rings_[:1]):
+                for j in range(NS): bm.faces.new((a_[j], a_[(j + 1) % NS], b_[(j + 1) % NS], b_[j]))
+        bmesh.ops.recalc_face_normals(bm, faces=bm.faces); new_obj(f'dome_ring_girder_{d["key"]}', bm, [m['bronze']], 'Roof_structure')
+        bm = bmesh.new()
+        loop = [(d['r'], 0.0), (d['r'] + 0.12, 0.0), (d['r'] + 0.12, 0.2), (d['r'], 0.2)]
+        rings_ = [[bm.verts.new((cx + rr * math.cos(2 * math.pi * j / NS), cy + rr * math.sin(2 * math.pi * j / NS), zt_(2 * math.pi * j / NS, rr) + hh)) for j in range(NS)] for rr, hh in loop]
+        for a_, b_ in zip(rings_, rings_[1:] + rings_[:1]):
+            for j in range(NS): bm.faces.new((a_[j], a_[(j + 1) % NS], b_[(j + 1) % NS], b_[j]))
+        bmesh.ops.recalc_face_normals(bm, faces=bm.faces); new_obj(f'dome_curb_{d["key"]}', bm, [m['steel']], 'Roof_structure')
     # ring beam inside the drum, under the springing line
     bm = bmesh.new(); prof = [(d['r'] - 0.15, ZR - 0.25), (d['r'], ZR - 0.25), (d['r'], ZR), (d['r'] - 0.15, ZR)]
     rg = [[bm.verts.new((cx + rr_ * math.cos(2 * math.pi * j / SEG), cy + rr_ * math.sin(2 * math.pi * j / SEG), zz)) for j in range(SEG)] for rr_, zz in prof]
@@ -464,7 +524,9 @@ for d in D.get('domes', []):
         ro = (d['r'] + T_) * math.sin(ths[0]); lz = ZR + (d['rise'] + T_) * math.cos(ths[0])
         cylinder(f'dome_lantern_{d["key"]}', cx, cy, lz, lz + 0.5, ro, m['glass'], 'Domes', n=SEG)
         cylinder(f'dome_lantern_cap_{d["key"]}', cx, cy, lz + 0.5, lz + 0.85, ro + 0.1, m['dometile'], 'Domes', n=SEG, r2=0.05)
-        cylinder(f'dome_finial_{d["key"]}', cx, cy, lz + 0.85, lz + 1.45, 0.05, m['brass'], 'Domes', n=12, r2=0.008)
+        cylinder(f'dome_finial_{d["key"]}', cx, cy, lz + 0.85, lz + 0.98, 0.05, m['brass'], 'Domes', n=12, r2=0.03)          # finial: neck, two balls, spike — stacked, touching
+        cylinder(f'dome_finial_neck_{d["key"]}', cx, cy, lz + 1.12, lz + 1.2, 0.025, m['brass'], 'Domes', n=12, r2=0.02)
+        cylinder(f'dome_finial_spike_{d["key"]}', cx, cy, lz + 1.3, lz + 1.45, 0.02, m['brass'], 'Domes', n=12, r2=0.004)
         blob(f'dome_finial_ball_{d["key"]}', [(cx, cy, lz + 1.05, 0.07), (cx, cy, lz + 1.25, 0.05)], m['brass'], 'Domes', 2)
 
 # ======================= BUKHARA DOME (rotunda vitrine + shop) + KHIVA GATE =======================
@@ -564,7 +626,7 @@ if DO_RENDER:
     BO_ = D['booths']; b4 = BO_[3]; b5 = BO_[4]
     VIEWS = [('01_street_facade', (27.0, 21.0, 0.45), (12.0, 20.5), 21, 0.18, [], -0.6),
              ('02_entrance_pishtaq', (17.6, 12.6, 0.4), (9.0, 17.4), 20, 0.12, [], -0.4),
-             ('03_corridor_teleport', (11.2, 16.8, 1.0), (6.0, 16.8), 17, 0.08, [], -0.1),
+             ('03_corridor_teleport', (10.35, 16.8, 1.0), (6.0, 16.8), 17, 0.08, [], -0.1),
              ('04_plaza_mangal', (5.6, 15.4, 1.55), (11.4, 7.0), 18, 0.14, [], -0.1),
              ('05_south_dome', (8.9, 9.6, 1.05), (4.8, 13.6), 15, 0.3, [], -0.1),
              ('06_booth_alley', (6.7, 17.6, 1.2), (8.2, 27.0), 19, 0.1, [], -0.1),
@@ -579,7 +641,8 @@ if DO_RENDER:
              ('15_aerial_street', (40.0, 6.0, 20.0), (7.0, 20.0), 26, 0.0, [], -0.7),
              ('16_aerial_sea', (104.0, -2.0, 16.0), (8.0, 21.0), 40, 0.0, [], -0.9),
              ('17_khiva_arcade', (6.2, 23.4, 1.0), (3.2, 19.6), 18, 0.12, [], -0.1),
-             ('18_dining_chairs', (5.3, 4.5, 0.75), (2.5, 7.5), 22, 0.06, [], -0.1)]
+             ('18_dining_chairs', (5.3, 4.5, 0.75), (2.5, 7.5), 22, 0.06, [], -0.1),
+             ('19_bar', (4.3, 14.6, 0.85), (0.6, 10.6), 20, 0.1, [], -0.1)]
     only = os.environ.get('VIEWS')
     for name, loc, tgt, lens, shift, hide, ev in VIEWS:
         if only and not any(name.startswith(v) for v in only.split(',')): continue

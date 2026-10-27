@@ -43,7 +43,7 @@ def a_tubchair(col):
         h.rod((tx, ty, 0.33), (fx, fy, 0.025), 0.017, W, 12)
         h.cyl(fx, fy, 0.0, 0.025, 0.021, m['brass'], 12)
     # tub: outer horseshoe wall + seat base as ONE quad-grid body (stations around the horseshoe), softened
-    s = MB(); ax, ay, t = 0.25, 0.235, 0.075; N = 16; A = math.radians(128)
+    s = MB(); ax, ay, t = 0.29, 0.25, 0.065; N = 16; A = math.radians(128)            # 450 mm between the arms
     phis = [-A + 2 * A * k / N for k in range(N + 1)]; st = []
     for ph in phis:
         top_ = 0.6 + 0.22 * math.cos(ph * 0.7) ** 1.5
@@ -59,12 +59,16 @@ def a_tubchair(col):
     bmesh.ops.recalc_face_normals(s.bm, faces=fs)
     # front seat block between the horseshoe ends
     fy0 = -ay * math.cos(A) - 0.02
-    s.box(-0.215, fy0 - 0.12, 0.36, 0.215, 0.245, 0.44, V, 0.03)
+    s.box(-0.24, fy0 - 0.12, 0.36, 0.24, 0.258, 0.44, V, 0.03)
     tub = soften(s.mesh('Tubchair_tub'), 2)
     c = MB(); c.lathe(0, 0, 0, [(0.0, 0.0), (0.9, 0.0), (1.0, 0.25), (1.0, 0.65), (0.9, 0.95), (0.0, 1.0)], V, 24)
-    for v in c.bm.verts: v.co.x *= 0.175; v.co.y = v.co.y * 0.2 + 0.035; v.co.z = 0.44 + v.co.z * 0.085
+    for v in c.bm.verts: v.co.x *= 0.215; v.co.y = v.co.y * 0.215 + 0.03; v.co.z = 0.44 + v.co.z * 0.085
     cushion = soften(c.mesh('Tubchair_cushion'), 1)
-    return merge(f'Tubchair_{col}', [h.mesh('Tubchair_frame'), tub, cushion])
+    fr = h.mesh('Tubchair_frame')
+    for me_ in (fr, tub, cushion):                                         # seat height 0.48 (cushion top): everything above the glides drops 40 mm
+        for v in me_.vertices:
+            if v.co.z > 0.03: v.co.z -= 0.04
+    return merge(f'Tubchair_{col}', [fr, tub, cushion])
 
 # ---------------------------------------------------------------- WALNUT TABLE WITH A ZELLIGE INLAY
 @cached
@@ -75,8 +79,8 @@ def a_tiletable(n):
     b.box(-hx, -hy + f, 0.72, -hx + f, hy - f, 0.76, W, 0.006); b.box(hx - f, -hy + f, 0.72, hx, hy - f, 0.76, W, 0.006)
     b.box(-hx + f, -hy + f, 0.72, hx - f, hy - f, 0.76, X['zellige'])
     a = 0.045
-    for y0, y1 in ((-hy + a, -hy + a + 0.025), (hy - a - 0.025, hy - a)): b.box(-hx + a + 0.06, y0, 0.64, hx - a - 0.06, y1, 0.72, W, 0.003)
-    for x0, x1 in ((-hx + a, -hx + a + 0.025), (hx - a - 0.025, hx - a)): b.box(x0, -hy + a + 0.06, 0.64, x1, hy - a - 0.06, 0.72, W, 0.003)
+    for y0, y1 in ((-hy + a, -hy + a + 0.025), (hy - a - 0.025, hy - a)): b.box(-hx + a + 0.06, y0, 0.675, hx - a - 0.06, y1, 0.72, W, 0.003)
+    for x0, x1 in ((-hx + a, -hx + a + 0.025), (hx - a - 0.025, hx - a)): b.box(x0, -hy + a + 0.06, 0.675, x1, hy - a - 0.06, 0.72, W, 0.003)          # 45 mm apron: knee clearance 675
     prof = [(0.0, 0.0), (0.024, 0.0), (0.024, 0.03), (0.02, 0.05), (0.026, 0.09), (0.02, 0.14), (0.023, 0.3), (0.03, 0.34), (0.022, 0.38), (0.028, 0.56), (0.034, 0.6), (0.034, 0.72), (0.0, 0.72)]
     for sx in (-1, 1):
         for sy in (-1, 1):
