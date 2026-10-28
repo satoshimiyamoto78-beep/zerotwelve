@@ -52,7 +52,7 @@ body.rot .bar span { display: none; }
 <div id="app">
 <div id="stage"></div><div id="dims" class="off"></div>
 <div id="status">Загружаю модель…</div>
-<div class="tools"><button id="dim-toggle" aria-pressed="false" title="Показать основные размеры">Размеры</button><button id="fs-toggle" aria-pressed="false" title="Во весь экран, горизонтально">Во весь экран</button><button id="ui-toggle" aria-pressed="false" title="Скрыть / показать панели (клавиша H)">Скрыть кнопки</button></div>
+<div class="tools"><button id="hd-toggle" aria-pressed="false" title="Максимальное качество этого ракурса для вашего устройства">HD</button><button id="dim-toggle" aria-pressed="false" title="Показать основные размеры">Размеры</button><button id="fs-toggle" aria-pressed="false" title="Во весь экран, горизонтально">Во весь экран</button><button id="ui-toggle" aria-pressed="false" title="Скрыть / показать панели (клавиша H)">Скрыть кнопки</button></div>
 <header class="bar"><h1>SAMARKAND</h1><span>Крытая терраса · 3D-модель R12-v8.2 · столы на 4 и на 2, драпированная аллея, топчан и маджлисы по референсам, вывеска SAMARKAND · 155 мест</span></header>
 <nav class="dock" aria-label="Управление моделью">
   <div class="row" id="views"><span class="lbl">Вид</span>
@@ -78,8 +78,10 @@ body.rot .bar span { display: none; }
     <button data-l="furniture" aria-pressed="true">Мебель</button>
     <button data-l="planting" aria-pressed="true">Растения</button>
     <button data-l="building" aria-pressed="true">Здание</button>
+    <button data-l="ceiling" aria-pressed="true">Ковры и люстры</button>
+    <button data-l="facade" aria-pressed="true">Фасад</button>
   </div>
-  <div class="hint">Вращение — один палец, масштаб — два пальца, сдвиг — правая кнопка или два пальца. «Размеры» — основные габариты и проходы; при вращении они скрываются.</div>
+  <div class="hint">Вращение — один палец, масштаб — два пальца, сдвиг — правая кнопка или два пальца. «Размеры» — основные габариты и проходы; при вращении они скрываются. «HD» — остановите модель, и этот ракурс перерисуется в максимальном качестве для вашего устройства.</div>
 </nav>
 </div>
 
@@ -91,7 +93,7 @@ body.rot .bar span { display: none; }
   const stage = document.getElementById('stage'), status = document.getElementById('status');
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.outputEncoding = THREE.sRGBEncoding; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+  renderer.outputEncoding = THREE.sRGBEncoding; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   stage.appendChild(renderer.domElement);
   const scene = new THREE.Scene();
@@ -99,10 +101,23 @@ body.rot .bar span { display: none; }
   const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 400);
   const controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true; controls.maxPolarAngle = Math.PI * 0.495; controls.minDistance = 2; controls.maxDistance = 120;
-  scene.add(new THREE.HemisphereLight(0xfff3e0, 0x5a4a3a, 0.75));
-  const sun = new THREE.DirectionalLight(0xffe6c4, 1.6); sun.position.set(30, 40, 25); sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -35, right: 35, top: 35, bottom: -35, near: 1, far: 140 });
-  scene.add(sun);
+  // light: a soft image-based environment (warm sky dome, bright window panels, earthy ground) lights every surface, also under
+  // the roof where the sun cannot reach -- carved wood, carpets and tiles keep their colour instead of going black
+  const pmrem = new THREE.PMREMGenerator(renderer), envScene = new THREE.Scene();
+  const envGeo = new THREE.SphereGeometry(50, 32, 16), envCol = [];
+  for (let i = 0; i < envGeo.attributes.position.count; i++) {
+    const y = envGeo.attributes.position.getY(i) / 50, c = y > 0 ? new THREE.Color(0xd9cdb8).lerp(new THREE.Color(0xfff6e8), y).multiplyScalar(1.15) : new THREE.Color(0xa08a70).lerp(new THREE.Color(0x4a3a2c), -y);
+    envCol.push(c.r, c.g, c.b);
+  }
+  envGeo.setAttribute('color', new THREE.Float32BufferAttribute(envCol, 3));
+  envScene.add(new THREE.Mesh(envGeo, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide })));
+  scene.environment = pmrem.fromScene(envScene, 0.04).texture;
+  scene.add(new THREE.HemisphereLight(0xfff3e0, 0x5a4a3a, 0.35));
+  const sun = new THREE.DirectionalLight(0xffe6c4, 1.5); sun.position.set(30, 40, 25); sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.02;
+  Object.assign(sun.shadow.camera, { left: -35, right: 35, top: 35, bottom: -35, near: 1, far: 140 });
+  scene.add(sun); scene.add(sun.target);
+  const MAXANISO = renderer.capabilities.getMaxAnisotropy();
 
   // Blender Z-up plan coords (x east, y north) are exported Y-up: plan (x, y, z) -> three (x, z, -y)
   const P = (x, y, z) => new THREE.Vector3(x, z, -y);
@@ -114,9 +129,11 @@ body.rot .bar span { display: none; }
     bukhara: [P(5.0, 30.4, 1.6), P(6.1, 35.3, 0.9)],
     corridor: [P(11.0, 16.8, 0.95), P(7.0, 16.8, 1.0)], booths: [P(6.4, 17.2, 1.2), P(8.6, 24.5, 0.6)], mangal: [P(7.4, 11.4, 1.3), P(10.6, 6.0, 0.5)], bar: [P(4.3, 14.6, 1.3), P(0.6, 10.6, 1.0)], portal: [P(17.6, 12.6, 0.8), P(11.4, 16.8, 1.0)]
   };
-  const groups = { skin: [], domes: [], structure: [], furniture: [], planting: [], building: [], people: [] };
+  const groups = { skin: [], domes: [], structure: [], furniture: [], planting: [], building: [], people: [], ceiling: [], facade: [] };
+  const CEIL = new Set(["Bar_drum_pendant_1", "Bar_drum_pendant_2", "Bar_drum_pendant_3", "Bar_drum_pendant_4", "Ceiling_carpet_01", "Ceiling_carpet_02", "Ceiling_carpet_03", "Ceiling_carpet_04", "Ceiling_carpet_05", "Ceiling_carpet_06", "Ceiling_carpet_07", "Chandelier_dome_C", "Flying_carpet_01", "Flying_carpet_02", "Flying_carpet_03", "Flying_carpet_04", "Pendant_cluster", "Pendant_cluster001", "Pendant_cluster002", "Pendant_cluster003", "Pendant_cluster004", "Rod_carpet", "Rod_carpet001", "Rod_carpet002", "Rod_carpet003", "Rod_carpet004", "Rod_carpet005", "Rod_carpet006", "Rod_carpet007", "Rod_carpet008", "Rod_carpet009", "Rod_carpet010", "Rod_carpet011", "Rod_carpet012", "Rod_carpet013", "Rod_carpet014", "Rod_carpet015", "Sconce_firewall_1", "Tree_uplight", "Tree_uplight001", "Tree_uplight002", "Velvet_swag_1", "Velvet_swag_2", "Velvet_swag_3", "fire"]), FACADE = new Set(["Street_bench_stone", "Street_pishtaq", "Street_sebil", "planter_band", "sarch", "sback", "sback001", "sback002", "sback003", "sback004", "sbench", "sbench001", "sbench002", "sbench003", "sbench004", "sbench005", "street_steps"]);
   const rules = [
-    ['people', /^Person/], ['skin', /^roof_panel/], ['domes', /^dome_/], ['structure', /^(roof_beam|purlin|facade_ledger|column_|gutter|court_gutter)/],
+    ['people', /^Person/], ['ceiling', /^(Aivan_lantern|Bar_drum_pendant|Booth\d_pendant|Ceiling_carpet|Chandelier|Corridor_swag|Corridor_velvet_ceiling|Flying_carpet|Pendant_cluster|Rod|Lantern|Tent\d_lantern|Rattan_pendant|Velvet_swag|Heat_lamp)/],
+    ['facade', /^(Sam_column|Street_|sarch|sback|sbench|planter_band|planter_soil)/], ['skin', /^roof_panel/], ['domes', /^dome_/], ['structure', /^(roof_beam|purlin|facade_ledger|column_|gutter|court_gutter)/],
     ['planting', /^(Chinar_|Pomegranate|Plumeria|Areca|Banana|Herbs|Jasmine|Planter_shrub|Bougainvillea|Street_palm|chinar_canopy|chinar_branch|Aivan_shrub)/],
     ['building', /^(building_hall|parapet|facade_|slab_F2|balcony_rail|Hall_door|Lift_portal)/],
     ['furniture', /^(Host_cabinet|Station_|Kids_|Tapchan_lowtable|Booth\d_banquette|Booth\d_table|Aivan_banquette|Aivan_table|Tent\d_banquette|Tent\d_majlis|Tent_octatable|Aivan_screen|Tableset|Boothset|Chair_|Table_|Tableware_|Aivan_tableware|Tent\d_tray|Tapchan_|Aivan_backcushion|Tent\d_cushion|chairs_carved|tables_tableware|booth_tableware|table|chair|bar_stool|abench|atable|bench|btable|sofa|otable|tapchan|kurpacha|pouf|ltable)/]
@@ -126,10 +143,11 @@ body.rot .bar span { display: none; }
     const far = (v === 'overview' || v === 'cutaway') && camera.aspect < 1 ? 1.75 : 1;
     camera.position.copy(t.clone().add(p.clone().sub(t).multiplyScalar(far))); controls.target.copy(t); controls.update();
     document.querySelectorAll('#views button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
-    if (v === 'cutaway') { toggle('skin', false); toggle('domes', false); } else if (['overview', 'street', 'domes', 'underdome'].includes(v)) { toggle('skin', true); toggle('domes', true); }
+    if (v === 'cutaway') { toggle('skin', false); toggle('domes', false); toggle('ceiling', false); } else if (['overview', 'street', 'domes', 'underdome'].includes(v)) { toggle('skin', true); toggle('domes', true); toggle('ceiling', true); }
+    markChange();
   }
   function toggle(l, on) {
-    groups[l].forEach(o => { o.visible = on; });
+    groups[l].forEach(o => { o.visible = on; }); markChange();
     const b = document.querySelector(`#layers button[data-l="${l}"]`); if (b) b.setAttribute('aria-pressed', String(on));
   }
   const uiBtn = document.getElementById('ui-toggle');
@@ -147,7 +165,13 @@ body.rot .bar span { display: none; }
       const mats = Array.isArray(o.material) ? o.material : [o.material];
       mats.forEach(m => { if (m.transmission) { m.transparent = true; m.opacity = 0.35; } m.side = THREE.DoubleSide; });
       const nm = (o.parent && o.parent !== root ? o.parent.name : o.name) || '';
-      for (const [g, re] of rules) if (re.test(nm)) { groups[g].push(o.parent && o.parent !== root ? o.parent : o); break; }
+      const tgt = o.parent && o.parent !== root ? o.parent : o;
+      if (CEIL.has(nm)) groups.ceiling.push(tgt); else if (FACADE.has(nm)) groups.facade.push(tgt);
+      else for (const [g, re] of rules) if (re.test(nm)) { groups[g].push(tgt); break; }
+      mats.forEach(m => ['map', 'normalMap', 'roughnessMap', 'emissiveMap'].forEach(k => { if (m[k]) { m[k].anisotropy = MAXANISO; m[k].needsUpdate = true; } }));
+      mats.forEach(m => {                                   // wood reads as matt carved walnut, not a glossy grey sheen; carving stays legible
+        if (/walnut|carved|oak|deck|roofwood|jali/i.test(m.name || '') && !m.userData.tuned) { m.roughness = Math.max(m.roughness, 0.72); if (m.map) m.color.setScalar(1.35); m.userData.tuned = true; }
+      });
     });
     scene.add(root); status.hidden = true; toggle('people', false); setView('overview');
   };
@@ -185,12 +209,12 @@ body.rot .bar span { display: none; }
     dimsEl.appendChild(el); labels.push([A.clone().add(B).multiplyScalar(0.5), el]);
   });
   const dimBtn = document.getElementById('dim-toggle'); let moveTimer = null;
-  function setDims(on) { dimGroup.visible = on; dimsEl.classList.toggle('off', !on); dimBtn.setAttribute('aria-pressed', String(on)); }
+  function setDims(on) { dimGroup.visible = on; dimsEl.classList.toggle('off', !on); dimBtn.setAttribute('aria-pressed', String(on)); markChange(); }
   dimBtn.addEventListener('click', () => setDims(!dimGroup.visible));
   function moving(on) {
     clearTimeout(moveTimer);
     if (on) { dimsEl.classList.add('moving'); dimGroup.children.forEach(c => c.visible = false); }
-    else moveTimer = setTimeout(() => { dimsEl.classList.remove('moving'); dimGroup.children.forEach(c => c.visible = true); }, 350);
+    else moveTimer = setTimeout(() => { dimsEl.classList.remove('moving'); dimGroup.children.forEach(c => c.visible = true); drawn = false; }, 350);
   }
   controls.addEventListener('start', () => moving(true)); controls.addEventListener('end', () => moving(false));
   const v3 = new THREE.Vector3();
@@ -247,12 +271,50 @@ body.rot .bar span { display: none; }
       const k = 2 * sph.radius * Math.tan(camera.fov * Math.PI / 360) / h, right = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 0), up = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 1);
       controls.target.add(right.multiplyScalar(-mx * k)).add(up.multiplyScalar(my * k));
     }
-    camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(sph)); camera.lookAt(controls.target); tA = tB;
+    camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(sph)); camera.lookAt(controls.target); tA = tB; markChange();
   }, { passive: false });
   window.addEventListener('orientationchange', () => setTimeout(layoutRot, 250));
 
+  // ---------- HD: while the model moves it renders at the normal resolution; when it stops, this view is re-rendered at the
+  // highest resolution the device's GPU allows (desktop: up to 2x supersampling / ~33 MP, phone: native density / ~8 MP),
+  // with a 4K shadow map focused on the area in view
+  const gl = renderer.getContext(), maxRB = gl.getParameter(gl.MAX_RENDERBUFFER_SIZE), maxVP = gl.getParameter(gl.MAX_VIEWPORT_DIMS);
+  const mobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || (window.matchMedia('(pointer: coarse)').matches && !window.matchMedia('(pointer: fine)').matches);
+  const PR0 = Math.min(window.devicePixelRatio || 1, 2), hdBtn = document.getElementById('hd-toggle');
+  let hd = false, hdOn = false, lastChange = 0;
+  function hdRatio() {
+    const w = stage.clientWidth, h = stage.clientHeight, dpr = window.devicePixelRatio || 1;
+    const want = mobile ? Math.min(dpr * 1.25, 3.5) : Math.max(2, dpr * 2);
+    const capDim = Math.min(maxRB, maxVP[0], maxVP[1]) / Math.max(w, h), capPix = Math.sqrt((mobile ? 8.3e6 : 33e6) / (w * h));
+    return Math.max(PR0, Math.min(want, capDim, capPix));
+  }
+  function setShadow(size, half) {
+    if (sun.shadow.mapSize.x !== size) { sun.shadow.mapSize.set(size, size); if (sun.shadow.map) { sun.shadow.map.dispose(); sun.shadow.map = null; } }
+    const c = sun.shadow.camera, t = half < 30 ? controls.target : new THREE.Vector3(6, 0, -18);
+    Object.assign(c, { left: -half, right: half, top: half, bottom: -half }); c.updateProjectionMatrix();
+    sun.target.position.copy(t); sun.position.copy(t).add(new THREE.Vector3(24, 40, 43)); sun.target.updateMatrixWorld();
+  }
+  function applyHD(on) {
+    hdOn = on; renderer.setPixelRatio(on ? hdRatio() : PR0); resize();
+    setShadow(on ? (mobile ? 2048 : 4096) : 2048, on ? 16 : 35);
+    const w = Math.round(stage.clientWidth * renderer.getPixelRatio()), h = Math.round(stage.clientHeight * renderer.getPixelRatio());
+    if (hd) hdBtn.textContent = on ? `HD ✓ ${w}×${h}` : 'HD …';
+  }
+  function markChange() { lastChange = performance.now(); if (hdOn) applyHD(false); }
+  hdBtn.addEventListener('click', () => {
+    hd = !hd; hdBtn.setAttribute('aria-pressed', String(hd));
+    if (hd) { hdBtn.textContent = 'HD …'; lastChange = 0; } else { applyHD(false); hdBtn.textContent = 'HD'; }
+  });
+  controls.addEventListener('change', markChange);
   function resize() { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
-  window.addEventListener('resize', () => (rot ? layoutRot() : resize())); resize();
-  (function loop() { requestAnimationFrame(loop); if (!rot) controls.update(); renderer.render(scene, camera); placeLabels(); })();
+  window.addEventListener('resize', () => { markChange(); rot ? layoutRot() : resize(); }); resize();
+  let drawn = false;
+  (function loop() {
+    requestAnimationFrame(loop);
+    if (!rot) controls.update();
+    if (hd && !hdOn && performance.now() - lastChange > 450) { applyHD(true); drawn = false; }
+    if (hdOn && drawn) return;                          // HD still: render once, then hold the frame until something changes
+    renderer.render(scene, camera); placeLabels(); drawn = true;
+  })();
 })();
 </script>
