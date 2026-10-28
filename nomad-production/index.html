@@ -362,35 +362,34 @@ nav.links .ink { position: absolute; bottom: 2px; height: 2px; border-radius: 2p
 .story p { color: rgba(255, 255, 255, .84); font-size: 1.02rem; max-width: 56ch; }
 .story p + h3 { margin-top: 28px; }
 @media (max-width: 860px) { .tp-two { grid-template-columns: minmax(0, 1fr); } }
-/* Crew grid: people fill cells around the studio mark; empty cells are placeholders that fade out */
-.cg { position: relative; --s: 78px; --u: calc(var(--s) + 14px); }
-.cg-field { position: relative; overflow: hidden; border-radius: 24px; height: calc(var(--rows) * var(--u) + 24px);
-  -webkit-mask-image: radial-gradient(closest-side, #000 62%, transparent 100%); mask-image: radial-gradient(closest-side, #000 62%, transparent 100%); }
-.cg-cell { position: absolute; left: calc(50% + var(--x) * var(--u)); top: calc(50% + var(--y) * var(--u)); width: var(--s); height: var(--s); margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2); border-radius: 24%; }
-.cg-cell.ph { border: 1.5px dashed rgba(255, 255, 255, .16); background: repeating-linear-gradient(135deg, rgba(255, 255, 255, .06) 0 1px, transparent 1px 8px); }
-.cg-cell.logo { background: #fff; display: grid; place-items: center; box-shadow: 0 10px 30px -10px rgba(255, 255, 255, .35); }
-.cg-cell.logo svg { width: 34%; height: 34%; fill: var(--blue); margin-left: 6%; }
-button.cg-cell { border: 1px solid var(--line-2); padding: 0; cursor: pointer; display: grid; place-items: center; color: rgba(255, 255, 255, .85); overflow: hidden;
-  background: linear-gradient(160deg, #1c2640 0%, #0e1320 100%); box-shadow: 0 14px 30px -18px rgba(0, 0, 0, .9); transition: border-color .25s, box-shadow .25s, transform .25s; }
-button.cg-cell svg.i { width: 34%; height: 34%; stroke-width: 1.5; }
-button.cg-cell img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); }
-button.cg-cell:hover { transform: translateY(-2px); }
-button.cg-cell[aria-pressed="true"] { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(47, 107, 255, .35), 0 16px 34px -16px rgba(47, 107, 255, .8); color: #fff; }
-.cg-chip { position: absolute; z-index: 3; left: calc(50% + var(--x, 0) * var(--u)); top: calc(50% + var(--y, 0) * var(--u)); pointer-events: none;
-  display: inline-flex; align-items: center; gap: 6px; transition: left .45s cubic-bezier(.3, .7, .2, 1), top .45s cubic-bezier(.3, .7, .2, 1); }
-.cg-chip span { padding: 8px 14px; border-radius: 999px; background: #2a3142; color: #fff; font-size: .84rem; font-weight: 700; white-space: nowrap; box-shadow: 0 10px 24px -10px rgba(0, 0, 0, .8); }
-.cg-chip svg { width: 16px; height: 16px; fill: #2a3142; flex: none; }
-.cg-chip { flex-direction: column; gap: 2px; transform: translate(-50%, calc(var(--s) / 2 - 2px)); }
-.cg-chip svg { transform: rotate(45deg); width: 12px; height: 12px; }
-.cg-info { margin-top: 14px; display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 14px; align-items: start; padding: 18px; border-radius: 18px; border: 1px solid var(--line); background: var(--card); }
-.cg-info .ic { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: rgba(47, 107, 255, .14); color: var(--blue-2); }
-.cg-info b { font-size: 1.1rem; font-weight: 800; letter-spacing: -.02em; display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.cg-info b em { font-style: normal; font-size: .66rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #05070c; background: var(--ink); border-radius: 999px; padding: 3px 8px; }
-.cg-info p { color: var(--muted); font-size: .9rem; margin-top: 2px; }
-.cg-stages { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-.cg-stages i { font-style: normal; font-size: .74rem; font-weight: 600; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--dim); }
-.cg-stages i.on { border-color: var(--blue); background: rgba(47, 107, 255, .16); color: #fff; }
-@media (max-width: 700px) { .cg { --s: 62px; --u: calc(var(--s) + 10px); } .cg-chip span { font-size: .78rem; padding: 7px 12px; } }
+/* Crew grid: studio mark in the centre, labelled role tiles around it, quiet placeholders beyond */
+.cg { position: relative; --s: 86px; --u: calc(var(--s) + 12px); }
+.cg-field { position: relative; overflow: hidden; height: calc(var(--rows) * var(--u)); -webkit-mask-image: radial-gradient(closest-side, #000 55%, transparent 100%); mask-image: radial-gradient(closest-side, #000 55%, transparent 100%); }
+.cg-cell { position: absolute; left: calc(50% + var(--x) * var(--u)); top: calc(50% + var(--y) * var(--u)); width: var(--s); height: var(--s); margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2); border-radius: 26%; }
+.cg-cell.ph { border: 1px dashed rgba(255, 255, 255, .1); background: repeating-linear-gradient(135deg, rgba(255, 255, 255, .035) 0 1px, transparent 1px 9px); }
+.cg-cell.logo { background: #fff; display: grid; place-items: center; }
+.cg-cell.logo svg { width: 30%; height: 30%; fill: var(--blue); margin-left: 5%; }
+button.cg-cell { border: 1px solid rgba(255, 255, 255, .1); padding: 0 4px; cursor: pointer; color: rgba(255, 255, 255, .78); font: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .075), rgba(255, 255, 255, .02)); display: grid; grid-template-rows: 1fr auto; justify-items: center; align-items: center; padding-block: calc(var(--s) * .18) calc(var(--s) * .1);
+  transition: transform .3s cubic-bezier(.3, .7, .2, 1), background .3s, border-color .3s, box-shadow .3s, color .3s; }
+button.cg-cell svg.i { width: calc(var(--s) * .3); height: calc(var(--s) * .3); stroke-width: 1.5; }
+button.cg-cell small { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: calc(var(--s) * .115); font-weight: 700; letter-spacing: .04em; color: var(--muted); transition: color .3s; }
+button.cg-cell img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; filter: grayscale(1); }
+@media (hover: hover) and (pointer: fine) { button.cg-cell:hover { border-color: rgba(255, 255, 255, .22); color: #fff; } }
+button.cg-cell[aria-pressed="true"] { background: linear-gradient(160deg, #3d7bff, #1a44c4); border-color: transparent; color: #fff; transform: scale(1.06); box-shadow: 0 18px 40px -18px rgba(47, 107, 255, .9); }
+button.cg-cell[aria-pressed="true"] small { color: rgba(255, 255, 255, .9); }
+.cg-info { margin: 8px auto 0; max-width: 560px; padding: 16px 18px 18px; border-radius: 18px; border: 1px solid var(--line); background: var(--card); }
+.cg-info.swap > * { animation: infoIn .45s cubic-bezier(.2, .8, .2, 1) both; }
+.cg-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.cg-head b { font-size: 1.08rem; font-weight: 800; letter-spacing: -.02em; }
+.cg-head em { font-style: normal; font-size: .62rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #05070c; background: var(--ink); border-radius: 999px; padding: 4px 8px; white-space: nowrap; }
+.cg-info p { color: var(--muted); font-size: .88rem; margin-top: 2px; }
+.cg-stages { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; margin-top: 14px; }
+.cg-stages i { display: grid; gap: 7px; font-style: normal; font-size: .66rem; font-weight: 600; color: var(--dim); text-align: center; }
+.cg-stages i::before { content: ""; height: 4px; border-radius: 2px; background: var(--card-2); }
+.cg-stages i.on { color: #fff; }
+.cg-stages i.on::before { background: var(--blue); }
+@media (max-width: 700px) { .cg { --s: 68px; --u: calc(var(--s) + 9px); } .cg-stages i { font-size: .6rem; } }
 .dl-tiles { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; }
 .dl { display: grid; gap: 10px; justify-items: start; padding: 16px; border-radius: 18px; border: 1px solid var(--line); background: var(--card); }
 .dl .shape { height: 96px; aspect-ratio: var(--ar); max-width: 230px; border-radius: 8px; border: 1.5px solid var(--blue); background: rgba(47, 107, 255, .12); display: grid; place-items: center; font-size: .74rem; font-weight: 800; color: var(--blue-2); position: relative; }
@@ -1486,46 +1485,44 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(36px + env(
 
   /* ---- Crew grid: the studio mark in the centre, people in the nearest cells, placeholders around ---- */
   var ROLE_ICON = { "Producer": "i-user", "Director": "i-film", "Cinematographer": "i-camera", "Editor": "i-cut", "Colourist": "i-drop", "Sound designer": "i-wave", "AI artist": "i-spark", "Compositor": "i-layers", "VFX compositor": "i-layers" };
+  var ROLE_SHORT = { "Cinematographer": "DoP", "VFX compositor": "VFX", "Colourist": "Colour", "Sound designer": "Sound" };
   // A package may list its own crew as c.crew: [role, responsibility, firstStage, lastStage, photoUrl?]
   function crewFor(c) { return c.crew || CREW[c.a]; }
   function crewHTML(c) {
-    var n = crewFor(c).length;
-    return '<section class="tp-sec"><div class="wrap"><h3>Crew <span>· ' + n + ' people on this package · tap a cell</span></h3>' +
-      '<div class="cg" id="cg"><div class="cg-field" id="cg-field"></div></div><div class="cg-info" id="cg-info" aria-live="polite"></div></div></section>';
+    return '<section class="tp-sec"><div class="wrap"><h3>Crew <span>· ' + crewFor(c).length + ' people on this package</span></h3>' +
+      '<div class="cg" id="cg"><div class="cg-field" id="cg-field" role="group" aria-label="Crew"></div></div><div class="cg-info" id="cg-info" aria-live="polite"></div></div></section>';
   }
   function bindCrew(c, stages) {
     var field = $("#cg-field"); if (!field) return;
     var crew = crewFor(c), pts = [];
-    // Offset (honeycomb-style) lattice; odd rows shift by half a cell
+    // Offset lattice: odd rows shift by half a cell, like a honeycomb
     for (var r = -3; r <= 3; r++) for (var k = -6; k <= 6; k++) {
-      var x = k + (Math.abs(r) % 2 ? .5 : 0), y = r;
-      pts.push({ x: x, y: y, d: Math.sqrt(x * x + y * y * 1.1) });
+      var x = k + (Math.abs(r) % 2 ? .5 : 0);
+      pts.push({ x: x, y: r, d: Math.sqrt(x * x + r * r * 1.1) });
     }
     pts.sort(function (a, b) { return a.d - b.d || a.y - b.y || a.x - b.x; });
     var filled = crew.length + 1, dLast = pts[filled - 1].d;
-    var shown = pts.filter(function (pt, i) { return i < filled || pt.d <= dLast + 1.9; });
-    var rows = 2 * Math.max.apply(null, shown.map(function (pt) { return Math.abs(pt.y); })) + 1;
-    field.style.setProperty("--rows", rows);
+    var span = Math.max.apply(null, pts.slice(0, filled).map(function (pt) { return Math.abs(pt.y); }));
+    var shown = pts.filter(function (pt, i) { return i < filled || (pt.d <= dLast + 1.6 && Math.abs(pt.y) <= span + 1); });
+    field.style.setProperty("--rows", 2 * span + 2);
     var short = stages.map(function (st) { return st[0].replace("Concept and script", "Concept").replace("Pre-production", "Prep").replace("Edit and post", "Post"); });
     field.innerHTML = shown.map(function (pt, i) {
       var pos = "--x:" + pt.x + ";--y:" + pt.y;
       if (i === 0) return '<span class="cg-cell logo" style="' + pos + '" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-play"/></svg></span>';
       if (i < filled) {
         var m = crew[i - 1];
-        return '<button type="button" class="cg-cell" data-i="' + (i - 1) + '" style="' + pos + '" aria-label="' + m[0] + ": " + m[1] + '">' + (m[4] ? '<img src="' + m[4] + '" alt="">' : '<svg class="i"><use href="#' + (ROLE_ICON[m[0]] || "i-user") + '"/></svg>') + "</button>";
+        return '<button type="button" class="cg-cell" data-i="' + (i - 1) + '" style="' + pos + '" aria-label="' + m[0] + '">' +
+          (m[4] ? '<img src="' + m[4] + '" alt="">' : '<svg class="i"><use href="#' + (ROLE_ICON[m[0]] || "i-user") + '"/></svg>') + "<small>" + (ROLE_SHORT[m[0]] || m[0]) + "</small></button>";
       }
-      var fade = Math.max(.12, 1 - (pt.d - dLast) / 2.1);
-      return '<span class="cg-cell ph" style="' + pos + ";opacity:" + fade.toFixed(2) + '" aria-hidden="true"></span>';
+      return '<span class="cg-cell ph" style="' + pos + ";opacity:" + Math.max(.15, 1 - (pt.d - dLast) / 1.8).toFixed(2) + '" aria-hidden="true"></span>';
     }).join("");
-    $("#cg").insertAdjacentHTML("beforeend", '<span class="cg-chip" id="cg-chip" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M1 1 15 6.5 8.5 8.5 6.5 15Z"/></svg><span></span></span>');
-    var chip = $("#cg-chip"), cells = $$("button.cg-cell", field);
+    var cells = $$("button.cg-cell", field), info = $("#cg-info");
     function select(idx) {
-      var m = crew[idx], btn = cells[idx], pt = shown[idx + 1];
+      var m = crew[idx];
       cells.forEach(function (b, k) { b.setAttribute("aria-pressed", String(k === idx)); });
-      chip.style.setProperty("--x", pt.x); chip.style.setProperty("--y", pt.y);
-      $("span", chip).textContent = m[0];
-      $("#cg-info").innerHTML = '<span class="ic"><svg class="i"><use href="#' + (ROLE_ICON[m[0]] || "i-user") + '"/></svg></span><div><b>' + m[0] + (idx === 0 ? "<em>Your contact</em>" : "") + "</b><p>" + m[1] + '</p><div class="cg-stages">' +
-        short.map(function (nm, k) { return '<i class="' + (k >= m[2] && k <= m[3] ? "on" : "") + '">' + nm + "</i>"; }).join("") + "</div></div>";
+      info.classList.remove("swap"); void info.offsetWidth; info.classList.add("swap");
+      info.innerHTML = '<div class="cg-head"><b>' + m[0] + "</b>" + (idx === 0 ? "<em>Your contact</em>" : "") + "</div><p>" + m[1] + '</p><div class="cg-stages" aria-label="Works in: ' + short.slice(m[2], m[3] + 1).join(", ") + '">' +
+        short.map(function (nm, k) { return '<i class="' + (k >= m[2] && k <= m[3] ? "on" : "") + '">' + nm + "</i>"; }).join("") + "</div>";
     }
     field.addEventListener("click", function (e) { var b = e.target.closest("button.cg-cell"); if (b) select(+b.dataset.i); });
     select(0);
