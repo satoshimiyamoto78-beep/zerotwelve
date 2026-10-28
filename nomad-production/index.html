@@ -147,6 +147,38 @@ nav.links .ink { position: absolute; bottom: 2px; height: 2px; border-radius: 2p
   .hero .screen::after { background: linear-gradient(0deg, rgba(5, 7, 12, 1) 18%, rgba(5, 7, 12, .55) 60%, rgba(5, 7, 12, .25) 100%); }
 }
 
+
+/* Featured posters */
+.feat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 22px); }
+.feat { border: 0; padding: 0; background: none; color: var(--ink); text-align: left; cursor: pointer; display: grid; gap: 12px; font: inherit; }
+.feat .fp { position: relative; aspect-ratio: 2 / 3; border-radius: 14px; overflow: hidden; background: var(--card); box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .9), 0 0 0 1px var(--line); transition: transform .5s cubic-bezier(.2, .7, .2, 1), box-shadow .5s; }
+.feat img, .card > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .8s cubic-bezier(.2, .7, .2, 1), opacity .6s; }
+.card > img { z-index: -2; }
+.feat img.d, .card > img.d { filter: url(#duo); }
+.feat .ap { position: absolute; top: 12px; left: 12px; z-index: 2; }
+.feat .fhov { position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 2; padding: 12px 14px; border-radius: 12px; background: rgba(5, 7, 12, .72); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); font-weight: 700; font-size: .86rem; display: flex; justify-content: space-between; align-items: center; opacity: 0; transform: translateY(8px); transition: opacity .35s, transform .35s; }
+.feat .fhov svg.i { width: 18px; height: 18px; }
+.fcap { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.fcap b { display: block; font-weight: 800; font-size: 1.02rem; letter-spacing: -.02em; }
+.fcap small { color: var(--muted); font-size: .8rem; }
+.fcap .fpr { flex: none; }
+@media (hover: hover) {
+  .feat:hover .fp { transform: translateY(-6px); box-shadow: 0 40px 70px -30px rgba(47, 107, 255, .6), 0 0 0 1px rgba(47, 107, 255, .7); }
+  .feat:hover img { transform: scale(1.05); }
+  .feat:hover img.d, .card:hover > img.d { opacity: 0; }
+  .card:hover > img { transform: scale(1.06); }
+  .feat:hover .fhov { opacity: 1; transform: none; }
+}
+.feat:focus-visible img.d, .card:focus-visible > img.d { opacity: 0; }
+@media (max-width: 700px) {
+  .feat-grid { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .feat-grid::-webkit-scrollbar { display: none; }
+  .feat { flex: none; width: 62vw; scroll-snap-align: start; }
+}
+.poster.has-img::after { display: none; }
+.poster > img { z-index: 0; }
+.tp-bg img { filter: url(#duo); }
+
 /* ---------- Catalogue rows ---------- */
 .filters { display: grid; gap: 12px; margin-bottom: 34px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 72px); z-index: 20; padding-block: 12px; background: linear-gradient(var(--bg) 70%, rgba(5, 7, 12, 0)); }
 .chips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
@@ -612,8 +644,8 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(36px + env(
         <div><strong>4K</strong><span>master in every format</span></div>
       </div>
       <div class="featured">
-        <div class="row-head"><h3>Featured this month</h3><a href="#showcase">See all 14 →</a></div>
-        <div class="track" id="featured-track"></div>
+        <div class="row-head"><h3>Now showing</h3><a href="#showcase">See all 14 →</a></div>
+        <div class="feat-grid" id="featured-track"></div>
       </div>
     </div>
   </section>
@@ -860,19 +892,19 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(36px + env(
     { id: "NP-01", t: "Midnight Drive", n: "auto", f: "short", a: "real", d: "0:30", sc: "car", p: 1800, days: 6, purpose: "A launch teaser for a new model that has to work on Reels and TikTok.", how: "One night shoot with a tracking vehicle, wet-road reflections and a hook in the first 1.5 seconds.", del: ["0:30 vertical master", "3 cutdowns of 0:15", "5 cover frames"] },
     { id: "NP-02", t: "Liquid Gold", n: "beauty", f: "short", a: "ai", d: "0:15", sc: "perfume", p: 700, days: 4, purpose: "Make a fragrance feel like a texture you can touch.", how: "AI macro scenes of liquid gold and glass. The bottle is composited from real packshots so the label stays exact.", del: ["0:15 vertical", "0:06 bumper", "4:5 feed version"] },
     { id: "NP-03", t: "Chef’s Table", n: "food", f: "short", a: "real", d: "0:20", sc: "food", p: 1500, days: 5, purpose: "Fill a restaurant’s Reels with dishes people book a table for.", how: "Half-day studio shoot, top-down and macro angles, recorded kitchen sound.", del: ["4 verticals of 0:20", "10 stills"] },
-    { id: "NP-04", t: "Drop 07", n: "fashion", f: "short", a: "hybrid", d: "0:25", sc: "fashion", p: 2200, days: 7, purpose: "Announce a capsule drop with one image people remember.", how: "Model filmed on a white cyclorama. The environment is generated and matched in the grade.", del: ["0:25 vertical", "2 teasers of 0:10", "4:5 feed version"] },
+    { id: "NP-04", t: "Signal", n: "fashion", f: "short", a: "hybrid", d: "0:25", sc: "fashion", img: "assets/posters/signal.jpg", pos: "50% 20%", p: 2200, days: 7, purpose: "Announce a capsule drop with one image people remember.", how: "Model filmed on a blue cyclorama. Motion trails and the glitch pass are built in post and matched in the grade.", del: ["0:25 vertical", "2 teasers of 0:10", "4:5 feed version"] },
     { id: "NP-05", t: "Sunset Suite", n: "food", f: "short", a: "ai", d: "0:20", sc: "villa", hue: 330, p: 800, days: 4, purpose: "Sell the feeling of a hotel suite before guests arrive.", how: "AI golden-hour sequences built from the hotel’s real floor plans and photos.", del: ["2 verticals of 0:20", "5 stories"] },
-    { id: "NP-06", t: "Unboxed", n: "tech", f: "short", a: "ai", d: "0:15", sc: "phone", p: 650, days: 3, purpose: "Show a product launch before the hardware ships.", how: "Product animation generated from CAD renders and synced to the brand’s sound logo.", del: ["0:15 vertical", "1:1 ad version"] },
+    { id: "NP-06", t: "Error 404", n: "tech", f: "short", a: "ai", d: "0:15", sc: "phone", img: "assets/posters/error-404.jpg", pos: "50% 25%", p: 650, days: 3, purpose: "A launch teaser for a security app: the moment a face stops being yours.", how: "AI glitch transformation built on a real portrait, title animated in the edit and synced to the sound logo.", del: ["0:15 vertical", "1:1 ad version"] },
     { id: "NP-07", t: "Haute Joaillerie", n: "jewel", f: "promo", a: "ai", d: "0:45", sc: "ring", p: 3500, days: 10, purpose: "Present a high-jewellery collection without a studio shoot.", how: "Worlds of light and glass generated around accurate 3D replicas of each piece.", del: ["0:45 master in 16:9", "0:15 and 0:06 cutdowns", "9:16 and 4:5 versions"] },
     { id: "NP-08", t: "Seaside Villa", n: "estate", f: "promo", a: "hybrid", d: "1:20", sc: "villa", p: 6500, days: 18, purpose: "Sell an off-plan villa as if it were already finished.", how: "Drone and interior shoot on site. Unfinished areas are completed with AI and VFX.", del: ["1:20 master", "0:30 ad cut", "9:16 tour version"] },
-    { id: "NP-09", t: "Atelier", n: "fashion", f: "promo", a: "real", d: "1:00", sc: "fashion", hue: 20, p: 7500, days: 21, purpose: "Show the craft behind one garment, from sketch to runway.", how: "Two shoot days in the atelier with anamorphic lenses and an original score.", del: ["1:00 master", "0:30 and 0:15 cuts", "20 stills"] },
+    { id: "NP-09", t: "Nari", n: "fashion", f: "promo", a: "real", d: "1:00", sc: "fashion", img: "assets/posters/nari.jpg", pos: "50% 30%", p: 7500, days: 21, purpose: "Introduce a heritage fashion label through one woman and the craft she wears.", how: "Studio portrait shoot on a painted set, macro work on fabric, henna and jewellery, original score.", del: ["1:00 master", "0:30 and 0:15 cuts", "20 stills"] },
     { id: "NP-10", t: "Night Shift", n: "auto", f: "promo", a: "hybrid", d: "1:00", sc: "car", hue: 210, p: 8000, days: 20, purpose: "Launch an electric car in a city that doesn’t exist.", how: "The real car is filmed on an LED stage. The neon city around it is generated and tracked.", del: ["1:00 master", "3 cutdowns", "6 verticals"] },
     { id: "NP-11", t: "Launch Day", n: "tech", f: "promo", a: "real", d: "0:45", sc: "phone", hue: 160, p: 5500, days: 15, purpose: "Explain a new app in 45 seconds through real users.", how: "Casting of real users, interface inserts animated in post.", del: ["0:45 master", "0:15 ad", "9:16 version"] },
     { id: "NP-12", t: "Origin", n: "story", f: "film", a: "ai", d: "6:00", sc: "nomad", p: 14000, days: 35, purpose: "Tell where a brand comes from, in places no crew can reach.", how: "Landscapes and eras generated with one consistent hero, narrated by a real voice.", del: ["6:00 film", "1:00 trailer", "6 social cutdowns"] },
     { id: "NP-13", t: "Behind the Craft", n: "jewel", f: "film", a: "real", d: "8:00", sc: "ring", hue: 300, p: 18000, days: 50, purpose: "A documentary about the people who make each piece by hand.", how: "Five shoot days of interviews and macro work, cinema grade and full sound mix.", del: ["8:00 film", "2:00 edit", "5 interview clips"] },
-    { id: "NP-14", t: "Founders", n: "tech", f: "film", a: "real", d: "5:00", sc: "filmset", p: 12000, days: 40, purpose: "Introduce the founders to investors and future hires.", how: "Interview-led film shot in the office and on location, with archive and motion graphics.", del: ["5:00 film", "1:00 recruiting cut", "4 LinkedIn clips"] }
+    { id: "NP-14", t: "Pattern Engine", n: "tech", f: "film", a: "hybrid", d: "5:00", sc: "filmset", img: "assets/posters/pattern-engine.jpg", pos: "50% 22%", p: 13000, days: 45, purpose: "A brand film that makes a data company feel human.", how: "Actor filmed in the studio. The data world around him is generated and composited, city plates are shot on location.", del: ["5:00 film", "1:00 trailer", "4 LinkedIn clips"] }
   ];
-  var FEATURED = ["NP-07", "NP-10", "NP-02", "NP-12", "NP-04", "NP-08"];
+  var FEATURED = ["NP-06", "NP-09", "NP-14", "NP-04"];
 
   /* ================= Illustrated scenes ================= */
   var uid = 0;
@@ -986,13 +1018,23 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(36px + env(
   var byId = {}; CAT.forEach(function (c) { byId[c.id] = c; });
   var state = { niche: "all", ap: "all" };
 
+  function media(c) {
+    if (!c.img) return scene(c.sc, c.hue);
+    var st = c.pos ? ' style="object-position:' + c.pos + '"' : "";
+    return '<img class="c" src="' + c.img + '" alt="" loading="lazy" decoding="async"' + st + '><img class="d" src="' + c.img + '" alt="" loading="lazy" decoding="async"' + st + ">";
+  }
+  function featHTML(c) {
+    return '<button type="button" class="feat" data-id="' + c.id + '" aria-label="' + c.t + ", " + NICHE[c.n] + ", " + money(c.p) + '"><span class="fp">' + media(c) +
+      '<span class="ap ' + c.a + '">' + AP[c.a] + '</span><span class="fhov"><span>View package</span><svg class="i"><use href="#i-arrow"/></svg></span></span>' +
+      '<span class="fcap"><span><b>' + c.t + "</b><small>" + NICHE[c.n] + " · " + FORMAT[c.f].name + " · " + c.d + '</small></span><b class="fpr">' + money(c.p) + "</b></span></button>";
+  }
   function cardHTML(c, cls) {
     return '<button type="button" class="card ' + (cls || c.f) + '" data-id="' + c.id + '" aria-label="' + c.t + ", " + NICHE[c.n] + ", " + AP[c.a] + ", " + money(c.p) + '">' +
-      scene(c.sc, c.hue) + '<span class="ap ' + c.a + '">' + AP[c.a] + '</span><span class="dur">' + c.d + "</span>" +
+      media(c) + '<span class="ap ' + c.a + '">' + AP[c.a] + '</span><span class="dur">' + c.d + "</span>" +
       '<span class="meta"><span class="t">' + c.t + '</span><span class="s"><span>' + NICHE[c.n] + "</span><b>" + money(c.p) + '</b></span></span><span class="more">Details</span></button>';
   }
 
-  $("#featured-track").innerHTML = FEATURED.map(function (id) { return cardHTML(byId[id], "hero-card"); }).join("");
+  $("#featured-track").innerHTML = FEATURED.map(function (id) { return featHTML(byId[id]); }).join("");
 
   function chip(label, val, group, n, dot) {
     return '<button type="button" class="chip" data-g="' + group + '" data-v="' + val + '" aria-pressed="' + (state[group] === val) + '">' + (dot ? '<span class="dot" style="background:' + dot + '"></span>' : "") + label + (n !== undefined ? ' <span class="n">' + n + "</span>" : "") + "</button>";
@@ -1033,7 +1075,7 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(36px + env(
   document.addEventListener("click", function (e) {
     var ch = e.target.closest(".chip"); if (ch) { setFilter(ch.dataset.g, ch.dataset.v); return; }
     var ar = e.target.closest(".arrows button"); if (ar) { var t = ar.closest(".row").querySelector(".track"); t.scrollBy({ left: +ar.dataset.dir * t.clientWidth * .85, behavior: "smooth" }); return; }
-    var cd = e.target.closest(".card[data-id]"); if (cd && !cd.closest("#tp")) { openSheet(cd.dataset.id); return; }
+    var cd = e.target.closest(".card[data-id], .feat[data-id]"); if (cd && !cd.closest("#tp")) { openSheet(cd.dataset.id); return; }
     var ff = e.target.closest("[data-fmt]"); if (ff) { setFilter("niche", "all"); setFilter("ap", "all"); setTimeout(function () { var r = $("#row-" + ff.dataset.fmt); if (r) r.scrollIntoView({ behavior: "smooth", block: "center" }); }, 50); }
     var pf = e.target.closest("[data-prefill]"); if (pf) { $("#f-format").value = pf.dataset.prefill; clearRef(); }
   });
@@ -1056,7 +1098,8 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(36px + env(
     return ["16 / 9", "16:9"];
   }
   function posterHTML(c, cls) {
-    return '<div class="poster ' + (cls || "") + '">' + (c.img ? '<img src="' + c.img + '" alt="">' : scene(c.sc)) +
+    if (c.img) return '<div class="poster has-img ' + (cls || "") + '"><img src="' + c.img + '" alt="Poster: ' + c.t + '"></div>';
+    return '<div class="poster ' + (cls || "") + '">' + scene(c.sc) +
       '<span class="p-top">NOMAD PRODUCTION</span><span class="p-title">' + c.t + '</span><span class="p-cred">' + NICHE[c.n] + " · " + AP[c.a] + " · " + c.d + "</span></div>";
   }
   function renderTitle(c) {
