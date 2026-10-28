@@ -486,7 +486,7 @@ nav.links .ink { position: absolute; bottom: 2px; height: 2px; border-radius: 2p
 .seg button:hover { color: var(--ink); }
 .seg button[aria-pressed="true"] { background: var(--card-2); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-2); }
 .seg button:disabled { opacity: .35; cursor: not-allowed; }
-@media (max-width: 480px) { .seg { grid-auto-flow: row; } }
+@media (max-width: 480px) { .seg { grid-auto-flow: row; grid-template-columns: repeat(3, minmax(0, 1fr)); } .seg:has(> button:nth-child(4)) { grid-template-columns: repeat(2, minmax(0, 1fr)); } .seg button { padding: 12px 6px; } }
 .result { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 22px 26px; align-items: center; }
 .ring { position: relative; width: 168px; height: 168px; }
 .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
@@ -514,7 +514,36 @@ nav.links .ink { position: absolute; bottom: 2px; height: 2px; border-radius: 2p
 .other span { font-size: .78rem; color: var(--muted); }
 .result .btn { grid-column: 1 / -1; justify-self: start; }
 @media (max-width: 960px) { .finder { grid-template-columns: minmax(0, 1fr); } }
-@media (max-width: 480px) { .result { grid-template-columns: minmax(0, 1fr); justify-items: start; } .ring { width: 140px; height: 140px; } .others, .res-stats { grid-template-columns: minmax(0, 1fr); } }
+
+/* Finder option tiles */
+.opts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.opts button { display: grid; align-content: start; justify-items: start; gap: 2px; min-height: 104px; padding: 14px 12px; border-radius: 14px; background: var(--bg); border: 1px solid var(--line); color: var(--ink); text-align: left; font: inherit; cursor: pointer; transition: border-color .2s, background .2s; }
+.opts button svg.i, .opts .glyph { width: 22px; height: 22px; color: var(--dim); margin-bottom: 10px; transition: color .2s; }
+.opts .glyph { width: auto; height: 22px; font-size: 1rem; font-weight: 800; letter-spacing: .02em; line-height: 22px; }
+.opts button span { font-size: .9rem; font-weight: 700; line-height: 1.2; }
+.opts button small { font-size: .74rem; color: var(--muted); line-height: 1.3; }
+.opts button:hover { border-color: var(--line-2); }
+.opts button[aria-pressed="true"] { border-color: var(--blue); background: rgba(47, 107, 255, .12); }
+.opts button[aria-pressed="true"] svg.i, .opts button[aria-pressed="true"] .glyph { color: var(--blue-2); }
+.q-title { font-size: .95rem; }
+@media (max-width: 480px) {
+  .opts { gap: 6px; }
+  .opts button { min-height: 96px; padding: 12px 10px; }
+  .opts button span { font-size: .84rem; }
+  .opts button small { font-size: .7rem; }
+  .result { grid-template-columns: auto minmax(0, 1fr); justify-items: stretch; gap: 16px 18px; }
+  .ring { width: 96px; height: 96px; }
+  .ring .val strong { font-size: 1.5rem; }
+  .ring .val span { font-size: .66rem; }
+  .result .name h3 { font-size: 1.5rem; }
+  .res-stats, .others { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .res-stats strong { font-size: 1rem; }
+  .other { padding: 8px 10px; gap: 8px; }
+  .other .mini { width: 34px; height: 34px; }
+  .other b { font-size: .82rem; }
+  .result .btn { justify-self: stretch; }
+}
+
 
 /* ---------- Pricing ---------- */
 .price-wrap { border-radius: 22px; border: 1px solid var(--line); background: var(--card); overflow: hidden; }
@@ -587,6 +616,35 @@ table.prices { width: 100%; border-collapse: collapse; }
 .pack li { display: inline-flex; gap: 8px; font-size: .86rem; }
 .pack li svg.i { width: 16px; height: 16px; color: var(--accent); margin-top: 3px; }
 @media (max-width: 860px) { .packs { grid-template-columns: minmax(0, 1fr); } }
+
+
+/* Pricing list for phones */
+.price-m { display: none; }
+@media (max-width: 760px) {
+  .price-wrap { display: none; }
+  .price-m { display: grid; gap: 12px; }
+  #pl-ap { grid-auto-flow: column; grid-template-columns: none; }
+}
+.pl-rows { display: grid; gap: 8px; }
+.pl-row { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 14px 16px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); }
+.pl-row .ic { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: rgba(47, 107, 255, .12); color: var(--blue-2); }
+.pl-row b { display: block; font-size: .98rem; font-weight: 700; }
+.pl-row small { display: block; font-size: .76rem; color: var(--muted); line-height: 1.35; }
+.pl-row .pr { text-align: right; }
+.pl-row .pr strong { display: block; font-size: 1.1rem; font-weight: 800; letter-spacing: -.02em; white-space: nowrap; }
+.pl-row .pr small { white-space: nowrap; }
+
+
+/* Mobile rhythm */
+@media (max-width: 700px) {
+  section.sec { padding-block: 64px; }
+  .head { margin-bottom: 24px; gap: 10px; }
+  .head h2 { font-size: clamp(1.65rem, 7.2vw, 2rem); line-height: 1.1; }
+  .head .lede { font-size: .95rem; }
+  .finder { margin-top: 36px; }
+  .panel { padding: 18px; border-radius: 18px; }
+  .q + .q { margin-top: 18px; padding-top: 18px; }
+}
 
 /* ---------- Process ---------- */
 .gantt { border-radius: 22px; border: 1px solid var(--line); background: var(--card); padding: 22px; }
@@ -700,6 +758,14 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(36px + env(
   <symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="3.5" width="18" height="17" rx="2.5"/><path d="M7.5 3.5v17M16.5 3.5v17M3 8h4.5M3 12h4.5M3 16h4.5M16.5 8H21M16.5 12H21M16.5 16H21"/></symbol>
   <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3.5s6 6.4 6 10.5a6 6 0 0 1-12 0c0-4.1 6-10.5 6-10.5Z"/></symbol>
   <symbol id="i-wave" viewBox="0 0 24 24"><path d="M3 12h2M7 8v8M11 5v14M15 9v6M19 11v2"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-3.8 4-5.5 7.5-5.5s6.3 1.7 7.5 5.5"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 3.6 5.4 3.6 8.5s-1.1 5.9-3.6 8.5c-2.5-2.6-3.6-5.4-3.6-8.5S9.5 6.1 12 3.5Z"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3 5 13.5h6L10 21l8-10.5h-6L13 3Z"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2.5" y="4" width="19" height="13" rx="2"/><path d="M8.5 21h7M12 17v4"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5L7 4.5Z"/></symbol>
   <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
   <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
@@ -825,14 +891,15 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(36px + env(
 
       <div class="finder reveal" id="finder">
         <div class="panel">
-          <h3 style="margin-bottom:6px">Not sure which one fits?</h3>
-          <p class="muted" style="font-size:.92rem;margin-bottom:22px">Answer three questions. The result updates as you click.</p>
+          <span class="label" style="color:var(--blue-2)">Approach finder</span>
+          <h3 style="margin:6px 0 4px;font-size:1.4rem">Not sure which one fits?</h3>
+          <p class="muted" style="font-size:.92rem;margin-bottom:20px">Three taps. The answer updates instantly.</p>
           <div class="q"><div class="q-title"><span>1</span>Who or what is on screen?</div>
-            <div class="seg" data-q="0"><button type="button" data-v="0">Real people</button><button type="button" data-v="1">The product</button><button type="button" data-v="2">A world that doesn’t exist</button></div></div>
+            <div class="opts" data-q="0"><button type="button" data-v="0"><svg class="i"><use href="#i-user"/></svg><span>Real people</span><small>Faces, emotion</small></button><button type="button" data-v="1"><svg class="i"><use href="#i-box"/></svg><span>The product</span><small>Detail, texture</small></button><button type="button" data-v="2"><svg class="i"><use href="#i-globe"/></svg><span>A new world</span><small>Places that don’t exist</small></button></div></div>
           <div class="q"><div class="q-title"><span>2</span>When do you need it?</div>
-            <div class="seg" data-q="1"><button type="button" data-v="0">Within a week</button><button type="button" data-v="1">In 2–3 weeks</button><button type="button" data-v="2">Flexible</button></div></div>
+            <div class="opts" data-q="1"><button type="button" data-v="0"><svg class="i"><use href="#i-bolt"/></svg><span>This week</span><small>Under 7 days</small></button><button type="button" data-v="1"><svg class="i"><use href="#i-cal"/></svg><span>2–3 weeks</span><small>Standard</small></button><button type="button" data-v="2"><svg class="i"><use href="#i-clock"/></svg><span>Flexible</span><small>No rush</small></button></div></div>
           <div class="q"><div class="q-title"><span>3</span>Budget per video?</div>
-            <div class="seg" data-q="2"><button type="button" data-v="0">Under $2k</button><button type="button" data-v="1">$2k–8k</button><button type="button" data-v="2">$8k+</button></div></div>
+            <div class="opts" data-q="2"><button type="button" data-v="0"><b class="glyph">$</b><span>Under $2k</span><small>Per video</small></button><button type="button" data-v="1"><b class="glyph">$$</b><span>$2k–8k</span><small>Per video</small></button><button type="button" data-v="2"><b class="glyph">$$$</b><span>$8k+</span><small>Per video</small></button></div></div>
         </div>
         <div class="panel result" id="result" aria-live="polite"></div>
       </div>
@@ -853,6 +920,10 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(36px + env(
           <tbody id="price-body"></tbody>
         </table>
       </div>
+      <div class="price-m">
+        <div class="seg" id="pl-ap" role="group" aria-label="Approach"></div>
+        <div class="pl-rows" id="pl-rows"></div>
+      </div>
       <div class="included">
         <span class="label">Included in every price</span>
         <span><svg class="i"><use href="#i-check"/></svg>Concept and script</span>
@@ -867,7 +938,7 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(36px + env(
       <div class="est" id="estimate">
         <div class="panel reveal">
           <h3>Estimate your video</h3>
-          <p class="muted" style="font-size:.92rem;margin-bottom:22px">Change any option and the price on the right recalculates.</p>
+          <p class="muted" style="font-size:.92rem;margin-bottom:22px">Change any option and the estimate updates instantly.</p>
           <div class="opt"><span>Format</span><div class="seg" id="e-format"></div></div>
           <div class="opt"><span>Approach</span><div class="seg" id="e-ap"></div><small id="e-ap-note" hidden>Editing works with your own footage, so the approach doesn’t apply.</small></div>
           <div class="opt"><span>Extra platform versions</span>
@@ -1462,7 +1533,7 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(36px + env(
   var COLOR = { real: "#ffffff", ai: "var(--blue-2)", hybrid: "var(--blue)" };
   var ans = [0, 1, 1];
   function finder() {
-    $$("#finder .seg").forEach(function (s) { var q = +s.dataset.q; $$("button", s).forEach(function (b) { b.setAttribute("aria-pressed", String(+b.dataset.v === ans[q])); }); });
+    $$("#finder .opts").forEach(function (s) { var q = +s.dataset.q; $$("button", s).forEach(function (b) { b.setAttribute("aria-pressed", String(+b.dataset.v === ans[q])); }); });
     var keys = ["real", "ai", "hybrid"], sc = { real: 0, ai: 0, hybrid: 0 };
     ans.forEach(function (a, q) { keys.forEach(function (k, i) { sc[k] += PTS[q][a][i]; }); });
     var order = keys.slice().sort(function (a, b) { return sc[b] - sc[a] || (a === "hybrid" ? -1 : b === "hybrid" ? 1 : 0); });
@@ -1479,16 +1550,27 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(36px + env(
     $("#r-sub").textContent = { real: "Filmed with a crew, cast and locations.", ai: "Directed and generated frame by frame.", hybrid: "Filmed for real, extended with AI." }[w];
     $("#r-why").innerHTML = [WHY[w][ans[0] === 0 ? 0 : ans[0] === 1 ? 1 : 0], WHY[w][ans[1] === 0 ? 1 : 2]].filter(function (v, i, a) { return a.indexOf(v) === i; }).map(function (t) { return '<li><svg class="i" style="color:' + COLOR[w] + '"><use href="#i-check"/></svg>' + t + "</li>"; }).join("");
     $("#r-p1").textContent = money(price);
-    $("#r-d").textContent = Math.round(days[0] / 7 * 10) / 10 + "–" + Math.round(days[1] / 7 * 10) / 10 + " weeks";
+    $("#r-d").textContent = Math.max(1, Math.round(days[0] / 7)) + "–" + Math.ceil(days[1] / 7) + " weeks";
     var c2 = 2 * Math.PI * 18;
-    $("#r-others").innerHTML = order.slice(1).map(function (k) { return '<div class="other"><div class="mini"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" stroke="var(--card-2)"/><circle cx="22" cy="22" r="18" stroke="' + COLOR[k] + '" stroke-linecap="round" stroke-dasharray="' + c2.toFixed(1) + '" stroke-dashoffset="' + (c2 * (1 - pct(k) / 100)).toFixed(1) + '"/></svg></div><div><b>' + AP[k] + " · " + pct(k) + '%</b><span>from ' + money(BASE.short[k]) + "</span></div></div>"; }).join("");
+    $("#r-others").innerHTML = order.slice(1).map(function (k) { return '<div class="other"><div class="mini"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" stroke="var(--card-2)"/><circle cx="22" cy="22" r="18" stroke="' + COLOR[k] + '" stroke-linecap="round" stroke-dasharray="' + c2.toFixed(1) + '" stroke-dashoffset="' + (c2 * (1 - pct(k) / 100)).toFixed(1) + '"/></svg></div><div><b>' + AP[k] + "</b><span>" + pct(k) + "% fit · from " + money(BASE.short[k]) + "</span></div></div>"; }).join("");
     var btn = $("#r-btn"); btn.innerHTML = "See " + AP[w] + ' examples <svg class="i"><use href="#i-arrow"/></svg>'; btn.dataset.show = w;
   }
-  $$("#finder .seg").forEach(function (s) { s.addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; ans[+s.dataset.q] = +b.dataset.v; finder(); }); });
+  $$("#finder .opts").forEach(function (s) { s.addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; ans[+s.dataset.q] = +b.dataset.v; finder(); }); });
   finder();
 
   /* ================= Price table ================= */
   var ROWS = [["short", "Short-form", "6–60 sec · TikTok, Reels, Shorts"], ["promo", "Promo or ad", "30–90 sec · launches, YouTube, paid"], ["film", "Brand film", "3–10 min · story, documentary"]];
+  var PICON = { short: "i-phone", promo: "i-monitor", film: "i-film" }, plAp = "hybrid";
+  $("#pl-ap").innerHTML = ["real", "ai", "hybrid"].map(function (k) { return '<button type="button" data-v="' + k + '">' + AP[k] + "</button>"; }).join("");
+  function renderPL() {
+    $$("#pl-ap button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === plAp)); });
+    $("#pl-rows").innerHTML = ROWS.map(function (r) {
+      var d = DAYS[r[0]][plAp];
+      return '<div class="pl-row"><span class="ic"><svg class="i"><use href="#' + PICON[r[0]] + '"/></svg></span><span><b>' + r[1] + "</b><small>" + r[2] + '</small></span><span class="pr"><strong>' + money(BASE[r[0]][plAp]) + "</strong><small>" + d[0] + "–" + d[1] + " days</small></span></div>";
+    }).join("") + '<div class="pl-row"><span class="ic"><svg class="i"><use href="#i-cut"/></svg></span><span><b>Edit your footage</b><small>Any approach · edit, grade, sound</small></span><span class="pr"><strong>' + money(BASE.edit.any) + "</strong><small>3–10 days</small></span></div>";
+  }
+  $("#pl-ap").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) { plAp = b.dataset.v; renderPL(); } });
+  renderPL();
   $("#price-body").innerHTML = ROWS.map(function (r) {
     return "<tr><td><b>" + r[1] + "</b><span>" + r[2] + "</span></td>" + ["real", "ai", "hybrid"].map(function (k) { var d = DAYS[r[0]][k]; return '<td class="p" data-l="' + AP[k] + '">from ' + money(BASE[r[0]][k]) + "<small>" + d[0] + "–" + d[1] + " days</small></td>"; }).join("") + "</tr>";
   }).join("") + '<tr><td><b>Edit your footage</b><span>Any length · edit, grade, sound, versions</span></td><td class="p" data-l="Any approach" colspan="3">from ' + money(BASE.edit.any) + "<small>3–10 days</small></td></tr>";
@@ -1588,7 +1670,8 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(36px + env(
     hdr.classList.toggle("solid", y > 24);
     var np = Math.min(1, Math.max(0, y / (h * .45))).toFixed(3); if (np !== lastP) { lastP = np; hero.style.setProperty("--p", np); }
     var briefTop = $("#brief").getBoundingClientRect().top;
-    mbar.classList.toggle("show", y > h * .8 && briefTop > window.innerHeight * .6);
+    var er = $("#estimate").getBoundingClientRect(), inEst = er.top < window.innerHeight && er.bottom > 0;
+    mbar.classList.toggle("show", y > h * .8 && briefTop > window.innerHeight * .6 && !inEst);
   }
   window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
   onScroll();
