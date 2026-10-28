@@ -116,19 +116,19 @@ nav.links .ink { position: absolute; bottom: 2px; height: 2px; border-radius: 2p
 /* ---------- Hero: the screen that opens ---------- */
 .hero { position: relative; isolation: isolate; padding-top: calc(env(safe-area-inset-top, 0px) + 88px); padding-bottom: 28px; --p: 0; }
 .hero .backdrop { position: absolute; inset: 0; z-index: -2; overflow: hidden; }
-.hero .backdrop svg { width: 100%; height: 100%; display: block; filter: url(#duo) blur(28px) brightness(.5); transform: scale(1.15); }
+
 .hero .screen {
   position: absolute; z-index: -1; left: 0; right: 0; top: calc(env(safe-area-inset-top, 0px) + 80px); bottom: 0;
   clip-path: inset(0 calc(var(--gut) * 1.6 * (1 - var(--p))) 0 calc(var(--gut) * 1.6 * (1 - var(--p))) round calc(28px * (1 - var(--p))));
   overflow: hidden; background: #000;
 }
-.hero .screen svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; animation: drift 30s ease-in-out infinite alternate; }
-.hero .screen::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(5, 7, 12, .92) 0%, rgba(5, 7, 12, .55) 45%, rgba(5, 7, 12, .05) 75%), linear-gradient(0deg, rgba(5, 7, 12, .95) 0%, transparent 38%); }
+
+.hero .screen::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(5, 7, 12, .95) 0%, rgba(5, 7, 12, .8) 40%, rgba(5, 7, 12, .3) 75%), linear-gradient(0deg, rgba(5, 7, 12, .95) 0%, transparent 38%); }
 @keyframes drift { from { transform: scale(1.04) translateX(0); } to { transform: scale(1.1) translateX(-2%); } }
 .hero-in { position: relative; padding: clamp(40px, 7vw, 96px) calc(var(--gut) * 1.6 + clamp(8px, 3vw, 40px)) 0; max-width: calc(var(--wrap) + 120px); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; justify-items: start; }
 .featured { min-width: 0; }
 .hero .kicker { display: flex; flex-wrap: wrap; gap: 8px; }
-.hero h1 { max-width: 13.5ch; }
+.hero h1 { max-width: 13.5ch; font-size: clamp(2.4rem, 5.4vw, 5rem); }
 .hero h1 em { font-style: normal; color: var(--blue); }
 .hero .lede { color: #d4d3d9; max-width: 50ch; font-size: 1.08rem; }
 .hero .cta-row { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -178,6 +178,67 @@ nav.links .ink { position: absolute; bottom: 2px; height: 2px; border-radius: 2p
 .poster.has-img::after { display: none; }
 .poster > img { z-index: 0; }
 .tp-bg img { filter: url(#duo); }
+
+
+/* Hero spotlight: rotating key art */
+.hero .bg-layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 28%; opacity: 0; filter: url(#duo); transition: opacity 1.6s ease; }
+.hero .backdrop .bg-layer { filter: url(#duo) blur(28px) brightness(.55); transform: scale(1.15); }
+.hero .screen .bg-layer.is-active { opacity: .62; animation: kenburns 9s cubic-bezier(.2, .6, .3, 1) forwards; }
+.hero .backdrop .bg-layer.is-active { opacity: 1; }
+@keyframes kenburns { from { transform: scale(1.14) translate3d(1.5%, 0, 0); } to { transform: scale(1.02) translate3d(0, 0, 0); } }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: clamp(28px, 4vw, 64px); align-items: center; width: 100%; }
+.hero-copy { display: grid; gap: 22px; justify-items: start; min-width: 0; }
+
+.spot { position: relative; display: grid; gap: 14px; justify-self: end; width: min(100%, 320px); }
+.spot-stage { position: relative; aspect-ratio: 2 / 3; perspective: 1400px; }
+.spot-poster { position: absolute; inset: 0; border: 0; padding: 0; border-radius: 16px; overflow: hidden; cursor: pointer; background: var(--card); box-shadow: 0 50px 90px -40px rgba(0, 0, 0, .95), 0 0 0 1px var(--line-2);
+  opacity: 0; transform: translateX(10%) scale(.9); filter: brightness(.4) blur(2px); pointer-events: none; z-index: 1;
+  transition: opacity 1.1s cubic-bezier(.65, 0, .15, 1), transform 1.1s cubic-bezier(.65, 0, .15, 1), filter 1.1s ease; }
+.spot-poster img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.spot-poster.is-active { opacity: 1; transform: none; filter: none; pointer-events: auto; z-index: 3; }
+.spot-poster.is-next { opacity: .55; transform: translateX(16%) scale(.88) rotateY(-10deg); filter: brightness(.35) blur(1px); z-index: 2; }
+.spot-poster.is-prev { opacity: 0; transform: translateX(-18%) scale(.92) rotateY(8deg); filter: brightness(.3) blur(3px); z-index: 2; }
+.spot-poster::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12); pointer-events: none; }
+.spot-poster:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+.spot-badge { position: absolute; top: 14px; left: 14px; z-index: 4; display: inline-flex; align-items: center; gap: 8px; font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; padding: 6px 10px; border-radius: 999px; background: rgba(5, 7, 12, .7); border: 1px solid var(--line-2); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); pointer-events: none; }
+.spot-badge i { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 10px var(--blue); }
+
+.spot-info { border-radius: 18px; padding: 16px 18px; background: rgba(10, 14, 24, .72); border: 1px solid var(--line-2); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); display: grid; gap: 8px; }
+.spot-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.spot-title { font-size: 1.35rem; font-weight: 800; letter-spacing: -.03em; line-height: 1.1; }
+.spot-meta { font-size: .82rem; color: var(--muted); }
+.spot-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 4px; padding-top: 10px; border-top: 1px solid var(--line); }
+.spot-foot b { font-size: 1.15rem; font-weight: 800; letter-spacing: -.02em; }
+.spot-foot b small { font-size: .74rem; font-weight: 600; color: var(--muted); letter-spacing: 0; margin-left: 4px; }
+.spot-info.swap > * { animation: infoIn .8s cubic-bezier(.2, .8, .2, 1) both; }
+.spot-info.swap > *:nth-child(2) { animation-delay: .06s; } .spot-info.swap > *:nth-child(3) { animation-delay: .12s; } .spot-info.swap > *:nth-child(4) { animation-delay: .18s; }
+@keyframes infoIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+.spot-ctrl { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.spot-dots { display: flex; gap: 6px; align-items: center; }
+.spot-dots button { width: 8px; height: 8px; border-radius: 999px; border: 0; padding: 0; background: rgba(255, 255, 255, .25); cursor: pointer; transition: width .5s cubic-bezier(.3, .7, .2, 1), background .3s; }
+.spot-dots button[aria-current="true"] { width: 26px; background: var(--ink); }
+.spot-count { font-size: .78rem; font-weight: 700; letter-spacing: .1em; color: var(--muted); font-variant-numeric: tabular-nums; }
+.spot-count b { color: var(--ink); }
+.spot-arrows { display: flex; gap: 6px; }
+.spot-arrows button { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line-2); background: rgba(255, 255, 255, .06); color: var(--ink); cursor: pointer; display: grid; place-items: center; transition: background .2s; }
+.spot-arrows button:hover { background: rgba(255, 255, 255, .14); }
+.spot-arrows svg.i { width: 16px; height: 16px; }
+
+@media (max-width: 960px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr); }
+  .spot { justify-self: stretch; width: 100%; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); align-items: end; }
+  .spot-ctrl { grid-column: 1 / -1; }
+}
+@media (max-width: 480px) {
+  .spot { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 12px; }
+  .spot-info { padding: 12px 14px; }
+  .spot-title { font-size: 1.1rem; }
+  .spot-info .spot-meta + .spot-meta { display: none; }
+  .spot-foot { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .spot-badge { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .spot-poster.is-next { opacity: 0; } }
 
 /* ---------- Catalogue rows ---------- */
 .filters { display: grid; gap: 12px; margin-bottom: 34px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 72px); z-index: 20; padding-block: 12px; background: var(--bg); box-shadow: 0 1px 0 var(--line), 0 18px 18px -12px var(--bg); }
@@ -628,9 +689,11 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(36px + env(
 <main id="top">
   <!-- HERO -->
   <section class="hero" id="hero">
-    <div class="backdrop" aria-hidden="true" data-scene="hero" data-vb="0 0 1600 900"></div>
-    <div class="screen" aria-hidden="true" data-scene="hero" data-vb="0 0 1600 900"></div>
+    <div class="backdrop" aria-hidden="true"></div>
+    <div class="screen" aria-hidden="true"></div>
     <div class="hero-in">
+     <div class="hero-grid">
+      <div class="hero-copy">
       <div class="kicker"><span class="ap real">Live action</span><span class="ap ai">AI film</span><span class="ap hybrid">Hybrid</span></div>
       <h1>We erase the barrier between <em>screen and audience</em></h1>
       <p class="lede">Premium video for brands, shot live, made with AI, or both. Browse real packages by niche, see exactly what each one costs, and order one like it.</p>
@@ -643,6 +706,16 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(36px + env(
         <div><strong>3 days</strong><span>fastest AI turnaround</span></div>
         <div><strong>4K</strong><span>master in every format</span></div>
       </div>
+      </div>
+      <aside class="spot" id="spot" aria-roledescription="carousel" aria-label="Spotlight packages">
+        <div class="spot-stage" id="spot-stage"></div>
+        <div class="spot-info" id="spot-info" aria-live="polite"></div>
+        <div class="spot-ctrl">
+          <div class="spot-dots" id="spot-dots" role="group" aria-label="Choose a package"></div>
+          <div class="spot-arrows"><button type="button" id="spot-prev" aria-label="Previous package"><svg class="i"><use href="#i-left"/></svg></button><button type="button" id="spot-next" aria-label="Next package"><svg class="i"><use href="#i-right"/></svg></button></div>
+        </div>
+      </aside>
+     </div>
       <div class="featured">
         <div class="row-head"><h3>Now showing</h3><a href="#showcase">See all 19 →</a></div>
         <div class="feat-grid" id="featured-track"></div>
@@ -910,7 +983,7 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(36px + env(
     { id: "NP-19", t: "The Art of Promoting", n: "story", f: "film", a: "ai", d: "4:00", sc: "nomad", img: "art-of-promoting", pos: "50% 60%", p: 9000, days: 30, purpose: "A brand manifesto told through an artisan whose craft becomes wings.", how: "AI worlds grown from real embroidery scans, narrated by a real voice.", del: ["4:00 film", "1:00 trailer", "6 social cutdowns"] }
   ];
   CAT.forEach(function (c) { c.img = "assets/posters/" + c.img + ".jpg"; });
-  var FEATURED = ["NP-01", "NP-09", "NP-10", "NP-18"];
+  var FEATURED = ["NP-18", "NP-12", "NP-07", "NP-11"];
 
   /* ================= Illustrated scenes ================= */
   var uid = 0;
@@ -1041,6 +1114,62 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(36px + env(
   }
 
   $("#featured-track").innerHTML = FEATURED.map(function (id) { return featHTML(byId[id]); }).join("");
+
+  /* ================= Hero spotlight ================= */
+  var SPOT = ["NP-16", "NP-09", "NP-10", "NP-01", "NP-17", "NP-03"];
+  (function () {
+    var spot = $("#spot"), stage = $("#spot-stage"), info = $("#spot-info"), dots = $("#spot-dots");
+    var layers = { screen: $("#hero .screen"), backdrop: $("#hero .backdrop") };
+    var items = SPOT.map(function (id) { return byId[id]; }), n = items.length, cur = -1, timer = null, paused = false, visible = true;
+    var HOLD = 6500, reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    ["screen", "backdrop"].forEach(function (k) {
+      layers[k].innerHTML = items.map(function (c) { return '<img class="bg-layer" src="' + c.img + '" alt="" decoding="async">'; }).join("");
+    });
+    stage.innerHTML = items.map(function (c, i) {
+      return '<button type="button" class="spot-poster" data-id="' + c.id + '" tabindex="-1" aria-label="Open ' + c.t + '"><img src="' + c.img + '" alt="Poster: ' + c.t + '"' + (i > 1 ? ' loading="lazy"' : "") + ' decoding="async"></button>';
+    }).join("") + '<span class="spot-badge"><i></i>Now playing</span>';
+    dots.innerHTML = items.map(function (c, i) { return '<button type="button" data-i="' + i + '" aria-label="Show ' + c.t + '"></button>'; }).join("");
+    var posters = $$(".spot-poster", stage), bgs = $$(".bg-layer", layers.screen), bgb = $$(".bg-layer", layers.backdrop), dotEls = $$("button", dots);
+    function pad(x) { return (x < 10 ? "0" : "") + x; }
+    function show(i) {
+      i = (i + n) % n; if (i === cur) return; cur = i;
+      var c = items[i];
+      posters.forEach(function (p, k) {
+        p.classList.toggle("is-active", k === i);
+        p.classList.toggle("is-next", k === (i + 1) % n);
+        p.classList.toggle("is-prev", k === (i - 1 + n) % n);
+        p.tabIndex = k === i ? 0 : -1;
+      });
+      [bgs, bgb].forEach(function (set) { set.forEach(function (b, k) { b.classList.toggle("is-active", k === i); }); });
+      dotEls.forEach(function (d, k) { d.setAttribute("aria-current", String(k === i)); });
+      info.classList.remove("swap"); void info.offsetWidth; info.classList.add("swap");
+      info.innerHTML =
+        '<div class="spot-head"><span class="ap ' + c.a + '">' + AP[c.a] + '</span><span class="spot-count"><b>' + pad(i + 1) + "</b> / " + pad(n) + "</span></div>" +
+        '<div class="spot-title">' + c.t + "</div>" +
+        '<div class="spot-meta">' + NICHE[c.n] + " · " + FORMAT[c.f].name + " · " + c.d + " · " + c.days + " days</div>" +
+        '<div class="spot-foot"><b>' + money(c.p) + '<small>fixed price</small></b><button type="button" class="btn sm white" data-id="' + c.id + '">View package</button></div>';
+    }
+    function schedule() {
+      clearTimeout(timer);
+      if (reduce || paused || !visible || document.hidden) return;
+      timer = setTimeout(function () { show(cur + 1); schedule(); }, HOLD);
+    }
+    function go(i) { show(i); schedule(); }
+    show(0); schedule();
+    $("#spot-prev").addEventListener("click", function () { go(cur - 1); });
+    $("#spot-next").addEventListener("click", function () { go(cur + 1); });
+    dots.addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) go(+b.dataset.i); });
+    spot.addEventListener("click", function (e) { var t = e.target.closest("[data-id]"); if (t) openSheet(t.dataset.id); });
+    spot.addEventListener("keydown", function (e) { if (e.key === "ArrowRight") go(cur + 1); if (e.key === "ArrowLeft") go(cur - 1); });
+    ["mouseenter", "focusin"].forEach(function (ev) { spot.addEventListener(ev, function () { paused = true; clearTimeout(timer); }); });
+    ["mouseleave", "focusout"].forEach(function (ev) { spot.addEventListener(ev, function () { paused = false; schedule(); }); });
+    document.addEventListener("visibilitychange", schedule);
+    if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { visible = es[0].isIntersecting; schedule(); }).observe(stage);
+    // touch swipe on the poster
+    var sx = null;
+    stage.addEventListener("touchstart", function (e) { sx = e.touches[0].clientX; }, { passive: true });
+    stage.addEventListener("touchend", function (e) { if (sx === null) return; var dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 40) go(cur + (dx < 0 ? 1 : -1)); sx = null; });
+  })();
 
   function chip(label, val, group, n, dot) {
     return '<button type="button" class="chip" data-g="' + group + '" data-v="' + val + '" aria-pressed="' + (state[group] === val) + '">' + (dot ? '<span class="dot" style="background:' + dot + '"></span>' : "") + label + (n !== undefined ? ' <span class="n">' + n + "</span>" : "") + "</button>";
