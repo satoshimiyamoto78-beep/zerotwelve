@@ -1834,6 +1834,58 @@ header.top.hide { transform: translateY(calc(-100% - env(safe-area-inset-top, 0p
 @media (max-width: 760px) { .fbtn { padding: 9px 11px; gap: 6px; } .fbtn span { display: none; } }
 .sp-screen::after { background: radial-gradient(110% 85% at 50% 42%, transparent 40%, rgba(5, 7, 12, .75) 78%, #05070c 100%), linear-gradient(180deg, rgba(5, 7, 12, .3) 0%, transparent 22%, transparent 45%, rgba(5, 7, 12, .85) 80%, #05070c 100%) !important; }
 
+/* ===== v13 ===== */
+/* No native scrollbar; the drum sits on the top edge */
+html { scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; height: 0; }
+.drum.top { left: 33.33vw; right: auto; top: env(safe-area-inset-top, 0px); width: 33.34vw; height: 12px; z-index: 120; perspective: 200px; }
+.drum.top .drum-in { transform: rotateX(-30deg); transform-origin: 50% 0; }
+.drum.top .drum-in i { left: 0; top: 0; width: 1.5px; height: 6px; margin: 0 0 0 -.75px; transform-origin: 50% 0; }
+.drum.top .drum-in i.mj { width: 1.5px; height: 11px; }
+.drum.top .drum-h { left: 50%; top: 0; width: 2px; height: 12px; margin: 0 0 0 -1px; background: linear-gradient(180deg, #fff, #8fb2ff 50%, #2f6bff); }
+.drum.top .drum-t { left: calc(100% + 8px); top: 1px; writing-mode: horizontal-tb; transform: none; }
+@media (max-width: 700px) { .drum.top { left: 25vw; width: 50vw; } .drum.top .drum-t { display: none; } }
+
+/* Services: illustration level with the title, compact foot */
+.sv { display: grid !important; grid-template-columns: 64px minmax(0, 1fr); grid-template-areas: "art k" "art t" "p p" "f f"; column-gap: 14px; align-content: start; }
+.sv-art { grid-area: art; height: 56px !important; width: 64px; margin: 0 !important; align-self: center; }
+.sv-art svg { width: 64px !important; height: 56px !important; }
+.sv .pt-k { grid-area: k; align-self: end; }
+.sv h3 { grid-area: t; margin: 2px 0 0 !important; font-size: 1.25rem !important; align-self: start; }
+.sv p { grid-area: p; margin: 14px 0 16px !important; font-size: .86rem !important; }
+.sv .pt-foot { grid-area: f; margin-top: 0 !important; padding-top: 12px !important; }
+@media (max-width: 860px) {
+  .sv { grid-template-columns: 64px minmax(0, 1fr) !important; padding: 22px 0 !important; }
+  .sv-art { grid-row: auto !important; }
+  .sv .pt-k { grid-area: k !important; } .sv h3 { grid-area: t !important; } .sv p { grid-area: p !important; } .sv .pt-foot { grid-area: f !important; }
+}
+
+/* Price rows: blurred refresh with a sweeping light */
+.pl-rows { position: relative; }
+.pl-rows > * { transition: filter .35s ease, opacity .35s ease; }
+.pl-rows.ld > * { filter: blur(7px); opacity: .55; }
+.pl-rows::after { content: ""; position: absolute; inset: -6px -10px; border-radius: 20px; pointer-events: none; opacity: 0;
+  background: linear-gradient(100deg, transparent 20%, rgba(143, 178, 255, .16) 42%, rgba(255, 255, 255, .22) 50%, rgba(143, 178, 255, .16) 58%, transparent 80%) 0 0 / 250% 100%, rgba(10, 14, 24, .25); }
+.pl-rows.ld::after { animation: ldSweep 1s ease-in-out; }
+@keyframes ldSweep { 0% { opacity: 0; background-position: 120% 0, 0 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; background-position: -60% 0, 0 0; } }
+
+/* Smaller version stepper */
+.stepper { padding: 3px !important; gap: 2px !important; }
+.stepper button { width: 28px !important; height: 28px !important; font-size: .95rem !important; }
+.stepper output { min-width: 30px !important; font-size: .95rem !important; font-weight: 600 !important; }
+
+/* Three packages */
+.packs { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+@media (max-width: 860px) { .packs { grid-template-columns: minmax(0, 1fr) !important; } }
+
+/* ===== v14 ===== */
+.spot-sec { position: relative; overflow: hidden; padding-top: clamp(120px, 14vw, 180px) !important; }
+.spot-sec .head { position: relative; z-index: 2; }
+.spot-sec .head .label, .spot-sec .head h2 { text-shadow: 0 2px 24px rgba(0, 0, 0, .6); }
+.sp-screen { aspect-ratio: auto !important; border-radius: 0 !important; width: 100vw !important; margin-left: calc(50% - 50vw) !important; margin-right: 0 !important; min-height: 60vh; }
+.sp-screen::after { background: linear-gradient(180deg, #05070c 0%, rgba(5, 7, 12, .55) 18%, transparent 38%, transparent 52%, rgba(5, 7, 12, .85) 82%, #05070c 100%), radial-gradient(120% 90% at 50% 50%, transparent 45%, rgba(5, 7, 12, .7) 100%) !important; }
+@media (max-width: 860px) { .sv-art { grid-area: art !important; grid-row: auto; } }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
@@ -1900,7 +1952,7 @@ header.top.hide { transform: translateY(calc(-100% - env(safe-area-inset-top, 0p
   <symbol id="i-send" viewBox="0 0 24 24"><path d="M21 3.5 2.5 10.8l7 2.7 2.7 7L21 3.5Z"/><path d="m9.5 13.5 4-4"/></symbol>
 </svg>
 
-<div class="drum" aria-hidden="true"><div class="drum-in" id="drum"></div><i class="drum-h"></i><span class="drum-t" id="tcl-t">00:00:00</span><i id="tcl-h" hidden></i></div>
+<div class="drum top" aria-hidden="true"><div class="drum-in" id="drum"></div><i class="drum-h"></i><span class="drum-t" id="tcl-t">00:00:00</span><i id="tcl-h" hidden></i></div>
 <header class="top" id="hdr">
   <div class="wrap bar">
     <a class="logo" href="#top" aria-label="Nomad Production, back to top">
@@ -2029,20 +2081,6 @@ header.top.hide { transform: translateY(calc(-100% - env(safe-area-inset-top, 0p
       </div>
       <div class="svc" id="svc"></div>
 
-      <div class="finder reveal" id="finder">
-        <div class="panel fq">
-          <span class="label" style="color:var(--blue-2)">Approach finder</span>
-          <h3 style="margin:6px 0 4px;font-size:1.4rem">Not sure which one fits?</h3>
-          <p class="muted" style="font-size:.92rem;margin-bottom:20px">Three taps. The answer updates instantly.</p>
-          <div class="q"><div class="q-title"><span>1</span>What do you have already?</div>
-            <div class="opts" data-q="0"><button type="button" data-v="0"><svg class="i fo-ic"><use href="#i-bulb"/></svg><span>Idea</span><small>Start from zero</small></button><button type="button" data-v="1"><svg class="i fo-ic"><use href="#i-image"/></svg><span>Photos</span><small>Or a few clips</small></button><button type="button" data-v="2"><svg class="i fo-ic"><use href="#i-film"/></svg><span>Footage</span><small>Ready to edit</small></button></div></div>
-          <div class="q"><div class="q-title"><span>2</span>When do you need it?</div>
-            <div class="opts" data-q="1"><button type="button" data-v="0"><svg class="i fo-ic"><use href="#i-bolt"/></svg><span>Rush</span><small>Under 7 days</small></button><button type="button" data-v="1"><svg class="i fo-ic"><use href="#i-cal"/></svg><span>Standard</span><small>2–3 weeks</small></button><button type="button" data-v="2"><svg class="i fo-ic"><use href="#i-inf"/></svg><span>Flexible</span><small>No rush</small></button></div></div>
-          <div class="q"><div class="q-title"><span>3</span>Budget per video?</div>
-            <div class="opts" data-q="2"><button type="button" data-v="0"><svg class="i fo-ic"><use href="#i-coin1"/></svg><span>&lt; $2k</span><small>Per video</small></button><button type="button" data-v="1"><svg class="i fo-ic"><use href="#i-coin2"/></svg><span>$2–8k</span><small>Per video</small></button><button type="button" data-v="2"><svg class="i fo-ic"><use href="#i-coin3"/></svg><span>$8k+</span><small>Per video</small></button></div></div>
-        </div>
-        <div class="panel result" id="result" aria-live="polite"></div>
-      </div>
     </div>
   </section>
 
@@ -2100,9 +2138,14 @@ header.top.hide { transform: translateY(calc(-100% - env(safe-area-inset-top, 0p
 
       <div class="packs">
         <div class="panel pack reveal">
-          <div class="pk-h"><span class="pk-ic"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-layers"/></svg></span><div><span class="tagline">Package</span><h3>Campaign</h3><p>One production, a month of content.</p></div></div>
+          <div class="pk-h"><span class="pk-ic"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-phone"/></svg></span><div><span class="tagline">Package</span><h3>Single video</h3><p>One video with a fixed scope.</p></div></div>
+          <div class="pr"><b>from $400</b><span>per video</span></div>
+          <ul><li><svg class="i"><use href="#i-check"/></svg>1 master in 4K</li><li><svg class="i"><use href="#i-check"/></svg>Versions for every platform</li><li><svg class="i"><use href="#i-check"/></svg>2 revision rounds</li></ul>
+        </div>
+        <div class="panel pack reveal">
+          <div class="pk-h"><span class="pk-ic"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-layers"/></svg></span><div><span class="tagline">Package</span><h3>Campaign &amp; event</h3><p>One big package for a campaign or an event, a set number of pieces.</p></div></div>
           <div class="pr"><b>from $9,000</b><span>one-off</span></div>
-          <ul><li><svg class="i"><use href="#i-check"/></svg>60–90 sec hero film</li><li><svg class="i"><use href="#i-check"/></svg>20 short-form versions</li><li><svg class="i"><use href="#i-check"/></svg>30 stills for ads</li></ul>
+          <ul><li><svg class="i"><use href="#i-check"/></svg>60–90 sec hero film</li><li><svg class="i"><use href="#i-check"/></svg>20 short-form pieces</li><li><svg class="i"><use href="#i-check"/></svg>30 stills for ads</li></ul>
         </div>
         <div class="panel pack reveal">
           <div class="pk-h"><span class="pk-ic"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-cal"/></svg></span><div><span class="tagline">Package</span><h3>Monthly</h3><p>Your production team on retainer.</p></div></div>
@@ -2124,9 +2167,9 @@ header.top.hide { transform: translateY(calc(-100% - env(safe-area-inset-top, 0p
       <div class="flow reveal" id="flow">
         <div class="fl-node fl-prompt"><div class="fl-h"><svg class="i"><use href="#i-spark"/></svg>Prompt<span class="fl-tab">Script</span></div><p id="fl-text"></p><div class="fl-f"><span>16:9</span><span>4K</span><span>24 fps</span><b>Run<svg class="i"><use href="#i-play"/></svg></b></div></div>
         <i class="fl-wire w1"><span class="fl-glow"></span></i>
-        <div class="fl-node fl-frame"><div class="fl-h"><svg class="i"><use href="#i-video"/></svg>Frame 01<span class="fl-tab">4K</span></div><div class="fl-img"><img src="assets/posters/future-tech-duo.jpg" alt="" loading="lazy" decoding="async"><span class="fl-scan"></span></div></div>
+        <div class="fl-node fl-frame"><div class="fl-h"><svg class="i"><use href="#i-video"/></svg>Frame 01<span class="fl-tab">4K</span></div><div class="fl-img"><img src="assets/posters/future-tech.jpg" alt="" loading="lazy" decoding="async"><span class="fl-scan"></span></div></div>
         <i class="fl-wire w2"><span class="fl-glow"></span></i>
-        <div class="fl-node fl-cut"><div class="fl-h"><svg class="i"><use href="#i-cut"/></svg>Edit<span class="fl-tab">0:45</span></div><div class="fl-ruler"><span>0s</span><span>15s</span><span>30s</span><span>45s</span></div><div class="fl-strip"><img src="assets/posters/future-tech-duo.jpg" alt="" loading="lazy"><img src="assets/posters/vision-duo.jpg" alt="" loading="lazy"><img src="assets/posters/signal-duo.jpg" alt="" loading="lazy"><img src="assets/posters/your-vision-duo.jpg" alt="" loading="lazy"><i class="fl-head"></i></div><div class="fl-wave"></div></div>
+        <div class="fl-node fl-cut"><div class="fl-h"><svg class="i"><use href="#i-cut"/></svg>Edit<span class="fl-tab">0:45</span></div><div class="fl-ruler"><span>0s</span><span>15s</span><span>30s</span><span>45s</span></div><div class="fl-strip"><img src="assets/posters/future-tech.jpg" alt="" loading="lazy"><img src="assets/posters/vision.jpg" alt="" loading="lazy"><img src="assets/posters/signal.jpg" alt="" loading="lazy"><img src="assets/posters/your-vision.jpg" alt="" loading="lazy"><i class="fl-head"></i></div><div class="fl-wave"></div></div>
       </div>
       <div class="proc-ruler" id="proc-ruler"></div>
     </div>
@@ -2297,7 +2340,7 @@ header.top.hide { transform: translateY(calc(-100% - env(safe-area-inset-top, 0p
     { id: "NP-18", t: "Misdirection", n: "story", f: "film", a: "edit", d: "5:00", sc: "filmset", img: "misdirection", pos: "50% 35%", p: 3200, days: 12, purpose: "A short thriller that carries a brand’s message and reveals the logo only at the end.", how: "Noir edit of the client’s footage, red as the only colour, AI voice-over and original score.", del: ["5:00 film", "1:00 trailer", "6 social cutdowns"] },
     { id: "NP-19", t: "The Art of Promoting", n: "story", f: "film", a: "ai", d: "4:00", sc: "nomad", img: "art-of-promoting", pos: "50% 60%", p: 9000, days: 30, purpose: "A brand manifesto told through an artisan whose craft becomes wings.", how: "AI worlds grown from real embroidery scans, narrated by a real voice.", del: ["4:00 film", "1:00 trailer", "6 social cutdowns"] }
   ];
-  CAT.forEach(function (c) { var b = "assets/posters/" + c.img; c.img = b + ".jpg"; c.duo = b + "-duo.jpg"; c.blur = b + "-blur.jpg"; });
+  CAT.forEach(function (c) { var b = "assets/posters/" + c.img; c.img = b + ".jpg"; c.duo = b + ".jpg"; c.blur = b + "-blur.jpg"; });
   var FEATURED = ["NP-18", "NP-12", "NP-07", "NP-11"];
 
   /* ================= Illustrated scenes ================= */
@@ -2847,7 +2890,7 @@ header.top.hide { transform: translateY(calc(-100% - env(safe-area-inset-top, 0p
     var btn = $("#r-btn"); btn.innerHTML = "See " + AP[w] + ' examples <svg class="i"><use href="#i-arrow"/></svg>'; btn.dataset.show = w;
   }
   $$("#finder .opts").forEach(function (s) { s.addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; ans[+s.dataset.q] = +b.dataset.v; finder(); }); });
-  finder();
+  if ($("#finder")) finder();
 
   /* ================= Price table ================= */
   var ROWS = [["short", "Short-form", "6–60 sec · TikTok, Reels, Shorts"], ["promo", "Promo or ad", "30–90 sec · launches, YouTube, paid"], ["film", "Brand film", "3–10 min · story, documentary"]];
@@ -2861,14 +2904,14 @@ header.top.hide { transform: translateY(calc(-100% - env(safe-area-inset-top, 0p
   function hwTo(t) { var a = hwX, t0 = performance.now(); (function st(n) { var p = Math.min(1, (n - t0) / 380), e = 1 - Math.pow(1 - p, 3); hwX = a + (t - a) * e; hwPaint(); if (p < 1) requestAnimationFrame(st); })(t0); }
   (function () {
     var w = $("#pl-ap"), drag = null, moved = false;
-    w.addEventListener("pointerdown", function (e) { drag = { x: e.clientX, s: hwX }; moved = false; w.setPointerCapture(e.pointerId); w.classList.add("on"); });
+    w.addEventListener("pointerdown", function (e) { drag = { x: e.clientX, s: hwX, b: e.target.closest("button") }; moved = false; w.setPointerCapture(e.pointerId); w.classList.add("on"); });
     w.addEventListener("pointermove", function (e) {
       if (!drag) return; var dx = e.clientX - drag.x; if (Math.abs(dx) > 4) moved = true;
       hwX = Math.max(-40, Math.min((HWK.length - 1) * HWS + 40, drag.s - dx)); hwPaint();
       var i = Math.max(0, Math.min(HWK.length - 1, Math.round(hwX / HWS)));
       if (HWK[i] !== plAp) { plAp = HWK[i]; hapt(); renderPL(true); }
     });
-    function up(e) { if (!drag) return; drag = null; w.classList.remove("on"); if (!moved) { var b = e.target.closest && e.target.closest("button"); if (b) { plAp = b.dataset.v; hapt(); } } renderPL(); }
+    function up(e) { if (!drag) return; var b = drag.b; drag = null; w.classList.remove("on"); if (!moved && b) { plAp = b.dataset.v; hapt(); } renderPL(); }
     w.addEventListener("pointerup", up); w.addEventListener("pointercancel", up);
     w.addEventListener("keydown", function (e) { var i = HWK.indexOf(plAp); if (e.key === "ArrowRight") i++; else if (e.key === "ArrowLeft") i--; else return; e.preventDefault(); plAp = HWK[Math.max(0, Math.min(2, i))]; renderPL(); });
   })();
@@ -2876,10 +2919,17 @@ header.top.hide { transform: translateY(calc(-100% - env(safe-area-inset-top, 0p
     $$("#pl-ap button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === plAp)); });
     $("#pl-ap").setAttribute("aria-valuenow", HWK.indexOf(plAp) + 1); $("#pl-ap").setAttribute("aria-valuetext", AP[plAp]);
     if (!live) hwTo(HWK.indexOf(plAp) * HWS);
-    $("#pl-rows").innerHTML = ROWS.map(function (r) {
+    var html = ROWS.map(function (r) {
       var d = DAYS[r[0]][plAp];
       return '<div class="pl-row"><span class="ic">' + ILL[r[0]] + '</span><span><b>' + r[1] + "</b><small>" + r[2] + '</small></span><span class="pr"><strong>' + money(BASE[r[0]][plAp]) + "</strong><small>" + d[0] + "–" + d[1] + " days</small></span></div>";
     }).join("");
+    var el = $("#pl-rows");
+    if (!el.innerHTML || el.dataset.ap === plAp) { if (!el.innerHTML) el.innerHTML = html; el.dataset.ap = plAp; return; }
+    el.dataset.ap = plAp;
+    el.classList.remove("ld"); void el.offsetWidth; el.classList.add("ld");
+    clearTimeout(renderPL.t1); clearTimeout(renderPL.t2);
+    renderPL.t1 = setTimeout(function () { el.innerHTML = html; }, 450);
+    renderPL.t2 = setTimeout(function () { el.classList.remove("ld"); }, 1000);
   }
   renderPL();
   $("#price-body").innerHTML = ROWS.map(function (r) {
@@ -2983,12 +3033,12 @@ header.top.hide { transform: translateY(calc(-100% - env(safe-area-inset-top, 0p
     function drum(y) {
       var off = y * .09, H = dr.clientHeight / 2;
       for (var q = 0; q < N; q++) {
-        var a = ((q * 10 - off) % 360 + 540) % 360 - 180;
+        var a = ((q * 10 - off) % 360 + 540) % 360 - 180; var W = dr.clientWidth / 2;
         var el = ticks[q];
         if (a < -88 || a > 88) { el.style.opacity = 0; continue; }
         var r = a * Math.PI / 180, c = Math.cos(r);
         el.style.opacity = (c * c).toFixed(2);
-        el.style.transform = "translate3d(0," + (H + Math.sin(r) * H).toFixed(1) + "px,0) scale(" + (.45 + c * .55).toFixed(3) + "," + (.6 + c * .4).toFixed(3) + ")";
+        el.style.transform = "translate3d(" + (W + Math.sin(r) * W).toFixed(1) + "px,0,0) scale(" + (.6 + c * .4).toFixed(3) + "," + (.45 + c * .55).toFixed(3) + ")";
       }
     }
     function upd() {
@@ -3049,6 +3099,19 @@ header.top.hide { transform: translateY(calc(-100% - env(safe-area-inset-top, 0p
     }
     document.documentElement.classList.add("fp"); arm();
     new MutationObserver(function () { arm(); }).observe($("#rows"), { childList: true });
+  })();
+
+
+  /* ================= Now playing: the screen fills the section from its top edge ================= */
+  (function () {
+    var sec = $("#now"), scr = $("#sp-screen");
+    if (!sec || !scr) return;
+    function fit() {
+      scr.style.marginTop = ""; scr.style.height = "";
+      var up = scr.getBoundingClientRect().top - sec.getBoundingClientRect().top, h = scr.offsetHeight;
+      scr.style.marginTop = -up + "px"; scr.style.height = (h + up) + "px";
+    }
+    fit(); addEventListener("resize", fit); addEventListener("load", fit);
   })();
 
   /* ================= Brief / ordering ================= */
