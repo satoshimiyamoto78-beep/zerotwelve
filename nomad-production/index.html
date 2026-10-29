@@ -2048,6 +2048,24 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
 .aurora i:nth-child(3) { left: 4% !important; width: 40% !important; top: 40% !important; height: 60% !important; background: radial-gradient(50% 50% at 50% 50%, rgba(50, 90, 255, .75) 0%, transparent 70%) !important; }
 .pl-track { border: 0 !important; }
 
+/* ===== v18: equaliser glow edge to edge, laurels ===== */
+.aurora { height: clamp(200px, 22vw, 280px) !important; margin: -70px 0 -96px !important; -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 30%, #000 66%, transparent 100%) !important; mask-image: linear-gradient(180deg, transparent 0%, #000 30%, #000 66%, transparent 100%) !important; }
+.aurora i { display: none !important; }
+.au-band { position: absolute; left: -5%; right: -5%; top: 50%; height: 34%; margin-top: -17%; border-radius: 50%; background: radial-gradient(60% 50% at 50% 50%, rgba(220, 230, 255, .55), rgba(80, 120, 255, .45) 40%, rgba(40, 70, 220, .25) 70%, transparent 100%); filter: blur(22px); }
+.aurora b { position: absolute; left: var(--x); top: 50%; width: 9%; height: 70%; margin: -35% 0 0 -4.5%; border-radius: 50%; transform-origin: 50% 50%; will-change: transform;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(235, 242, 255, .55) 0%, rgba(110, 145, 255, .42) 32%, rgba(47, 90, 255, .2) 58%, transparent 74%);
+  animation: eq var(--t) ease-in-out var(--d) infinite alternate; transform: scaleY(var(--h)); }
+@keyframes eq { 0% { transform: scaleY(calc(var(--h) * .35)); } 100% { transform: scaleY(calc(var(--h) * 1.15)); } }
+.pl-head { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 18px; }
+.pl-head .label { margin: 0 !important; color: rgba(255, 255, 255, .7) !important; }
+.pl-lau { width: 15px; height: 26px; fill: url(#gLg); opacity: .9; flex: none; }
+.pl-lau.r { transform: scaleX(-1); }
+
+.au-band { top: 34% !important; height: 32% !important; margin-top: 0 !important; }
+.aurora b { top: 15% !important; height: 70% !important; margin: 0 0 0 -4.5% !important; width: 9% !important; }
+@media (max-width: 700px) { .aurora b { width: 16% !important; margin-left: -8% !important; } }
+.pl-lau { width: 26px !important; height: 46px !important; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
@@ -2211,7 +2229,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
 
   <!-- SHOWCASE -->
   <div class="partners" aria-label="Partners">
-    <div class="wrap"><span class="label">Partners and clients</span></div>
+    <div class="wrap pl-head"><svg class="pl-lau" aria-hidden="true"><use href="#i-laurel"/></svg><span class="label">Partners and clients</span><svg class="pl-lau r" aria-hidden="true"><use href="#i-laurel"/></svg></div>
     <div class="pl-track"><div class="pt-marq"><span class="pl-logo"><svg class="i"><use href="#i-spark"/></svg>LUMEN</span><span class="pl-logo"><svg class="i"><use href="#i-layers"/></svg>Northfold</span><span class="pl-logo"><svg class="i"><use href="#i-globe"/></svg>ARCA</span><span class="pl-logo"><svg class="i"><use href="#i-drop"/></svg>Velour</span><span class="pl-logo"><svg class="i"><use href="#i-send"/></svg>Kite Studio</span><span class="pl-logo"><svg class="i"><use href="#i-box"/></svg>Monolith</span><span class="pl-logo"><svg class="i"><use href="#i-clock"/></svg>Orbit</span><span class="pl-logo"><svg class="i"><use href="#i-wave"/></svg>Saltwave</span><span class="pl-logo"><svg class="i"><use href="#i-spark"/></svg>LUMEN</span><span class="pl-logo"><svg class="i"><use href="#i-layers"/></svg>Northfold</span><span class="pl-logo"><svg class="i"><use href="#i-globe"/></svg>ARCA</span><span class="pl-logo"><svg class="i"><use href="#i-drop"/></svg>Velour</span><span class="pl-logo"><svg class="i"><use href="#i-send"/></svg>Kite Studio</span><span class="pl-logo"><svg class="i"><use href="#i-box"/></svg>Monolith</span><span class="pl-logo"><svg class="i"><use href="#i-clock"/></svg>Orbit</span><span class="pl-logo"><svg class="i"><use href="#i-wave"/></svg>Saltwave</span></div></div>
   </div>
 
@@ -3371,7 +3389,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
     function wave(amp, len, ph) { var d = "M0 " + (30 + Math.sin(ph) * amp).toFixed(1); for (var x = 8; x <= 2880; x += 8) d += " L" + x + " " + (30 + Math.sin(x / len * Math.PI * 2 + ph) * amp).toFixed(1); return d; }
     var svg = '<svg viewBox="0 0 2880 60" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="wvg" x1="0" x2="1"><stop offset="0" stop-color="#2f6bff" stop-opacity="0"/><stop offset=".15" stop-color="#2f6bff"/><stop offset=".3" stop-color="#8fb2ff"/><stop offset=".4" stop-color="#ffffff"/><stop offset=".5" stop-color="#2f6bff"/><stop offset=".65" stop-color="#8fb2ff"/><stop offset=".8" stop-color="#2f6bff"/><stop offset="1" stop-color="#2f6bff" stop-opacity="0"/></linearGradient></defs>' +
       '<path d="' + wave(10, 720, 0) + '"/><path class="w2" d="' + wave(6, 480, 1.4) + '"/><path class="w3" d="' + wave(14, 1440, 2.6) + '"/></svg>';
-    var nowSec = $("#now"); if (nowSec) { var a = document.createElement("div"); a.className = "aurora"; a.setAttribute("aria-hidden", "true"); a.innerHTML = "<i></i><i></i><i></i>"; nowSec.parentNode.insertBefore(a, nowSec.nextSibling); }
+    var nowSec = $("#now"); if (nowSec) { var a = document.createElement("div"); a.className = "aurora"; a.setAttribute("aria-hidden", "true"); var bars = ""; for (var bi = 0; bi < 32; bi++) bars += '<b style="--x:' + (bi / 31 * 100).toFixed(2) + '%;--d:' + (-(bi * 0.37) % 2.4).toFixed(2) + 's;--t:' + (1.6 + (bi * 7 % 9) * .12).toFixed(2) + 's;--h:' + (.45 + ((bi * 13) % 10) / 18).toFixed(2) + '"></b>'; a.innerHTML = '<span class="au-band"></span>' + bars; nowSec.parentNode.insertBefore(a, nowSec.nextSibling); }
   })();
 
   /* ================= Brief / ordering ================= */
