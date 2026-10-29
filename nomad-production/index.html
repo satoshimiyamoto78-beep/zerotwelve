@@ -1398,6 +1398,74 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
 .fp .sec .head h2.in { opacity: 1; filter: none; transform: none; }
 @media (prefers-reduced-motion: reduce) { .hub-l.m, .ob-rot, .ob-rot span b { animation: none !important; } }
 
+/* ===== v8: alignment pass ===== */
+/* Header is opaque once scrolled; the timecode line sits on its bottom edge */
+header.top.solid { background: #05070c !important; border-color: transparent !important; }
+.tcl { top: calc(env(safe-area-inset-top, 0px) + 51px) !important; z-index: 71 !important; }
+.tcl-t { background: none !important; }
+
+/* Hero viewfinder: top corners only, aligned with the text column */
+.vf { left: var(--hx) !important; right: var(--hx) !important; height: auto !important; top: calc(env(safe-area-inset-top, 0px) + 80px) !important; --hx: max(var(--gut), calc((100vw - var(--wrap) - 120px) / 2 + var(--gut) * 1.6 + clamp(8px, 3vw, 40px))); }
+@media (max-width: 760px) { .vf { --hx: var(--gut); } }
+.vf .c3, .vf .c4 { display: none; }
+.vf span { top: 6px !important; }
+.vf-l { left: 26px !important; } .vf-r { right: 26px !important; }
+
+/* Folders: no stray icons, equal heights, footer pinned to the bottom */
+.folder .ic svg.i { width: 18px; height: 18px; }
+@media (min-width: 701px) {
+  .folders { align-items: stretch !important; }
+  .folder { display: flex !important; flex-direction: column; }
+  .folder .front { flex: 1; display: grid !important; grid-template-rows: auto auto auto 1fr auto; }
+  .folder .front .foot { margin-top: 0 !important; align-self: end; }
+  .folder .ic { position: static !important; width: 36px !important; height: 36px !important; border-radius: 12px !important; background: rgba(47, 107, 255, .14) !important; color: var(--blue-2) !important; display: grid !important; place-items: center; margin-bottom: 4px; }
+}
+
+/* Flow: three equal nodes on one baseline, strip contained */
+.flow { grid-template-columns: minmax(0, 1fr) 44px minmax(0, 1fr) 44px minmax(0, 1fr) !important; align-items: stretch !important; }
+.fl-wire { align-self: center; }
+.fl-node { height: 100%; grid-template-rows: auto 1fr auto; }
+.fl-frame { grid-template-rows: auto 1fr; }
+.fl-img { aspect-ratio: auto !important; min-height: 150px; height: 100%; }
+.fl-img img { position: absolute; inset: 0; }
+.fl-cut { grid-template-rows: auto auto 1fr auto; }
+.fl-strip { grid-template-columns: minmax(0, 1.3fr) minmax(0, .8fr) minmax(0, 1fr) minmax(0, 1.1fr) !important; height: auto !important; min-height: 58px; }
+.fl-strip img { min-width: 0; }
+@media (max-width: 860px) {
+  .flow { grid-template-columns: minmax(0, 1fr) !important; }
+  .fl-frame { width: 100% !important; }
+  .fl-img { min-height: 0; height: auto; aspect-ratio: 16 / 9 !important; }
+  .fl-strip { height: 64px !important; }
+}
+
+/* Gantt: labels on short bars at the end stay inside the track */
+.g-bar { left: min(var(--s), calc(100% - 58px)) !important; }
+
+/* Orbit: rings scale with the box and sway gently */
+.ob-sys { height: 220px !important; }
+.r1, .o1 { width: 150% !important; height: auto !important; aspect-ratio: 1; }
+.r2, .o2 { width: 104% !important; height: auto !important; aspect-ratio: 1; }
+.r3, .o3 { width: 60% !important; height: auto !important; aspect-ratio: 1; }
+.ob-rot { animation: obSway 16s ease-in-out infinite alternate !important; }
+.o2 { animation-duration: 12s !important; animation-direction: alternate-reverse !important; } .o3 { animation-duration: 10s !important; }
+@keyframes obSway { from { transform: translate(-50%, -50%) rotate(-8deg); } to { transform: translate(-50%, -50%) rotate(8deg); } }
+.o1 span b, .o3 span b { animation: obSwayB 16s ease-in-out infinite alternate !important; }
+.o2 span b { animation: obSwayB 12s ease-in-out infinite alternate-reverse !important; }
+.o3 span b { animation-duration: 10s !important; }
+@keyframes obSwayB { from { rotate: 8deg; } to { rotate: -8deg; } }
+.ob-core { bottom: -30px !important; }
+.ob-core svg { margin: -22px 0 0 2px !important; }
+@media (min-width: 900px) { .ob-sys { height: 240px !important; } }
+
+/* Section rhythm: one consistent vertical spacing */
+.sec { padding-block: clamp(64px, 9vw, 120px) !important; }
+.spot-sec { padding-bottom: clamp(40px, 6vw, 80px) !important; }
+
+.hub { margin-bottom: 18px !important; }
+.r1, .o1 { width: 136% !important; }
+.ob-sys { height: 200px !important; }
+@media (min-width: 900px) { .ob-sys { height: 190px !important; margin-top: 34px !important; } }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
@@ -1712,9 +1780,9 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
           <div class="ob-copy"><span class="ob-pill">Remote</span><p>Brief, reviews and delivery happen online. <b>Any time zone.</b></p></div>
           <div class="ob-sys">
             <i class="ob-r r1"></i><i class="ob-r r2"></i><i class="ob-r r3"></i>
-            <div class="ob-rot o1"><span style="--a:-58deg"><b>NYC</b></span><span style="--a:18deg"><b>Dubai</b></span></div>
-            <div class="ob-rot o2"><span style="--a:-18deg"><b>London</b></span><span style="--a:44deg"><b>Tokyo</b></span></div>
-            <div class="ob-rot o3"><span style="--a:-8deg"><b>Almaty</b></span></div>
+            <div class="ob-rot o1"></div>
+            <div class="ob-rot o2"><span style="--a:-32deg"><b>NYC</b></span><span style="--a:0deg"><b>London</b></span><span style="--a:32deg"><b>Tokyo</b></span></div>
+            <div class="ob-rot o3"><span style="--a:-46deg"><b>Dubai</b></span><span style="--a:46deg"><b>Almaty</b></span></div>
             <div class="ob-core"><svg viewBox="0 0 24 24"><use href="#i-play"/></svg></div>
           </div>
         </div>
@@ -2024,7 +2092,7 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
     if (0) layers.backdrop.innerHTML = items.map(function (c) { return '<img class="bg-layer" src="' + c.blur + '" alt="" decoding="async">'; }).join("");
     stage.innerHTML = items.map(function (c, i) {
       return '<button type="button" class="spot-poster" data-id="' + c.id + '" tabindex="-1" aria-label="Open ' + c.t + '"><img src="' + c.img + '" alt="Poster: ' + c.t + '"' + (i > 1 ? ' loading="lazy"' : "") + ' decoding="async"><img class="pb" src="' + c.blur + '" alt="" loading="lazy" decoding="async"></button>';
-    }).join("") + '<span class="spot-badge"><i></i>Now playing</span>';
+    }).join("");
     dots.innerHTML = items.map(function (c, i) { return '<button type="button" data-i="' + i + '" aria-label="Show ' + c.t + '"></button>'; }).join("");
     var posters = $$(".spot-poster", stage), bgs = $$(".bg-layer", layers.screen), bgb = $$(".bg-layer", layers.backdrop), dotEls = $$("button", dots);
     function pad(x) { return (x < 10 ? "0" : "") + x; }
@@ -2478,15 +2546,16 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
   /* ================= Agent hub ================= */
   (function () {
     var N = [["i-ref", "Script", 0], ["i-spark", "AI film", "ai"], ["i-layers", "Hybrid", "hybrid"], ["i-cut", "Edit", "edit"], ["i-wave", "Voice", "voice"], ["i-drop", "Grade", 0], ["i-send", "Deliver", 0]];
-    var cx = 360, cy = 268, R = 210, out = "";
+    if (PHONE) N = N.filter(function (n) { return n[2]; });
+    var cx = 360, cy = 268, R = PHONE ? 170 : 210, a0 = PHONE ? -152 : -160, span = PHONE ? 124 : 140, out = "";
     N.forEach(function (n, k) {
-      var a = (-160 + k * (140 / (N.length - 1))) * Math.PI / 180, x = cx + Math.cos(a) * R, y = cy + Math.sin(a) * R * .95, main = !!n[2];
+      var a = (a0 + k * (span / (N.length - 1))) * Math.PI / 180, x = cx + Math.cos(a) * R, y = cy + Math.sin(a) * R * .95, main = !!n[2];
       out += '<path class="hub-l' + (main ? " m" : "") + '" d="M' + cx + " " + (cy - 40) + " L" + x.toFixed(1) + " " + y.toFixed(1) + '"/>';
       out += '<g class="hub-n' + (main ? " m" : "") + '"' + (main ? ' data-k="' + n[2] + '"' : "") + ' transform="translate(' + x.toFixed(1) + " " + y.toFixed(1) + ')"><circle r="' + (main ? 30 : 23) + '"/><use href="#' + n[0] + '" x="-11" y="-11" width="22" height="22"/><text y="' + (main ? 50 : 42) + '" text-anchor="middle">' + n[1] + "</text></g>";
     });
     out += '<g class="hub-c" transform="translate(' + cx + " " + cy + ')"><circle r="58" fill="url(#hbC)"/><circle r="58" fill="none" stroke="url(#hbO)" stroke-width="2.4"/><text y="5" text-anchor="middle">nomad</text></g>';
     $("#hub-g").innerHTML = out;
-    if (PHONE) $("#hub-svg").setAttribute("viewBox", "128 20 464 320");
+    if (PHONE) $("#hub-svg").setAttribute("viewBox", "150 50 420 290");
     $("#hub").addEventListener("click", function (e) {
       var g = e.target.closest(".hub-n.m"); if (!g) return;
       var f = $("#folders .folder." + g.dataset.k); if (!f) return;
