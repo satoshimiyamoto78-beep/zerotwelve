@@ -2114,7 +2114,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
 @media (max-width: 860px) { .pack + .pack { margin-top: 0 !important; } .pack .pk-h p { min-height: 0; } }
 
 /* ===== v21: client globe ===== */
-.globe { position: relative; height: clamp(360px, 46vw, 600px); margin-top: 8px; overflow: hidden;
+.globe { position: relative; height: clamp(400px, 50vw, 660px); margin-top: 8px; overflow: hidden;
   -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent 100%); mask-image: linear-gradient(180deg, #000 72%, transparent 100%); }
 .globe canvas { display: block; touch-action: pan-y; cursor: grab; }
 .gl-hint { position: absolute; left: 50%; top: 6px; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 7px; font-size: .7rem; color: var(--muted); letter-spacing: .04em; pointer-events: none; transition: opacity .4s; white-space: nowrap; }
@@ -2141,6 +2141,34 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
 .gl-stats b { font-size: clamp(1.2rem, 2vw, 1.6rem); font-weight: 600; letter-spacing: -.03em; }
 .gl-stats span { font-size: .58rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); text-align: center; }
 @media (max-width: 700px) { .gl-card { width: 200px; margin-left: -100px; } .gl-stats span { font-size: .5rem; letter-spacing: .1em; } }
+
+/* ===== v22 ===== */
+.gl-stats b { color: transparent; background: linear-gradient(95deg, #ffffff 0%, #8fb2ff 45%, #2f6bff 100%); -webkit-background-clip: text; background-clip: text; }
+
+/* Slot reel */
+.reel { display: inline; }
+.rw { position: relative; display: inline-block; vertical-align: bottom; height: 1.08em; overflow: hidden; line-height: 1.08; }
+.rw .rg { visibility: hidden; display: block; }
+.rc { position: absolute; left: 0; top: 0; display: flex; flex-direction: column; transform: translateY(0); }
+.rc i { font-style: normal; display: block; height: 1.08em; white-space: nowrap; color: transparent; background: linear-gradient(95deg, #ffffff 0%, #8fb2ff 45%, #2f6bff 100%); -webkit-background-clip: text; background-clip: text; }
+.rc i:not(:last-child) { opacity: .35; filter: blur(1px); }
+.reel.go .rc { transform: translateY(-80%); transition: transform 1.4s cubic-bezier(.2, .9, .25, 1.05) calc(var(--i) * .14s); }
+
+/* Ruler: lit cells all the way to the playhead */
+.r-seg.on { background: linear-gradient(95deg, #8fb2ff 0%, #2f6bff 100%) !important; box-shadow: 0 0 12px rgba(80, 140, 255, .45) !important; }
+
+/* Orbit */
+.orbit .ob-copy { margin-bottom: 18px; }
+.ob-sys, .ob-rot, .ob-r, .ob-core { display: none !important; }
+.ob-sys2 { position: relative; width: 100%; max-width: 440px; aspect-ratio: 2 / 1; overflow: hidden; }
+.ob-sys2 .or { position: absolute; left: 50%; bottom: 0; width: var(--d); aspect-ratio: 1; border-radius: 50%; border: 1px solid rgba(143, 178, 255, .22); transform: translate(-50%, 50%); }
+.ob-c { position: absolute; transform: translate(-50%, -50%); font-size: .64rem; font-weight: 600; letter-spacing: .04em; padding: 5px 10px; border-radius: 999px; background: #070a12; border: 1px solid rgba(255, 255, 255, .2); white-space: nowrap; }
+.ob-core2 { position: absolute; left: 50%; bottom: 0; width: 64px; height: 64px; transform: translate(-50%, 50%); border-radius: 50%; display: grid; place-items: start center; padding-top: 9px; background: radial-gradient(circle at 50% 30%, rgba(47, 107, 255, .4), #070a12 70%); border: 1px solid rgba(143, 178, 255, .45); }
+.ob-core2 svg { width: 22px; height: 22px; }
+
+/* Footer reaches the screen edges and the bottom */
+footer { padding: 0 !important; background: var(--glow), var(--surface), var(--card); border-radius: 36px 36px 0 0; box-shadow: var(--edge); }
+footer .wrap { background: none !important; box-shadow: none !important; border-radius: 0 !important; padding-block: clamp(32px, 4vw, 48px) calc(24px + env(safe-area-inset-bottom, 0px)) !important; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -2342,7 +2370,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
     <div class="wrap">
       <div class="head">
         <span class="label"><b>How we make</b> · 4 ways</span>
-        <h2>Same quality bar. Four ways to get there.</h2>
+        <h2>Same quality bar. <span class="reel" aria-label="Four ways to get there.">Four ways to get there.</span></h2>
         <p class="lede">The approach decides the budget and the timeline, never the quality of the final frame.</p>
       </div>
       <div class="svc" id="svc"></div>
@@ -2450,13 +2478,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
         <p class="lede">Anything else, ask in the brief. We reply within one working day.</p>
         <div class="orbit" aria-hidden="true">
           <div class="ob-copy"><span class="ob-pill">Remote</span><p>Brief, reviews and delivery happen online. <b>Any time zone.</b></p></div>
-          <div class="ob-sys">
-            <i class="ob-r r1"></i><i class="ob-r r2"></i><i class="ob-r r3"></i>
-            <div class="ob-rot o1"></div>
-            <div class="ob-rot o2"><span style="--a:-32deg"><b>NYC</b></span><span style="--a:0deg"><b>London</b></span><span style="--a:32deg"><b>Tokyo</b></span></div>
-            <div class="ob-rot o3"><span style="--a:-46deg"><b>Dubai</b></span><span style="--a:46deg"><b>Almaty</b></span></div>
-            <div class="ob-core"><svg viewBox="0 0 32 32"><use href="#g-logo"/></svg></div>
-          </div>
+          <div class="ob-sys2"><i class="or" style="--d:100%"></i><i class="or" style="--d:74%"></i><i class="or" style="--d:44%"></i><b class="ob-c" style="left:22.5%;top:50.5%">NYC</b><b class="ob-c" style="left:50.0%;top:26.0%">London</b><b class="ob-c" style="left:77.5%;top:50.5%">Tokyo</b><b class="ob-c" style="left:32.7%;top:72.9%">Dubai</b><b class="ob-c" style="left:67.3%;top:72.9%">Almaty</b><span class="ob-core2"><svg viewBox="0 0 32 32"><use href="#g-logo"/></svg></span></div>
         </div>
       </div>
       <div class="faq">
@@ -2907,7 +2929,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
         '<div class="empty"><b style="color:var(--ink)">Nothing here yet for this filter</b><span>We make this format for every niche. Tell us what you need and get a fixed quote.</span><a class="linkbtn" href="#brief" data-prefill="' + f + '">Request a custom ' + FORMAT[f].name.toLowerCase() + ' <svg class="i"><use href="#i-arrow"/></svg></a></div>';
       return '<div class="row reveal" id="row-' + f + '"><div class="row-top"><div class="rt-l"><span class="rt-ill">' + ILL[f] + '</span><div><div class="rt-k"><span>' + FORMAT[f].ratio + "</span><span>" + FORMAT[f].len + "</span><span>from " + money(from) + "</span></div><h3>" + FORMAT[f].title + "</h3><p>" + FORMAT[f].sub + '</p></div></div><span class="rt-n">' + items.length + (items.length === 1 ? " title" : " titles") + '</span><div class="arrows"><button type="button" data-dir="-1" aria-label="Scroll left"><svg class="i"><use href="#i-left"/></svg></button><button type="button" data-dir="1" aria-label="Scroll right"><svg class="i"><use href="#i-right"/></svg></button></div></div><div class="track">' + body + "</div></div>";
     }).join("");
-    $$("#rows .track").forEach(function (t) { drum3d(t); });
+    $$("#rows .track").forEach(function (t) { drum3d(t, t.querySelectorAll(".card").length > 2); });
     $$("#rows .track").forEach(updateArrows);
     $$("#rows .track").forEach(function (t) { t.addEventListener("scroll", function () { updateArrows(t); }, { passive: true }); });
   }
@@ -3047,7 +3069,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
       input.setAttribute("aria-valuetext", "Day " + day + ", " + stages[k][0]);
       if (k === last) return;
       last = k;
-      segs.forEach(function (sg, i) { sg.classList.toggle("on", i === k); });
+      segs.forEach(function (sg, i) { sg.classList.toggle("on", i <= k); });
       tabs.forEach(function (t, i) { t.setAttribute("aria-pressed", String(i === k)); });
       $(".rl-name", ruler).textContent = stages[k][0];
       $(".rl-what", ruler).textContent = STAGE_TEXT[stages[k][0]] || "";
@@ -3513,12 +3535,14 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
     $("#gl-stats").innerHTML = [[CL.length, "Clients"], [Object.keys(ks).length, "Countries"], [CL.length, "Cities"], ["24/7", "Time zones covered"]].map(function (x) { return "<div><b>" + x[0] + "</b><span>" + x[1] + "</span></div>"; }).join("");
 
     var box = $("#globe"), card = $("#gl-card"), ctx = cv.getContext("2d");
+    var ST = []; for (var sx = 0; sx < 140; sx++) { var rs = Math.sin(sx * 12.9898) * 43758.5453; rs -= Math.floor(rs); var rt = Math.sin(sx * 78.233) * 12543.11; rt -= Math.floor(rt); ST.push([rs, rt * .95, .15 + (sx % 5) * .08, sx, sx % 7 === 0 ? 1.6 : 1]); }
+    var ORB = ["Northfold", "ARCA", "Velour", "Kite Studio", "Monolith", "Orbit", "Saltwave", "LUMEN", "Steppe & Co", "Qazaq Tech"].map(function (nm, i) { return { n: nm, p: i / 10 * Math.PI * 2, s: (i % 2 ? 1 : -1) * (.00004 + (i % 3) * .000012), a: 1.25 + (i % 4) * .14, b: .5 + (i % 3) * .12, k: (i % 2 ? .18 : -.14) }; });
     var lam = -60 * Math.PI / 180, phi = 12 * Math.PI / 180, vl = 0, W = 0, H = 0, R = 0, cx = 0, cy = 0, dpr = 1, sel = -1, tgt = null, drag = null, vis = true, idle = 0, raf = 0;
     var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     function size() {
       dpr = Math.min(2, window.devicePixelRatio || 1); W = box.clientWidth; H = box.clientHeight;
       cv.width = W * dpr; cv.height = H * dpr; cv.style.width = W + "px"; cv.style.height = H + "px";
-      R = Math.min(W * .46, H * .78); cx = W / 2; cy = R * 1.06;
+      R = Math.min(W * .42, H * .66); cx = W / 2; cy = R * 1.34;
     }
     function proj(cl, sl, r) {
       var dl = r + lam, cd = Math.cos(dl), cp = Math.cos(phi), sp = Math.sin(phi);
@@ -3526,6 +3550,18 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
     }
     function draw(t) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+      // faint stars
+      for (var si = 0; si < ST.length; si++) { var st2 = ST[si], tw = .5 + .5 * Math.sin(t / 900 + st2[3]); ctx.fillStyle = "rgba(200,215,255," + (st2[2] * (.35 + .65 * tw)).toFixed(2) + ")"; ctx.fillRect(st2[0] * W, st2[1] * H, st2[4], st2[4]); }
+      // partner names drifting on wide, tilted orbits far behind the planet
+      ctx.font = "600 " + Math.max(10, R / 26).toFixed(0) + "px 'Plus Jakarta Sans', sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      for (var oi = 0; oi < ORB.length; oi++) {
+        var o = ORB[oi], ang = o.p + t * o.s, ex = Math.cos(ang), ey = Math.sin(ang);
+        if (ey > 0) continue;
+        var px = cx + ex * R * o.a, py = cy - R * .3 + ey * R * o.b + ex * R * o.k;
+        var rot = Math.atan2(o.b * ex - o.k * ey, -o.a * ey); if (rot > Math.PI / 2) rot -= Math.PI; if (rot < -Math.PI / 2) rot += Math.PI;
+        var alp = Math.min(1, -ey * 1.8) * .3;
+        ctx.save(); ctx.translate(px, py); ctx.rotate(rot); ctx.fillStyle = "rgba(190,205,255," + alp.toFixed(2) + ")"; ctx.fillText(o.n, 0, 0); ctx.restore();
+      }
       // atmosphere and body
       var g = ctx.createRadialGradient(cx, cy, R * .9, cx, cy, R * 1.25); g.addColorStop(0, "rgba(47,107,255,.32)"); g.addColorStop(1, "rgba(47,107,255,0)");
       ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, R * 1.25, 0, 7); ctx.fill();
@@ -3596,6 +3632,19 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
     size(); draw(0);
     addEventListener("resize", function () { size(); draw(performance.now()); });
     if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { vis = es[0].isIntersecting; if (vis) go(); }, { rootMargin: "100px 0px" }).observe(box); else go();
+  })();
+
+
+  /* ================= Slot-reel headline ================= */
+  (function () {
+    var el = $(".reel"); if (!el) return;
+    var FILL = ["AI", "frame", "cut", "light", "story", "film", "sound", "edit", "scene"];
+    el.innerHTML = el.textContent.split(" ").map(function (w, i) {
+      var col = ""; for (var k = 0; k < 4; k++) col += "<i>" + FILL[(i * 3 + k) % FILL.length] + "</i>";
+      return '<span class="rw" aria-hidden="true" style="--i:' + i + '"><span class="rc">' + col + "<i>" + w + "</i></span><span class=\"rg\">" + w + "</span></span>";
+    }).join(" ");
+    if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) { el.classList.add("go"); return; }
+    new IntersectionObserver(function (es, ob) { if (es[0].isIntersecting) { el.classList.add("go"); ob.disconnect(); } }, { threshold: .6 }).observe(el);
   })();
 
   /* ================= Brief / ordering ================= */
