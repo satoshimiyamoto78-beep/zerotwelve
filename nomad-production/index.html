@@ -2066,6 +2066,32 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
 @media (max-width: 700px) { .aurora b { width: 16% !important; margin-left: -8% !important; } }
 .pl-lau { width: 26px !important; height: 46px !important; }
 
+/* ===== v19: aurora like the reference: light rising from below in slow waves ===== */
+.aurora { height: clamp(260px, 28vw, 380px) !important; margin: -40px 0 -20px !important; overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 30%, #000 72%, transparent 100%) !important; mask-image: linear-gradient(180deg, transparent 0%, #000 30%, #000 72%, transparent 100%) !important; }
+.aurora .au-band, .aurora b, .aurora i { display: none !important; }
+.aw { position: absolute; border-radius: 50%; will-change: transform; pointer-events: none; }
+.a1 { left: -20%; right: -20%; bottom: -55%; height: 110%; background: radial-gradient(50% 50% at 50% 50%, rgba(36, 70, 210, .95) 0%, rgba(24, 48, 170, .7) 35%, rgba(10, 22, 90, .35) 60%, transparent 75%); animation: aw1 22s ease-in-out infinite alternate; }
+.a2 { left: -12%; width: 62%; bottom: -40%; height: 95%; background: radial-gradient(50% 50% at 50% 50%, rgba(120, 150, 255, .85) 0%, rgba(60, 95, 235, .6) 38%, transparent 72%); animation: aw2 18s ease-in-out infinite alternate; }
+.a3 { right: -14%; width: 58%; bottom: -46%; height: 90%; background: radial-gradient(50% 50% at 50% 50%, rgba(90, 125, 255, .8) 0%, rgba(45, 80, 225, .55) 40%, transparent 72%); animation: aw3 24s ease-in-out infinite alternate; }
+.a4 { left: 30%; width: 44%; bottom: -34%; height: 70%; background: radial-gradient(50% 50% at 50% 50%, rgba(250, 252, 255, .98) 0%, rgba(200, 214, 255, .85) 26%, rgba(130, 160, 255, .45) 52%, transparent 72%); animation: aw4 16s ease-in-out infinite alternate; }
+.a5 { left: -6%; width: 30%; bottom: -30%; height: 60%; background: radial-gradient(50% 50% at 50% 50%, rgba(200, 212, 255, .6) 0%, transparent 70%); animation: aw2 26s ease-in-out infinite alternate-reverse; }
+@keyframes aw1 { from { transform: translate3d(-4%, 0, 0) scaleY(.92); } to { transform: translate3d(4%, -4%, 0) scaleY(1.06); } }
+@keyframes aw2 { from { transform: translate3d(-6%, 6%, 0) scale(.94); } to { transform: translate3d(12%, -6%, 0) scale(1.08); } }
+@keyframes aw3 { from { transform: translate3d(8%, -4%, 0) scale(1.04); } to { transform: translate3d(-10%, 6%, 0) scale(.94); } }
+@keyframes aw4 { from { transform: translate3d(-10%, 4%, 0) scale(.92); } to { transform: translate3d(10%, -5%, 0) scale(1.06); } }
+@media (max-width: 700px) { .a4 { left: 18%; width: 64%; } .a2 { width: 80%; } .a3 { width: 80%; } }
+
+.aurora { height: clamp(300px, 30vw, 420px) !important; margin: -60px 0 -30px !important;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 26%, #000 80%, transparent 100%) !important; mask-image: linear-gradient(180deg, transparent 0%, #000 26%, #000 80%, transparent 100%) !important; }
+.a1 { bottom: -30% !important; height: 120% !important; background: radial-gradient(50% 50% at 50% 50%, rgba(40, 76, 225, 1) 0%, rgba(26, 52, 180, .75) 34%, rgba(12, 26, 100, .35) 58%, transparent 76%) !important; }
+.a2 { bottom: -22% !important; height: 100% !important; background: radial-gradient(50% 50% at 50% 50%, rgba(140, 165, 255, .9) 0%, rgba(70, 105, 240, .6) 36%, rgba(40, 70, 210, .2) 58%, transparent 74%) !important; }
+.a3 { bottom: -26% !important; height: 96% !important; background: radial-gradient(50% 50% at 50% 50%, rgba(110, 140, 255, .85) 0%, rgba(55, 90, 230, .55) 38%, rgba(30, 60, 200, .18) 60%, transparent 74%) !important; }
+.a4 { bottom: -18% !important; height: 78% !important; background: radial-gradient(50% 50% at 50% 52%, rgba(255, 255, 255, 1) 0%, rgba(225, 233, 255, .92) 20%, rgba(150, 175, 255, .6) 44%, rgba(80, 115, 245, .2) 62%, transparent 74%) !important; }
+.a5 { bottom: -14% !important; height: 64% !important; }
+
+.aurora { -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 28%, #000 58%, rgba(0,0,0,.6) 76%, transparent 100%) !important; mask-image: linear-gradient(180deg, transparent 0%, #000 28%, #000 58%, rgba(0,0,0,.6) 76%, transparent 100%) !important; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
@@ -3397,7 +3423,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
     function wave(amp, len, ph) { var d = "M0 " + (30 + Math.sin(ph) * amp).toFixed(1); for (var x = 8; x <= 2880; x += 8) d += " L" + x + " " + (30 + Math.sin(x / len * Math.PI * 2 + ph) * amp).toFixed(1); return d; }
     var svg = '<svg viewBox="0 0 2880 60" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="wvg" x1="0" x2="1"><stop offset="0" stop-color="#2f6bff" stop-opacity="0"/><stop offset=".15" stop-color="#2f6bff"/><stop offset=".3" stop-color="#8fb2ff"/><stop offset=".4" stop-color="#ffffff"/><stop offset=".5" stop-color="#2f6bff"/><stop offset=".65" stop-color="#8fb2ff"/><stop offset=".8" stop-color="#2f6bff"/><stop offset="1" stop-color="#2f6bff" stop-opacity="0"/></linearGradient></defs>' +
       '<path d="' + wave(10, 720, 0) + '"/><path class="w2" d="' + wave(6, 480, 1.4) + '"/><path class="w3" d="' + wave(14, 1440, 2.6) + '"/></svg>';
-    var nowSec = $("#now"); if (nowSec) { var a = document.createElement("div"); a.className = "aurora"; a.setAttribute("aria-hidden", "true"); var bars = ""; for (var bi = 0; bi < 32; bi++) bars += '<b style="--x:' + (bi / 31 * 100).toFixed(2) + '%;--d:' + (-(bi * 0.37) % 2.4).toFixed(2) + 's;--t:' + (1.6 + (bi * 7 % 9) * .12).toFixed(2) + 's;--h:' + (.45 + ((bi * 13) % 10) / 18).toFixed(2) + '"></b>'; a.innerHTML = '<span class="au-band"></span>' + bars; nowSec.parentNode.insertBefore(a, nowSec.nextSibling); }
+    var nowSec = $("#now"); if (nowSec) { var a = document.createElement("div"); a.className = "aurora"; a.setAttribute("aria-hidden", "true"); a.innerHTML = '<span class="aw a1"></span><span class="aw a2"></span><span class="aw a3"></span><span class="aw a4"></span><span class="aw a5"></span>'; nowSec.parentNode.insertBefore(a, nowSec.nextSibling); }
   })();
 
   /* ================= Brief / ordering ================= */
