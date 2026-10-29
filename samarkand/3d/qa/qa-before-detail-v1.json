@@ -1,0 +1,993 @@
+{
+ "blend": "/home/user/zerotwelve/samarkand/3d/samarkand-base3d-R12.blend",
+ "objects": 469,
+ "mesh_datablocks": 469,
+ "totals": {
+  "boundary_edges": 28280,
+  "nonmanifold_edges": 0,
+  "wire_edges": 0,
+  "loose_verts": 0,
+  "zero_area_faces": 31,
+  "zero_len_edges": 14222,
+  "flipped_edges": 0,
+  "inside_out_shells": 645,
+  "coincident_verts": 12877,
+  "verts": 83730,
+  "faces": 60954,
+  "tris": 130126,
+  "ngons": 590,
+  "shells": 4137
+ },
+ "clean_meshes": 433,
+ "unapplied_transforms": [],
+ "n_unapplied": 0,
+ "penetrations": [
+  [
+   "aivan_deck",
+   "majlis_tents"
+  ],
+  [
+   "aivan_deck",
+   "pole"
+  ],
+  [
+   "aivan_detail",
+   "lanterns_brass"
+  ],
+  [
+   "aivan_rail_jali",
+   "majlis_tents"
+  ],
+  [
+   "aivan_rail_jali",
+   "pole"
+  ],
+  [
+   "aivan_rail_jali",
+   "tapchan_detail"
+  ],
+  [
+   "alley_girih",
+   "corridor_curtain"
+  ],
+  [
+   "alley_girih",
+   "corridor_curtain.001"
+  ],
+  [
+   "alley_girih",
+   "corridor_detail"
+  ],
+  [
+   "alley_girih",
+   "floor_lantern"
+  ],
+  [
+   "alley_girih",
+   "floor_lantern.001"
+  ],
+  [
+   "alley_girih",
+   "floor_lantern.002"
+  ],
+  [
+   "alley_girih",
+   "floor_lantern.003"
+  ],
+  [
+   "alley_girih",
+   "floor_lantern.004"
+  ],
+  [
+   "alley_girih",
+   "floor_lantern.005"
+  ],
+  [
+   "alley_girih",
+   "floor_lantern.006"
+  ],
+  [
+   "alley_girih",
+   "floor_lantern.007"
+  ],
+  [
+   "alley_girih",
+   "runner"
+  ],
+  [
+   "aryk",
+   "bridge"
+  ],
+  [
+   "aryk",
+   "hauzborder"
+  ],
+  [
+   "aryk",
+   "medallion"
+  ],
+  [
+   "bbqfloor",
+   "firewall"
+  ],
+  [
+   "bbqfloor",
+   "kazanblock"
+  ],
+  [
+   "bbqfloor",
+   "ledge"
+  ],
+  [
+   "bbqfloor",
+   "mangal"
+  ],
+  [
+   "bbqfloor",
+   "mangal_detail"
+  ],
+  [
+   "bbqfloor",
+   "pass"
+  ],
+  [
+   "bbqfloor",
+   "prep"
+  ],
+  [
+   "bbqfloor",
+   "sinkbins"
+  ],
+  [
+   "bbqfloor",
+   "tandoorblock"
+  ],
+  [
+   "bench",
+   "rug"
+  ],
+  [
+   "bench.001",
+   "rug"
+  ],
+  [
+   "bench.002",
+   "rug.001"
+  ],
+  [
+   "bench.003",
+   "rug.001"
+  ],
+  [
+   "bench.004",
+   "rug.002"
+  ],
+  [
+   "bench.005",
+   "rug.002"
+  ],
+  [
+   "bench.006",
+   "rug.003"
+  ],
+  [
+   "bench.007",
+   "rug.003"
+  ],
+  [
+   "bench.008",
+   "rug.004"
+  ],
+  [
+   "bench.009",
+   "rug.004"
+  ],
+  [
+   "bench.010",
+   "rug.005"
+  ],
+  [
+   "bench.011",
+   "rug.005"
+  ],
+  [
+   "bench.012",
+   "rug.006"
+  ],
+  [
+   "bench.013",
+   "rug.006"
+  ],
+  [
+   "bench.014",
+   "rug.007"
+  ],
+  [
+   "bench.015",
+   "rug.007"
+  ],
+  [
+   "booth_detail",
+   "rug"
+  ],
+  [
+   "booth_detail",
+   "rug.001"
+  ],
+  [
+   "booth_detail",
+   "rug.002"
+  ],
+  [
+   "booth_detail",
+   "rug.003"
+  ],
+  [
+   "booth_detail",
+   "rug.004"
+  ],
+  [
+   "booth_detail",
+   "rug.005"
+  ],
+  [
+   "booth_detail",
+   "rug.006"
+  ],
+  [
+   "booth_detail",
+   "rug.007"
+  ],
+  [
+   "bridge",
+   "hauz_detail"
+  ],
+  [
+   "btable_leg",
+   "rug"
+  ],
+  [
+   "btable_leg.001",
+   "rug.001"
+  ],
+  [
+   "btable_leg.002",
+   "rug.002"
+  ],
+  [
+   "btable_leg.003",
+   "rug.003"
+  ],
+  [
+   "btable_leg.004",
+   "rug.004"
+  ],
+  [
+   "btable_leg.005",
+   "rug.005"
+  ],
+  [
+   "btable_leg.006",
+   "rug.006"
+  ],
+  [
+   "btable_leg.007",
+   "rug.007"
+  ],
+  [
+   "bukhara_dome_detail",
+   "gate_arch_panel"
+  ],
+  [
+   "bukhara_dome_detail",
+   "gatepost"
+  ],
+  [
+   "bukhara_dome_detail",
+   "gatepost.001"
+  ],
+  [
+   "bukhara_dome_detail",
+   "lanterns_brass"
+  ],
+  [
+   "bukhara_dome_detail",
+   "majlis_tents"
+  ],
+  [
+   "bukhara_dome_detail",
+   "rot_canopy_ring"
+  ],
+  [
+   "bukhara_dome_detail",
+   "rot_plate.002"
+  ],
+  [
+   "bukhara_dome_detail",
+   "rot_plate.005"
+  ],
+  [
+   "carpet",
+   "otable"
+  ],
+  [
+   "carpet",
+   "otable.001"
+  ],
+  [
+   "carpet.001",
+   "otable.002"
+  ],
+  [
+   "carpet.001",
+   "otable.003"
+  ],
+  [
+   "corridor_curtain",
+   "corridor_detail"
+  ],
+  [
+   "corridor_curtain.001",
+   "corridor_detail"
+  ],
+  [
+   "corridor_detail",
+   "floor_lantern"
+  ],
+  [
+   "corridor_detail",
+   "floor_lantern.001"
+  ],
+  [
+   "corridor_detail",
+   "floor_lantern.002"
+  ],
+  [
+   "corridor_detail",
+   "floor_lantern.003"
+  ],
+  [
+   "corridor_detail",
+   "floor_lantern.004"
+  ],
+  [
+   "corridor_detail",
+   "floor_lantern.005"
+  ],
+  [
+   "corridor_detail",
+   "floor_lantern.006"
+  ],
+  [
+   "corridor_detail",
+   "floor_lantern.007"
+  ],
+  [
+   "firewall",
+   "mangal_detail"
+  ],
+  [
+   "gate_arch_panel",
+   "lanterns_brass"
+  ],
+  [
+   "gate_arch_panel",
+   "rot_canopy_ring"
+  ],
+  [
+   "gate_beam",
+   "gatepost"
+  ],
+  [
+   "gate_beam",
+   "gatepost.001"
+  ],
+  [
+   "gate_beam",
+   "lanterns_brass"
+  ],
+  [
+   "gatepost",
+   "majlis_tents"
+  ],
+  [
+   "hauz",
+   "hauzborder"
+  ],
+  [
+   "hauz",
+   "medallion"
+  ],
+  [
+   "hauz_detail",
+   "hauzborder"
+  ],
+  [
+   "hauz_detail",
+   "medallion"
+  ],
+  [
+   "hauz_detail",
+   "terrace_floor"
+  ],
+  [
+   "hauzborder",
+   "medallion"
+  ],
+  [
+   "kids_fence",
+   "kids_rubber"
+  ],
+  [
+   "kids_rubber",
+   "play_block"
+  ],
+  [
+   "kids_rubber",
+   "play_drum"
+  ],
+  [
+   "kids_rubber",
+   "play_sand"
+  ],
+  [
+   "kids_rubber",
+   "play_seat"
+  ],
+  [
+   "kids_rubber",
+   "terrace_floor"
+  ],
+  [
+   "ledge",
+   "mangal_detail"
+  ],
+  [
+   "majlis_tents",
+   "pole"
+  ],
+  [
+   "majlis_tents",
+   "pole.001"
+  ],
+  [
+   "majlis_tents",
+   "pole.002"
+  ],
+  [
+   "majlis_tents",
+   "pole.003"
+  ],
+  [
+   "majlis_tents",
+   "pole.004"
+  ],
+  [
+   "majlis_tents",
+   "pole.005"
+  ],
+  [
+   "majlis_tents",
+   "pole.006"
+  ],
+  [
+   "majlis_tents",
+   "pole.007"
+  ],
+  [
+   "pole.002",
+   "pole.004"
+  ],
+  [
+   "pole.003",
+   "pole.005"
+  ],
+  [
+   "ramp_1_12",
+   "terrace_floor"
+  ],
+  [
+   "rot_canopy_ring",
+   "rot_post"
+  ],
+  [
+   "rot_canopy_ring",
+   "rot_post.001"
+  ],
+  [
+   "rot_canopy_ring",
+   "rot_post.002"
+  ],
+  [
+   "rot_canopy_ring",
+   "rot_post.003"
+  ],
+  [
+   "rot_glow",
+   "rot_plate"
+  ],
+  [
+   "rot_glow",
+   "rot_plate.001"
+  ],
+  [
+   "rot_glow",
+   "rot_plate.002"
+  ],
+  [
+   "rot_glow",
+   "rot_plate.003"
+  ],
+  [
+   "rot_glow",
+   "rot_plate.004"
+  ],
+  [
+   "rot_glow",
+   "rot_plate.005"
+  ],
+  [
+   "rot_glow",
+   "rot_plate.006"
+  ],
+  [
+   "rot_glow",
+   "rot_plate.007"
+  ],
+  [
+   "tapchan_detail",
+   "tapchan_rail"
+  ],
+  [
+   "tapchanrug",
+   "tapchantable"
+  ]
+ ],
+ "n_penetrations": 130,
+ "floating": [
+  [
+   "atable",
+   0.72
+  ],
+  [
+   "atable.001",
+   0.72
+  ],
+  [
+   "atable.002",
+   0.72
+  ],
+  [
+   "atable.003",
+   0.72
+  ],
+  [
+   "booth_lanterns",
+   1.139
+  ],
+  [
+   "btable",
+   0.27
+  ],
+  [
+   "btable.001",
+   0.27
+  ],
+  [
+   "btable.002",
+   0.27
+  ],
+  [
+   "btable.003",
+   0.27
+  ],
+  [
+   "btable.004",
+   0.27
+  ],
+  [
+   "btable.005",
+   0.27
+  ],
+  [
+   "btable.006",
+   0.27
+  ],
+  [
+   "btable.007",
+   0.27
+  ],
+  [
+   "flying_carpets",
+   2.5274
+  ],
+  [
+   "gate_beam",
+   2.4
+  ],
+  [
+   "glass",
+   0.5
+  ],
+  [
+   "hauz_detail",
+   -0.47
+  ],
+  [
+   "lanterns_brass",
+   1.26
+  ],
+  [
+   "mangal_stack",
+   2.0
+  ],
+  [
+   "ramp_1_12",
+   -0.55
+  ],
+  [
+   "rot_glow",
+   -0.25
+  ],
+  [
+   "rot_plate",
+   0.75
+  ],
+  [
+   "rot_plate.001",
+   1.0
+  ],
+  [
+   "rot_plate.002",
+   1.25
+  ],
+  [
+   "rot_plate.003",
+   0.75
+  ],
+  [
+   "rot_plate.004",
+   1.0
+  ],
+  [
+   "rot_plate.005",
+   1.25
+  ],
+  [
+   "rot_plate.006",
+   0.75
+  ],
+  [
+   "rot_plate.007",
+   1.0
+  ],
+  [
+   "table_2p",
+   0.27
+  ],
+  [
+   "table_2p.001",
+   0.27
+  ],
+  [
+   "table_2p.002",
+   0.27
+  ],
+  [
+   "table_2p.003",
+   0.27
+  ],
+  [
+   "table_4p",
+   0.27
+  ],
+  [
+   "table_4p.001",
+   0.27
+  ],
+  [
+   "table_4p.002",
+   0.27
+  ],
+  [
+   "table_4p.003",
+   0.27
+  ],
+  [
+   "table_4p.004",
+   0.27
+  ],
+  [
+   "table_4p.005",
+   0.27
+  ],
+  [
+   "table_4p.006",
+   0.27
+  ],
+  [
+   "table_4p.007",
+   0.27
+  ],
+  [
+   "table_4p.008",
+   0.27
+  ],
+  [
+   "table_4p.009",
+   0.27
+  ],
+  [
+   "table_4p.010",
+   0.27
+  ],
+  [
+   "table_4p.011",
+   0.27
+  ]
+ ],
+ "n_floating": 45,
+ "worst": [
+  [
+   "tables_tableware",
+   {
+    "boundary_edges": 3456,
+    "zero_len_edges": 3248,
+    "coincident_verts": 3000
+   }
+  ],
+  [
+   "chairs_carved",
+   {
+    "boundary_edges": 2688,
+    "zero_len_edges": 2688,
+    "inside_out_shells": 56,
+    "coincident_verts": 2240
+   }
+  ],
+  [
+   "mangal_detail",
+   {
+    "boundary_edges": 6636,
+    "zero_len_edges": 268,
+    "inside_out_shells": 2,
+    "coincident_verts": 245
+   }
+  ],
+  [
+   "booth_tableware",
+   {
+    "boundary_edges": 1984,
+    "zero_len_edges": 1888,
+    "coincident_verts": 1744
+   }
+  ],
+  [
+   "majlis_tents",
+   {
+    "boundary_edges": 2112,
+    "zero_len_edges": 1224,
+    "inside_out_shells": 92,
+    "coincident_verts": 1112
+   }
+  ],
+  [
+   "booth_detail",
+   {
+    "boundary_edges": 3360,
+    "zero_len_edges": 256,
+    "inside_out_shells": 400,
+    "coincident_verts": 224
+   }
+  ],
+  [
+   "aivan_detail",
+   {
+    "boundary_edges": 1336,
+    "zero_len_edges": 1256,
+    "inside_out_shells": 4,
+    "coincident_verts": 1152
+   }
+  ],
+  [
+   "bukhara_dome_detail",
+   {
+    "boundary_edges": 1020,
+    "zero_len_edges": 796,
+    "coincident_verts": 826
+   }
+  ],
+  [
+   "tapchan_detail",
+   {
+    "boundary_edges": 784,
+    "zero_len_edges": 748,
+    "coincident_verts": 652
+   }
+  ],
+  [
+   "booth_lanterns",
+   {
+    "boundary_edges": 544,
+    "zero_len_edges": 544,
+    "inside_out_shells": 8,
+    "coincident_verts": 496
+   }
+  ],
+  [
+   "corridor_detail",
+   {
+    "boundary_edges": 592,
+    "zero_len_edges": 464,
+    "inside_out_shells": 16,
+    "coincident_verts": 432
+   }
+  ],
+  [
+   "lanterns_brass",
+   {
+    "boundary_edges": 468,
+    "zero_len_edges": 468,
+    "inside_out_shells": 6,
+    "coincident_verts": 420
+   }
+  ],
+  [
+   "flying_carpets",
+   {
+    "boundary_edges": 720,
+    "zero_area_faces": 30,
+    "inside_out_shells": 55
+   }
+  ],
+  [
+   "hauz_detail",
+   {
+    "boundary_edges": 208,
+    "zero_len_edges": 208,
+    "coincident_verts": 186
+   }
+  ],
+  [
+   "street_portal_detail",
+   {
+    "boundary_edges": 164,
+    "zero_len_edges": 164,
+    "inside_out_shells": 2,
+    "coincident_verts": 146
+   }
+  ],
+  [
+   "dome_drum_C",
+   {
+    "boundary_edges": 192
+   }
+  ],
+  [
+   "dome_drum_N",
+   {
+    "boundary_edges": 192
+   }
+  ],
+  [
+   "dome_drum_S",
+   {
+    "boundary_edges": 192
+   }
+  ],
+  [
+   "dome_lip_C",
+   {
+    "boundary_edges": 96,
+    "inside_out_shells": 1
+   }
+  ],
+  [
+   "dome_lip_N",
+   {
+    "boundary_edges": 96,
+    "inside_out_shells": 1
+   }
+  ],
+  [
+   "dome_lip_S",
+   {
+    "boundary_edges": 96,
+    "inside_out_shells": 1
+   }
+  ],
+  [
+   "dome_ribs_S",
+   {
+    "boundary_edges": 96,
+    "inside_out_shells": 1
+   }
+  ],
+  [
+   "dome_inner_C",
+   {
+    "boundary_edges": 96
+   }
+  ],
+  [
+   "dome_inner_N",
+   {
+    "boundary_edges": 96
+   }
+  ],
+  [
+   "dome_inner_S",
+   {
+    "boundary_edges": 96
+   }
+  ],
+  [
+   "dome_oculus_ring_N",
+   {
+    "boundary_edges": 96
+   }
+  ],
+  [
+   "dome_oculus_ring_S",
+   {
+    "boundary_edges": 96
+   }
+  ],
+  [
+   "dome_ribs_C",
+   {
+    "boundary_edges": 96
+   }
+  ],
+  [
+   "dome_ribs_N",
+   {
+    "boundary_edges": 96
+   }
+  ],
+  [
+   "dome_ring_C",
+   {
+    "boundary_edges": 96
+   }
+  ],
+  [
+   "dome_ring_N",
+   {
+    "boundary_edges": 96
+   }
+  ],
+  [
+   "dome_ring_S",
+   {
+    "boundary_edges": 96
+   }
+  ],
+  [
+   "dome_shell_C",
+   {
+    "boundary_edges": 96
+   }
+  ],
+  [
+   "dome_shell_N",
+   {
+    "boundary_edges": 96
+   }
+  ],
+  [
+   "dome_shell_S",
+   {
+    "boundary_edges": 96
+   }
+  ],
+  [
+   "ringbench.001",
+   {
+    "zero_area_faces": 1,
+    "zero_len_edges": 2,
+    "coincident_verts": 2
+   }
+  ]
+ ]
+}

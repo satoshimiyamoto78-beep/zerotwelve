@@ -1,0 +1,167 @@
+# Site: design zone (base plan R0, 2026-10-22)
+
+Address: 254 Võ Nguyên Giáp, P. Phước Mỹ, Q. Sơn Trà, Đà Nẵng. The east forecourt of the existing restaurant building, between the façade and Võ Nguyên Giáp road (15 m).
+
+Files in `samarkand/site/`:
+- `samarkand-zone-base.dxf` — base drawing, mm, 1:1, layers `SMK-*`. Import into SketchUp (File → Import, units mm) or AutoCAD.
+- `samarkand-zone-base-plan.pdf/.png` — A3 sheet at 1:200.
+- `samarkand-zone-data.json` — vertices, grid, levels, measurements.
+- `source-extract/` — the original as-built DWG + PDF (Long House, 10-07-2024) and the full extracted geometry.
+- `tools/` — the extraction pipeline (`cad.py`, `build_zone.py`, `draw_zone.py`). It reads the DWG through `@mlightcad/libredwg-web` (npm) into JSON.
+
+## Coordinate system
+- Origin (0,0) = axis 6 × axis A'. x points east, y points north (plan up = north per site plan). Units mm.
+- Grid: axis 6 = façade line x=0, axis 5 at x=−7250. Axes A'=0, A=4100, B=9850, C=15600, D=21350, E=27100, F=32100, G=37100.
+- The source DWG has the sheets in one model space. Offsets onto the site plan: F1 plan +(41530, 120147), F2 plan +(41530, 183668). Our origin is site (1006949, −259352).
+
+## Zone polygon (mm)
+Z1 (0, 42340) NW at north boundary · Z2 (9656, 41965) NE lot corner · Z3 (13459, 3389) on east boundary · Z4 (−168, 0) · Z5 (−7250, 0) · Z6 (−7250, 4100) · Z7 (0, 4100) building SE corner.
+- Area 499.9 m². Without the car ramp: 446.5 m². Bay 5–6/A–A': 7250 × 4100 = 29.7 m².
+- Façade length A→G 33 000. Depth from façade to boundary: G 10 136 · F 10 629 · E 11 121 · D 11 688 · C 12 255 · B 12 822 · A 13 389.
+- East boundary is straight, 5.63° off north. Edges: Z1–Z2 9663 · Z2–Z3 38 763 · Z3–Z4 14 041 (14.0°).
+
+## Existing conditions inside the zone
+- North strip Z1–Z2 down to about G (5.2 m): **car ramp 8% to the rear parking**, 53.4 m².
+- Wheelchair ramp + rail along the façade, from axis G down to about E (projects about 2.45 m).
+- Entrance canopy above (F1 plan): 4404 × 7638 from the façade, between G and E. The site plan shows 5000 × 9200, so verify.
+- Floor-2 balcony above: up to 1502 m beyond the façade, from about B to F, curved edge.
+- Glass façade with outward-opening doors. Entrance steps ±0.000 → −0.470 at C–D (3 risers, 4.7 m wide).
+- Planter walls on the east boundary (about 1.5 m wide). Entrance stairs from the sidewalk −1.170 → −0.470, 4940 wide, near C–D.
+- Two round elements Ø2.0 (concentric Ø1.6) at (5999, 27097) and (5999, 12722). What they are is unknown.
+- Pergola about 6.0 × 5.8 with 6 posts 200×200 near the south edge, rotated 14°.
+- Gate pillar at the SE corner, outside the zone.
+- Levels: hall ±0.000, forecourt −0.470, sidewalk −1.170.
+
+## Open questions (ask the client or verify on site)
+Canopy size · balcony soffit height · what the round elements are · keep or remove the pergola · bay 5–6/A–A' open to sky above F2? · keep the car ramp · drainage, power and water points.
+
+## Layout R1 (2026-10-22)
+`samarkand/layout/samarkand-terrace-layout-R1.*`, script `samarkand/site/tools/layout.py`. The script checks that furniture is clear of planters, columns, the ramp, the steps and the door swing.
+Zoning comes from the owner's red markup:
+- North entrance (from parking) and east entrance (street stair 13300–18300). The alley runs y 16300–19700 into the hall doors C–D.
+- Bar on the façade, y 8600–15200, under the balcony, 10 stools.
+- BBQ along the planter in the SE corner: tandoor, mangal 2.4 m, kazan, prep and pass counters.
+- Photo zone on the south edge with a pishtaq backdrop. Kids zone in bay 5–6/A–A'.
+- Dining: 4-tops N and S, 4 hybrid tapchans under the canopy, banquette along the planter. 112 seats in total.
+- Roof columns: mid row x=6300 on the grid axes, east row in the planter centreline, west row on brackets to the building.
+
+Project log (Claude Doc): https://claude.ai/artifact/J1QKYY82544U1DqaET49jN. Add a timeline row after every step.
+
+## Layout R6 (2026-10-22, current)
+Script `samarkand/site/tools/layout_r6.py` → `samarkand/layout/samarkand-terrace-layout-R6-{ru,en}.{svg,pdf,png}` + DXF/JSON. Sheet A2 at 1:100, with axes, dimensions, table numbers, ergonomics table and four details (mangal 1:75, tent 1:75, street-bench section, aivan section).
+- Aivan platform (3.3 m): ONE row only. Banquette 550 on the hall wall in front of the closed doors, 4 tables 1200×700, chairs on the aisle side, aisle 1510. In R5 two columns of tables did not physically fit.
+- Mangal 4.2 × 4.8 m (x 8100–12300, y 3700–8500), was 3.2 × 6.1. The hot line (tandoor, mangal, kazan) runs along the east fire wall. The pass (2.8 m) faces the entrance tables, with 1710 to the guests.
+- Street façade (lot-line strip 1500): outer 550 is a cast concrete bench at +450, then a 150 back wall with majolica, then an 800 planter with the roof columns in it. It also has a sebil fountain south of the entrance, a street photo arch at y 25800–27800, and pishtaq pylons at the entrance. Nothing projects onto the sidewalk.
+- Entrance alley: the first 2.8 m from the street is a draped velvet corridor (runner, khum jars, floor lanterns).
+- North: 2 tapchans, a majlis tent 3.3×3.6 (U-sofa, 10 seats) in place of the 2 northern tapchans, and 2×2-tops at the north entrance.
+- Photo zone: freestanding backlit jali arch 3.2 m, palms in terracotta pots, rug, lanterns and candles.
+- Seats: 163, plus about 35 on the street benches. Minimum path 1205 (booths). Chairs back-to-back are at least 450.
+
+## Heights and legal lines from the as-built set (checked 2026-10-26)
+Source: BV_HOAN_CONG_GALINA PDF, sheets KT-06 (east elevation A'–H), H–A', roof plan, site plan 1:250.
+- Levels (finished): hall ±0.000. Ground at the façade −0.450 on the elevation (the plan spot level says −0.470, so verify on site). Sidewalk −1.170. F2 +4.200, F3 +7.800, roof +11.700, arched roof up to +15.400.
+- F2 slab 350 thick, so the balcony soffit is at **+3.850**. The balcony is a curved slab up to about 1.5 m deep (B–F), with a 1000 rail.
+- The F1 glazing is 2600 doors plus a 600 transom. A decorative wavy louver screen hangs from the balcony edge, dropping as low as about +3.2.
+- Existing entrance canopy at E–G: 4400 deep (y 28662–36300), soffit about +3.650, 1260 fascia. The GALINA sign pylon at the F–G corner rises to +12.150.
+- **Building line (chỉ giới xây dựng)**: dashed line about **4.0 m inside the lot line / red line** (chỉ giới đường đỏ = our east boundary xb). Local x at y=20000: lot line 11820, building line 7800. Any permanent roof east of it needs the authority's OK. Fallback: a fixed roof up to the building line, and a retractable or demountable cover (awning, retractable-fabric pergola) over the outer 4 m.
+- The roof can only go under the balcony. At the façade, the top of the roof structure is ≤ +3.850. With a 5–8% fall to the street over 10–13 m, the street eave sits at about +2.9…+3.3, which is 3.3–3.7 m above the terrace. That is a strong reason to keep the terrace at −0.450.
+
+## Layout R7 + roof + estimate (2026-10-26, current)
+The owner said: legal setback is not a concern, so the roof goes to the street. Remove the wave louvers. Keep both trees, open to the sky. Budget "normal, no waste". The north driveway stays for cars and scooters. The mangal kitchen has all utilities.
+- Tables: every loose table is built from 700 × 800 modules (1 = 2 seats, 2 = 4, 3 = 6, 4 = 8). There are 36 modules and 64 chairs. Rows are aligned so pairs push together into tables for 8.
+- Tapchans: two of 2.0 × 2.2 m for 6 guests each, with kurpacha on 3 sides, open to the east. The hauz fountain is in front of them at (6000, 30800). The aryk was removed and a planting bed sits behind.
+- Majlis tent: 3.3 × 3.2 m, entered from the east (1.8 m opening).
+- Photo lounge "Ochag": draped portal, carpets, LED fire bowl, 3 low tables with 9 poufs.
+- Courts open to the sky: south x3600–7600 / y10400–15000, north x4700–7400 / y25800–29000.
+- Seats: 164, plus about 35 on the street benches.
+- Roof (`roof_r7.py`): beams on the column lines 4100/9850/15300/18300/21350/25600/29100/32100/36300. Steel ledger under the balcony slab (top of skin +3.750), 5% fall to the street (eave about +3.16). PU 50 mm sandwich panel with a wood-look underside, box gutter along the street, downpipes in the columns. About 9.8 t of steel, 419.5 m² of roof.
+- Estimate (`samarkand/estimate/samarkand-estimate-R7.xlsx`, live formulas): about 3.67 bn VND (~141k USD at 26,000) including 10% contingency. The all-economy option is about 3.2 bn VND. Prices are Da Nang 2026 indicative, ±20%.
+
+## Layout R8 (2026-10-26, current)
+Owner asked for 2-tops mixed with 4-tops ("rows of 4 on both sides, 2-tops in the middle"), 170–175 seats, a beautiful fountain and plants. Script: `layout_r8.py`, with `roof_r8.py` and `estimate_r8.py`.
+- Aivan: 10 two-tops on the banquette at an 800 pitch (they push together into 4–8). 20 seats.
+- Dining north: rows of 4-tops at y 19300 / 23900, with a middle row of three 2-tops at y 21600.
+- Dining south: row 1 is 4 + 2 + 4, row 2 is 4 + 4.
+- Lounge: 12 poufs.
+- Totals: 14 two-tops, 12 four-tops, 38 modules, **171 seats** (+~35 on the street benches).
+- Hauz: Ø1.2 m incl. a 200 mm majolica rim at h 450 that people can sit on, centred at (6070, 29650). Under it sits an 8-point star mosaic Ø2.6 m, with 8 uplights, lotus and a jet.
+- Planting:
+  - Pomegranate (entrance planter ×2, pot by the bar).
+  - Plumeria ×5 in the street planter.
+  - Bougainvillea on the bench backs.
+  - Jasmine at the portal.
+  - Areca in the lounge.
+  - Banana / Strelitzia green wall behind the tapchans and tent.
+  - Herb bed (reyhan, mint, basil) by the mangal.
+  - Lotus in the hauz.
+- Estimate R8: about 3.78 bn VND (~145k USD) including 10% contingency; all-economy option about 3.29 bn.
+
+## Layout R9 (2026-10-27, current)
+The owner said the R8 aivan (10 two-tops in a line on a banquette) felt odd and inconvenient.
+- R9 replaces it with **4 sedir booths for 6**, perpendicular to the hall wall in front of the closed doors: carved partition 60, bench 470, table 1600×700 with a lantern, bench 470, giving a 1820 module. Booths at y 18550 / 20370 / 22190 / 25950. Aisle 1.4 m along the rail.
+- Totals: **175 seats**. Tables: 4 two-tops, 12 four-tops (each splits into 2 × 2), and 4 booths for 6.
+- Fixed the sheet header, which showed "R6" (now uses REV).
+- Estimate R9: about 3.78 bn VND including 10% contingency.
+
+## 3D base model (2026-10-27)
+`samarkand/3d/` holds the LOD 200 model of the whole site, built from R9 by `scripts/base3d.py` (data comes from `site/tools/export3d_r9.py`).
+- Formats: .blend (packed, procedural materials), .fbx / .obj / .glb (flat colours).
+- Web viewer: https://claude.ai/artifact/7NGDiBpaXwuSr9gytuvAtm
+- Coordinates: metres, origin axis 6 × A'. The README lists levels and collections.
+
+## Layout R10 (2026-10-27)
+Owner markup on the 3D cutaway changed the north zone.
+- **Kept:** one tapchan (y 28550–30750).
+- **Removed:** the planting bed and the second tapchan.
+- **Two majlis tents** (3.2 × 2.8 m, 8 guests each) sit side by side along the ramp rail: x 1450–4650, y 30950–33700 and 33850–36650. They open east, and guests reach them over stone bridges.
+- **Aryk** (0.3 m wide) runs from the hauz to the north entrance: x 5700–6000, y 30150–35500.
+- **Museum vitrine** at the head of the aryk: x 4800–5600, y 35500–36250.
+- **"Khiva gate"** at the parking entrance: carved posts at x 4750 / 7100, y 36300–36550, opening 2.1 m.
+- Street booths stay where they are. The owner decided to make each one a themed room (9 epochs / cities); this is still to be detailed.
+- Totals: 175 seats. Estimate R10 about 3.93 bn VND (~151k USD), all-economy option about 3.40 bn.
+- **Owner decision (2026-10-27): street booths stay in place and become CLOSED THEMED ROOMS.** Each booth gets:
+  - side partitions h 2.2 m;
+  - a front arch-portal with tie-back curtains;
+  - a theme panel on the street-side wall;
+  - its own ceiling cap, light and fan;
+  - a plaque RU/EN/VN.
+
+  Themes, from the street entrance northward: Sogdiana · Sasanids · Samanids · Khorezm · Timurids · Shahrisabz · Margilan · Pamir · Bukhara. Budget about 30 M VND per booth (economy 22 M); the estimate R10 total becomes about 4.07 bn VND.
+
+## Layout R11 (2026-10-28)
+Owner review of R10: mangal narrower and longer, aryk looked skewed, vitrine jammed in the corner, check the staff passage at the kids zone. Script `samarkand/site/tools/layout_r11.py`.
+- **Mangal kitchen** 3.3 × 5.8 m (x 9000–12300, y 3200–9000), a linear show line.
+  - East hot line from south to north: kazan Ø800 (gas), mangal 2.0 m, copper tandoor Ø900 next to the pass. The tandoor is the show piece seen from the plaza and the corridor exit.
+  - West side: firewood show wall 300 (facing the room) + cold prep 650 with under-counter fridges. Cook aisle 1250.
+  - South end: hand wash, pot sink and bins right inside the staff door (900, west wall, y 3900–4800).
+  - North end: pass 3.15 m with heat lamps and glass; waiter pickup gap to the plaza tables is 1.57 m.
+  - Staff lane 1.2 m on the west (x 7800–9000) joins the staff door, the pass and the service route along y 5250.
+  - Plaza rows moved to cy 11500 / 13800.
+- **Aryk** straight on the hauz axis (x 6070), 0.3 × 5.75 m; it springs from under the vitrine plinth. Stone bridges at both tent entries.
+- **Tents** narrowed to 3.0 × 2.75 m (8 seats each).
+- **Khiva gate**: posts at x 4500–4750 and 7415–7665. A slim vitrine 600 × 450 stands on the axis as the central pier, leaving two passes of 1.02 / 1.05 m. This is a placeholder until the owner chooses the stand format (see below).
+- **Kids zone / back passage.** The kids corner is fenced (h 900, gate from the passage) at x −7100…−150, y 150–2600 (17 m²). A 1.45 m clear staff/guest passage runs along the hall glazing (y 2650–4100) from the terrace to the back: exterior stair, WCs, back door, kitchen and rear parking. Beyond axis 5 the route follows the DWG and must be checked on site.
+- Totals: 175 seats. Estimate R11 ≈ 4.09 bn VND (economy ≈ 3.52 bn).
+- **Owner references 2026-10-28.**
+  - Stand: a round rotunda vitrine (lattice drum with hanging objects, display boxes, podium Ø ~2 m, ring canopy).
+  - Tree: a ring of carved plywood panels with coloured acrylic around a stepped round seat, plus a geometric floor.
+  - A Ø ≥1.8 m rotunda does not fit at the aryk head while the 9th booth (Bukhara) stays, because the strip between the tents and the booths is only 2.9 m. The decision is pending with the owner.
+
+## Layout R12 (2026-10-28, current): Bukhara dome + roof domes
+Script `samarkand/site/tools/layout_r12.py`.
+- **Owner chose variant A.** The 9th booth ("Bukhara") is removed, leaving 8 themed booths. In its place, at the head of the aryk, stands the **"Bukhara trade dome"** rotunda Ø1.8 m at x 6070, y 35300. It is the museum vitrine and the "Samarkand shop" in one, so the shop-location question is closed. The rotunda has:
+  - a podium;
+  - a lattice drum Ø0.9 with hanging plates and textiles;
+  - 4 lit display boxes;
+  - a ring canopy Ø2.3 at h 2.6.
+  - Passes around it are 1.07 m (tent side) and 1.84 m (street side).
+  - The tents are narrowed to 2.6 × 2.75 m (8 seats each). The Khiva gate is 4.1 m wide (posts at x 4100–4350 and 8450–8700). The aryk ends under the rotunda podium, with one bridge at tent 1.
+- **Owner request: roof domes** (reference: a brick dome with an oculus, muqarnas squinches).
+  - Over the chinars: south dome Ø6.0 with an open oculus Ø3.6; north dome Ø4.4 with an oculus Ø2.4, sized to stay clear of the F2 overhang at x < 4.4, y > 28.66. The crowns grow out through the oculi and rain falls into the tree pits.
+  - Between them: a closed dome Ø5.6 with a glazed lantern Ø1.0, centred at (6.0, 19.9).
+  - Construction: level springing ring at +3.900; a drum with jali windows from the sloping roof skin up to the ring (light + hot-air exhaust); 12 bent ribs 100×50; GRC "brick-girih" panels inside; terracotta skin on a membrane outside. Rise: S 1.8, C 1.7, N 1.3. Tops: S oculus rim about +5.34, C about +6.3, N about +5.0.
+  - The F2 balcony projects only 1.5 m, so there is no clash.
+  - Roof beams are trimmed at the dome rings. Panel roof area falls to 378 m².
+- Totals: 171 seats. Estimate R12 ≈ 4.80 bn VND, of which the domes are ≈ 0.6 bn. The all-economy option is ≈ 3.99 bn, with a timber girih lattice inside the domes and a copper-look standing-seam skin.
+- 3D model R12 with the domes is in the viewer artifact https://claude.ai/artifact/7NGDiBpaXwuSr9gytuvAtm (views "Купола", "Под куполом", "Бухарский купол").
+- Still to decide: the ring of carved coloured-glass panels around the south chinar (owner reference: a ring of panels around a tree with a stepped round seat).

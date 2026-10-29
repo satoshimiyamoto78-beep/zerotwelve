@@ -1,0 +1,29 @@
+{
+ "blend": "r12v5/samarkand-base3d-R12.blend",
+ "objects": 747,
+ "mesh_datablocks": 515,
+ "totals": {
+  "boundary_edges": 0,
+  "nonmanifold_edges": 0,
+  "wire_edges": 0,
+  "loose_verts": 0,
+  "zero_area_faces": 0,
+  "zero_len_edges": 0,
+  "flipped_edges": 0,
+  "inside_out_shells": 0,
+  "coincident_verts": 0,
+  "verts": 251083,
+  "faces": 247605,
+  "tris": 490502,
+  "ngons": 1803,
+  "shells": 3029
+ },
+ "clean_meshes": 515,
+ "unapplied_transforms": [],
+ "n_unapplied": 0,
+ "penetrations": [],
+ "n_penetrations": 0,
+ "floating": [],
+ "n_floating": 0,
+ "worst": []
+}
