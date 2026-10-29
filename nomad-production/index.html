@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Nomad Production</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Nomad Production — premium video production. Live action, AI and hybrid. Browse examples by niche, see what each costs, order one like it.">
+<meta name="description" content="Nomad Production — AI-focused video production. AI films, hybrid and edits. Browse examples by niche, see what each costs, order one like it.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap">
@@ -84,7 +84,7 @@ p { margin: 0; }
 /* Approach tags */
 .ap { display: inline-flex; align-items: center; gap: 6px; font-size: .72rem; font-weight: 700; letter-spacing: .02em; padding: 4px 9px; border-radius: 999px; background: rgba(5, 7, 12, .8); border: 1px solid currentColor; }
 .ap::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-.ap.real { color: var(--real); } .ap.ai { color: var(--ai); } .ap.hybrid { color: var(--blue-2); background: rgba(47, 107, 255, .35); }
+.ap.edit { color: var(--real); } .ap.ai { color: var(--ai); } .ap.hybrid { color: var(--blue-2); background: rgba(47, 107, 255, .35); }
 
 /* ---------- Header ---------- */
 header.top { position: fixed; z-index: 70; top: env(safe-area-inset-top, 0px); left: 0; right: 0; transition: background .3s, border-color .3s; border-bottom: 1px solid transparent; }
@@ -465,7 +465,7 @@ button.cg-cell[aria-pressed="true"] small { color: rgba(255, 255, 255, .9); }
 .linkbtn { background: none; border: 0; padding: 0; font: 700 .86rem var(--font); color: var(--ink); cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
 .linkbtn:hover { color: var(--accent); }
 .linkbtn svg.i { width: 16px; height: 16px; }
-.folder.real .tagline { color: var(--real); } .folder.ai .tagline { color: var(--ai); } .folder.hybrid .tagline { color: var(--hy); } .folder.post .tagline { color: var(--muted); }
+.folder.edit .tagline { color: var(--real); } .folder.ai .tagline { color: var(--ai); } .folder.hybrid .tagline { color: var(--hy); } .folder.post .tagline { color: var(--muted); }
 .tagline { font-size: .76rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 @media (max-width: 1080px) { .folders { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .folders { grid-template-columns: minmax(0, 1fr); } }
@@ -778,10 +778,10 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 200; pointer-even
 .ring .fg { filter: drop-shadow(0 0 6px rgba(47, 107, 255, .55)); }
 
 /* Approach tags: glass, uppercase, an icon instead of a coloured dot */
-.ap, .ap.real, .ap.ai, .ap.hybrid { color: #fff; gap: 6px; padding: 5px 10px 5px 8px; font-size: .62rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; border-radius: 999px;
+.ap, .ap.edit, .ap.ai, .ap.hybrid { color: #fff; gap: 6px; padding: 5px 10px 5px 8px; font-size: .62rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; border-radius: 999px;
   background: linear-gradient(180deg, rgba(255, 255, 255, .2), rgba(255, 255, 255, .05)), rgba(8, 11, 20, .6); border: 1px solid rgba(255, 255, 255, .18); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22), 0 8px 18px -10px rgba(0, 0, 0, .9); }
 .ap::before { width: 12px; height: 12px; border-radius: 0; background: currentColor; -webkit-mask: var(--ico) center / contain no-repeat; mask: var(--ico) center / contain no-repeat; }
-.ap.real { --ico: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='2.5' y='7' width='13' height='10' rx='2'/><path d='M15.5 10.5 21 7.5v9l-5.5-3'/></svg>"); }
+.ap.edit { --ico: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'><circle cx='6' cy='6' r='3'/><circle cx='6' cy='18' r='3'/><path d='M8.2 8.2 20 20M8.2 15.8 20 4'/></svg>"); }
 .ap.ai { --ico: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linejoin='round'><path d='M12 3c.6 4.2 2.8 6.4 7 7-4.2.6-6.4 2.8-7 7-.6-4.2-2.8-6.4-7-7 4.2-.6 6.4-2.8 7-7Z'/></svg>"); }
 .ap.hybrid { --ico: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linejoin='round'><path d='m12 3 9 5-9 5-9-5 9-5Z'/><path d='m3 13 9 5 9-5'/></svg>"); }
 .card .dur { font-size: .66rem; letter-spacing: .06em; padding: 5px 9px; background: linear-gradient(180deg, rgba(255, 255, 255, .18), rgba(255, 255, 255, .04)), rgba(8, 11, 20, .6); border: 1px solid rgba(255, 255, 255, .16); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2); }
@@ -997,7 +997,7 @@ textarea { border-radius: 26px !important; padding: 16px 20px !important; }
 .orb svg.i, .tg-ic svg.i { width: 20px; height: 20px; stroke-width: 1.6; }
 
 /* Smaller approach tags everywhere */
-.ap, .ap.real, .ap.ai, .ap.hybrid { font-size: .52rem !important; padding: 3px 8px 3px 6px !important; gap: 4px !important; letter-spacing: .14em; }
+.ap, .ap.edit, .ap.ai, .ap.hybrid { font-size: .52rem !important; padding: 3px 8px 3px 6px !important; gap: 4px !important; letter-spacing: .14em; }
 .ap::before { width: 9px !important; height: 9px !important; }
 .card .ap { top: 8px !important; left: 8px !important; }
 .card .dur { font-size: .54rem !important; padding: 3px 7px !important; top: 8px !important; right: 8px !important; }
@@ -1228,6 +1228,47 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
 
 @media (max-width: 560px) { #e-ap button { padding: 10px 8px !important; column-gap: 5px; } #e-ap button > span { font-size: .7rem !important; text-overflow: clip !important; } .tg { align-items: center !important; } }
 
+/* ===== v6: flat icons, clean menu, black play, gradient title, glass spotlight card ===== */
+/* No round 3D orbs: icons stand on their own */
+.m-ic, .direct .ic, .ask .ic, .orb, .pl-row .ic, .tg-ic { background: none !important; box-shadow: none !important; border-radius: 0 !important; }
+.direct .ic, .ask .ic { color: var(--blue-2) !important; width: 22px !important; height: 22px !important; }
+.direct .ic svg.i, .ask .ic svg.i { width: 20px; height: 20px; }
+.next .n, .g-label .no { background: none !important; box-shadow: none !important; border: 1px solid rgba(143, 178, 255, .45) !important; color: var(--blue-2) !important; }
+.g-label .no.you { border-color: rgba(255, 255, 255, .5) !important; color: #fff !important; }
+.cg-av { background: rgba(255, 255, 255, .06) !important; box-shadow: none !important; border: 1px solid rgba(255, 255, 255, .12) !important; }
+
+/* Menu button: just the lines */
+.menu-btn { border: 0 !important; background: none !important; box-shadow: none !important; width: 36px !important; height: 36px !important; margin-right: -6px; }
+.menu-btn svg.i { width: 22px !important; height: 22px !important; }
+
+/* Menu: typographic list, hairlines, round social buttons */
+.menu { background: radial-gradient(100% 50% at 100% 0%, rgba(47, 107, 255, .22), transparent 60%), #05070c !important; }
+.m-list { gap: 0 !important; padding-top: 18px !important; }
+.m-list a { grid-template-columns: minmax(0, 1fr) 16px !important; gap: 12px !important; padding: 15px 2px !important; border-radius: 0 !important; background: none !important; box-shadow: none !important; border: 0 !important; border-bottom: 1px solid rgba(255, 255, 255, .07) !important; }
+.m-list a::before, .m-list a::after { display: none !important; }
+.m-list .m-t b { font-size: 1.3rem !important; font-weight: 600; letter-spacing: -.02em; }
+.m-list .m-t small { font-size: .74rem !important; color: var(--muted); }
+.m-list .m-go { width: 16px !important; height: 16px !important; color: var(--dim); }
+.menu .foot { align-self: end; padding-bottom: 6px; }
+.m-soc { display: flex; justify-content: space-between; gap: 8px; }
+.m-soc a { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; color: #fff; text-decoration: none; background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .1); transition: background .2s, border-color .2s; }
+.m-soc a svg.i { width: 20px; height: 20px; }
+@media (hover: hover) { .m-soc a:hover { background: rgba(47, 107, 255, .2); border-color: rgba(143, 178, 255, .4); } }
+
+/* Hero: black play chip, gradient accent */
+.hb-ic { background: #05070c !important; }
+.hero h1 em, .hv h1 em { color: transparent !important; background: linear-gradient(95deg, #ffffff 0%, #8fb2ff 45%, #2f6bff 100%); -webkit-background-clip: text; background-clip: text; }
+
+/* Spotlight: poster bottom blurred, info card lifted over it */
+.spot-poster .pb { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; pointer-events: none; -webkit-mask-image: linear-gradient(to top, #000 0%, #000 26%, transparent 46%); mask-image: linear-gradient(to top, #000 0%, #000 26%, transparent 46%); }
+.spot-poster::after { z-index: 2; }
+.spot-info { position: relative; z-index: 5; margin-top: -26% !important; background: linear-gradient(180deg, rgba(10, 14, 24, .18) 0%, rgba(10, 14, 24, .55) 30%, rgba(11, 15, 24, .96) 62%) !important; border: 1px solid rgba(255, 255, 255, .1) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .16), 0 30px 50px -30px rgba(0, 0, 0, .9) !important; }
+@media (max-width: 700px) { .spot-info { margin-top: -30% !important; width: 88%; justify-self: center; } }
+
+.fx-num { white-space: nowrap; flex: none; }
+.fx-top > div:first-child { min-width: 0; }
+@media (max-width: 560px) { #e-format { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; } #finder .opts button, #e-format button { padding: 10px 8px !important; column-gap: 6px; } }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
@@ -1290,7 +1331,7 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
   <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></symbol>
   <symbol id="i-cut" viewBox="0 0 24 24"><circle cx="6" cy="6.5" r="2.8"/><circle cx="6" cy="17.5" r="2.8"/><path d="M8.3 8.2 20 18M8.3 15.8 20 6"/></symbol>
   <symbol id="i-ref" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 9h18M8 4v5"/></symbol>
-  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><path d="M4 20l1.2-4A8.2 8.2 0 1 1 8.4 19z"/><path d="M9.2 8.6c0 3.3 2.9 6.2 6.2 6.2l1-1.4-2-1-1 1a4.7 4.7 0 0 1-2.8-2.8l1-1-1-2Z" stroke-width="1.4"/></symbol><symbol id="i-yt" viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.2 9.4v5.2l4.4-2.6Z" fill="currentColor" stroke="none"/></symbol><symbol id="i-ig" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6" fill="currentColor"/></symbol><symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></symbol>
   <symbol id="i-send" viewBox="0 0 24 24"><path d="M21 3.5 2.5 10.8l7 2.7 2.7 7L21 3.5Z"/><path d="m9.5 13.5 4-4"/></symbol>
 </svg>
 
@@ -1319,17 +1360,13 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
     <button class="menu-btn" style="display:grid" id="menu-close" aria-label="Close menu"><svg class="i"><use href="#i-x"/></svg></button>
   </div>
   <nav class="m-list" aria-label="Menu sections">
-    <a href="#showcase" data-close><span class="m-ic"><svg class="i"><use href="#i-film"/></svg></span><span class="m-t"><b>Showcase</b><small>19 packages by niche and format</small></span><svg class="i m-go"><use href="#i-right"/></svg></a>
-    <a href="#approach" data-close><span class="m-ic"><svg class="i"><use href="#i-layers"/></svg></span><span class="m-t"><b>How we make</b><small>Live action, AI film and hybrid</small></span><svg class="i m-go"><use href="#i-right"/></svg></a>
-    <a href="#pricing" data-close><span class="m-ic"><svg class="i"><use href="#i-tag"/></svg></span><span class="m-t"><b>Pricing</b><small>From $600 · estimate in a minute</small></span><svg class="i m-go"><use href="#i-right"/></svg></a>
-    <a href="#process" data-close><span class="m-ic"><svg class="i"><use href="#i-clock"/></svg></span><span class="m-t"><b>Process</b><small>Brief to premiere in four weeks</small></span><svg class="i m-go"><use href="#i-right"/></svg></a>
-    <a href="#faq" data-close><span class="m-ic"><svg class="i"><use href="#i-help"/></svg></span><span class="m-t"><b>FAQ</b><small>Six answers clients ask first</small></span><svg class="i m-go"><use href="#i-right"/></svg></a>
+    <a href="#showcase" data-close><span class="m-t"><b>Showcase</b><small>19 packages by niche and format</small></span><svg class="i m-go"><use href="#i-right"/></svg></a>
+    <a href="#approach" data-close><span class="m-t"><b>How we make</b><small>AI film, hybrid and edit</small></span><svg class="i m-go"><use href="#i-right"/></svg></a>
+    <a href="#pricing" data-close><span class="m-t"><b>Pricing</b><small>From $400 · estimate in a minute</small></span><svg class="i m-go"><use href="#i-right"/></svg></a>
+    <a href="#process" data-close><span class="m-t"><b>Process</b><small>Brief to premiere in four weeks</small></span><svg class="i m-go"><use href="#i-right"/></svg></a>
+    <a href="#faq" data-close><span class="m-t"><b>FAQ</b><small>Six answers clients ask first</small></span><svg class="i m-go"><use href="#i-right"/></svg></a>
   </nav>
-  <button type="button" class="m-feat" id="menu-feat"></button>
-  <div class="foot">
-    <a class="btn" href="#brief" data-close>Start a brief <svg class="i"><use href="#i-arrow"/></svg></a>
-    <div class="m-contacts"><a class="m-chip" href="mailto:hello@nomad.production"><svg class="i"><use href="#i-mail"/></svg>Email</a><a class="m-chip" href="https://t.me/nomadproduction" target="_blank" rel="noopener"><svg class="i"><use href="#i-send"/></svg>Telegram</a></div>
-  </div>
+  <div class="foot"><div class="m-soc"><a href="mailto:hello@nomad.production" aria-label="Email"><svg class="i"><use href="#i-mail"/></svg></a><a href="https://t.me/nomadproduction" target="_blank" rel="noopener" aria-label="Telegram"><svg class="i"><use href="#i-send"/></svg></a><a href="https://wa.me/" target="_blank" rel="noopener" aria-label="WhatsApp"><svg class="i"><use href="#i-wa"/></svg></a><a href="https://youtube.com/@nomadproduction" target="_blank" rel="noopener" aria-label="YouTube"><svg class="i"><use href="#i-yt"/></svg></a><a href="https://instagram.com/nomad.production" target="_blank" rel="noopener" aria-label="Instagram"><svg class="i"><use href="#i-ig"/></svg></a></div></div>
 </div>
 
 <main id="top">
@@ -1342,13 +1379,13 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
     <div class="hero-in">
       <div class="hero-copy">
         <h1>We erase the barrier between <em>screen and audience</em></h1>
-        <p class="lede">Premium video for brands. Pick a package, see the price, order one like it.</p>
+        <p class="lede">AI-focused video for brands. Pick a package, see the price, order one like it.</p>
         <div class="cta-row">
           <a class="hb hb-main" href="#showcase"><span class="hb-ic"><svg viewBox="0 0 24 24"><use href="#i-play"/></svg></span>Watch showcase</a>
           <a class="hb hb-alt" href="#estimate">Get a price<svg class="i"><use href="#i-arrow"/></svg></a>
         </div>
         <div class="facts">
-          <div><strong>$600</strong><span>from, per video</span></div>
+          <div><strong>$400</strong><span>from, per video</span></div>
           <div><strong>3 days</strong><span>fastest delivery</span></div>
           <div><strong>4K</strong><span>every master</span></div>
         </div>
@@ -1412,12 +1449,12 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
           <span class="label" style="color:var(--blue-2)">Approach finder</span>
           <h3 style="margin:6px 0 4px;font-size:1.4rem">Not sure which one fits?</h3>
           <p class="muted" style="font-size:.92rem;margin-bottom:20px">Three taps. The answer updates instantly.</p>
-          <div class="q"><div class="q-title"><span>1</span>Who or what is on screen?</div>
-            <div class="opts" data-q="0"><button type="button" data-v="0"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-person"/></svg><span>Real people</span><small>Faces, emotion</small></button><button type="button" data-v="1"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-box"/></svg><span>The product</span><small>Detail, texture</small></button><button type="button" data-v="2"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-globe"/></svg><span>A new world</span><small>Places that don’t exist</small></button></div></div>
+          <div class="q"><div class="q-title"><span>1</span>What do you have already?</div>
+            <div class="opts" data-q="0"><button type="button" data-v="0"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-spark"/></svg><span>Idea</span><small>Start from zero</small></button><button type="button" data-v="1"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-camera"/></svg><span>Photos</span><small>Or a few clips</small></button><button type="button" data-v="2"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-film"/></svg><span>Footage</span><small>Ready to edit</small></button></div></div>
           <div class="q"><div class="q-title"><span>2</span>When do you need it?</div>
-            <div class="opts" data-q="1"><button type="button" data-v="0"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-bolt"/></svg><span>This week</span><small>Under 7 days</small></button><button type="button" data-v="1"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-cal"/></svg><span>2–3 weeks</span><small>Standard</small></button><button type="button" data-v="2"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-clock"/></svg><span>Flexible</span><small>No rush</small></button></div></div>
+            <div class="opts" data-q="1"><button type="button" data-v="0"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-bolt"/></svg><span>Rush</span><small>Under 7 days</small></button><button type="button" data-v="1"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-cal"/></svg><span>Standard</span><small>2–3 weeks</small></button><button type="button" data-v="2"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-clock"/></svg><span>Flexible</span><small>No rush</small></button></div></div>
           <div class="q"><div class="q-title"><span>3</span>Budget per video?</div>
-            <div class="opts" data-q="2"><button type="button" data-v="0"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-coin1"/></svg><span>Under $2k</span><small>Per video</small></button><button type="button" data-v="1"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-coin2"/></svg><span>$2k–8k</span><small>Per video</small></button><button type="button" data-v="2"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-coin3"/></svg><span>$8k+</span><small>Per video</small></button></div></div>
+            <div class="opts" data-q="2"><button type="button" data-v="0"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-coin1"/></svg><span>&lt; $2k</span><small>Per video</small></button><button type="button" data-v="1"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-coin2"/></svg><span>$2–8k</span><small>Per video</small></button><button type="button" data-v="2"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-coin3"/></svg><span>$8k+</span><small>Per video</small></button></div></div>
         </div>
         <div class="panel result" id="result" aria-live="polite"></div>
       </div>
@@ -1434,7 +1471,7 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
       </div>
       <div class="price-wrap reveal">
         <table class="prices">
-          <thead><tr><th>Format</th><th><span class="ap real">Live action</span></th><th><span class="ap ai">AI film</span></th><th><span class="ap hybrid">Hybrid</span></th></tr></thead>
+          <thead><tr><th>Format</th><th><span class="ap ai">AI film</span></th><th><span class="ap hybrid">Hybrid</span></th><th><span class="ap edit">Edit</span></th></tr></thead>
           <tbody id="price-body"></tbody>
         </table>
       </div>
@@ -1467,7 +1504,7 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
           </div>
           <div class="opt"><span>Extras</span>
             <div class="toggles">
-              <label class="tg" id="tg-day"><span class="tg-ic"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-cal"/></svg></span><span class="tg-t"><b>Extra shoot day<em>+$2,500</em></b><small>More locations or talent</small></span><input type="checkbox" id="x-day"><span class="sw"></span></label>
+              <label class="tg" id="tg-day"><span class="tg-ic"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-music"/></svg></span><span class="tg-t"><b>AI voice-over<em>+$300</em></b><small>Any language, any voice</small></span><input type="checkbox" id="x-day"><span class="sw"></span></label>
               <label class="tg"><span class="tg-ic"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-music"/></svg></span><span class="tg-t"><b>Original music<em>+$800</em></b><small>Composed for you, not licensed</small></span><input type="checkbox" id="x-music"><span class="sw"></span></label>
               <label class="tg"><span class="tg-ic"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-bolt"/></svg></span><span class="tg-t"><b>Rush delivery<em>+30%</em></b><small>About 40% faster</small></span><input type="checkbox" id="x-rush"><span class="sw"></span></label>
             </div>
@@ -1485,7 +1522,7 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
         <div class="panel pack reveal">
           <div class="pk-h"><span class="pk-ic"><svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#g-cal"/></svg></span><div><span class="tagline">Package</span><h3>Monthly</h3><p>Your production team on retainer.</p></div></div>
           <div class="pr"><b>$4,500</b><span>per month</span></div>
-          <ul><li><svg class="i"><use href="#i-check"/></svg>8 short-form videos</li><li><svg class="i"><use href="#i-check"/></svg>1 shoot day</li><li><svg class="i"><use href="#i-check"/></svg>Dedicated creative lead</li></ul>
+          <ul><li><svg class="i"><use href="#i-check"/></svg>8 short-form videos</li><li><svg class="i"><use href="#i-check"/></svg>AI voice-over in 2 languages</li><li><svg class="i"><use href="#i-check"/></svg>Dedicated creative lead</li></ul>
         </div>
       </div>
     </div>
@@ -1518,10 +1555,10 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
       <div class="faq">
         <details open><summary>What does “Order this package” mean?<span class="pm"><svg class="i" style="width:16px;height:16px"><use href="#i-plus"/></svg></span></summary><p>You get the same scope, specs and deliverables as the example, adapted to your brand, at the listed price. We confirm details on a 20-minute call before you pay anything.</p></details>
         <details><summary>And “Order something similar”?<span class="pm"><svg class="i" style="width:16px;height:16px"><use href="#i-plus"/></svg></span></summary><p>The example becomes a reference. We change the scope to fit your goal and send a fixed quote within three days.</p></details>
-        <details><summary>How are prices calculated?<span class="pm"><svg class="i" style="width:16px;height:16px"><use href="#i-plus"/></svg></span></summary><p>Starting price comes from the format and the approach. Extra versions, shoot days, original music and rush delivery are added on top. The estimator shows each line.</p></details>
-        <details><summary>Won’t AI video look cheap?<span class="pm"><svg class="i" style="width:16px;height:16px"><use href="#i-plus"/></svg></span></summary><p>AI without direction does. We storyboard, light and compose AI scenes like a shoot, then grade and mix them. A frame that wouldn’t pass as live action doesn’t make the cut.</p></details>
-        <details><summary>Can you edit footage we already have?<span class="pm"><svg class="i" style="width:16px;height:16px"><use href="#i-plus"/></svg></span></summary><p>Yes, from $400. We edit, grade, mix and cut versions for every platform. Missing shots can be filmed or generated.</p></details>
-        <details><summary>Do you work internationally?<span class="pm"><svg class="i" style="width:16px;height:16px"><use href="#i-plus"/></svg></span></summary><p>Yes. Calls and reviews happen online, the crew travels for shoots, files move through a secure cloud.</p></details>
+        <details><summary>How are prices calculated?<span class="pm"><svg class="i" style="width:16px;height:16px"><use href="#i-plus"/></svg></span></summary><p>Starting price comes from the format and the approach. Extra versions, AI voice-over, original music and rush delivery are added on top. The estimator shows each line.</p></details>
+        <details><summary>Won’t AI video look cheap?<span class="pm"><svg class="i" style="width:16px;height:16px"><use href="#i-plus"/></svg></span></summary><p>AI without direction does. We storyboard, light and compose AI scenes like a film, then grade and mix them. A frame that wouldn’t pass as real doesn’t make the cut.</p></details>
+        <details><summary>Can you edit footage we already have?<span class="pm"><svg class="i" style="width:16px;height:16px"><use href="#i-plus"/></svg></span></summary><p>Yes, from $400. We edit, grade, mix and cut versions for every platform. Missing shots are generated to match.</p></details>
+        <details><summary>Do you work internationally?<span class="pm"><svg class="i" style="width:16px;height:16px"><use href="#i-plus"/></svg></span></summary><p>Yes. Everything happens online: calls, reviews and files through a secure cloud. You send footage, we send films.</p></details>
       </div>
     </div>
   </section>
@@ -1544,9 +1581,9 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
             </div>
             <div class="two">
               <div class="field"><label for="f-format">Format</label>
-                <select id="f-format" name="format"><option value="short">Short-form (TikTok, Reels)</option><option value="promo">Promo or ad</option><option value="film">Brand film</option><option value="edit">Edit our footage</option><option value="unsure">Not sure yet</option></select></div>
+                <select id="f-format" name="format"><option value="short">Short-form (TikTok, Reels)</option><option value="promo">Promo or ad</option><option value="film">Brand film</option><option value="unsure">Not sure yet</option></select></div>
               <div class="field"><label for="f-ap">Approach</label>
-                <select id="f-ap" name="approach"><option value="unsure">Help me choose</option><option value="real">Live action</option><option value="ai">AI film</option><option value="hybrid">Hybrid</option></select></div>
+                <select id="f-ap" name="approach"><option value="unsure">Help me choose</option><option value="ai">AI film</option><option value="hybrid">Hybrid</option><option value="edit">Edit our footage</option></select></div>
             </div>
             <fieldset>
               <legend>Budget</legend>
@@ -1585,16 +1622,16 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
 <footer>
   <div class="wrap">
     <div class="foot-grid">
-      <div class="about"><a class="logo" href="#top"><span class="mk"><svg viewBox="0 0 24 24"><use href="#i-play"/></svg></span><span>NOMAD<small>Production</small></span></a><p>Premium video production. Live action, AI film and hybrid for brands.</p></div>
+      <div class="about"><a class="logo" href="#top"><span class="mk"><svg viewBox="0 0 24 24"><use href="#i-play"/></svg></span><span>NOMAD<small>Production</small></span></a><p>AI-focused video production. AI films, hybrid and edits for brands.</p></div>
       <div><h4>Showcase</h4><ul><li><a href="#showcase" data-fmt="short">Short-form</a></li><li><a href="#showcase" data-fmt="promo">Promo and ads</a></li><li><a href="#showcase" data-fmt="film">Brand films</a></li></ul></div>
       <div><h4>Studio</h4><ul><li><a href="#approach">How we make</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#process">Process</a></li><li><a href="#faq">FAQ</a></li></ul></div>
-      <div><h4>Contact</h4><ul><li><a href="#brief">Start a brief</a></li><li><a href="#brief">Telegram</a></li><li><a href="#brief">Email</a></li></ul></div>
+      <div><h4>Contact</h4><ul><li><a href="#brief">Start a brief</a></li><li><a href="https://t.me/nomadproduction">Telegram</a></li><li><a href="https://wa.me/">WhatsApp</a></li><li><a href="https://youtube.com/@nomadproduction">YouTube</a></li><li><a href="https://instagram.com/nomad.production">Instagram</a></li><li><a href="mailto:hello@nomad.production">Email</a></li></ul></div>
     </div>
     <div class="foot-bottom"><span>© 2026 Nomad Production</span><span>A Nomad Group company</span></div>
   </div>
 </footer>
 
-<div class="mbar" id="mbar"><div><b>From $600 per video</b>Fixed price after a 20-min call</div><a class="btn sm" href="#estimate">Get an estimate</a></div>
+<div class="mbar" id="mbar"><div><b>From $400 per video</b>Fixed price after a 20-min call</div><a class="btn sm" href="#estimate">Get an estimate</a></div>
 
 <div class="tp" id="tp" hidden role="dialog" aria-modal="true" aria-labelledby="tp-h"></div>
 
@@ -1606,14 +1643,14 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
   var money = function (n) { return "$" + Math.round(n).toLocaleString("en-US"); };
 
   /* ================= Data ================= */
-  var AP = { real: "Live action", ai: "AI film", hybrid: "Hybrid" };
+  var AP = { ai: "AI film", hybrid: "Hybrid", edit: "Edit" };
   function laurel(a, top) {
     return '<span class="laurel"><svg aria-hidden="true"><use href="#i-laurel"/></svg><span class="lt"><small>' + (top || "Nomad · 2026") + "</small><b>" + AP[a] + '</b></span><svg class="r" aria-hidden="true"><use href="#i-laurel"/></svg></span>';
   }
 
   var W = 'stroke="#fff" stroke-opacity=".75" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"';
   function GX(id) { return '<svg class="gx" viewBox="0 0 32 32" aria-hidden="true"><use href="#' + id + '"/></svg>'; }
-  var ILL = { short: GX("g-phone"), promo: GX("g-monitor"), film: GX("g-film"), edit: GX("g-cut") };
+  var ILL = { short: GX("g-phone"), promo: GX("g-monitor"), film: GX("g-film") };
   var FORMAT = {
     short: { name: "Short-form", ratio: "9:16", ar: "9 / 16", title: "Short-form", sub: "TikTok, Reels and Shorts, built to stop the scroll", len: "6–60 sec", row: "Short-form for TikTok, Reels and Shorts", note: "6–60 sec, vertical, built to stop the scroll" },
     promo: { name: "Promo & ads", ratio: "16:9", ar: "16 / 9", title: "Promo & ads", sub: "Launches, YouTube and paid media", len: "30–90 sec", row: "Promo films and ads", note: "30–90 sec for launches, YouTube and paid media" },
@@ -1622,30 +1659,30 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
   var NICHE = { fashion: "Fashion", beauty: "Beauty", tech: "Tech", music: "Music", estate: "Real estate", story: "Brand story" };
 
   // Starting prices (USD) and production days per format × approach
-  var BASE = { short: { real: 1500, ai: 600, hybrid: 1800 }, promo: { real: 5500, ai: 2500, hybrid: 5000 }, film: { real: 12000, ai: 8000, hybrid: 11000 }, edit: { any: 400 } };
-  var DAYS = { short: { real: [5, 10], ai: [3, 6], hybrid: [6, 12] }, promo: { real: [21, 35], ai: [10, 18], hybrid: [18, 30] }, film: { real: [42, 70], ai: [28, 45], hybrid: [40, 60] }, edit: { any: [3, 10] } };
+  var BASE = { short: { ai: 600, hybrid: 900, edit: 400 }, promo: { ai: 2500, hybrid: 3500, edit: 1200 }, film: { ai: 8000, hybrid: 9000, edit: 3000 } };
+  var DAYS = { short: { ai: [3, 6], hybrid: [4, 8], edit: [2, 5] }, promo: { ai: [10, 18], hybrid: [10, 20], edit: [5, 10] }, film: { ai: [28, 45], hybrid: [25, 40], edit: [10, 20] } };
   var INCLUDED_VERSIONS = { short: 2, promo: 3, film: 3, edit: 2 };
   var VERSION_PRICE = { short: 150, promo: 250, film: 250, edit: 120 };
 
   var CAT = [
     { id: "NP-01", t: "Error 404", n: "tech", f: "short", a: "ai", d: "0:15", sc: "phone", img: "error-404", pos: "50% 25%", p: 650, days: 3, purpose: "A launch teaser for a security app: the moment a face stops being yours.", how: "AI glitch transformation built on a real portrait, title animated in the edit and synced to the sound logo.", del: ["0:15 vertical", "1:1 ad version"] },
     { id: "NP-02", t: "Vision", n: "beauty", f: "short", a: "ai", d: "0:15", sc: "ai", img: "vision", pos: "50% 45%", p: 700, days: 4, purpose: "Launch an eyewear line by making the viewer look through the lens.", how: "AI macro of an eye framed like a viewfinder, typography animated on the beat.", del: ["0:15 vertical", "0:06 bumper", "4:5 feed version"] },
-    { id: "NP-03", t: "Under the Spotlight", n: "beauty", f: "short", a: "real", d: "0:20", sc: "filmset", img: "spotlight", pos: "50% 35%", p: 1500, days: 5, purpose: "Introduce a men’s skincare line with one face and one light.", how: "Single-light studio shoot, slow push-in, light sweeps timed to the voice-over.", del: ["2 verticals of 0:20", "10 stills"] },
-    { id: "NP-04", t: "Signal", n: "fashion", f: "short", a: "hybrid", d: "0:25", sc: "fashion", img: "signal", pos: "50% 20%", p: 2200, days: 7, purpose: "Announce a capsule drop with one image people remember.", how: "Model filmed on a blue cyclorama. Motion trails and the glitch pass are built in post and matched in the grade.", del: ["0:25 vertical", "2 teasers of 0:10", "4:5 feed version"] },
+    { id: "NP-03", t: "Under the Spotlight", n: "beauty", f: "short", a: "edit", d: "0:20", sc: "filmset", img: "spotlight", pos: "50% 35%", p: 500, days: 4, purpose: "Introduce a men’s skincare line with one face and one light.", how: "Cut from the brand’s own studio footage: slow push-ins and light sweeps timed to an AI voice-over.", del: ["2 verticals of 0:20", "10 stills"] },
+    { id: "NP-04", t: "Signal", n: "fashion", f: "short", a: "hybrid", d: "0:25", sc: "fashion", img: "signal", pos: "50% 20%", p: 1400, days: 6, purpose: "Announce a capsule drop with one image people remember.", how: "The brand’s model photos and clips extended with AI motion trails and a glitch pass, matched in the grade.", del: ["0:25 vertical", "2 teasers of 0:10", "4:5 feed version"] },
     { id: "NP-05", t: "Afterimage", n: "fashion", f: "short", a: "ai", d: "0:20", sc: "fashion", img: "afterimage", pos: "60% 30%", p: 800, days: 4, purpose: "A teaser for a streetwear jacket that reads in one second.", how: "Portrait extended with AI motion trails and a chromatic split, cut to a bass hit.", del: ["0:20 vertical", "0:10 teaser", "4:5 feed version"] },
     { id: "NP-06", t: "Mukhda", n: "music", f: "short", a: "ai", d: "0:30", sc: "nomad", img: "mukhda", pos: "50% 35%", p: 900, days: 5, purpose: "Announce a single with a painted world built around the artist’s eyes.", how: "Illustrated AI frames animated in 2.5D, lyrics set as titles and synced to the hook.", del: ["0:30 vertical", "3 cutdowns of 0:10", "Cover art"] },
-    { id: "NP-07", t: "Delulu", n: "beauty", f: "short", a: "real", d: "0:25", sc: "fashion", img: "delulu", pos: "45% 35%", p: 1700, days: 6, purpose: "Make a saree and jewellery brand feel like a love song.", how: "Half-day shoot with live flowers and soft daylight, slow motion on fabric.", del: ["0:25 vertical", "4:5 feed version", "10 stills"] },
-    { id: "NP-08", t: "Nazariya", n: "music", f: "promo", a: "real", d: "1:00", sc: "fashion", img: "nazariya", pos: "50% 45%", p: 6000, days: 18, purpose: "A music teaser that puts culture and attitude in one frame.", how: "Studio shoot on a painted backdrop with a vintage boombox, colour blocking in the grade.", del: ["1:00 master", "0:30 and 0:15 cuts", "6 verticals"] },
-    { id: "NP-09", t: "Nari", n: "fashion", f: "promo", a: "real", d: "1:00", sc: "fashion", img: "nari", pos: "50% 30%", p: 7500, days: 21, purpose: "Introduce a heritage fashion label through one woman and the craft she wears.", how: "Studio portrait shoot on a painted set, macro work on fabric, henna and jewellery, original score.", del: ["1:00 master", "0:30 and 0:15 cuts", "20 stills"] },
-    { id: "NP-10", t: "La Maison", n: "fashion", f: "promo", a: "hybrid", d: "0:45", sc: "filmset", img: "la-maison", pos: "50% 40%", p: 6500, days: 18, purpose: "Show the scale of a couture house through one sewing machine.", how: "Actors filmed on green screen and composited at miniature scale onto a macro shoot of the machine.", del: ["0:45 master", "0:15 cutdown", "9:16 version"] },
-    { id: "NP-11", t: "Blueprint", n: "estate", f: "promo", a: "hybrid", d: "1:20", sc: "villa", img: "blueprint", pos: "50% 40%", p: 6500, days: 18, purpose: "Sell an off-plan development by walking the buyer through its plan.", how: "Top-down shoot of a presenter on a printed floor plan. Rooms rise out of the lines with AI and VFX.", del: ["1:20 master", "0:30 ad cut", "9:16 tour version"] },
-    { id: "NP-12", t: "Future Tech", n: "tech", f: "promo", a: "hybrid", d: "0:45", sc: "ai", img: "future-tech", pos: "50% 35%", p: 5500, days: 15, purpose: "Launch a weather-data platform by showing data reshape a face.", how: "Portrait filmed in the studio, pixel displacement built in post and driven by real data.", del: ["0:45 master", "0:15 ad", "9:16 version"] },
+    { id: "NP-07", t: "Delulu", n: "beauty", f: "short", a: "edit", d: "0:25", sc: "fashion", img: "delulu", pos: "45% 35%", p: 550, days: 4, purpose: "Make a saree and jewellery brand feel like a love song.", how: "Edited from the client’s daylight footage: slow motion on fabric, cut to the song.", del: ["0:25 vertical", "4:5 feed version", "10 stills"] },
+    { id: "NP-08", t: "Nazariya", n: "music", f: "promo", a: "edit", d: "1:00", sc: "fashion", img: "nazariya", pos: "50% 45%", p: 1400, days: 8, purpose: "A music teaser that puts culture and attitude in one frame.", how: "The artist’s studio footage cut to the beat, colour blocking built in the grade.", del: ["1:00 master", "0:30 and 0:15 cuts", "6 verticals"] },
+    { id: "NP-09", t: "Nari", n: "fashion", f: "promo", a: "edit", d: "1:00", sc: "fashion", img: "nari", pos: "50% 30%", p: 1600, days: 9, purpose: "Introduce a heritage fashion label through one woman and the craft she wears.", how: "Edited from the label’s portrait and macro footage of fabric, henna and jewellery, scored to picture.", del: ["1:00 master", "0:30 and 0:15 cuts", "20 stills"] },
+    { id: "NP-10", t: "La Maison", n: "fashion", f: "promo", a: "hybrid", d: "0:45", sc: "filmset", img: "la-maison", pos: "50% 40%", p: 3800, days: 14, purpose: "Show the scale of a couture house through one sewing machine.", how: "The client’s actor footage composited at miniature scale onto an AI macro of the machine.", del: ["0:45 master", "0:15 cutdown", "9:16 version"] },
+    { id: "NP-11", t: "Blueprint", n: "estate", f: "promo", a: "hybrid", d: "1:20", sc: "villa", img: "blueprint", pos: "50% 40%", p: 3800, days: 14, purpose: "Sell an off-plan development by walking the buyer through its plan.", how: "The developer’s presenter footage on the floor plan. Rooms rise out of the lines with AI and VFX.", del: ["1:20 master", "0:30 ad cut", "9:16 tour version"] },
+    { id: "NP-12", t: "Future Tech", n: "tech", f: "promo", a: "hybrid", d: "0:45", sc: "ai", img: "future-tech", pos: "50% 35%", p: 3500, days: 12, purpose: "Launch a weather-data platform by showing data reshape a face.", how: "The client’s portrait footage, pixel displacement generated and driven by real data.", del: ["0:45 master", "0:15 ad", "9:16 version"] },
     { id: "NP-13", t: "Your Vision", n: "tech", f: "promo", a: "ai", d: "0:30", sc: "ai", img: "your-vision", pos: "40% 45%", p: 2500, days: 10, purpose: "Explain a design tool in 30 seconds without a single screenshot.", how: "AI macro of an eye reflecting the product, interface panels floating in depth around it.", del: ["0:30 master", "0:15 cutdown", "9:16 and 4:5 versions"] },
-    { id: "NP-14", t: "Logout", n: "tech", f: "promo", a: "real", d: "0:45", sc: "phone", img: "logout", pos: "50% 30%", p: 5500, days: 15, purpose: "Launch a digital-wellbeing app by showing how screens hold us.", how: "Actor filmed through a rig of real phone screens, interface composited in post.", del: ["0:45 master", "0:15 ad", "9:16 version"] },
-    { id: "NP-15", t: "Red Veil", n: "fashion", f: "promo", a: "real", d: "1:00", sc: "fashion", img: "red-veil", pos: "50% 45%", p: 7000, days: 20, purpose: "A bridal collection film built on one gesture: the veil lifting.", how: "One-day studio shoot with a practical wind rig for the fabric and high-key light.", del: ["1:00 master", "0:30 cut", "9:16 version", "20 stills"] },
-    { id: "NP-16", t: "Pattern Engine", n: "tech", f: "film", a: "hybrid", d: "5:00", sc: "filmset", img: "pattern-engine", pos: "50% 22%", p: 13000, days: 45, purpose: "A brand film that makes a data company feel human.", how: "Actor filmed in the studio. The data world around him is generated and composited, city plates are shot on location.", del: ["5:00 film", "1:00 trailer", "4 LinkedIn clips"] },
-    { id: "NP-17", t: "Heritage in Every Thread", n: "fashion", f: "film", a: "real", d: "6:00", sc: "fashion", img: "heritage", pos: "50% 55%", p: 14000, days: 45, purpose: "A documentary about the hands behind a pashmina label.", how: "Five shoot days with weavers at home, natural light, interviews in their own words.", del: ["6:00 film", "1:00 trailer", "5 interview clips"] },
-    { id: "NP-18", t: "Misdirection", n: "story", f: "film", a: "real", d: "5:00", sc: "filmset", img: "misdirection", pos: "50% 35%", p: 12000, days: 40, purpose: "A short thriller that carries a brand’s message and reveals the logo only at the end.", how: "Two-day noir shoot, hard light, red as the only colour, original score.", del: ["5:00 film", "1:00 trailer", "6 social cutdowns"] },
+    { id: "NP-14", t: "Logout", n: "tech", f: "promo", a: "edit", d: "0:45", sc: "phone", img: "logout", pos: "50% 30%", p: 1300, days: 7, purpose: "Launch a digital-wellbeing app by showing how screens hold us.", how: "The client’s footage cut with phone-screen inserts, interface composited in post.", del: ["0:45 master", "0:15 ad", "9:16 version"] },
+    { id: "NP-15", t: "Red Veil", n: "fashion", f: "promo", a: "edit", d: "1:00", sc: "fashion", img: "red-veil", pos: "50% 45%", p: 1500, days: 8, purpose: "A bridal collection film built on one gesture: the veil lifting.", how: "Bridal footage from the brand edited around one gesture, graded high-key.", del: ["1:00 master", "0:30 cut", "9:16 version", "20 stills"] },
+    { id: "NP-16", t: "Pattern Engine", n: "tech", f: "film", a: "hybrid", d: "5:00", sc: "filmset", img: "pattern-engine", pos: "50% 22%", p: 9500, days: 32, purpose: "A brand film that makes a data company feel human.", how: "The client’s actor footage placed in a generated data world, city plates generated to match.", del: ["5:00 film", "1:00 trailer", "4 LinkedIn clips"] },
+    { id: "NP-17", t: "Heritage in Every Thread", n: "fashion", f: "film", a: "edit", d: "6:00", sc: "fashion", img: "heritage", pos: "50% 55%", p: 3500, days: 14, purpose: "A documentary about the hands behind a pashmina label.", how: "A documentary edit of the brand’s archive: weavers at home and interviews in their own words.", del: ["6:00 film", "1:00 trailer", "5 interview clips"] },
+    { id: "NP-18", t: "Misdirection", n: "story", f: "film", a: "edit", d: "5:00", sc: "filmset", img: "misdirection", pos: "50% 35%", p: 3200, days: 12, purpose: "A short thriller that carries a brand’s message and reveals the logo only at the end.", how: "Noir edit of the client’s footage, red as the only colour, AI voice-over and original score.", del: ["5:00 film", "1:00 trailer", "6 social cutdowns"] },
     { id: "NP-19", t: "The Art of Promoting", n: "story", f: "film", a: "ai", d: "4:00", sc: "nomad", img: "art-of-promoting", pos: "50% 60%", p: 9000, days: 30, purpose: "A brand manifesto told through an artisan whose craft becomes wings.", how: "AI worlds grown from real embroidery scans, narrated by a real voice.", del: ["4:00 film", "1:00 trailer", "6 social cutdowns"] }
   ];
   CAT.forEach(function (c) { var b = "assets/posters/" + c.img; c.img = b + ".jpg"; c.duo = b + "-duo.jpg"; c.blur = b + "-blur.jpg"; });
@@ -1805,7 +1842,7 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
     if (0) layers.screen.innerHTML = items.map(function (c, i) { return '<img class="bg-layer" src="' + c.duo + '" alt="" decoding="async"' + (i > 1 ? ' loading="lazy"' : "") + ">"; }).join("");
     if (0) layers.backdrop.innerHTML = items.map(function (c) { return '<img class="bg-layer" src="' + c.blur + '" alt="" decoding="async">'; }).join("");
     stage.innerHTML = items.map(function (c, i) {
-      return '<button type="button" class="spot-poster" data-id="' + c.id + '" tabindex="-1" aria-label="Open ' + c.t + '"><img src="' + c.img + '" alt="Poster: ' + c.t + '"' + (i > 1 ? ' loading="lazy"' : "") + ' decoding="async"></button>';
+      return '<button type="button" class="spot-poster" data-id="' + c.id + '" tabindex="-1" aria-label="Open ' + c.t + '"><img src="' + c.img + '" alt="Poster: ' + c.t + '"' + (i > 1 ? ' loading="lazy"' : "") + ' decoding="async"><img class="pb" src="' + c.blur + '" alt="" loading="lazy" decoding="async"></button>';
     }).join("") + '<span class="spot-badge"><i></i>Now playing</span>';
     dots.innerHTML = items.map(function (c, i) { return '<button type="button" data-i="' + i + '" aria-label="Show ' + c.t + '"></button>'; }).join("");
     var posters = $$(".spot-poster", stage), bgs = $$(".bg-layer", layers.screen), bgb = $$(".bg-layer", layers.backdrop), dotEls = $$("button", dots);
@@ -1858,7 +1895,7 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
     nc = chip("All niches", "all", "niche", CAT.length);
     Object.keys(NICHE).forEach(function (k) { var n = CAT.filter(function (c) { return c.n === k; }).length; if (n) nc += chip(NICHE[k], k, "niche", n); });
     $("#niche-chips").innerHTML = nc;
-    $("#ap-chips").innerHTML = chip("All", "all", "ap") + chip("Live action", "real", "ap", undefined, "var(--real)") + chip("AI film", "ai", "ap", undefined, "var(--ai)") + chip("Hybrid", "hybrid", "ap", undefined, "var(--hy)");
+    $("#ap-chips").innerHTML = chip("All", "all", "ap") + chip("AI film", "ai", "ap", undefined, "var(--ai)") + chip("Hybrid", "hybrid", "ap", undefined, "var(--hy)") + chip("Edit", "edit", "ap", undefined, "var(--real)");
   }
   function renderRows() {
     var list = CAT.filter(function (c) { return (state.niche === "all" || c.n === state.niche) && (state.ap === "all" || c.a === state.ap); });
@@ -1898,9 +1935,9 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
   var tp = $("#tp"), tpOpen = null, lastFocus = null;
   // Crew per approach: [role, responsibility, first stage, last stage]; stages are the six in the timeline
   var CREW = {
-    real: [["Producer", "Your single point of contact", 0, 5], ["Director", "Idea, script and set", 1, 4], ["Cinematographer", "Camera and light", 2, 3], ["Editor", "Story and pace", 4, 4], ["Colourist", "The final look", 4, 4], ["Sound designer", "Mix and music", 4, 5]],
+    edit: [["Producer", "Your single point of contact", 0, 5], ["Editor", "Story and pace", 1, 4], ["Motion designer", "Titles and graphics", 3, 4], ["Colourist", "The final look", 4, 4], ["Sound designer", "Mix, music and voice", 4, 5]],
     ai: [["Producer", "Your single point of contact", 0, 5], ["Director", "Idea and every frame", 1, 4], ["AI artist", "Generation and consistency", 2, 4], ["Compositor", "Product accuracy", 3, 4], ["Editor", "Story and pace", 4, 4], ["Sound designer", "Mix and music", 4, 5]],
-    hybrid: [["Producer", "Your single point of contact", 0, 5], ["Director", "Idea, script and set", 1, 4], ["Cinematographer", "Camera and light", 2, 3], ["AI artist", "Environments", 2, 4], ["VFX compositor", "Real and generated, one image", 3, 4], ["Editor", "Story and pace", 4, 5]]
+    hybrid: [["Producer", "Your single point of contact", 0, 5], ["Director", "Idea and every frame", 1, 4], ["AI artist", "Scenes and environments", 2, 4], ["VFX compositor", "Your footage and AI, one image", 3, 4], ["Editor", "Story and pace", 4, 4], ["Sound designer", "Mix, music and voice", 4, 5]]
   };
   function ratioOf(s, f) {
     s = s.toLowerCase();
@@ -1918,7 +1955,7 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
       '<span class="p-top">NOMAD PRODUCTION</span><span class="p-title">' + c.t + '</span><span class="p-cred">' + NICHE[c.n] + " · " + AP[c.a] + " · " + c.d + "</span></div>";
   }
   function renderTitle(c) {
-    var stages = [["Brief", .05], ["Concept and script", .15], ["Pre-production", .2], [c.a === "ai" ? "Generation" : "Shoot", .15], ["Edit and post", .35], ["Delivery", .1]];
+    var stages = [["Brief", .05], ["Concept and script", .15], ["Pre-production", .2], [c.a === "edit" ? "Assembly" : "Generation", .15], ["Edit and post", .35], ["Delivery", .1]];
     var spans = [];
     var acc = 0, tl = stages.map(function (s) {
       var a = acc, b = acc + s[1] * c.days; acc = b;
@@ -1938,7 +1975,7 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
       '<section class="tp-sec"><div class="wrap"><div class="glance">' +
         [["i-clock", "Length", c.d], ["i-monitor", "Format", FORMAT[c.f].ratio], ["i-cal", "Delivery", c.days + " days"], ["i-video", "Files", c.del.length], ["i-film", "Master", "4K"]].map(function (g) { return '<div class="gl"><svg class="i"><use href="#' + g[0] + '"/></svg><span><small>' + g[1] + "</small><b>" + g[2] + "</b></span></div>"; }).join("") +
       "</div></div></section>" +
-      '<section class="tp-sec"><div class="wrap tp-two"><div class="story"><h3>How it’s made</h3><p>' + c.how + '</p></div><div class="story"><h3>Approach</h3><p>' + {real: "Filmed with a full crew, cast and locations.", ai: "Directed and generated frame by frame, then graded and mixed like a shoot.", hybrid: "People and product filmed for real, the world around them built with AI."}[c.a] + '</p></div></div></section>' +
+      '<section class="tp-sec"><div class="wrap tp-two"><div class="story"><h3>How it’s made</h3><p>' + c.how + '</p></div><div class="story"><h3>Approach</h3><p>' + {edit: "Your footage edited, graded and mixed, with AI voice-over and graphics where they help.", ai: "Directed and generated frame by frame, then graded and mixed like a film.", hybrid: "Your photos and footage stay real, the world around them is built with AI."}[c.a] + '</p></div></div></section>' +
       crewHTML(c) +
       '<section class="tp-sec"><div class="wrap"><h3>What you receive <span>· ' + c.del.length + ' deliverables</span></h3><div class="dl-tiles">' +
         c.del.map(function (d) { var r = ratioOf(d, c.f), m = d.match(/^(\d+) /); return '<div class="dl"><div class="shape" style="--ar:' + r[0] + '">' + r[1] + (m && +m[1] > 1 ? "<em>×" + m[1] + "</em>" : "") + "</div><b>" + d + "</b></div>"; }).join("") +
@@ -1956,8 +1993,8 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
   var STAGE_TEXT = {
     "Brief": "A 20-minute call: goal, audience, platforms and references.",
     "Concept and script": "Two or three ideas, then the script for the one you choose.",
-    "Pre-production": "Storyboard, casting, locations and the visual style.",
-    "Shoot": "The crew films every scene on the storyboard.",
+    "Pre-production": "Storyboard, style frames, characters and voice.",
+    "Assembly": "Your footage is selected, synced and laid out on the storyboard.",
     "Generation": "Scenes are generated, refined and checked frame by frame.",
     "Edit and post": "Edit, colour, sound and graphics. You review the cut.",
     "Delivery": "The master and every platform version, ready to post."
@@ -2005,7 +2042,7 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
   }
 
   /* ---- Crew grid: the studio mark in the centre, people in the nearest cells, placeholders around ---- */
-  var ROLE_ICON = { "Producer": "i-user", "Director": "i-film", "Cinematographer": "i-camera", "Editor": "i-cut", "Colourist": "i-drop", "Sound designer": "i-wave", "AI artist": "i-spark", "Compositor": "i-layers", "VFX compositor": "i-layers" };
+  var ROLE_ICON = { "Producer": "i-user", "Director": "i-film", "Cinematographer": "i-camera", "Editor": "i-cut", "Colourist": "i-drop", "Sound designer": "i-wave", "AI artist": "i-spark", "Motion designer": "i-layers", "Compositor": "i-layers", "VFX compositor": "i-layers" };
   var ROLE_SHORT = { "Cinematographer": "DoP", "VFX compositor": "VFX", "Colourist": "Colour", "Sound designer": "Sound" };
   // A package may list its own crew as c.crew: [role, responsibility, firstStage, lastStage, photoUrl?]
   function crewFor(c) { return c.crew || CREW[c.a]; }
@@ -2079,48 +2116,49 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
 
   /* ================= Folders ================= */
   var FOLD = [
-    { k: "real", t: "Live action", d: "Director, DoP, cinema cameras, light, talent and locations.", from: 1500, art: artReal },
-    { k: "ai", t: "AI film", d: "Scenes, worlds and versions a camera can’t reach, directed frame by frame.", from: 600, art: artAI },
-    { k: "hybrid", t: "Hybrid", d: "People and product filmed for real, the world around them built with AI.", from: 1800, art: artHy },
-    { k: "post", t: "Post-production", d: "Your footage edited, graded, mixed and cut for every platform.", from: 400, art: artPost }
+    { k: "ai", t: "AI film", d: "Ads, films, explainers and courses generated from scratch, directed frame by frame.", from: 600, art: artAI },
+    { k: "hybrid", t: "Hybrid", d: "Your photos and footage merged with AI scenes, characters and worlds.", from: 900, art: artHy },
+    { k: "edit", t: "Edit", d: "Footage you send, edited, graded, mixed and cut for every platform.", from: 400, art: artPost },
+    { k: "voice", t: "Voice and podcast", d: "AI voice-over, dubbing into other languages and podcast video.", from: 300, art: artVoice }
   ];
+  function artVoice() { var d = "", r = rnd(7); for (var x = 0; x < 22; x++) { var h = 8 + r() * 58; d += '<rect x="' + (66 + x * 7) + '" y="' + (70 - h / 2).toFixed(0) + '" width="4" height="' + h.toFixed(0) + '" rx="2" fill="' + (x > 6 && x < 15 ? "#8f80ff" : "#d7d3ea") + '"/>'; } return '<svg viewBox="0 0 260 150"><rect x="40" y="18" width="180" height="120" rx="12" fill="#2a2a34"/><rect x="52" y="10" width="180" height="120" rx="12" fill="#f3f1ec"/>' + d + "</svg>"; }
   function artReal() { return '<svg viewBox="0 0 260 150"><rect x="40" y="18" width="180" height="120" rx="12" fill="#2a2a34"/><rect x="52" y="10" width="180" height="120" rx="12" fill="#f3f1ec"/><rect x="66" y="26" width="90" height="10" rx="5" fill="#d9d6cf"/><rect x="66" y="42" width="60" height="8" rx="4" fill="#e6e3dc"/><rect x="66" y="64" width="110" height="52" rx="8" fill="#ffb547" opacity=".9"/><circle cx="196" cy="90" r="18" fill="#1b1b22"/><circle cx="196" cy="90" r="8" fill="#ffb547"/></svg>'; }
   function artAI() { var d = "", r = rnd(2); for (var y = 0; y < 6; y++) for (var x = 0; x < 12; x++) { var on = r() > .55; d += '<circle cx="' + (66 + x * 14) + '" cy="' + (52 + y * 14) + '" r="4" fill="' + (on ? "#8f80ff" : "#d7d3ea") + '"/>'; } return '<svg viewBox="0 0 260 150"><rect x="40" y="18" width="180" height="120" rx="12" fill="#2a2a34"/><rect x="52" y="10" width="180" height="120" rx="12" fill="#f3f1ec"/><rect x="66" y="24" width="80" height="10" rx="5" fill="#d9d6cf"/>' + d + "</svg>"; }
   function artHy() { return '<svg viewBox="0 0 260 150"><rect x="40" y="18" width="180" height="120" rx="12" fill="#2a2a34"/><rect x="52" y="10" width="180" height="120" rx="12" fill="#f3f1ec"/><rect x="70" y="30" width="96" height="70" rx="8" fill="#ffb547" opacity=".85"/><rect x="118" y="52" width="96" height="70" rx="8" fill="#3dd6c0" opacity=".85"/><rect x="118" y="52" width="48" height="48" fill="#2a9a8a" opacity=".9"/></svg>'; }
   function artPost() { return '<svg viewBox="0 0 260 150"><rect x="40" y="18" width="180" height="120" rx="12" fill="#2a2a34"/><rect x="52" y="10" width="180" height="120" rx="12" fill="#f3f1ec"/><rect x="66" y="26" width="150" height="46" rx="6" fill="#1b1b22"/><rect x="66" y="82" width="54" height="12" rx="4" fill="#ffb547"/><rect x="124" y="82" width="38" height="12" rx="4" fill="#8f80ff"/><rect x="166" y="82" width="50" height="12" rx="4" fill="#3dd6c0"/><rect x="66" y="100" width="80" height="12" rx="4" fill="#d9d6cf"/><rect x="150" y="100" width="66" height="12" rx="4" fill="#d9d6cf"/><rect x="128" y="76" width="2" height="40" fill="#ff6a2b"/></svg>'; }
   $("#folders").innerHTML = FOLD.map(function (f) {
-    var ic = { real: "i-camera", ai: "i-spark", hybrid: "i-layers", post: "i-cut" }[f.k];
-    var link = f.k === "post" ? '<a class="linkbtn" href="#estimate" data-est="edit">Estimate <svg class="i"><use href="#i-arrow"/></svg></a>' : '<button type="button" class="linkbtn" data-show="' + f.k + '">See examples <svg class="i"><use href="#i-arrow"/></svg></button>';
-    return '<article class="folder reveal ' + f.k + '"><div class="art">' + f.art() + '</div><div class="front"><span class="ic"><svg class="i"><use href="#' + ic + '"/></svg></span><span class="tagline">' + (f.k === "post" ? "Your footage" : AP[f.k]) + "</span><h3>" + f.t + "</h3><p>" + f.d + '</p><div class="foot"><span class="from">from <b>' + money(f.from) + "</b></span>" + link + "</div></div></article>";
+    var ic = { ai: "i-spark", hybrid: "i-layers", edit: "i-cut", voice: "i-wave" }[f.k];
+    var link = f.k === "voice" ? '<a class="linkbtn" href="#brief">Ask <svg class="i"><use href="#i-arrow"/></svg></a>' : '<button type="button" class="linkbtn" data-show="' + f.k + '">See examples <svg class="i"><use href="#i-arrow"/></svg></button>';
+    return '<article class="folder reveal ' + f.k + '"><div class="art">' + f.art() + '</div><div class="front"><span class="ic"><svg class="i"><use href="#' + ic + '"/></svg></span><span class="tagline">' + ({ ai: "From scratch", hybrid: "AI + your footage", edit: "Your footage", voice: "Audio" }[f.k]) + "</span><h3>" + f.t + "</h3><p>" + f.d + '</p><div class="foot"><span class="from">from <b>' + money(f.from) + "</b></span>" + link + "</div></div></article>";
   }).join("");
   document.addEventListener("click", function (e) {
     var s = e.target.closest("[data-show]");
     if (s) { setFilter("niche", "all"); setFilter("ap", s.dataset.show); $("#showcase").scrollIntoView({ behavior: "smooth" }); }
     var es = e.target.closest("[data-est]");
-    if (es) { est.format = es.dataset.est; renderEst(); }
+    if (es) { est.ap = es.dataset.est; renderEst(); }
   });
 
   /* ================= Approach finder ================= */
-  // Points per answer for [real, ai, hybrid]
+  // Points per answer for [ai, hybrid, edit]
   var PTS = [
-    [[3, 1, 2], [2, 2, 3], [0, 3, 2]],
-    [[0, 3, 1], [1, 2, 3], [3, 2, 2]],
-    [[1, 3, 1], [2, 3, 3], [3, 2, 3]]
+    [[3, 1, 0], [1, 3, 1], [0, 2, 3]],
+    [[2, 1, 3], [3, 3, 2], [2, 3, 2]],
+    [[3, 1, 3], [3, 3, 2], [2, 3, 1]]
   ];
   var WHY = {
-    real: ["Real faces and real light build trust that no generator can fake.", "Some products only feel real when filmed: skin, fabric, metal.", "With time and budget, a full crew gives you the most control."],
-    ai: ["Impossible worlds cost the same as simple ones.", "No crew, travel or set: the fastest route to a finished film.", "Many versions for testing without paying for more shoot days."],
-    hybrid: ["Your people and product stay real, the environment scales.", "Cinema-scale scenes at a fraction of a full set build.", "Best balance of timeline, budget and control."]
+    ai: ["Start from an idea: every scene, character and voice is generated.", "No shoot, no travel: the fastest route to a finished film.", "Many versions for testing without extra production days."],
+    hybrid: ["Your people and product stay real, the world around them scales.", "Cinema-scale scenes built around the photos you already have.", "Best balance of timeline, budget and control."],
+    edit: ["Your footage already holds the story, we find and shape it.", "The fastest and lowest-cost way to a finished video.", "Grade, sound, titles and AI voice-over on top of what you shot."]
   };
-  var COLOR = { real: "#ffffff", ai: "var(--blue-2)", hybrid: "var(--blue)" };
-  var ans = [0, 1, 1];
+  var COLOR = { edit: "#ffffff", ai: "var(--blue-2)", hybrid: "var(--blue)" };
+  var ans = [1, 1, 1];
   function finder() {
     $$("#finder .opts").forEach(function (s) { var q = +s.dataset.q; $$("button", s).forEach(function (b) { b.setAttribute("aria-pressed", String(+b.dataset.v === ans[q])); }); });
-    var keys = ["real", "ai", "hybrid"], sc = { real: 0, ai: 0, hybrid: 0 };
+    var keys = ["ai", "hybrid", "edit"], sc = { ai: 0, hybrid: 0, edit: 0 };
     ans.forEach(function (a, q) { keys.forEach(function (k, i) { sc[k] += PTS[q][a][i]; }); });
     var order = keys.slice().sort(function (a, b) { return sc[b] - sc[a] || (a === "hybrid" ? -1 : b === "hybrid" ? 1 : 0); });
-    var w = order[0], pct = function (k) { return Math.round(sc[k] / 9 * 100); };
-    var C = 2 * Math.PI * 70, fmt = ans[0] === 2 && w !== "real" ? "promo" : "promo";
+    var w = order[0], pct = function (k) { return Math.min(96, Math.round(sc[k] / 9 * 100)); };
+    var C = 2 * Math.PI * 70, fmt = "promo";
     var days = DAYS[fmt][w], price = BASE.short[w];
     var el = $("#result");
     if (!el.innerHTML) el.innerHTML = '<div class="fx-top"><div><span class="label">Best fit for you</span><h3 id="r-name"></h3><p id="r-sub"></p></div><div class="fx-num"><strong id="r-pct"></strong><span>% fit</span></div></div><div class="fx-bars" id="r-bars"></div><div class="fx-stats"><div><b id="r-p1"></b><small>Short-form from</small></div><div><b id="r-d"></b><small>Promo film timeline</small></div></div><ul class="why" id="r-why"></ul><button type="button" class="btn" id="r-btn"></button>';
@@ -2128,7 +2166,7 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
     $("#r-pct").textContent = pct(w);
     $("#r-name").textContent = AP[w];
     $("#r-bars").innerHTML = keys.map(function (k) { return '<div class="fx-bar' + (k === w ? " on" : "") + '"><span>' + AP[k] + '</span><i><b style="width:' + pct(k) + '%"></b></i><em>' + pct(k) + "%</em></div>"; }).join("");
-    $("#r-sub").textContent = { real: "Filmed with a crew, cast and locations.", ai: "Directed and generated frame by frame.", hybrid: "Filmed for real, extended with AI." }[w];
+    $("#r-sub").textContent = { edit: "Your footage, edited and finished.", ai: "Directed and generated frame by frame.", hybrid: "Your footage, extended with AI." }[w];
     $("#r-why").innerHTML = [WHY[w][ans[0] === 0 ? 0 : ans[0] === 1 ? 1 : 0], WHY[w][ans[1] === 0 ? 1 : 2]].filter(function (v, i, a) { return a.indexOf(v) === i; }).map(function (t) { return '<li><svg class="i"><use href="#i-check"/></svg>' + t + "</li>"; }).join("");
     $("#r-p1").textContent = money(price);
     $("#r-d").textContent = Math.max(1, Math.round(days[0] / 7)) + "–" + Math.ceil(days[1] / 7) + " weeks";
@@ -2139,35 +2177,35 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
 
   /* ================= Price table ================= */
   var ROWS = [["short", "Short-form", "6–60 sec · TikTok, Reels, Shorts"], ["promo", "Promo or ad", "30–90 sec · launches, YouTube, paid"], ["film", "Brand film", "3–10 min · story, documentary"]];
-  var PICON = { short: "i-phone", promo: "i-monitor", film: "i-film" }, plAp = "hybrid";
-  $("#pl-ap").innerHTML = ["real", "ai", "hybrid"].map(function (k) { return '<button type="button" data-v="' + k + '">' + AP[k] + "</button>"; }).join("");
+  var PICON = { short: "i-phone", promo: "i-monitor", film: "i-film" }, plAp = "ai";
+  $("#pl-ap").innerHTML = ["ai", "hybrid", "edit"].map(function (k) { return '<button type="button" data-v="' + k + '">' + AP[k] + "</button>"; }).join("");
   function renderPL() {
     $$("#pl-ap button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === plAp)); });
     $("#pl-rows").innerHTML = ROWS.map(function (r) {
       var d = DAYS[r[0]][plAp];
       return '<div class="pl-row"><span class="ic">' + ILL[r[0]] + '</span><span><b>' + r[1] + "</b><small>" + r[2] + '</small></span><span class="pr"><strong>' + money(BASE[r[0]][plAp]) + "</strong><small>" + d[0] + "–" + d[1] + " days</small></span></div>";
-    }).join("") + '<div class="pl-row"><span class="ic">' + ILL.edit + '</span><span><b>Edit your footage</b><small>Any approach · edit, grade, sound</small></span><span class="pr"><strong>' + money(BASE.edit.any) + "</strong><small>3–10 days</small></span></div>";
+    }).join("");
   }
   $("#pl-ap").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) { plAp = b.dataset.v; renderPL(); } });
   renderPL();
   $("#price-body").innerHTML = ROWS.map(function (r) {
-    return "<tr><td><b>" + r[1] + "</b><span>" + r[2] + "</span></td>" + ["real", "ai", "hybrid"].map(function (k) { var d = DAYS[r[0]][k]; return '<td class="p" data-l="' + AP[k] + '">from ' + money(BASE[r[0]][k]) + "<small>" + d[0] + "–" + d[1] + " days</small></td>"; }).join("") + "</tr>";
-  }).join("") + '<tr><td><b>Edit your footage</b><span>Any length · edit, grade, sound, versions</span></td><td class="p" data-l="Any approach" colspan="3">from ' + money(BASE.edit.any) + "<small>3–10 days</small></td></tr>";
+    return "<tr><td><b>" + r[1] + "</b><span>" + r[2] + "</span></td>" + ["ai", "hybrid", "edit"].map(function (k) { var d = DAYS[r[0]][k]; return '<td class="p" data-l="' + AP[k] + '">from ' + money(BASE[r[0]][k]) + "<small>" + d[0] + "–" + d[1] + " days</small></td>"; }).join("") + "</tr>";
+  }).join("");
 
   /* ================= Estimator ================= */
-  var est = { format: "promo", ap: "hybrid", v: 2, day: false, music: false, rush: false };
-  var EF = [["short", "Short-form"], ["promo", "Promo"], ["film", "Brand film"], ["edit", "Edit only"]];
+  var est = { format: "promo", ap: "ai", v: 2, day: false, music: false, rush: false };
+  var EF = [["short", "Shorts"], ["promo", "Promo"], ["film", "Brand film"]];
   var EFS = { short: "6–60 sec", promo: "30–90 sec", film: "3–10 min", edit: "Your footage" };
   $("#e-format").innerHTML = EF.map(function (f) { return '<button type="button" data-v="' + f[0] + '"><span class="eo-ill">' + ILL[f[0]] + "</span><span>" + f[1] + "</span><small>" + EFS[f[0]] + "</small></button>"; }).join("");
-  var EAI = { real: "g-camera", ai: "g-spark", hybrid: "g-layers" }, EAS = { real: "Crew and set", ai: "Generated", hybrid: "Real + AI" };
-  $("#e-ap").innerHTML = ["real", "ai", "hybrid"].map(function (k) { return '<button type="button" data-v="' + k + '">' + GX(EAI[k]) + "<span>" + AP[k] + "</span><small>" + EAS[k] + "</small></button>"; }).join("");
+  var EAI = { ai: "g-spark", hybrid: "g-layers", edit: "g-cut" }, EAS = { ai: "From scratch", hybrid: "AI + footage", edit: "Your footage" };
+  $("#e-ap").innerHTML = ["ai", "hybrid", "edit"].map(function (k) { return '<button type="button" data-v="' + k + '">' + GX(EAI[k]) + "<span>" + AP[k] + "</span><small>" + EAS[k] + "</small></button>"; }).join("");
   var shown = 0;
   function calc() {
-    var f = est.format, k = f === "edit" ? "any" : est.ap;
-    var base = BASE[f][k], lines = [["Base: " + (f === "edit" ? "edit" : FORMAT[f].name.toLowerCase() + ", " + AP[k].toLowerCase()), base]];
+    var f = est.format, k = est.ap;
+    var base = BASE[f][k], lines = [["Base: " + FORMAT[f].name.toLowerCase() + ", " + AP[k].toLowerCase(), base]];
     if (est.v) lines.push([est.v + " extra version" + (est.v > 1 ? "s" : "") + " × " + money(VERSION_PRICE[f]), est.v * VERSION_PRICE[f]]);
-    var dayOK = f !== "edit" && k !== "ai";
-    if (est.day && dayOK) lines.push(["Extra shoot day", 2500]);
+    var dayOK = true;
+    if (est.day) lines.push(["AI voice-over", 300]);
     if (est.music) lines.push(["Original music", 800]);
     var sub = lines.reduce(function (s, l) { return s + l[1]; }, 0);
     if (est.rush) { lines.push(["Rush delivery +30%", sub * .3]); sub *= 1.3; }
@@ -2181,8 +2219,8 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
   }
   function renderEst() {
     $$("#e-format button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === est.format)); });
-    $$("#e-ap button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === est.ap && est.format !== "edit")); b.disabled = est.format === "edit"; });
-    $("#e-ap-note").hidden = est.format !== "edit";
+    $$("#e-ap button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === est.ap)); });
+    
     var r = calc();
     $("#v-out").textContent = est.v; $("#v-minus").disabled = est.v <= 0; $("#v-plus").disabled = est.v >= 20;
     $("#v-note").textContent = INCLUDED_VERSIONS[est.format] + " versions included · " + money(VERSION_PRICE[est.format]) + " each extra";
@@ -2206,14 +2244,14 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
   document.addEventListener("click", function (e) {
     if (!e.target.closest("#q-use")) return;
     var r = calc(), f = est.format;
-    setRef("Estimate · " + (f === "edit" ? "Edit only" : FORMAT[f].name + ", " + AP[est.ap]), money(r.lo) + "–" + money(r.hi) + " · " + r.d0 + "–" + r.d1 + " days · " + r.lines.slice(1).map(function (l) { return l[0]; }).join(", "));
-    $("#f-format").value = f; $("#f-ap").value = f === "edit" ? "unsure" : est.ap;
+    setRef("Estimate · " + FORMAT[f].name + ", " + AP[est.ap], money(r.lo) + "–" + money(r.hi) + " · " + r.d0 + "–" + r.d1 + " days · " + r.lines.slice(1).map(function (l) { return l[0]; }).join(", "));
+    $("#f-format").value = f; $("#f-ap").value = est.ap;
     pickBudget(r.lo);
     goBrief();
   });
 
   /* ================= Process ================= */
-  var G = [["Brief", "goals, platforms, budget", 0, 1], ["Idea and script", "2–3 concepts", 1, 4], ["You approve the idea", "one decision", 4, 5, 1], ["Pre-production", "storyboard, casting, locations", 5, 11], ["Shoot or generation", "1–3 days", 11, 14], ["Edit and post", "grade, sound, graphics", 14, 24], ["You approve the cut", "2 revision rounds", 24, 26, 1], ["Premiere", "master and all versions", 26, 28]];
+  var G = [["Brief", "goals, platforms, budget", 0, 1], ["Idea and script", "2–3 concepts", 1, 4], ["You approve the idea", "one decision", 4, 5, 1], ["Pre-production", "storyboard, style frames, voice", 5, 11], ["Generation", "scenes and characters", 11, 14], ["Edit and post", "grade, sound, graphics", 14, 24], ["You approve the cut", "2 revision rounds", 24, 26, 1], ["Premiere", "master and all versions", 26, 28]];
   var stepN = 0;
   $("#gantt-rows").innerHTML = G.map(function (g) {
     if (!g[4]) stepN++;
@@ -2268,9 +2306,6 @@ nav.links a { font-size: .84rem !important; padding: 8px 12px !important; }
 
   /* Mobile menu */
   var menu = $("#menu"), mo = $("#menu-open");
-  var mFeat = $("#menu-feat"), mfc = byId[SPOT[0]];
-  mFeat.innerHTML = '<img src="' + mfc.img + '" alt=""><span><small>Now playing</small><b>' + mfc.t + '</b><span class="p">' + NICHE[mfc.n] + " · " + money(mfc.p) + '</span></span><svg class="i"><use href="#i-arrow"/></svg>';
-  mFeat.addEventListener("click", function () { setMenu(false); openSheet(mfc.id); });
   function setMenu(open) { menu.hidden = !open; mo.setAttribute("aria-expanded", String(open)); document.body.classList.toggle("lock", open); if (open) $("#menu-close").focus(); else mo.focus({ preventScroll: true }); }
   mo.addEventListener("click", function () { setMenu(true); });
   $("#menu-close").addEventListener("click", function () { setMenu(false); });
