@@ -1586,6 +1586,49 @@ header.top.solid { background: #05070c !important; border-color: transparent !im
 
 .price-m, #pricing .included { max-width: 860px !important; margin-inline: auto !important; }
 
+/* ===== v10: hero play gradient, spotlight screen + low glass bar ===== */
+.hb-ic { background: linear-gradient(120deg, #ffffff 0%, #8fb2ff 30%, #2f6bff 55%, #8fb2ff 78%, #ffffff 100%) !important; background-size: 300% 300% !important; animation: hbGrad 7s ease-in-out infinite alternate; box-shadow: 0 0 14px rgba(47, 107, 255, .45); }
+.hb-ic svg { fill: #05070c !important; }
+@keyframes hbGrad { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+
+.spot { width: 100% !important; max-width: none !important; justify-self: stretch !important; display: block !important; }
+.sp-screen { position: relative; aspect-ratio: 16 / 7.5; border-radius: 32px; overflow: hidden; background: #05070c; }
+.sp-screen .bg-layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; opacity: 0; transform: scale(1.08); transition: opacity 1.4s ease; will-change: transform, opacity; }
+.sp-screen .bg-layer.is-active { opacity: 1; animation: spKB 16s ease-in-out infinite alternate; }
+@keyframes spKB { from { transform: scale(1.08) translate3d(-1.5%, 1%, 0); } to { transform: scale(1.2) translate3d(1.5%, -2%, 0); } }
+.sp-screen::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(110% 85% at 50% 42%, transparent 40%, rgba(5, 7, 12, .75) 78%, #05070c 100%), linear-gradient(180deg, rgba(5, 7, 12, .3) 0%, transparent 25%, transparent 55%, #05070c 100%); }
+
+.sp-bar { position: relative; z-index: 3; margin: -76px 24px 0; min-height: 96px; padding: 16px 20px 16px 150px; border-radius: 28px; border: 1px solid transparent;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .06) 0%, rgba(255, 255, 255, .015) 45%, rgba(47, 107, 255, .08) 100%) padding-box, linear-gradient(rgba(7, 10, 18, .9), rgba(7, 10, 18, .9)) padding-box,
+    linear-gradient(180deg, rgba(255, 255, 255, .22) 0%, rgba(255, 255, 255, .05) 40%, rgba(110, 160, 255, .65) 100%) border-box;
+  box-shadow: inset 0 -16px 26px -16px rgba(80, 140, 255, .55), inset 0 -2px 1px -1px rgba(170, 205, 255, .55), 0 22px 44px -26px rgba(47, 107, 255, .5), 0 34px 60px -40px rgba(0, 0, 0, .9); }
+.sp-bar .spot-stage { position: absolute !important; left: 20px; bottom: 16px; width: 108px !important; height: 162px !important; aspect-ratio: auto !important; margin: 0 !important; perspective: none !important; }
+.sp-bar .spot-poster { border-radius: 14px !important; box-shadow: 0 18px 30px -12px rgba(0, 0, 0, .9), 0 0 0 1px rgba(255, 255, 255, .14) !important; transform: scale(.94) !important; opacity: 0 !important; transition: opacity .8s ease, transform .8s cubic-bezier(.2, .8, .2, 1) !important; }
+.sp-bar .spot-poster.is-active { opacity: 1 !important; transform: none !important; }
+.sp-bar .spot-poster.is-next, .sp-bar .spot-poster.is-prev { pointer-events: none !important; }
+.sp-bar .spot-poster::after, .sp-bar .spot-poster .pb { display: none !important; }
+.sp-bar .spot-info { margin: 0 !important; width: auto !important; padding: 0 !important; background: none !important; border: 0 !important; box-shadow: none !important; display: grid !important; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "head head" "title foot" "meta foot"; column-gap: 20px; row-gap: 4px; align-items: center; }
+.sp-bar .spot-head { grid-area: head; }
+.sp-bar .spot-title { grid-area: title; font-size: 1.35rem !important; line-height: 1.15; }
+.sp-bar .spot-meta { grid-area: meta; display: block !important; font-size: .78rem; color: var(--muted); }
+.sp-bar .spot-foot { grid-area: foot; display: flex !important; align-items: center; gap: 14px; margin: 0 !important; }
+.sp-bar .spot-foot b { font-size: 1.3rem; font-weight: 300; letter-spacing: -.03em; }
+.sp-bar .spot-foot .btn { padding: 8px 12px 8px 14px !important; font-size: .76rem !important; gap: 6px; }
+.sp-bar .spot-foot .btn svg.i { width: 14px; height: 14px; }
+.spot .lens { margin-top: 14px !important; }
+
+@media (max-width: 700px) {
+  .sp-screen { aspect-ratio: 4 / 5; border-radius: 0; margin-inline: calc(-1 * var(--gut)) calc(-1 * var(--gut-r)); }
+  .sp-bar { margin: -84px 0 0; min-height: 0; padding: 14px 14px 14px 104px; border-radius: 24px; }
+  .sp-bar .spot-stage { left: 14px; bottom: 14px; width: 76px !important; height: 114px !important; }
+  .sp-bar .spot-info { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "title" "meta" "foot"; row-gap: 3px; }
+  .sp-bar .spot-title { font-size: 1.08rem !important; }
+  .sp-bar .spot-meta { font-size: .7rem; }
+  .sp-bar .spot-foot { justify-content: space-between; margin-top: 6px !important; }
+  .sp-bar .spot-foot b { font-size: 1.1rem; }
+  .sp-bar .sa { font-size: .58rem !important; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
@@ -1694,7 +1737,6 @@ header.top.solid { background: #05070c !important; border-color: transparent !im
     <div class="screen" aria-hidden="true"></div>
     <video class="hv-video" id="hv-video" muted loop playsinline preload="metadata" aria-hidden="true"></video>
     <div class="hv-shade" aria-hidden="true"></div>
-    <div class="vf" aria-hidden="true"><i class="c1"></i><i class="c2"></i><i class="c3"></i><i class="c4"></i><span class="vf-l"><i></i>REC <b id="vf-tc">00:00:00:00</b></span><span class="vf-r">4K · 24 fps · 1/48</span></div>
     <div class="hero-in">
       <div class="hero-copy">
         <h1>We erase the barrier between <em>screen and audience</em></h1>
@@ -1719,8 +1761,11 @@ header.top.solid { background: #05070c !important; border-color: transparent !im
         <h2>Six films. One studio.</h2>
       </div>
       <aside class="spot" id="spot" aria-roledescription="carousel" aria-label="Spotlight packages">
-        <div class="spot-stage" id="spot-stage"></div>
-        <div class="spot-info" id="spot-info" aria-live="polite"></div>
+        <div class="sp-screen" id="sp-screen" aria-hidden="true"></div>
+        <div class="sp-bar">
+          <div class="spot-stage" id="spot-stage"></div>
+          <div class="spot-info" id="spot-info" aria-live="polite"></div>
+        </div>
         <div class="lens" id="lens" role="slider" tabindex="0" aria-label="Turn the lens to change the title" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1">
           <svg class="lens-svg" viewBox="0 0 400 180" aria-hidden="true"><defs>
             <linearGradient id="lnB" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2f6bff" stop-opacity="0"/><stop offset=".5" stop-color="#2f6bff" stop-opacity=".55"/><stop offset="1" stop-color="#2f6bff" stop-opacity="0"/></linearGradient>
@@ -2194,16 +2239,16 @@ header.top.solid { background: #05070c !important; border-color: transparent !im
   var SPOT = ["NP-16", "NP-09", "NP-10", "NP-01", "NP-17", "NP-03"];
   (function () {
     var spot = $("#spot"), stage = $("#spot-stage"), info = $("#spot-info"), dots = $("#spot-dots");
-    var layers = { screen: $("#hero .screen"), backdrop: $("#hero .backdrop") };
+    var layers = { screen: $("#sp-screen"), backdrop: null };
     var items = SPOT.map(function (id) { return byId[id]; }), n = items.length, cur = -1, timer = null, paused = false, visible = true;
     var HOLD = 6500, reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (0) layers.screen.innerHTML = items.map(function (c, i) { return '<img class="bg-layer" src="' + c.duo + '" alt="" decoding="async"' + (i > 1 ? ' loading="lazy"' : "") + ">"; }).join("");
+    layers.screen.innerHTML = items.map(function (c, i) { return '<img class="bg-layer" src="' + c.duo + '" alt="" decoding="async"' + (i > 1 ? ' loading="lazy"' : "") + ">"; }).join("");
     if (0) layers.backdrop.innerHTML = items.map(function (c) { return '<img class="bg-layer" src="' + c.blur + '" alt="" decoding="async">'; }).join("");
     stage.innerHTML = items.map(function (c, i) {
       return '<button type="button" class="spot-poster" data-id="' + c.id + '" tabindex="-1" aria-label="Open ' + c.t + '"><img src="' + c.img + '" alt="Poster: ' + c.t + '"' + (i > 1 ? ' loading="lazy"' : "") + ' decoding="async"><img class="pb" src="' + c.blur + '" alt="" loading="lazy" decoding="async"></button>';
     }).join("");
     dots.innerHTML = items.map(function (c, i) { return '<button type="button" data-i="' + i + '" aria-label="Show ' + c.t + '"></button>'; }).join("");
-    var posters = $$(".spot-poster", stage), bgs = $$(".bg-layer", layers.screen), bgb = $$(".bg-layer", layers.backdrop), dotEls = $$("button", dots);
+    var posters = $$(".spot-poster", stage), bgs = $$(".bg-layer", layers.screen), bgb = [], dotEls = $$("button", dots);
     function pad(x) { return (x < 10 ? "0" : "") + x; }
     function show(i) {
       i = (i + n) % n; if (i === cur) return; cur = i;
@@ -2222,8 +2267,8 @@ header.top.solid { background: #05070c !important; border-color: transparent !im
       info.innerHTML =
         '<div class="spot-head"><span class="sa ' + c.a + '"><i></i>' + AP[c.a] + '</span><span class="spot-count"><b>' + pad(i + 1) + "</b> / " + pad(n) + "</span></div>" +
         '<div class="spot-title">' + c.t + "</div>" +
-        '<div class="spot-meta"><span>' + NICHE[c.n] + "</span><span>" + FORMAT[c.f].name + "</span><span>" + c.d + "</span><span>" + c.days + " days</span></div>" +
-        '<div class="spot-foot"><div class="sp"><small>Fixed price</small><b>' + money(c.p) + '</b></div><button type="button" class="btn sm white" data-id="' + c.id + '">View package<svg class="i"><use href="#i-arrow"/></svg></button></div>';
+        '<div class="spot-meta">' + NICHE[c.n] + " · " + FORMAT[c.f].name + " · " + c.d + "</div>" +
+        '<div class="spot-foot"><b>' + money(c.p) + '</b><button type="button" class="btn sm white" data-id="' + c.id + '">View<svg class="i"><use href="#i-arrow"/></svg></button></div>';
     }
     function schedule() {
       clearTimeout(timer);
