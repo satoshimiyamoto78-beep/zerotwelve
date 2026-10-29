@@ -190,9 +190,9 @@ s.level(M, (cx + 0.6, lz), fl(lz) + ' lantern base', 1); s.level(M, (cx + 0.3, l
 s.level(M, (cx - 1.2, TER + 3.65), fl(TER + 3.65) + ' chandelier hoop', -1)
 s.dim(M, (cx - r, ZR), (cx + r, ZR), -8, f'Ø inside {2 * r * 1000:.0f}')
 s.dim(M, (cx - r - 0.12, ZR), (cx - r - 0.12, ZR + dC['rise'] + 0.12), -14, f'{(dC["rise"] + 0.12) * 1000:.0f}')
-s.note(M, (cx - r * 0.7, ZR + dC['rise'] * 0.72), (-30, 12), 'karbandi GRC shell 20 mm, glazed tile finish\nhung on 24 rods M10 from the ribs')
-s.note(M, (cx + r * 0.75, ZR + dC['rise'] * 0.66), (28, 14), 'dome: 24 rolled ribs T80 + GRC 25 mm\nturquoise glazed brick tiles, ribbed')
-s.note(M, (cx + r + 0.06, ZR - 0.4), (30, -6), 'drum: GRC panels on SHS 60 studs @ 600\nkufic glazed brick facing')
+s.note(M, (cx - r * 0.7, ZR + dC['rise'] * 0.72), (-30, 12), 'karbandi GRG 12–15 mm (or FRP), painted\nhung on M10 rods from ribs + hoops')
+s.note(M, (cx + r * 0.75, ZR + dC['rise'] * 0.66), (28, 14), 'dome: 12 rolled ribs T80 + 2 hoops L60\nFRP shell 6–8 mm, turquoise gelcoat, ribbed')
+s.note(M, (cx + r + 0.06, ZR - 0.4), (30, -6), 'drum: cement board / GRC on SHS 60 @ 600\nreal kufic glazed brick facing')
 s.note(M, (cx - r + 0.05, ZR - 0.12), (-26, -10), 'ring beam UPN 240 rolled + LED cove')
 s.note(M, (cx, TER + 3.6), (24, -18), f'chandelier R950, 12+6 pierced brass lanterns\nhung from the crown hook (SWL 150 kg)')
 M2, k2 = s.view('S02b_domeC_plan_cut', (cx - 3.6, cy - 3.6, cx + 3.6, cy + 3.6), 50, (400, 340), 'PLAN CUT AT +4.300 (springing) — RING STRUCTURE', 'ring beam + drum cut; curb, ring girder, beams and purlins below')
@@ -200,9 +200,10 @@ s.dim(M2, (cx - r - 0.135, cy - 3.4), (cx + r + 0.135, cy - 3.4), -6, f'girder o
 s.notes_block(560, 330, 'BUILD-UP & ASSEMBLY SEQUENCE', [
     '1. Erect the ring girder (IPE 300 rolled, 4 segments) on temporary props; bolt the beam fin plates; check level against the 5 % roof plane.',
     '2. Weld the C200 curb ring on the girder top flange; fix SHS 60 drum studs @ 600 (base plates 8 mm, 2xM12) and the top ring UPN 240 at +4.350.',
-    '3. Set the 24 rolled T80 ribs from the ring beam to the lantern ring (CHS 1016x10), bolted 2xM16 each end; brace with 2 hoops (L60).',
-    '4. Hang the karbandi GRC interior panels (precast from the 3D mould file) on M10 rods from the ribs; joint grout + tile touch-up.',
-    '5. Close the shell: GRC 25 mm segments on the ribs, waterproof membrane, glazed brick tiles in the ribbed pattern; lantern glazing and copper cap, finial.',
+    '3. Set the 12 rolled T80 ribs from the ring beam to the lantern ring (CHS 1016x10), bolted 2xM16 each end; 2 hoops L60 (support the inner shell).',
+    '4. Hang the karbandi GRG / FRP interior panels (moulds from the 3D file) on M10 rods from ribs and hoops; fill joints, paint the pattern.',
+    '5. Close the shell: FRP segments (moulded ribbed pattern, UV gelcoat) through-bolted to the ribs, sealed joints; lantern glazing, copper cap, finial.',
+    'LIGHTWEIGHT DOME: ≈ 1.5–2 t total vs ≈ 5 t with GRC + tiles. Heavy GRC option = alternative only. Typhoon uplift fixing by the engineer.',
     '6. Drum facing (kufic glazed brick), LED cove in the ring beam, chandelier hook test-loaded to 2 x SWL before hanging.',
 ], 270)
 sheets.append(s.finish())

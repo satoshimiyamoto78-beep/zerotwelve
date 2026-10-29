@@ -24,10 +24,10 @@ SECTIONS = [
   ('B09', 'Roof-to-building flashing and sealing', 'Diềm che, chống thấm tiếp giáp mái và nhà', 'Folded flashing + PU sealant along the ledger', '37.1 m', 'm', 37.1, None, 'Roof plan'),
   ('B10', 'Skylight 3.0 × 3.0 over the chinar tree: laminated safety glass on steel upstand', 'Giếng trời 3.0 × 3.0 trên cây chinar: kính an toàn dán trên khung thép', 'Laminated glass 6+6 mm low-E, upstand 200 mm, sealed, falls to the roof; openable vent optional', '9 m²', 'm²', 9, 'skylight', 'S-03'),
   ('B11', 'Carved walnut panjara (girih stars) under the skylight, hung on M8 rods', 'Lưới gỗ chạm khắc (hoa văn sao girih) dưới giếng trời, treo bằng ty M8', 'Cell 215–360 mm, hardwood walnut stain, UV + humidity resistant finish', '3.0 × 3.0 m', 'm²', 9, 'skylight', 'S-03'),
-  ('B12', 'Central karbandi dome Ø5.6 — steel: rolled ring girder IPE 300, 24 rolled T80 ribs, lantern ring, drum studs SHS 60, top ring UPN 240', 'Mái vòm karbandi trung tâm Ø5.6 — thép: dầm vòng IPE 300 uốn, 24 sườn T80 uốn, vòng đỉnh, cột khung trống SHS 60, vòng UPN 240', 'Rolled sections, bolted splices; galvanised', 'Ø 5.6 m', 'kg', 1400, 'dome', 'S-02'),
-  ('B13', 'Dome exterior: GRC 25 mm shell + waterproof membrane + turquoise glazed brick tiles (ribbed)', 'Vỏ mái vòm ngoài: GRC 25 mm + màng chống thấm + gạch men xanh ngọc (gân)', 'Glazed tile colour as sample M07; copper finial', '36.2 m²', 'm²', 36.2, 'dome', 'S-02'),
-  ('B14', 'Dome drum: GRC panels + kufic glazed brick facing', 'Trống mái vòm: tấm GRC + ốp gạch men chữ kufic', 'Pattern as sample M09', '7.9 m²', 'm²', 7.9, 'dome', 'S-02'),
-  ('B15', 'Dome interior karbandi shell GRC 20 mm, glazed / painted tile finish, hung on 24 rods M10', 'Vỏ trong karbandi GRC 20 mm, hoàn thiện gạch men / vẽ tay, treo bằng 24 ty M10', 'Precast from the 3D mould file (we supply); painted medallions as the 3D model', '≈ 30 m²', 'm²', 30, 'dome', 'S-02'),
+  ('B12', 'Central dome Ø5.6 — LIGHT steel frame: ring girder IPE 300 rolled (also carries roof beams), 12 rolled T80 ribs + 2 hoops L60, lantern ring CHS, drum studs SHS 60, top ring UPN 240', 'Mái vòm trung tâm Ø5.6 — khung thép NHẸ: dầm vòng IPE 300 uốn (đỡ cả dầm mái), 12 sườn T80 uốn + 2 vòng L60, vòng đỉnh CHS, cột trống SHS 60, vòng UPN 240', 'Lightweight FRP / GRG shells allow 12 ribs instead of 24 (≈ 900 kg instead of ≈ 1 400 kg). Final sections by the structural engineer. Galvanised, bolted splices', 'Ø 5.6 m', 'kg', 900, 'dome', 'S-02'),
+  ('B13', 'Dome exterior shell: FRP (fibreglass composite) 6–8 mm, moulded ribbed tile pattern, turquoise UV gelcoat, in segments bolted to the ribs', 'Vỏ mái vòm ngoài: composite FRP 6–8 mm, đúc khuôn hoa văn gạch gân, gelcoat xanh ngọc chống UV, chia mảnh bắt bu lông vào sườn', '≈ 10–15 kg/m² (GRC + tiles ≈ 70 kg/m²). Colour as sample M07. Typhoon: through-bolts + sealed joints, wind uplift checked by the engineer. Copper finial', '36.2 m²', 'm²', 36.2, 'dome', 'S-02'),
+  ('B14', 'Dome drum: real kufic glazed brick facing (or glazed ceramic tiles) on cement board / GRC panels', 'Trống mái vòm: ốp gạch men chữ kufic thật (hoặc gạch men) trên tấm xi măng / GRC', 'Real ceramic kept here — it is the part seen up close. Pattern as sample M09', '7.9 m²', 'm²', 7.9, 'dome', 'S-02'),
+  ('B15', 'Dome interior karbandi shell: GRG (glass-fibre gypsum) 12–15 mm or FRP, painted pattern as the 3D model, hung from ribs and hoops', 'Vỏ trong karbandi: GRG (thạch cao sợi thủy tinh) 12–15 mm hoặc FRP, vẽ hoa văn theo mô hình 3D, treo vào sườn và vòng', '≈ 12–15 kg/m² (GRC ≈ 45 kg/m²). Moulds from our 3D file (we supply). Indoor-type finish, ventilated void above', '≈ 30 m²', 'm²', 30, 'dome', 'S-02'),
   ('B16', 'Glazed lantern Ø1.0 on the dome crown, copper cap and finial', 'Đèn lồng kính Ø1.0 trên đỉnh vòm, mũ đồng và chóp', 'Laminated glass, ventilation gaps, flashing', '1 pc', 'pcs', 1, 'dome', 'S-02'),
   ('B17', 'Ring gutter / flashing roof-to-dome', 'Máng vòng / diềm tiếp giáp mái và vòm', '—', '1 set', 'lot', 1, None, 'S-02'),
  ]),
@@ -142,6 +142,12 @@ SECTIONS = [
   ('N04', 'Background music: 8 outdoor speakers + amplifier', 'Âm thanh nền: 8 loa ngoài trời + amply', '—', '1 set', 'lot', 1, None, '—'),
   ('N05', 'Fire safety: extinguishers, fire blanket at the mangal, exit signs, FR treatment certificates for all textiles', 'PCCC: bình chữa cháy, chăn chống cháy tại bếp nướng, biển thoát hiểm, chứng nhận chống cháy cho vải', 'Local PCCC approval', '1 set', 'lot', 1, None, '—'),
  ]),
+ ('X', 'ALTERNATIVES — price for comparison only (NOT added to the total)', 'PHƯƠNG ÁN THAY THẾ — chỉ báo giá để so sánh (KHÔNG cộng vào tổng)', [
+  ('X01', 'ALT dome exterior: GRC 25 mm shell + waterproof membrane + real turquoise glazed brick tiles', 'PA vỏ vòm ngoài: GRC 25 mm + màng chống thấm + gạch men xanh ngọc thật', 'Heavy option ≈ 70 kg/m²; needs the 24-rib frame (X03)', '36.2 m²', 'm²', 36.2, 'dome', 'S-02'),
+  ('X02', 'ALT dome interior karbandi: GRC 20 mm precast, glazed / painted tile finish', 'PA vỏ trong karbandi: GRC 20 mm đúc sẵn, hoàn thiện gạch men / vẽ tay', '≈ 45 kg/m²', '≈ 30 m²', 'm²', 30, 'dome', 'S-02'),
+  ('X03', 'ALT dome steel for the GRC option: 24 rolled T80 ribs (instead of 12) — extra steel only', 'PA thép vòm cho phương án GRC: 24 sườn T80 (thay vì 12) — phần thép tăng thêm', 'Extra ≈ 500 kg over B12', '≈ 500 kg', 'kg', 500, 'dome', 'S-02'),
+  ('X04', 'ALT floor: natural honed marble 600×600 instead of porcelain (C01)', 'PA sàn: đá marble tự nhiên mài mờ 600×600 thay porcelain (C01)', 'Honed + anti-slip treatment, sealed', '288 m²', 'm²', 288, 'sw_marble', 'Plan'),
+ ]),
 ]
 
 # material / finish samples shown on the "Materials" sheet: code, name EN, name VI, where used, spec, image file (tex2 or shot)
@@ -191,7 +197,7 @@ CHECKS = [
  ('Q09', 'Water', 'Hauz, aryk and sebil: waterproofing, recirculating pumps, RCD protection, easy cleaning access.', 'Contractor', 'F06, F07, D02'),
  ('Q10', 'Electrical', 'All outdoor fittings IP65, 2700 K warm white, dimmable; display ≥ 1500 nits outdoor-rated.', 'Contractor', 'M, E08'),
  ('Q11', 'Permits', 'Signage (SAMARKAND letters, display), roof structure and PCCC (fire) approvals from the local authorities.', 'Owner / contractor', 'D07, K08, N05'),
- ('Q12', 'Dome', 'Karbandi dome interior: price GRC precast (from our 3D file). Alternative line welcome: CNC timber ribs + painted panels.', 'Contractor', 'B15'),
+ ('Q12', 'Dome', 'Dome is now LIGHTWEIGHT: FRP outer shell + GRG / FRP inner karbandi + 12-rib steel frame (≈ 1.5–2 t total instead of ≈ 5 t with GRC). Please price this as the main option and the heavy GRC version on the ALTERNATIVE lines (section X) for comparison. Engineer to confirm fixing against typhoon uplift.', 'Contractor / engineer', 'B12–B15, X01–X03'),
  ('Q13', 'Glass', 'Kids corner sits against the hall glazing: confirm the existing glass is safety glass or add protection film.', 'Contractor', 'F10'),
  ('Q14', 'Furniture', 'Please price 1 prototype armchair + 1 table first for approval before the series (46 chairs, 15 tables).', 'Owner', 'F01–F03'),
  ('Q15', 'Scope', 'NOT included: main kitchen equipment, tableware, uniforms, POS/IT, licences, loose decor collection for the rotunda unless priced separately.', 'Owner', '—'),

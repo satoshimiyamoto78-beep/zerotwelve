@@ -114,7 +114,7 @@ for code, en, vi, items in SECTIONS:
     hr = row
     ws.cell(hr, 1, code); ws.cell(hr, 2, en); ws.cell(hr, 3, vi)
     for j in range(1, 14):
-        c = ws.cell(hr, j); c.fill = SEC; c.font = font(bold=True, color=NAVY, size=11); c.border = BOX; c.alignment = Alignment(vertical='center', wrap_text=True)
+        c = ws.cell(hr, j); c.fill = fill('FCE4D6') if code == 'X' else SEC; c.font = font(bold=True, color=NAVY, size=11); c.border = BOX; c.alignment = Alignment(vertical='center', wrap_text=True)
     ws.row_dimensions[hr].height = 24; row += 1; first = row
     for it in items:
         ic, ien, ivi, spec, size, unit, qty, img, ref = it
@@ -154,7 +154,7 @@ hdr = ('Code', 'Section', 'Hạng mục', 'Amount VND', 'Lines priced')
 for j, t in enumerate(hdr):
     c = sm.cell(4, 2 + j, t); c.font = font(bold=True, color='FFFFFF'); c.fill = HEAD; c.border = BOX; c.alignment = CEN
 r = 5
-for code, en, vi, hr, first, last in sec_rows:
+for code, en, vi, hr, first, last in [x for x in sec_rows if x[0] != 'X']:
     sm.cell(r, 2, code); sm.cell(r, 3, en); sm.cell(r, 4, vi)
     c = sm.cell(r, 5, f'=BOQ!K{hr}'); c.number_format = VND; c.font = font(color='008000')
     sm.cell(r, 6, f'=COUNTIF(BOQ!M{first}:M{last},"Priced")&" / {last - first + 1}"').alignment = CEN
@@ -179,6 +179,12 @@ sm.cell(tr + 7, 3, 'Lines with status "Alternative"').font = font(italic=True)
 sm.cell(tr + 7, 5, f'=COUNTIF(BOQ!M2:M{nboq},"Alternative")')
 sm.cell(tr + 8, 3, 'Lines without status yet').font = font(italic=True)
 sm.cell(tr + 8, 5, f'=COUNTA(BOQ!A2:A{nboq})-{len(sec_rows)}-COUNTA(BOQ!M2:M{nboq})')
+for code, en, vi, hr, first, last in [x for x in sec_rows if x[0] == 'X']:
+    sm.cell(tr + 12, 2, code); sm.cell(tr + 12, 3, en); sm.cell(tr + 12, 4, vi)
+    c = sm.cell(tr + 12, 5, f'=BOQ!K{hr}'); c.number_format = VND
+    for j in range(2, 7): sm.cell(tr + 12, j).border = BOX; sm.cell(tr + 12, j).fill = fill('FCE4D6'); sm.cell(tr + 12, j).alignment = WRAP
+    sm.cell(tr + 12, 6, f'=COUNTIF(BOQ!M{first}:M{last},"Priced")&" / {last - first + 1}"')
+    sm.row_dimensions[tr + 12].height = 30
 sm.cell(tr + 10, 3, 'Contingency 7 % and VAT 8 % are editable defaults (yellow). VAT rate per current Vietnamese rules — adjust if your invoice uses 10 %.').font = font(italic=True, size=9, color='7F6000')
 
 # ---------------------------------------------------------------- Materials
