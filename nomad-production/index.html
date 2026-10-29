@@ -1886,6 +1886,17 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
 .sp-screen::after { background: linear-gradient(180deg, #05070c 0%, rgba(5, 7, 12, .55) 18%, transparent 38%, transparent 52%, rgba(5, 7, 12, .85) 82%, #05070c 100%), radial-gradient(120% 90% at 50% 50%, transparent 45%, rgba(5, 7, 12, .7) 100%) !important; }
 @media (max-width: 860px) { .sv-art { grid-area: art !important; grid-row: auto; } }
 
+/* Price refresh: skeleton shimmer only over each price and timing */
+.pl-rows.ld > * { filter: none !important; opacity: 1 !important; }
+.pl-rows::after { display: none !important; }
+.pl-row .pr { position: relative; }
+.pl-row .pr > * { transition: opacity .25s ease, filter .25s ease; }
+.pl-row .pr.ld > * { opacity: 0; filter: blur(4px); }
+.pl-row .pr::after { content: ""; position: absolute; top: 2px; bottom: 2px; right: 0; width: 84px; border-radius: 10px; pointer-events: none; opacity: 0;
+  background: linear-gradient(100deg, rgba(255, 255, 255, .05) 25%, rgba(143, 178, 255, .35) 45%, rgba(255, 255, 255, .55) 50%, rgba(143, 178, 255, .35) 55%, rgba(255, 255, 255, .05) 75%) 0 0 / 260% 100%, rgba(255, 255, 255, .05); }
+.pl-row .pr.ld::after { animation: prLoad .95s ease-in-out; }
+@keyframes prLoad { 0% { opacity: 0; background-position: 130% 0, 0 0; } 12% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; background-position: -40% 0, 0 0; } }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
@@ -2926,10 +2937,11 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
     var el = $("#pl-rows");
     if (!el.innerHTML || el.dataset.ap === plAp) { if (!el.innerHTML) el.innerHTML = html; el.dataset.ap = plAp; return; }
     el.dataset.ap = plAp;
-    el.classList.remove("ld"); void el.offsetWidth; el.classList.add("ld");
+    var prs = $$(".pl-row .pr", el), ap = plAp;
+    prs.forEach(function (pr) { pr.classList.remove("ld"); void pr.offsetWidth; pr.classList.add("ld"); });
     clearTimeout(renderPL.t1); clearTimeout(renderPL.t2);
-    renderPL.t1 = setTimeout(function () { el.innerHTML = html; }, 450);
-    renderPL.t2 = setTimeout(function () { el.classList.remove("ld"); }, 1000);
+    renderPL.t1 = setTimeout(function () { prs.forEach(function (pr, i) { var r = ROWS[i], d = DAYS[r[0]][ap]; pr.querySelector("strong").textContent = money(BASE[r[0]][ap]); pr.querySelector("small").textContent = d[0] + "–" + d[1] + " days"; }); }, 520);
+    renderPL.t2 = setTimeout(function () { prs.forEach(function (pr) { pr.classList.remove("ld"); }); }, 950);
   }
   renderPL();
   $("#price-body").innerHTML = ROWS.map(function (r) {
