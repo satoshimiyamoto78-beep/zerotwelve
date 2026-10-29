@@ -1897,6 +1897,21 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
 .pl-row .pr.ld::after { animation: prLoad .95s ease-in-out; }
 @keyframes prLoad { 0% { opacity: 0; background-position: 130% 0, 0 0; } 12% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; background-position: -40% 0, 0 0; } }
 
+/* ===== v15: performance ===== */
+.off, .off *, .off *::before, .off *::after { animation-play-state: paused !important; }
+.sp-screen .bg-layer { will-change: auto !important; }
+.sp-screen .bg-layer.is-active { will-change: transform; }
+.sp-screen .bg-layer:not(.is-active) { animation: none !important; }
+/* Big blocks reveal with fade and rise only; blur stays on text-sized elements */
+.fp #rows .row.fx, .fp .spot.fx, .fp .featured.fx, .fp .flow.fx, .fp .brief-grid > .fx, .fp .est > .fx, .fp .price-m > .fx { filter: none !important; }
+
+.card:hover img.d, .feat:hover img.d, .card:focus-visible img.d, .feat:focus-visible img.d { opacity: 1 !important; }
+.pack { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; grid-template-areas: none !important; align-content: start; gap: 14px !important; }
+.pack > * { grid-column: 1 !important; grid-row: auto !important; }
+.pack .pr { display: flex !important; align-items: baseline; gap: 10px; justify-self: start !important; text-align: left !important; }
+.pack .pr span { margin: 0 !important; }
+.pack .pk-h h3 { white-space: nowrap; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
@@ -2178,9 +2193,9 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
       <div class="flow reveal" id="flow">
         <div class="fl-node fl-prompt"><div class="fl-h"><svg class="i"><use href="#i-spark"/></svg>Prompt<span class="fl-tab">Script</span></div><p id="fl-text"></p><div class="fl-f"><span>16:9</span><span>4K</span><span>24 fps</span><b>Run<svg class="i"><use href="#i-play"/></svg></b></div></div>
         <i class="fl-wire w1"><span class="fl-glow"></span></i>
-        <div class="fl-node fl-frame"><div class="fl-h"><svg class="i"><use href="#i-video"/></svg>Frame 01<span class="fl-tab">4K</span></div><div class="fl-img"><img src="assets/posters/future-tech.jpg" alt="" loading="lazy" decoding="async"><span class="fl-scan"></span></div></div>
+        <div class="fl-node fl-frame"><div class="fl-h"><svg class="i"><use href="#i-video"/></svg>Frame 01<span class="fl-tab">4K</span></div><div class="fl-img"><img src="assets/posters/future-tech-s.jpg" alt="" loading="lazy" decoding="async"><span class="fl-scan"></span></div></div>
         <i class="fl-wire w2"><span class="fl-glow"></span></i>
-        <div class="fl-node fl-cut"><div class="fl-h"><svg class="i"><use href="#i-cut"/></svg>Edit<span class="fl-tab">0:45</span></div><div class="fl-ruler"><span>0s</span><span>15s</span><span>30s</span><span>45s</span></div><div class="fl-strip"><img src="assets/posters/future-tech.jpg" alt="" loading="lazy"><img src="assets/posters/vision.jpg" alt="" loading="lazy"><img src="assets/posters/signal.jpg" alt="" loading="lazy"><img src="assets/posters/your-vision.jpg" alt="" loading="lazy"><i class="fl-head"></i></div><div class="fl-wave"></div></div>
+        <div class="fl-node fl-cut"><div class="fl-h"><svg class="i"><use href="#i-cut"/></svg>Edit<span class="fl-tab">0:45</span></div><div class="fl-ruler"><span>0s</span><span>15s</span><span>30s</span><span>45s</span></div><div class="fl-strip"><img src="assets/posters/future-tech-s.jpg" alt="" loading="lazy"><img src="assets/posters/vision-s.jpg" alt="" loading="lazy"><img src="assets/posters/signal-s.jpg" alt="" loading="lazy"><img src="assets/posters/your-vision-s.jpg" alt="" loading="lazy"><i class="fl-head"></i></div><div class="fl-wave"></div></div>
       </div>
       <div class="proc-ruler" id="proc-ruler"></div>
     </div>
@@ -2351,7 +2366,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
     { id: "NP-18", t: "Misdirection", n: "story", f: "film", a: "edit", d: "5:00", sc: "filmset", img: "misdirection", pos: "50% 35%", p: 3200, days: 12, purpose: "A short thriller that carries a brand’s message and reveals the logo only at the end.", how: "Noir edit of the client’s footage, red as the only colour, AI voice-over and original score.", del: ["5:00 film", "1:00 trailer", "6 social cutdowns"] },
     { id: "NP-19", t: "The Art of Promoting", n: "story", f: "film", a: "ai", d: "4:00", sc: "nomad", img: "art-of-promoting", pos: "50% 60%", p: 9000, days: 30, purpose: "A brand manifesto told through an artisan whose craft becomes wings.", how: "AI worlds grown from real embroidery scans, narrated by a real voice.", del: ["4:00 film", "1:00 trailer", "6 social cutdowns"] }
   ];
-  CAT.forEach(function (c) { var b = "assets/posters/" + c.img; c.img = b + ".jpg"; c.duo = b + ".jpg"; c.blur = b + "-blur.jpg"; });
+  CAT.forEach(function (c) { var b = "assets/posters/" + c.img; c.img = b + ".jpg"; c.duo = b + ".jpg"; c.sm = b + "-s.jpg"; c.blur = b + "-blur.jpg"; });
   var FEATURED = ["NP-18", "NP-12", "NP-07", "NP-11"];
 
   /* ================= Illustrated scenes ================= */
@@ -2471,7 +2486,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
   function media(c) {
     if (!c.img) return scene(c.sc, c.hue);
     var st = c.pos ? ' style="object-position:' + c.pos + '"' : "";
-    return (FINE ? '<img class="c" src="' + c.img + '" alt="" loading="lazy" decoding="async"' + st + ">" : "") + '<img class="d" src="' + c.duo + '" alt="" loading="lazy" decoding="async"' + st + ">";
+    return '<img class="d" src="' + c.sm + '" alt="" loading="lazy" decoding="async"' + st + ">";
   }
   function featHTML(c) {
     return '<button type="button" class="feat" data-id="' + c.id + '" aria-label="' + c.t + ", " + NICHE[c.n] + ", " + money(c.p) + '"><span class="fp">' + media(c) +
@@ -2505,10 +2520,10 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
     var layers = { screen: $("#sp-screen"), backdrop: null };
     var items = SPOT.map(function (id) { return byId[id]; }), n = items.length, cur = -1, timer = null, paused = false, visible = true;
     var HOLD = 6500, reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    layers.screen.innerHTML = items.map(function (c, i) { return '<img class="bg-layer" src="' + c.duo + '" alt="" decoding="async"' + (i > 1 ? ' loading="lazy"' : "") + ">"; }).join("");
+    layers.screen.innerHTML = items.map(function (c, i) { return '<img class="bg-layer" ' + (i < 2 ? 'src' : 'data-src') + '="' + c.duo + '" alt="" decoding="async">'; }).join("");
     if (0) layers.backdrop.innerHTML = items.map(function (c) { return '<img class="bg-layer" src="' + c.blur + '" alt="" decoding="async">'; }).join("");
     stage.innerHTML = items.map(function (c, i) {
-      return '<button type="button" class="spot-poster" data-id="' + c.id + '" tabindex="-1" aria-label="Open ' + c.t + '"><img src="' + c.img + '" alt="Poster: ' + c.t + '"' + (i > 1 ? ' loading="lazy"' : "") + ' decoding="async"><img class="pb" src="' + c.blur + '" alt="" loading="lazy" decoding="async"></button>';
+      return '<button type="button" class="spot-poster" data-id="' + c.id + '" tabindex="-1" aria-label="Open ' + c.t + '"><img src="' + c.sm + '" alt="Poster: ' + c.t + '"' + (i > 1 ? ' loading="lazy"' : "") + ' decoding="async"></button>';
     }).join("");
     dots.innerHTML = items.map(function (c, i) { return '<button type="button" data-i="' + i + '" aria-label="Show ' + c.t + '"></button>'; }).join("");
     var posters = $$(".spot-poster", stage), bgs = $$(".bg-layer", layers.screen), bgb = [], dotEls = $$("button", dots);
@@ -2522,6 +2537,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
         p.classList.toggle("is-prev", k === (i - 1 + n) % n);
         p.tabIndex = k === i ? 0 : -1;
       });
+      [i, (i + 1) % n].forEach(function (k) { var im = bgs[k]; if (im && im.dataset.src) { im.src = im.dataset.src; im.removeAttribute("data-src"); } });
       [bgs, bgb].forEach(function (set) { set.forEach(function (b, k) { b.classList.toggle("is-active", k === i); }); });
       dotEls.forEach(function (d, k) { d.setAttribute("aria-current", String(k === i)); });
       if (spot._lens) spot._lens(i);
@@ -2642,7 +2658,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
       tabs.forEach(function (t, i) { t.setAttribute("aria-current", String(i === k)); });
       ink.style.width = b.offsetWidth + "px"; ink.style.transform = "translateX(" + b.offsetLeft + "px)";
     }
-    addEventListener("scroll", function () { requestAnimationFrame(spy); }, { passive: true }); addEventListener("resize", function () { cur = -1; spy(); });
+    var spq = false; addEventListener("scroll", function () { if (spq) return; spq = true; requestAnimationFrame(function () { spq = false; spy(); }); }, { passive: true }); addEventListener("resize", function () { cur = -1; spy(); });
     fsync(); setTimeout(spy, 300);
   })();
 
@@ -3124,6 +3140,14 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
       scr.style.marginTop = -up + "px"; scr.style.height = (h + up) + "px";
     }
     fit(); addEventListener("resize", fit); addEventListener("load", fit);
+  })();
+
+
+  /* ================= Pause looping animations off screen ================= */
+  (function () {
+    if (!("IntersectionObserver" in window)) return;
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { e.target.classList.toggle("off", !e.isIntersecting); }); }, { rootMargin: "120px 0px" });
+    $$("#hero, main > .sec, footer").forEach(function (el) { io.observe(el); });
   })();
 
   /* ================= Brief / ordering ================= */
