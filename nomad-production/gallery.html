@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nomad Gallery</title>
+<meta name="description" content="Every Nomad Production title in one place: AI films, hybrid and edits.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root { --bg: #05070c; --ink: #fff; --muted: rgba(255,255,255,.62); --dim: rgba(255,255,255,.4); --blue: #2f6bff; --blue-2: #8fb2ff; --font: "Plus Jakarta Sans", system-ui, sans-serif; --gut: max(22px, env(safe-area-inset-left, 0px)); --grad: linear-gradient(95deg, #ffffff, #8fb2ff 45%, #2f6bff); color-scheme: dark; }
+* { box-sizing: border-box; margin: 0; }
+html { scrollbar-width: none; } html::-webkit-scrollbar { display: none; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
+svg.i { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+a { color: inherit; }
+.wrap { max-width: 1340px; margin: 0 auto; padding: 0 var(--gut); }
+header { position: sticky; top: 0; z-index: 10; background: rgba(5,7,12,.96); }
+.bar { height: 56px; display: flex; align-items: center; justify-content: space-between; }
+.logo { display: inline-flex; align-items: center; gap: 7px; text-decoration: none; font-weight: 800; font-size: .9rem; letter-spacing: -.02em; }
+.logo svg { width: 26px; height: 26px; filter: drop-shadow(0 3px 8px rgba(47,107,255,.45)); }
+.logo small { display: block; font-size: .5rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-top: 1px; }
+.logo > span { line-height: 1; }
+.back { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-size: .84rem; font-weight: 600; padding: 9px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.14); }
+.back svg.i { width: 15px; height: 15px; }
+.head { padding: clamp(56px, 9vw, 120px) 0 clamp(28px, 4vw, 48px); }
+.label { font-size: .66rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--blue-2); }
+h1 { font-size: clamp(2.4rem, 6vw, 5rem); letter-spacing: -.045em; line-height: 1; margin-top: 12px; }
+h1 em { font-style: normal; color: transparent; background: var(--grad); -webkit-background-clip: text; background-clip: text; }
+.lede { color: var(--muted); max-width: 52ch; margin-top: 16px; line-height: 1.6; }
+.filters { position: sticky; top: 56px; z-index: 9; background: var(--bg); padding: 10px 0 14px; display: grid; gap: 10px; }
+.tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; position: relative; border-bottom: 1px solid rgba(255,255,255,.08); }
+.tabs button { flex: none; border: 0; background: none; color: var(--muted); font: 600 .9rem var(--font); padding: 10px 12px 12px; cursor: pointer; position: relative; }
+.tabs button:first-child { padding-left: 0; }
+.tabs button[aria-pressed="true"] { color: #fff; }
+.tabs button[aria-pressed="true"]::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: -1px; height: 2px; border-radius: 2px; background: var(--grad); box-shadow: 0 0 10px rgba(80,140,255,.6); }
+.tabs button:first-child[aria-pressed="true"]::after { left: 0; }
+.chips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+.chip { flex: none; display: inline-flex; align-items: center; gap: 7px; border: 1px solid rgba(255,255,255,.14); background: none; color: #fff; font: 600 .8rem var(--font); padding: 8px 14px; border-radius: 999px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: #fff; color: #05070c; border-color: #fff; }
+.chip svg.i { width: 15px; height: 15px; }
+.count { font-size: .78rem; color: var(--dim); margin-top: 2px; }
+.grid { columns: 4 260px; column-gap: clamp(14px, 2vw, 24px); padding: 18px 0 clamp(64px, 8vw, 120px); }
+.item { break-inside: avoid; display: block; text-decoration: none; margin-bottom: clamp(18px, 2.4vw, 30px); opacity: 0; transform: translateY(18px); filter: blur(8px); transition: opacity .7s ease, transform .8s cubic-bezier(.2,.7,.2,1), filter .8s; }
+.item.in { opacity: 1; transform: none; filter: none; }
+.item .ph { position: relative; border-radius: 18px; overflow: hidden; background: #0b0f18; }
+.item img { width: 100%; display: block; transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+@media (hover: hover) { .item:hover img { transform: scale(1.04); } }
+.item .tag { position: absolute; left: 10px; top: 10px; font-size: .6rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; padding: 5px 9px; border-radius: 999px; background: rgba(5,7,12,.7); border: 1px solid rgba(255,255,255,.18); }
+.item .dur { position: absolute; right: 10px; top: 10px; font-size: .64rem; font-weight: 700; padding: 5px 8px; border-radius: 999px; background: rgba(5,7,12,.7); }
+.item .meta { display: flex; justify-content: space-between; gap: 10px; padding-top: 10px; }
+.item b { font-size: .96rem; letter-spacing: -.01em; }
+.item small { display: block; font-size: .74rem; color: var(--muted); margin-top: 2px; }
+.item .pr { font-weight: 700; font-size: .92rem; white-space: nowrap; }
+.empty { color: var(--muted); padding: 40px 0; }
+footer { border-top: 1px solid rgba(255,255,255,.08); padding: 28px 0 40px; color: var(--dim); font-size: .78rem; display: flex; justify-content: space-between; }
+@media (prefers-reduced-motion: reduce) { .item { opacity: 1; transform: none; filter: none; transition: none; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <linearGradient id="gA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9dbbff"/><stop offset=".5" stop-color="#3d6dff"/><stop offset="1" stop-color="#2530b0"/></linearGradient>
+  <linearGradient id="gB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6f97ff"/><stop offset=".55" stop-color="#8f7dff"/><stop offset="1" stop-color="#f1b5e3"/></linearGradient>
+  <linearGradient id="gC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e4edff"/><stop offset="1" stop-color="#9ab8ff"/></linearGradient>
+  <radialGradient id="gD" cx=".5" cy=".42" r=".62"><stop offset="0" stop-color="#05060f"/><stop offset=".72" stop-color="#1a1d58"/><stop offset="1" stop-color="#b48ce6"/></radialGradient>
+  <linearGradient id="gE" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c2f8f"/><stop offset="1" stop-color="#151848"/></linearGradient>
+  <symbol id="g-person" viewBox="0 0 32 32"><path d="M4 29c.6-6.3 5.6-10.5 12-10.5S27.4 22.7 28 29Z" fill="url(#gA)"/><circle cx="16" cy="10.5" r="6.5" fill="url(#gB)"/></symbol>
+  <symbol id="g-box" viewBox="0 0 32 32"><path d="M16 3.5 28 10 16 16.5 4 10Z" fill="url(#gC)"/><path d="M4 10l12 6.5V29L4 22.5Z" fill="url(#gA)"/><path d="M28 10l-12 6.5V29l12-6.5Z" fill="url(#gB)"/></symbol>
+  <symbol id="g-globe" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12.5" fill="url(#gA)"/><ellipse cx="16" cy="16" rx="5.4" ry="12.5" fill="none" stroke="url(#gC)" stroke-width="1.6"/><path d="M3.8 16h24.4M6 9.5h20M6 22.5h20" stroke="url(#gC)" stroke-width="1.4" opacity=".75"/><circle cx="22" cy="10" r="3.2" fill="#f1b5e3" opacity=".8"/></symbol>
+  <symbol id="g-bolt" viewBox="0 0 32 32"><path d="M19 2.5 6.5 18.2h8.2L12.5 29.5 26 13.3h-8.4Z" fill="url(#gB)"/></symbol>
+  <symbol id="g-cal" viewBox="0 0 32 32"><rect x="3.5" y="6" width="25" height="23" rx="6" fill="url(#gA)"/><path d="M3.5 12V12a6 6 0 0 1 6-6h13a6 6 0 0 1 6 6Z" fill="url(#gE)"/><rect x="9" y="3" width="3.2" height="7" rx="1.6" fill="url(#gC)"/><rect x="19.8" y="3" width="3.2" height="7" rx="1.6" fill="url(#gC)"/><rect x="9" y="17" width="5" height="5" rx="1.6" fill="#f1b5e3"/><rect x="17.5" y="17" width="5" height="5" rx="1.6" fill="url(#gC)" opacity=".7"/></symbol>
+  <symbol id="g-clock" viewBox="0 0 32 32"><circle cx="7.2" cy="7.2" r="4.2" fill="url(#gE)"/><circle cx="24.8" cy="7.2" r="4.2" fill="url(#gE)"/><circle cx="16" cy="18" r="11.5" fill="url(#gA)"/><path d="M16 11v7.4l4.6 3.4" stroke="#fff" stroke-width="2.4" stroke-linecap="round" fill="none"/><path d="M16 18.4l-4.2 3" stroke="#f1b5e3" stroke-width="2.4" stroke-linecap="round"/></symbol>
+  <symbol id="g-coin1" viewBox="0 0 32 32"><circle cx="16" cy="16" r="11" fill="url(#gB)"/><circle cx="16" cy="16" r="7.6" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1.4"/><path d="M18.4 12.6c-.7-.8-1.6-1.1-2.6-1.1-1.5 0-2.6.8-2.6 2s1 1.7 2.6 2.1 2.7.9 2.7 2.2-1.2 2.1-2.7 2.1c-1.1 0-2.1-.4-2.8-1.2M16 10v12" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round"/></symbol>
+  <symbol id="g-coin2" viewBox="0 0 32 32"><circle cx="20.5" cy="12" r="8.5" fill="url(#gA)" opacity=".75"/><circle cx="13" cy="19" r="9.5" fill="url(#gB)"/><path d="M15 15.8c-.6-.6-1.3-.9-2.1-.9-1.3 0-2.2.7-2.2 1.7s.8 1.4 2.2 1.8 2.3.8 2.3 1.9-1 1.8-2.3 1.8c-.9 0-1.8-.4-2.4-1M13 14v10.4" stroke="#fff" stroke-width="1.4" fill="none" stroke-linecap="round"/></symbol>
+  <symbol id="g-coin3" viewBox="0 0 32 32"><ellipse cx="16" cy="25" rx="11" ry="4" fill="url(#gE)"/><ellipse cx="16" cy="20" rx="11" ry="4" fill="url(#gA)"/><ellipse cx="16" cy="15" rx="11" ry="4" fill="url(#gA)" opacity=".85"/><ellipse cx="16" cy="10" rx="11" ry="4.2" fill="url(#gB)"/><ellipse cx="16" cy="10" rx="6" ry="1.9" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="1.2"/></symbol>
+  <symbol id="g-camera" viewBox="0 0 32 32"><circle cx="9" cy="7.5" r="4.5" fill="url(#gC)"/><circle cx="18" cy="7.5" r="4.5" fill="url(#gC)" opacity=".7"/><rect x="2.5" y="12" width="20" height="15" rx="5" fill="url(#gA)"/><path d="M22.5 17.5 29.5 13v13l-7-4.5Z" fill="url(#gB)"/><circle cx="9" cy="19.5" r="2.4" fill="#f1b5e3"/></symbol>
+  <symbol id="g-spark" viewBox="0 0 32 32"><path d="M14 3c1 7.2 4.6 10.8 11.8 11.8C18.6 15.8 15 19.4 14 26.6 13 19.4 9.4 15.8 2.2 14.8 9.4 13.8 13 10.2 14 3Z" fill="url(#gB)"/><path d="M25 19.5c.4 3 1.9 4.5 4.9 4.9-3 .4-4.5 1.9-4.9 4.9-.4-3-1.9-4.5-4.9-4.9 3-.4 4.5-1.9 4.9-4.9Z" fill="url(#gC)"/></symbol>
+  <symbol id="g-layers" viewBox="0 0 32 32"><path d="M16 17 29 23.5 16 30 3 23.5Z" fill="url(#gE)"/><path d="M16 10.5 29 17 16 23.5 3 17Z" fill="url(#gA)"/><path d="M16 3.5 29 10 16 16.5 3 10Z" fill="url(#gB)"/></symbol>
+  <symbol id="g-music" viewBox="0 0 32 32"><path d="M12 6.5 27 3v17.5" stroke="url(#gA)" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 6.5V24" stroke="url(#gA)" stroke-width="3.4" stroke-linecap="round"/><ellipse cx="8" cy="24.5" rx="5" ry="4" fill="url(#gB)"/><ellipse cx="23" cy="21" rx="5" ry="4" fill="url(#gB)"/></symbol>
+  <symbol id="g-phone" viewBox="0 0 32 32"><rect x="12" y="4" width="15" height="24" rx="5" fill="url(#gC)" opacity=".45"/><rect x="6" y="2.5" width="16" height="27" rx="5.5" fill="url(#gA)"/><rect x="9.5" y="5.4" width="9" height="3.4" rx="1.7" fill="url(#gE)"/><path d="M12 14.2v7.6l6.2-3.8Z" fill="#fff"/></symbol>
+  <symbol id="g-monitor" viewBox="0 0 32 32"><rect x="2" y="4" width="28" height="19" rx="5" fill="url(#gA)"/><rect x="4.6" y="6.6" width="22.8" height="13.8" rx="3.2" fill="url(#gD)"/><path d="M14 10.6v6.6l5.6-3.3Z" fill="#fff"/><path d="M11 28.5h10" stroke="url(#gC)" stroke-width="2.6" stroke-linecap="round"/><path d="M16 23v5" stroke="url(#gC)" stroke-width="2.6"/></symbol>
+  <symbol id="g-film" viewBox="0 0 32 32"><rect x="3" y="12" width="26" height="17" rx="5" fill="url(#gA)"/><path d="M3.5 11 2.6 6.2a2 2 0 0 1 1.6-2.3L25 .9a2 2 0 0 1 2.3 1.6l.8 4.7Z" fill="url(#gE)"/><path d="M8 4.3l3.2 5.1M14.5 3.3l3.2 5.1M21 2.3l3.2 5.1" stroke="url(#gC)" stroke-width="2.4" stroke-linecap="round"/><rect x="7.5" y="17" width="11" height="3" rx="1.5" fill="url(#gC)" opacity=".8"/><rect x="7.5" y="22.5" width="16" height="3" rx="1.5" fill="#f1b5e3" opacity=".8"/></symbol>
+  <symbol id="g-cut" viewBox="0 0 32 32"><path d="M11.6 11.4 27.5 26.5M11.6 20.6 27.5 5.5" stroke="url(#gA)" stroke-width="3.4" stroke-linecap="round"/><circle cx="7.5" cy="8" r="4.8" fill="none" stroke="url(#gB)" stroke-width="3.2"/><circle cx="7.5" cy="24" r="4.8" fill="none" stroke="url(#gB)" stroke-width="3.2"/><circle cx="18" cy="16" r="1.8" fill="#fff"/></symbol>
+
+  <filter id="duo" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="table" tableValues="0.02 0.05 0.18 1"/><feFuncG type="table" tableValues="0.03 0.1 0.42 1"/><feFuncB type="table" tableValues="0.05 0.26 1 1"/></feComponentTransfer></filter>
+  <symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="3.5" width="18" height="17" rx="2.5"/><path d="M7.5 3.5v17M16.5 3.5v17M3 8h4.5M3 12h4.5M3 16h4.5M16.5 8H21M16.5 12H21M16.5 16H21"/></symbol>
+  <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3.5s6 6.4 6 10.5a6 6 0 0 1-12 0c0-4.1 6-10.5 6-10.5Z"/></symbol>
+  <symbol id="i-wave" viewBox="0 0 24 24"><path d="M3 12h2M7 8v8M11 5v14M15 9v6M19 11v2"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-3.8 4-5.5 7.5-5.5s6.3 1.7 7.5 5.5"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 3.6 5.4 3.6 8.5s-1.1 5.9-3.6 8.5c-2.5-2.6-3.6-5.4-3.6-8.5S9.5 6.1 12 3.5Z"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3 5 13.5h6L10 21l8-10.5h-6L13 3Z"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2.5" y="4" width="19" height="13" rx="2"/><path d="M8.5 21h7M12 17v4"/></symbol>
+  <symbol id="i-laurel" viewBox="-1 -2.5 21 37"><path d="M16 33.5Q1.5 17 12.5 .8" fill="none" stroke="currentColor" stroke-width="1"/><ellipse cx="10.88" cy="30.88" rx="1.45" ry="3.30" transform="rotate(-234.4 10.88 30.88)"/><ellipse cx="7.96" cy="25.89" rx="1.45" ry="3.30" transform="rotate(-225.5 7.96 25.89)"/><ellipse cx="11.79" cy="23.93" rx="1.15" ry="2.60" transform="rotate(-197.0 11.79 23.93)"/><ellipse cx="6.11" cy="20.82" rx="1.45" ry="3.30" transform="rotate(-214.8 6.11 20.82)"/><ellipse cx="10.23" cy="19.60" rx="1.15" ry="2.60" transform="rotate(-186.4 10.23 19.60)"/><ellipse cx="5.35" cy="15.71" rx="1.45" ry="3.30" transform="rotate(-202.8 5.35 15.71)"/><ellipse cx="9.64" cy="15.38" rx="1.15" ry="2.60" transform="rotate(-174.3 9.64 15.38)"/><ellipse cx="5.72" cy="10.62" rx="1.45" ry="3.30" transform="rotate(-190.3 5.72 10.62)"/><ellipse cx="9.98" cy="11.23" rx="1.15" ry="2.60" transform="rotate(-161.9 9.98 11.23)"/><ellipse cx="7.17" cy="5.63" rx="1.45" ry="3.30" transform="rotate(-178.5 7.17 5.63)"/><ellipse cx="11.21" cy="7.09" rx="1.15" ry="2.60" transform="rotate(-150.0 11.21 7.09)"/><ellipse cx="9.44" cy="1.10" rx="1.45" ry="3.30" transform="rotate(-168.8 9.44 1.10)"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3.5 12.4V4.5a1 1 0 0 1 1-1h7.9a1 1 0 0 1 .7.3l7.6 7.6a1 1 0 0 1 0 1.4l-7.9 7.9a1 1 0 0 1-1.4 0l-7.6-7.6a1 1 0 0 1-.3-.7Z"/><circle cx="8.5" cy="8.5" r="1.5"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.4a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.7M12 16.8v.2"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5L7 4.5Z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.8v.2"/></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M10 9v6l5-3-5-3Z"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><rect x="2.5" y="7" width="13" height="10" rx="2"/><path d="M15.5 10.5 21 7.5v9l-5.5-3"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3c.6 4.2 2.8 6.4 7 7-4.2.6-6.4 2.8-7 7-.6-4.2-2.8-6.4-7-7 4.2-.6 6.4-2.8 7-7Z"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></symbol>
+  <symbol id="i-cut" viewBox="0 0 24 24"><circle cx="6" cy="6.5" r="2.8"/><circle cx="6" cy="17.5" r="2.8"/><path d="M8.3 8.2 20 18M8.3 15.8 20 6"/></symbol>
+  <symbol id="i-ref" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 9h18M8 4v5"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><path d="M4 20l1.2-4A8.2 8.2 0 1 1 8.4 19z"/><path d="M9.2 8.6c0 3.3 2.9 6.2 6.2 6.2l1-1.4-2-1-1 1a4.7 4.7 0 0 1-2.8-2.8l1-1-1-2Z" stroke-width="1.4"/></symbol><symbol id="i-yt" viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.2 9.4v5.2l4.4-2.6Z" fill="currentColor" stroke="none"/></symbol><symbol id="i-ig" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6" fill="currentColor"/></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9.5 18h5M10.5 21h3"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2h5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3Z"/></symbol><symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="m4 17.5 5-4.5 4 3.5 3-2.5 4 3.5"/></symbol><symbol id="i-inf" viewBox="0 0 24 24"><path d="M7 9a3 3 0 1 0 0 6c2.5 0 3.5-3 5-3s2.5 3 5 3a3 3 0 1 0 0-6c-2.5 0-3.5 3-5 3S9.5 9 7 9Z"/></symbol><symbol id="i-coin1" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5"/><path d="M12 8.5v7"/></symbol><symbol id="i-coin2" viewBox="0 0 24 24"><circle cx="10" cy="13" r="6.5"/><path d="M13.5 5.2A6.5 6.5 0 0 1 20.5 11a6.5 6.5 0 0 1-3.2 5.6"/></symbol><symbol id="i-coin3" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="2.5"/><path d="M5 6v4c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5V6M5 10v4c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-4M5 14v3.5c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5V14"/></symbol><symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol><symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M21 3.5 2.5 10.8l7 2.7 2.7 7L21 3.5Z"/><path d="m9.5 13.5 4-4"/></symbol>
+</svg>
+<header><div class="wrap bar">
+  <a class="logo" href="./"><svg viewBox="0 0 32 32" aria-hidden="true"><use href="#g-camera"/></svg><span>NOMAD<small>Production</small></span></a>
+  <a class="back" href="./"><svg class="i"><use href="#i-left"/></svg>Back to site</a>
+</div></header>
+<main class="wrap">
+  <div class="head"><span class="label">Gallery</span><h1>Every title, <em>one place</em></h1><p class="lede">AI films, hybrid and edits across every niche. Open a title to see its scope, price and timeline, then order one like it.</p></div>
+  <div class="filters">
+    <div class="tabs" id="tabs"></div>
+    <div class="chips" id="chips"></div>
+    <div class="count" id="count"></div>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+<footer class="wrap"><span>© 2026 Nomad Production</span><a href="./">nomad.production</a></footer>
+<script>
+(function () {
+  "use strict";
+  var $ = function (q) { return document.querySelector(q); };
+  var money = function (n) { return "$" + Math.round(n).toLocaleString("en-US"); };
+  var AP = { ai: "AI film", hybrid: "Hybrid", edit: "Edit" };
+  var NICHE = { fashion: "Fashion", beauty: "Beauty", tech: "Tech", music: "Music", estate: "Real estate", story: "Brand story" };
+  var FORMAT = {
+    short: { name: "Short-form", ratio: "9:16", ar: "9 / 16", title: "Short-form", sub: "TikTok, Reels and Shorts, built to stop the scroll", len: "6–60 sec", row: "Short-form for TikTok, Reels and Shorts", note: "6–60 sec, vertical, built to stop the scroll" },
+    promo: { name: "Promo & ads", ratio: "16:9", ar: "16 / 9", title: "Promo & ads", sub: "Launches, YouTube and paid media", len: "30–90 sec", row: "Promo films and ads", note: "30–90 sec for launches, YouTube and paid media" },
+    film: { name: "Brand film", ratio: "2.39:1", ar: "2.39 / 1", title: "Brand films", sub: "Stories about a brand, a founder or a craft", len: "3–10 min", row: "Brand films and storytelling", note: "3–10 min about a brand, a founder or a craft" }
+  };
+  var CAT = [
+    { id: "NP-01", t: "Error 404", n: "tech", f: "short", a: "ai", d: "0:15", sc: "phone", img: "error-404", pos: "50% 25%", p: 650, days: 3, purpose: "A launch teaser for a security app: the moment a face stops being yours.", how: "AI glitch transformation built on a real portrait, title animated in the edit and synced to the sound logo.", del: ["0:15 vertical", "1:1 ad version"] },
+    { id: "NP-02", t: "Vision", n: "beauty", f: "short", a: "ai", d: "0:15", sc: "ai", img: "vision", pos: "50% 45%", p: 700, days: 4, purpose: "Launch an eyewear line by making the viewer look through the lens.", how: "AI macro of an eye framed like a viewfinder, typography animated on the beat.", del: ["0:15 vertical", "0:06 bumper", "4:5 feed version"] },
+    { id: "NP-03", t: "Under the Spotlight", n: "beauty", f: "short", a: "edit", d: "0:20", sc: "filmset", img: "spotlight", pos: "50% 35%", p: 500, days: 4, purpose: "Introduce a men’s skincare line with one face and one light.", how: "Cut from the brand’s own studio footage: slow push-ins and light sweeps timed to an AI voice-over.", del: ["2 verticals of 0:20", "10 stills"] },
+    { id: "NP-04", t: "Signal", n: "fashion", f: "short", a: "hybrid", d: "0:25", sc: "fashion", img: "signal", pos: "50% 20%", p: 1400, days: 6, purpose: "Announce a capsule drop with one image people remember.", how: "The brand’s model photos and clips extended with AI motion trails and a glitch pass, matched in the grade.", del: ["0:25 vertical", "2 teasers of 0:10", "4:5 feed version"] },
+    { id: "NP-05", t: "Afterimage", n: "fashion", f: "short", a: "ai", d: "0:20", sc: "fashion", img: "afterimage", pos: "60% 30%", p: 800, days: 4, purpose: "A teaser for a streetwear jacket that reads in one second.", how: "Portrait extended with AI motion trails and a chromatic split, cut to a bass hit.", del: ["0:20 vertical", "0:10 teaser", "4:5 feed version"] },
+    { id: "NP-06", t: "Mukhda", n: "music", f: "short", a: "ai", d: "0:30", sc: "nomad", img: "mukhda", pos: "50% 35%", p: 900, days: 5, purpose: "Announce a single with a painted world built around the artist’s eyes.", how: "Illustrated AI frames animated in 2.5D, lyrics set as titles and synced to the hook.", del: ["0:30 vertical", "3 cutdowns of 0:10", "Cover art"] },
+    { id: "NP-07", t: "Delulu", n: "beauty", f: "short", a: "edit", d: "0:25", sc: "fashion", img: "delulu", pos: "45% 35%", p: 550, days: 4, purpose: "Make a saree and jewellery brand feel like a love song.", how: "Edited from the client’s daylight footage: slow motion on fabric, cut to the song.", del: ["0:25 vertical", "4:5 feed version", "10 stills"] },
+    { id: "NP-08", t: "Nazariya", n: "music", f: "promo", a: "edit", d: "1:00", sc: "fashion", img: "nazariya", pos: "50% 45%", p: 1400, days: 8, purpose: "A music teaser that puts culture and attitude in one frame.", how: "The artist’s studio footage cut to the beat, colour blocking built in the grade.", del: ["1:00 master", "0:30 and 0:15 cuts", "6 verticals"] },
+    { id: "NP-09", t: "Nari", n: "fashion", f: "promo", a: "edit", d: "1:00", sc: "fashion", img: "nari", pos: "50% 30%", p: 1600, days: 9, purpose: "Introduce a heritage fashion label through one woman and the craft she wears.", how: "Edited from the label’s portrait and macro footage of fabric, henna and jewellery, scored to picture.", del: ["1:00 master", "0:30 and 0:15 cuts", "20 stills"] },
+    { id: "NP-10", t: "La Maison", n: "fashion", f: "promo", a: "hybrid", d: "0:45", sc: "filmset", img: "la-maison", pos: "50% 40%", p: 3800, days: 14, purpose: "Show the scale of a couture house through one sewing machine.", how: "The client’s actor footage composited at miniature scale onto an AI macro of the machine.", del: ["0:45 master", "0:15 cutdown", "9:16 version"] },
+    { id: "NP-11", t: "Blueprint", n: "estate", f: "promo", a: "hybrid", d: "1:20", sc: "villa", img: "blueprint", pos: "50% 40%", p: 3800, days: 14, purpose: "Sell an off-plan development by walking the buyer through its plan.", how: "The developer’s presenter footage on the floor plan. Rooms rise out of the lines with AI and VFX.", del: ["1:20 master", "0:30 ad cut", "9:16 tour version"] },
+    { id: "NP-12", t: "Future Tech", n: "tech", f: "promo", a: "hybrid", d: "0:45", sc: "ai", img: "future-tech", pos: "50% 35%", p: 3500, days: 12, purpose: "Launch a weather-data platform by showing data reshape a face.", how: "The client’s portrait footage, pixel displacement generated and driven by real data.", del: ["0:45 master", "0:15 ad", "9:16 version"] },
+    { id: "NP-13", t: "Your Vision", n: "tech", f: "promo", a: "ai", d: "0:30", sc: "ai", img: "your-vision", pos: "40% 45%", p: 2500, days: 10, purpose: "Explain a design tool in 30 seconds without a single screenshot.", how: "AI macro of an eye reflecting the product, interface panels floating in depth around it.", del: ["0:30 master", "0:15 cutdown", "9:16 and 4:5 versions"] },
+    { id: "NP-14", t: "Logout", n: "tech", f: "promo", a: "edit", d: "0:45", sc: "phone", img: "logout", pos: "50% 30%", p: 1300, days: 7, purpose: "Launch a digital-wellbeing app by showing how screens hold us.", how: "The client’s footage cut with phone-screen inserts, interface composited in post.", del: ["0:45 master", "0:15 ad", "9:16 version"] },
+    { id: "NP-15", t: "Red Veil", n: "fashion", f: "promo", a: "edit", d: "1:00", sc: "fashion", img: "red-veil", pos: "50% 45%", p: 1500, days: 8, purpose: "A bridal collection film built on one gesture: the veil lifting.", how: "Bridal footage from the brand edited around one gesture, graded high-key.", del: ["1:00 master", "0:30 cut", "9:16 version", "20 stills"] },
+    { id: "NP-16", t: "Pattern Engine", n: "tech", f: "film", a: "hybrid", d: "5:00", sc: "filmset", img: "pattern-engine", pos: "50% 22%", p: 9500, days: 32, purpose: "A brand film that makes a data company feel human.", how: "The client’s actor footage placed in a generated data world, city plates generated to match.", del: ["5:00 film", "1:00 trailer", "4 LinkedIn clips"] },
+    { id: "NP-17", t: "Heritage in Every Thread", n: "fashion", f: "film", a: "edit", d: "6:00", sc: "fashion", img: "heritage", pos: "50% 55%", p: 3500, days: 14, purpose: "A documentary about the hands behind a pashmina label.", how: "A documentary edit of the brand’s archive: weavers at home and interviews in their own words.", del: ["6:00 film", "1:00 trailer", "5 interview clips"] },
+    { id: "NP-18", t: "Misdirection", n: "story", f: "film", a: "edit", d: "5:00", sc: "filmset", img: "misdirection", pos: "50% 35%", p: 3200, days: 12, purpose: "A short thriller that carries a brand’s message and reveals the logo only at the end.", how: "Noir edit of the client’s footage, red as the only colour, AI voice-over and original score.", del: ["5:00 film", "1:00 trailer", "6 social cutdowns"] },
+    { id: "NP-19", t: "The Art of Promoting", n: "story", f: "film", a: "ai", d: "4:00", sc: "nomad", img: "art-of-promoting", pos: "50% 60%", p: 9000, days: 30, purpose: "A brand manifesto told through an artisan whose craft becomes wings.", how: "AI worlds grown from real embroidery scans, narrated by a real voice.", del: ["4:00 film", "1:00 trailer", "6 social cutdowns"] }
+  ];
+  var IC = { ai: "i-spark", hybrid: "i-layers", edit: "i-cut" };
+  var q = new URLSearchParams(location.search), st = { f: "all", a: IC[q.get("ap")] ? q.get("ap") : "all" };
+  function tabs() { $("#tabs").innerHTML = [["all", "All formats"]].concat(Object.keys(FORMAT).map(function (k) { return [k, FORMAT[k].title]; })).map(function (t) { return '<button type="button" data-f="' + t[0] + '" aria-pressed="' + (st.f === t[0]) + '">' + t[1] + "</button>"; }).join(""); }
+  function chips() { $("#chips").innerHTML = [["all", "All approaches"]].concat(Object.keys(AP).map(function (k) { return [k, AP[k]]; })).map(function (t) { return '<button type="button" class="chip" data-a="' + t[0] + '" aria-pressed="' + (st.a === t[0]) + '">' + (IC[t[0]] ? '<svg class="i"><use href="#' + IC[t[0]] + '"/></svg>' : "") + t[1] + "</button>"; }).join(""); }
+  var io = "IntersectionObserver" in window ? new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }); }, { rootMargin: "0px 0px -6% 0px" }) : null;
+  function grid() {
+    var list = CAT.filter(function (c) { return (st.f === "all" || c.f === st.f) && (st.a === "all" || c.a === st.a); });
+    $("#count").textContent = list.length + (list.length === 1 ? " title" : " titles");
+    $("#grid").innerHTML = list.length ? list.map(function (c, i) {
+      return '<a class="item" href="./#' + c.id + '" style="transition-delay:' + Math.min(i % 8, 6) * 60 + 'ms"><div class="ph"><img src="assets/posters/' + c.img + '-s.jpg" alt="Poster: ' + c.t + '" loading="lazy" decoding="async"><span class="tag">' + AP[c.a] + '</span><span class="dur">' + c.d + '</span></div><div class="meta"><div><b>' + c.t + "</b><small>" + NICHE[c.n] + " · " + FORMAT[c.f].name + '</small></div><span class="pr">' + money(c.p) + "</span></div></a>";
+    }).join("") : '<p class="empty">Nothing here yet for this filter.</p>';
+    document.querySelectorAll(".item").forEach(function (el) { if (io) io.observe(el); else el.classList.add("in"); });
+  }
+  document.addEventListener("click", function (e) {
+    var t = e.target.closest("[data-f]"); if (t) { st.f = t.dataset.f; tabs(); grid(); return; }
+    var c = e.target.closest("[data-a]"); if (c) { st.a = c.dataset.a; chips(); grid(); }
+  });
+  tabs(); chips(); grid();
+})();
+</script>
+</body>
+</html>
