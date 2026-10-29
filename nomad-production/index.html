@@ -2257,6 +2257,10 @@ footer .wrap { background: none !important; box-shadow: none !important; border-
   .tp-play { position: static !important; transform: none !important; justify-self: start; order: 3; margin-top: 4px; }
 }
 
+.partners { height: 150vh !important; }
+.hw.spin .hw-track button { filter: blur(var(--sp, 0px)); }
+.hw.spin { background-position: var(--tk, 0) 100%, var(--tk, 0) 0, 0 0 !important; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
@@ -2425,7 +2429,6 @@ footer .wrap { background: none !important; box-shadow: none !important; border-
     <div class="globe" id="globe">
       <canvas id="gl-cv" aria-label="Globe with our clients. Drag to rotate, tap a point to see the client." role="img"></canvas>
       <div class="gl-card" id="gl-card" hidden></div>
-      <span class="gl-hint" id="gl-hint"><svg class="i"><use href="#i-globe"/></svg>Drag to spin · tap a light</span>
     </div>
     <div class="wrap gl-stats" id="gl-stats"></div>
    </div>
@@ -3336,6 +3339,24 @@ footer .wrap { background: none !important; box-shadow: none !important; border-
     $("#hw-track").style.transform = "translate3d(" + (-hwX).toFixed(1) + "px,0,0)";
     $$("#hw-track button").forEach(function (b, i) { var d = Math.min(1.4, Math.abs(i * HWS - hwX) / HWS); b.style.transform = "translateX(-50%) perspective(400px) rotateY(" + ((i * HWS - hwX) / HWS * -28).toFixed(1) + "deg) scale(" + (1 - d * .14).toFixed(3) + ")"; b.style.opacity = (1 - d * .55).toFixed(2); });
   }
+  // Spin-in: the wheel whips round a few turns when it first scrolls into view and settles on the current approach
+  (function () {
+    var w = $("#pl-ap"); if (!w || !("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var L = HWK.length * HWS;
+    new IntersectionObserver(function (es, ob) {
+      if (!es[0].isIntersecting) return; ob.disconnect();
+      var end = HWK.indexOf(plAp) * HWS, start = end + L * 4, t0 = performance.now(), D = 1500, lastI = -1;
+      w.classList.add("spin");
+      (function st(n) {
+        var p = Math.min(1, (n - t0) / D), e = 1 - Math.pow(1 - p, 4), v = start + (end - start) * e;
+        hwX = ((v % L) + L) % L; if (hwX > L - HWS / 2) hwX -= L;
+        hwPaint();
+        var i = Math.round(v / HWS); if (i !== lastI) { lastI = i; if (p > .35) hapt(); }
+        w.style.setProperty("--sp", ((1 - e) * 10).toFixed(2) + "px"); w.style.setProperty("--tk", (-v * .6).toFixed(1) + "px");
+        if (p < 1) requestAnimationFrame(st); else { hwX = end; hwPaint(); w.classList.remove("spin"); }
+      })(t0);
+    }, { threshold: .7 }).observe(w);
+  })();
   function hwTo(t) { var a = hwX, t0 = performance.now(); (function st(n) { var p = Math.min(1, (n - t0) / 380), e = 1 - Math.pow(1 - p, 3); hwX = a + (t - a) * e; hwPaint(); if (p < 1) requestAnimationFrame(st); })(t0); }
   (function () {
     var w = $("#pl-ap"), drag = null, moved = false;
@@ -3693,7 +3714,7 @@ footer .wrap { background: none !important; box-shadow: none !important; border-
       sel = k; var c = CL[k], pk = byId[c.id];
       tgt = [-c.r, Math.max(-.1, Math.min(.6, c.la * Math.PI / 180 * .65))];
       card.innerHTML = '<button type="button" class="gl-x" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button><span class="pt-k">' + c.c + " · " + c.k + "</span><b>" + c.n + "</b><small>" + c.w + "</small>" + (pk ? '<button type="button" class="gl-go" data-id="' + pk.id + '">View the work<svg class="i"><use href="#i-arrow"/></svg></button>' : "");
-      card.hidden = false; card.classList.remove("in"); void card.offsetWidth; card.classList.add("in"); $("#gl-hint").style.opacity = 0; hapt();
+      card.hidden = false; card.classList.remove("in"); void card.offsetWidth; card.classList.add("in"); hapt();
     }
     function close() { sel = -1; card.hidden = true; idle = performance.now(); }
     cv.addEventListener("pointerdown", function (e) { var r = cv.getBoundingClientRect(); drag = { x: e.clientX, y: e.clientY, l: lam, p: phi, t: performance.now(), lx: e.clientX, moved: false, rx: e.clientX - r.left, ry: e.clientY - r.top }; tgt = null; vl = 0; });
@@ -3743,8 +3764,8 @@ footer .wrap { background: none !important; box-shadow: none !important; border-
     function upd() {
       q = false;
       var r = sec.getBoundingClientRect(), span = sec.offsetHeight - innerHeight;
-      var p = Math.max(0, Math.min(1, -r.top / (span * .7))), e = p * p * (3 - 2 * p);
-      var big = innerWidth < 700 ? .28 : 1.1; head.style.transform = "translate3d(0," + ((1 - e) * 28).toFixed(2) + "vh,0) scale(" + (1 + (1 - e) * big).toFixed(3) + ")";
+      var p = Math.max(0, Math.min(1, (innerHeight * .35 - r.top) / (innerHeight * .75))), e = p * p * (3 - 2 * p);
+      var big = innerWidth < 700 ? .28 : 1.1; head.style.transform = "translate3d(0," + ((1 - e) * 12).toFixed(2) + "vh,0) scale(" + (1 + (1 - e) * big).toFixed(3) + ")";
       gl.style.opacity = e.toFixed(3); gl.style.transform = "translate3d(0," + ((1 - e) * 18).toFixed(2) + "vh,0) scale(" + (.86 + e * .14).toFixed(3) + ")";
       st.style.opacity = Math.max(0, e * 1.6 - .6).toFixed(3);
     }
