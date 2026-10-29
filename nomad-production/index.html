@@ -1995,7 +1995,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
 .ob-core svg { width: 30px !important; height: 30px !important; margin: -24px 0 0 !important; fill: none !important; }
 
 /* Lens wider on desktop */
-@media (min-width: 900px) { .spot .lens { max-width: 760px !important; } .spot .lens-read b { font-size: 2.6rem; } }
+@media (min-width: 900px) { .spot .lens { max-width: 860px !important; } }
 
 /* Desktop hero: title bottom-left, copy, buttons and facts bottom-right */
 @media (min-width: 1000px) and (orientation: landscape) {
@@ -2750,18 +2750,26 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
 
     // Lens ring: drag, wheel or keys to tune the title; one detent per title
     (function () {
-      var lens = $("#lens"), ring = $("#lens-ring"), STEP = 20, A = 0, raf = null, drag = null, last = 0;
+      var lens = $("#lens"), ring = $("#lens-ring"), A = 0, raf = null, drag = null, last = 0;
+      // Phones: a tight dial. Desktop: the same height, a wider and flatter arc
+      var WIDE = window.matchMedia("(min-width: 900px)").matches, VW = WIDE ? 860 : 400, X = VW / 2, O = WIDE ? 560 : 0, Y = 300 + O, STEP = WIDE ? 10 : 20, MINOR = WIDE ? 1 : 2, K = 57.3 / (224 + O);
+      var svg = lens.querySelector("svg"); svg.setAttribute("viewBox", "0 0 " + VW + " 180");
+      var bg = svg.querySelector("circle"); bg.setAttribute("cx", X); bg.setAttribute("cy", Y); bg.setAttribute("r", 300 + O);
+      var ps = svg.querySelectorAll(":scope > path");
+      ps[0].setAttribute("d", "M" + (WIDE ? 90 : 40) + " 64 Q" + X + " -10 " + (VW - (WIDE ? 90 : 40)) + " 64");
+      ps[1].setAttribute("d", "M" + X + " 6v30"); ps[2].setAttribute("d", "M" + (X - 6) + " 2h12l-6 7Z");
       var g = "";
-      for (var d = 0; d < 360; d += 2) {
-        var r1 = d % 20 === 0 ? 246 : d % 10 === 0 ? 256 : 262, op = d % 20 === 0 ? .9 : d % 10 === 0 ? .45 : .2;
+      for (var d = 0; d < 360; d += MINOR) {
+        var major = d % STEP === 0, mid = d % (STEP / 2) === 0;
+        var r1 = (major ? 246 : mid ? 256 : 262) + O, op = major ? .9 : mid ? .45 : .2;
         var a = (d - 90) * Math.PI / 180;
-        g += '<line x1="' + (200 + Math.cos(a) * r1).toFixed(1) + '" y1="' + (300 + Math.sin(a) * r1).toFixed(1) + '" x2="' + (200 + Math.cos(a) * 270).toFixed(1) + '" y2="' + (300 + Math.sin(a) * 270).toFixed(1) + '" stroke="#fff" stroke-opacity="' + op + '" stroke-width="' + (d % 20 === 0 ? 1.6 : 1) + '"/>';
-        if (d % 20 === 0) g += '<text x="200" y="' + (300 - 224) + '" transform="rotate(' + d + ' 200 300)" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" fill-opacity=".85">' + pad((d / 20) % n + 1) + "</text>";
+        g += '<line x1="' + (X + Math.cos(a) * r1).toFixed(1) + '" y1="' + (Y + Math.sin(a) * r1).toFixed(1) + '" x2="' + (X + Math.cos(a) * (270 + O)).toFixed(1) + '" y2="' + (Y + Math.sin(a) * (270 + O)).toFixed(1) + '" stroke="#fff" stroke-opacity="' + op + '" stroke-width="' + (major ? 1.6 : 1) + '"/>';
+        if (major) g += '<text x="' + X + '" y="' + (Y - 224 - O) + '" transform="rotate(' + d + " " + X + " " + Y + ')" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" fill-opacity=".85">' + pad((d / STEP) % n + 1) + "</text>";
       }
-      for (var k = 0; k < 180; k++) { var b = (k * 2 - 90) * Math.PI / 180; g += '<line x1="' + (200 + Math.cos(b) * 280).toFixed(1) + '" y1="' + (300 + Math.sin(b) * 280).toFixed(1) + '" x2="' + (200 + Math.cos(b) * 300).toFixed(1) + '" y2="' + (300 + Math.sin(b) * 300).toFixed(1) + '" stroke="#fff" stroke-opacity=".09" stroke-width="3"/>'; }
+      for (var k = 0; k < 360; k += WIDE ? 1 : 2) { var b = (k - 90) * Math.PI / 180; g += '<line x1="' + (X + Math.cos(b) * (280 + O)).toFixed(1) + '" y1="' + (Y + Math.sin(b) * (280 + O)).toFixed(1) + '" x2="' + (X + Math.cos(b) * (300 + O)).toFixed(1) + '" y2="' + (Y + Math.sin(b) * (300 + O)).toFixed(1) + '" stroke="#fff" stroke-opacity=".09" stroke-width="3"/>'; }
       ring.innerHTML = g;
       function idx(a) { return (((Math.round(-a / STEP)) % n) + n) % n; }
-      function paint() { ring.setAttribute("transform", "rotate(" + A.toFixed(2) + " 200 300)"); }
+      function paint() { ring.setAttribute("transform", "rotate(" + A.toFixed(2) + " " + X + " " + Y + ")"); }
       function tick() { var i = idx(A); if (i !== last) { last = i; hapt(); $("#lens-n").textContent = i + 1; lens.setAttribute("aria-valuenow", i + 1); show(i); } }
       function animTo(t) {
         cancelAnimationFrame(raf); var a0 = A, t0 = performance.now();
@@ -2770,10 +2778,10 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
       spot._lens = function (i) {
         last = i; $("#lens-n").textContent = i + 1; lens.setAttribute("aria-valuenow", i + 1);
         if (drag) return;
-        var t = -i * STEP; while (t - A > 60) t -= n * STEP; while (A - t > 60) t += n * STEP; animTo(t);
+        var t = -i * STEP, hw = n * STEP / 2; while (t - A > hw) t -= n * STEP; while (A - t > hw) t += n * STEP; animTo(t);
       };
       lens.addEventListener("pointerdown", function (e) { drag = { x: e.clientX, a: A }; cancelAnimationFrame(raf); lens.setPointerCapture(e.pointerId); lens.classList.add("on"); paused = true; clearTimeout(timer); });
-      lens.addEventListener("pointermove", function (e) { if (!drag) return; A = drag.a + (e.clientX - drag.x) * .32; paint(); tick(); });
+      lens.addEventListener("pointermove", function (e) { if (!drag) return; A = drag.a + (e.clientX - drag.x) * K; paint(); tick(); });
       function up() { if (!drag) return; drag = null; lens.classList.remove("on"); animTo(Math.round(A / STEP) * STEP); paused = false; schedule(); }
       lens.addEventListener("pointerup", up); lens.addEventListener("pointercancel", up);
       lens.addEventListener("wheel", function (e) { e.preventDefault(); go(cur + (e.deltaY + e.deltaX > 0 ? 1 : -1)); }, { passive: false });
