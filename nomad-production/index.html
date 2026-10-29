@@ -2261,6 +2261,9 @@ footer .wrap { background: none !important; box-shadow: none !important; border-
 .hw.spin .hw-track button { filter: blur(var(--sp, 0px)); }
 .hw.spin { background-position: var(--tk, 0) 100%, var(--tk, 0) 0, 0 0 !important; }
 
+footer { position: relative; z-index: 2; margin-top: -36px; }
+#brief { padding-bottom: calc(clamp(96px, 13vw, 176px) + 36px) !important; box-shadow: none !important; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
