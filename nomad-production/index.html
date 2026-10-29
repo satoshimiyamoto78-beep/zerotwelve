@@ -906,6 +906,77 @@ button.cg-cell[aria-pressed="true"] { background: radial-gradient(circle at 50% 
   .glance .gl { flex: none; }
 }
 
+/* ===== v3: video hero, compact widgets, row illustrations ===== */
+.hv { min-height: 100vh; min-height: 100svh; display: flex; align-items: flex-end; padding: calc(env(safe-area-inset-top, 0px) + 80px) 0 clamp(22px, 4vw, 48px) !important; background: #05070c !important; overflow: hidden; }
+.hv .screen, .hv .backdrop { display: none !important; }
+.hv-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; background: #05070c; }
+.hv-shade { position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(5, 7, 12, .7) 0%, rgba(5, 7, 12, 0) 22%, rgba(5, 7, 12, 0) 40%, rgba(5, 7, 12, .78) 68%, #05070c 100%); }
+.hv .hero-in { width: 100%; padding-top: 0 !important; }
+.hv .hero-copy { gap: 14px; max-width: 640px; }
+.hv-k { display: inline-flex; align-items: center; gap: 10px; font-size: .62rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: rgba(255, 255, 255, .7); }
+.hv-k i { width: 7px; height: 7px; border-radius: 50%; background: #ff3b3b; box-shadow: 0 0 10px #ff3b3b; animation: rec 1.6s ease-in-out infinite; }
+@keyframes rec { 50% { opacity: .25; } }
+.hv h1 { font-size: clamp(2rem, 4.4vw, 4rem) !important; line-height: 1.02 !important; max-width: 14ch !important; }
+.hv .lede { font-size: clamp(.88rem, 1.1vw, 1rem) !important; color: rgba(255, 255, 255, .72) !important; max-width: 40ch; }
+.hv .cta-row { display: grid !important; grid-template-columns: repeat(2, auto); gap: 8px; width: auto !important; margin-top: 2px; }
+.hv .cta-row .btn { padding: 12px 18px !important; font-size: .84rem !important; }
+.hv .facts { display: flex !important; gap: 20px !important; padding-top: 4px !important; width: auto !important; margin-top: 2px; }
+.hv .facts strong { font-size: .92rem !important; font-weight: 700; }
+.hv .facts span { font-size: .66rem !important; color: rgba(255, 255, 255, .55); }
+@media (max-width: 700px) {
+  .hv .hero-in { padding-inline: var(--gut) var(--gut-r) !important; }
+  .hv h1 { font-size: clamp(1.75rem, 8vw, 2.15rem) !important; }
+  .hv .cta-row { grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100% !important; }
+  .hv .facts { justify-content: space-between; width: 100% !important; gap: 10px !important; }
+}
+.spot-sec .head { margin-bottom: 18px; }
+.spot-sec .spot { width: min(100%, 320px); margin-inline: auto; }
+@media (min-width: 961px) { .spot-sec .spot-stage { width: 100%; } }
+
+/* Finder: widget-style result and smaller option tiles */
+#result { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; gap: 16px; align-content: start; }
+.fx-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.fx-top h3 { font-size: 1.35rem; letter-spacing: -.03em; margin-top: 4px; }
+.fx-top p { font-size: .8rem; color: var(--muted); margin-top: 2px; }
+.fx-num { display: flex; align-items: baseline; gap: 4px; }
+.fx-num strong { font-size: clamp(2.6rem, 6vw, 3.2rem); font-weight: 300; letter-spacing: -.05em; line-height: .9; font-variant-numeric: tabular-nums; }
+.fx-num span { font-size: .72rem; font-weight: 600; color: var(--muted); }
+.fx-bars { display: grid; gap: 8px; }
+.fx-bar { display: grid; grid-template-columns: 76px minmax(0, 1fr) 34px; gap: 10px; align-items: center; font-size: .72rem; color: var(--muted); }
+.fx-bar i { height: 6px; border-radius: 3px; background: rgba(255, 255, 255, .07); overflow: hidden; }
+.fx-bar i b { display: block; height: 100%; border-radius: 3px; background: rgba(255, 255, 255, .35); transition: width .6s cubic-bezier(.3, .7, .2, 1); }
+.fx-bar em { font-style: normal; text-align: right; font-variant-numeric: tabular-nums; }
+.fx-bar.on { color: #fff; }
+.fx-bar.on i b { background: linear-gradient(90deg, #5d8bff, var(--blue)); box-shadow: 0 0 10px rgba(47, 107, 255, .6); }
+.fx-stats { display: grid; grid-template-columns: 1fr 1fr; border-radius: 14px; border: 1px solid rgba(255, 255, 255, .07); background: rgba(255, 255, 255, .025); }
+.fx-stats div { padding: 10px 14px; display: grid; gap: 2px; }
+.fx-stats div + div { border-left: 1px solid rgba(255, 255, 255, .07); }
+.fx-stats span { font-size: .62rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+.fx-stats b { font-size: .95rem; font-weight: 600; }
+#result .why { gap: 6px; }
+#result .why li { font-size: .8rem; color: var(--muted); gap: 8px; }
+#result .why li svg.i { width: 14px; height: 14px; color: var(--blue-2); margin-top: 3px; }
+#result .btn { justify-self: start; padding: 11px 16px; font-size: .82rem; }
+.q-title { font-size: .86rem !important; }
+.q-title span { width: 22px !important; height: 22px !important; font-size: .7rem !important; }
+.opts button { min-height: 76px !important; padding: 11px 10px !important; border-radius: 12px !important; }
+.opts button svg.i, .opts .glyph { width: 16px !important; height: 16px !important; margin-bottom: 8px !important; }
+.opts .glyph { font-size: .82rem !important; line-height: 16px !important; }
+.opts button span { font-size: .78rem !important; }
+.opts button small { font-size: .64rem !important; }
+#finder .panel h3 { font-size: 1.15rem !important; }
+#finder .panel > p.muted { font-size: .82rem !important; }
+
+/* Row header illustrations: each format drawn as its own screen */
+.rt-fr { width: 64px !important; height: 56px !important; position: relative; }
+.rt-fr i { display: block; background-size: cover; background-position: center; border: 0 !important; box-shadow: 0 0 0 1.5px rgba(255, 255, 255, .55), 0 6px 14px -6px rgba(0, 0, 0, .9); max-width: none !important; }
+.rt-fr.short i { width: 20px; height: 36px; border-radius: 5px; }
+.rt-fr.short::after { content: ""; position: absolute; left: 50%; top: 12px; width: 6px; height: 2px; margin-left: -3px; border-radius: 2px; background: rgba(0, 0, 0, .8); }
+.rt-fr.promo i { width: 42px; height: 24px; border-radius: 3px; margin-top: -6px; }
+.rt-fr.promo::after { content: ""; position: absolute; left: 50%; bottom: 11px; width: 14px; height: 6px; margin-left: -7px; border: 1.5px solid rgba(255, 255, 255, .55); border-top: 0; border-radius: 0 0 3px 3px; }
+.rt-fr.film i { width: 46px; height: 19px; border-radius: 2px; margin-top: -8px; }
+.rt-fr.film::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 11px; height: 6px; background: radial-gradient(circle, rgba(255, 255, 255, .5) 1.4px, transparent 1.8px) 0 0 / 6px 6px repeat-x; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
@@ -989,24 +1060,34 @@ button.cg-cell[aria-pressed="true"] { background: radial-gradient(circle at 50% 
 
 <main id="top">
   <!-- HERO -->
-  <section class="hero" id="hero">
+  <section class="hero hv" id="hero">
     <div class="backdrop" aria-hidden="true"></div>
     <div class="screen" aria-hidden="true"></div>
+    <video class="hv-video" id="hv-video" muted loop playsinline preload="metadata" aria-hidden="true"></video>
+    <div class="hv-shade" aria-hidden="true"></div>
     <div class="hero-in">
-     <div class="hero-grid">
       <div class="hero-copy">
-      <div class="kicker"><span class="ap real">Live action</span><span class="ap ai">AI film</span><span class="ap hybrid">Hybrid</span></div>
-      <h1>We erase the barrier between <em>screen and audience</em></h1>
-      <p class="lede">Premium video for brands, shot live, made with AI, or both. Browse real packages by niche, see exactly what each one costs, and order one like it.</p>
-      <div class="cta-row">
-        <a class="btn white" href="#showcase"><svg class="i" style="fill:currentColor;stroke:none"><use href="#i-play"/></svg>Browse the showcase</a>
-        <a class="btn ghost" href="#estimate">Estimate my video</a>
+        <span class="hv-k"><i></i>Showreel 2026 · Live action · AI · Hybrid</span>
+        <h1>We erase the barrier between <em>screen and audience</em></h1>
+        <p class="lede">Premium video for brands. Pick a package, see the price, order one like it.</p>
+        <div class="cta-row">
+          <a class="btn white" href="#showcase"><svg class="i" style="fill:currentColor;stroke:none"><use href="#i-play"/></svg>Showcase</a>
+          <a class="btn ghost" href="#estimate">Estimate</a>
+        </div>
+        <div class="facts">
+          <div><strong>$600</strong><span>from, per video</span></div>
+          <div><strong>3 days</strong><span>fastest delivery</span></div>
+          <div><strong>4K</strong><span>every master</span></div>
+        </div>
       </div>
-      <div class="facts">
-        <div><strong>from $600</strong><span>per short-form video</span></div>
-        <div><strong>3 days</strong><span>fastest AI turnaround</span></div>
-        <div><strong>4K</strong><span>master in every format</span></div>
-      </div>
+    </div>
+  </section>
+
+  <section class="sec spot-sec" id="now">
+    <div class="wrap">
+      <div class="head">
+        <span class="label"><b>Now playing</b> · 6 titles</span>
+        <h2>Six films. One studio.</h2>
       </div>
       <aside class="spot" id="spot" aria-roledescription="carousel" aria-label="Spotlight packages">
         <div class="spot-stage" id="spot-stage"></div>
@@ -1016,7 +1097,6 @@ button.cg-cell[aria-pressed="true"] { background: radial-gradient(circle at 50% 
           <div class="spot-arrows"><button type="button" id="spot-prev" aria-label="Previous package"><svg class="i"><use href="#i-left"/></svg></button><button type="button" id="spot-next" aria-label="Next package"><svg class="i"><use href="#i-right"/></svg></button></div>
         </div>
       </aside>
-     </div>
       <div class="featured">
         <div class="row-head"><h3>Now showing</h3><a href="#showcase">See all 19 →</a></div>
         <div class="feat-grid" id="featured-track"></div>
@@ -1426,6 +1506,18 @@ button.cg-cell[aria-pressed="true"] { background: radial-gradient(circle at 50% 
 
   $("#featured-track").innerHTML = FEATURED.map(function (id) { return featHTML(byId[id]); }).join("");
 
+  /* ================= Hero video ================= */
+  (function () {
+    var v = $("#hv-video"); if (!v) return;
+    var tall = window.matchMedia("(max-width: 760px), (orientation: portrait)").matches;
+    var base = "assets/video/hero-" + (tall ? "v" : "h");
+    v.poster = base + ".jpg"; v.src = base + ".mp4";
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    function play() { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
+    if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { if (es[0].isIntersecting) play(); else v.pause(); }).observe(v);
+    else play();
+  })();
+
   /* ================= Hero spotlight ================= */
   var SPOT = ["NP-16", "NP-09", "NP-10", "NP-01", "NP-17", "NP-03"];
   (function () {
@@ -1433,8 +1525,8 @@ button.cg-cell[aria-pressed="true"] { background: radial-gradient(circle at 50% 
     var layers = { screen: $("#hero .screen"), backdrop: $("#hero .backdrop") };
     var items = SPOT.map(function (id) { return byId[id]; }), n = items.length, cur = -1, timer = null, paused = false, visible = true;
     var HOLD = 6500, reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!PHONE) layers.screen.innerHTML = items.map(function (c, i) { return '<img class="bg-layer" src="' + c.duo + '" alt="" decoding="async"' + (i > 1 ? ' loading="lazy"' : "") + ">"; }).join("");
-    if (!PHONE) layers.backdrop.innerHTML = items.map(function (c) { return '<img class="bg-layer" src="' + c.blur + '" alt="" decoding="async">'; }).join("");
+    if (0) layers.screen.innerHTML = items.map(function (c, i) { return '<img class="bg-layer" src="' + c.duo + '" alt="" decoding="async"' + (i > 1 ? ' loading="lazy"' : "") + ">"; }).join("");
+    if (0) layers.backdrop.innerHTML = items.map(function (c) { return '<img class="bg-layer" src="' + c.blur + '" alt="" decoding="async">'; }).join("");
     stage.innerHTML = items.map(function (c, i) {
       return '<button type="button" class="spot-poster" data-id="' + c.id + '" tabindex="-1" aria-label="Open ' + c.t + '"><img src="' + c.img + '" alt="Poster: ' + c.t + '"' + (i > 1 ? ' loading="lazy"' : "") + ' decoding="async"></button>';
     }).join("") + '<span class="spot-badge"><i></i>Now playing</span>';
@@ -1499,7 +1591,7 @@ button.cg-cell[aria-pressed="true"] { background: radial-gradient(circle at 50% 
       var from = Math.min.apply(null, Object.keys(BASE[f]).map(function (k) { return BASE[f][k]; }));
       var body = items.length ? items.map(function (c) { return cardHTML(c); }).join("") :
         '<div class="empty"><b style="color:var(--ink)">Nothing here yet for this filter</b><span>We make this format for every niche. Tell us what you need and get a fixed quote.</span><a class="linkbtn" href="#brief" data-prefill="' + f + '">Request a custom ' + FORMAT[f].name.toLowerCase() + ' <svg class="i"><use href="#i-arrow"/></svg></a></div>';
-      return '<div class="row reveal" id="row-' + f + '"><div class="row-top"><div class="rt-l"><span class="rt-fr" aria-hidden="true"><i style="aspect-ratio:' + FORMAT[f].ar + '"></i></span><div><div class="rt-k"><span>' + FORMAT[f].ratio + "</span><span>" + FORMAT[f].len + "</span><span>from " + money(from) + "</span></div><h3>" + FORMAT[f].title + "</h3><p>" + FORMAT[f].sub + '</p></div></div><span class="rt-n">' + items.length + (items.length === 1 ? " title" : " titles") + '</span><div class="arrows"><button type="button" data-dir="-1" aria-label="Scroll left"><svg class="i"><use href="#i-left"/></svg></button><button type="button" data-dir="1" aria-label="Scroll right"><svg class="i"><use href="#i-right"/></svg></button></div></div><div class="track">' + body + "</div></div>";
+      return '<div class="row reveal" id="row-' + f + '"><div class="row-top"><div class="rt-l"><span class="rt-fr ' + f + '" aria-hidden="true"><i style="background-image:url(' + CAT.filter(function (x) { return x.f === f; })[0].duo + ')"></i></span><div><div class="rt-k"><span>' + FORMAT[f].ratio + "</span><span>" + FORMAT[f].len + "</span><span>from " + money(from) + "</span></div><h3>" + FORMAT[f].title + "</h3><p>" + FORMAT[f].sub + '</p></div></div><span class="rt-n">' + items.length + (items.length === 1 ? " title" : " titles") + '</span><div class="arrows"><button type="button" data-dir="-1" aria-label="Scroll left"><svg class="i"><use href="#i-left"/></svg></button><button type="button" data-dir="1" aria-label="Scroll right"><svg class="i"><use href="#i-right"/></svg></button></div></div><div class="track">' + body + "</div></div>";
     }).join("");
     $$("#rows .track").forEach(updateArrows);
     $$("#rows .track").forEach(function (t) { t.addEventListener("scroll", function () { updateArrows(t); }, { passive: true }); });
@@ -1754,18 +1846,15 @@ button.cg-cell[aria-pressed="true"] { background: radial-gradient(circle at 50% 
     var C = 2 * Math.PI * 70, fmt = ans[0] === 2 && w !== "real" ? "promo" : "promo";
     var days = DAYS[fmt][w], price = BASE.short[w];
     var el = $("#result");
-    if (!el.innerHTML) el.innerHTML = '<div class="ring"><svg viewBox="0 0 168 168"><circle class="bgc" cx="84" cy="84" r="70"/><circle class="fg" cx="84" cy="84" r="70" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + C.toFixed(1) + '"/></svg><div class="val"><div><strong id="r-pct">0%</strong><span>fit</span></div></div></div><div class="name"><span class="label">Best fit for you</span><h3 id="r-name"></h3><p class="muted" id="r-sub" style="font-size:.9rem"></p></div><ul class="why" id="r-why"></ul><div class="res-stats"><div><span>Short-form from</span><strong id="r-p1"></strong></div><div><span>Promo film timeline</span><strong id="r-d"></strong></div></div><div class="others" id="r-others"></div><button type="button" class="btn" id="r-btn"></button>';
-    var fg = $(".ring .fg", el);
-    fg.style.stroke = COLOR[w];
-    requestAnimationFrame(function () { fg.style.strokeDashoffset = (C * (1 - pct(w) / 100)).toFixed(1); });
-    $("#r-pct").textContent = pct(w) + "%";
-    $("#r-name").textContent = AP[w]; $("#r-name").style.color = COLOR[w];
+    if (!el.innerHTML) el.innerHTML = '<div class="fx-top"><div><span class="label">Best fit for you</span><h3 id="r-name"></h3><p id="r-sub"></p></div><div class="fx-num"><strong id="r-pct"></strong><span>% fit</span></div></div><div class="fx-bars" id="r-bars"></div><div class="fx-stats"><div><span>Short-form from</span><b id="r-p1"></b></div><div><span>Promo timeline</span><b id="r-d"></b></div></div><ul class="why" id="r-why"></ul><button type="button" class="btn" id="r-btn"></button>';
+    if (0) el.innerHTML = '<div class="ring"><svg viewBox="0 0 168 168"><circle class="bgc" cx="84" cy="84" r="70"/><circle class="fg" cx="84" cy="84" r="70" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + C.toFixed(1) + '"/></svg><div class="val"><div><strong id="r-pct">0%</strong><span>fit</span></div></div></div><div class="name"><span class="label">Best fit for you</span><h3 id="r-name"></h3><p class="muted" id="r-sub" style="font-size:.9rem"></p></div><ul class="why" id="r-why"></ul><div class="res-stats"><div><span>Short-form from</span><strong id="r-p1"></strong></div><div><span>Promo film timeline</span><strong id="r-d"></strong></div></div><div class="others" id="r-others"></div><button type="button" class="btn" id="r-btn"></button>';
+    $("#r-pct").textContent = pct(w);
+    $("#r-name").textContent = AP[w];
+    $("#r-bars").innerHTML = keys.map(function (k) { return '<div class="fx-bar' + (k === w ? " on" : "") + '"><span>' + AP[k] + '</span><i><b style="width:' + pct(k) + '%"></b></i><em>' + pct(k) + "%</em></div>"; }).join("");
     $("#r-sub").textContent = { real: "Filmed with a crew, cast and locations.", ai: "Directed and generated frame by frame.", hybrid: "Filmed for real, extended with AI." }[w];
-    $("#r-why").innerHTML = [WHY[w][ans[0] === 0 ? 0 : ans[0] === 1 ? 1 : 0], WHY[w][ans[1] === 0 ? 1 : 2]].filter(function (v, i, a) { return a.indexOf(v) === i; }).map(function (t) { return '<li><svg class="i" style="color:' + COLOR[w] + '"><use href="#i-check"/></svg>' + t + "</li>"; }).join("");
+    $("#r-why").innerHTML = [WHY[w][ans[0] === 0 ? 0 : ans[0] === 1 ? 1 : 0], WHY[w][ans[1] === 0 ? 1 : 2]].filter(function (v, i, a) { return a.indexOf(v) === i; }).map(function (t) { return '<li><svg class="i"><use href="#i-check"/></svg>' + t + "</li>"; }).join("");
     $("#r-p1").textContent = money(price);
     $("#r-d").textContent = Math.max(1, Math.round(days[0] / 7)) + "–" + Math.ceil(days[1] / 7) + " weeks";
-    var c2 = 2 * Math.PI * 18;
-    $("#r-others").innerHTML = order.slice(1).map(function (k) { return '<div class="other"><div class="mini"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" stroke="var(--card-2)"/><circle cx="22" cy="22" r="18" stroke="' + COLOR[k] + '" stroke-linecap="round" stroke-dasharray="' + c2.toFixed(1) + '" stroke-dashoffset="' + (c2 * (1 - pct(k) / 100)).toFixed(1) + '"/></svg></div><div><b>' + AP[k] + "</b><span>" + pct(k) + "% fit · from " + money(BASE.short[k]) + "</span></div></div>"; }).join("");
     var btn = $("#r-btn"); btn.innerHTML = "See " + AP[w] + ' examples <svg class="i"><use href="#i-arrow"/></svg>'; btn.dataset.show = w;
   }
   $$("#finder .opts").forEach(function (s) { s.addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; ans[+s.dataset.q] = +b.dataset.v; finder(); }); });
