@@ -2803,7 +2803,9 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
       var svg = lens.querySelector("svg"); svg.setAttribute("viewBox", "0 0 " + VW + " 180");
       var bg = svg.querySelector("circle"); bg.setAttribute("cx", X); bg.setAttribute("cy", Y); bg.setAttribute("r", 300 + O);
       var ps = svg.querySelectorAll(":scope > path");
-      ps[0].setAttribute("d", "M" + (WIDE ? 90 : 40) + " 64 Q" + X + " -10 " + (VW - (WIDE ? 90 : 40)) + " 64");
+      // Blue arc: a true circle concentric with the ticks, just outside them
+      var AR = 274 + O, half = Math.asin(Math.min(.98, (X - 10) / AR)), ax = Math.sin(half) * AR, ay = Y - Math.cos(half) * AR;
+      ps[0].setAttribute("d", "M" + (X - ax).toFixed(1) + " " + ay.toFixed(1) + " A" + AR + " " + AR + " 0 0 1 " + (X + ax).toFixed(1) + " " + ay.toFixed(1));
       ps[1].setAttribute("d", "M" + X + " 6v30"); ps[2].setAttribute("d", "M" + (X - 6) + " 2h12l-6 7Z");
       var g = "";
       for (var d = 0; d < 360; d += MINOR) {
