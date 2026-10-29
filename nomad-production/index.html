@@ -1629,6 +1629,82 @@ header.top.solid { background: #05070c !important; border-color: transparent !im
   .sp-bar .sa { font-size: .58rem !important; }
 }
 
+/* ===== v11: no containers from section 3 on, backgrounds split the sections ===== */
+.sec { background: #05070c; }
+.sec.alt { background: linear-gradient(180deg, #0b1020 0%, #080c17 100%) !important; }
+.sec.alt + .sec, .sec + .sec.alt { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04); }
+
+#approach .panel:not(.result), #pricing .panel:not(.quote), #brief .panel, .pl-rows, .toggles, .included, .pack, #proc-ruler .ruler, .faq details, .direct > div, .orbit {
+  background: none !important; border: 0 !important; box-shadow: none !important; border-radius: 0 !important; }
+#approach .panel:not(.result), #pricing .est > .panel:not(.quote), #brief .panel { padding: 0 !important; }
+.pl-rows, .toggles { padding: 0 !important; }
+.pl-rows .pl-row, .toggles .tg { padding-inline: 0 !important; border-bottom: 1px solid rgba(255, 255, 255, .07) !important; border-top: 0 !important; }
+.pl-rows .pl-row:first-child, .toggles .tg:first-child { border-top: 1px solid rgba(255, 255, 255, .07) !important; }
+.included { padding: 0 !important; }
+.pack { padding: 0 0 0 clamp(16px, 2vw, 24px) !important; border-left: 1px solid rgba(143, 178, 255, .35) !important; }
+.orbit { padding: 0 !important; }
+.finder { align-items: start !important; gap: clamp(32px, 5vw, 72px) !important; }
+.est { align-items: start !important; gap: clamp(32px, 5vw, 72px) !important; }
+.quote { position: sticky; top: 96px; }
+@media (max-width: 860px) { .quote { position: static; } }
+#brief .brief-grid { gap: clamp(36px, 5vw, 72px) !important; }
+.direct > div { padding: 12px 0 !important; border-bottom: 1px solid rgba(255, 255, 255, .07) !important; }
+
+/* FAQ: compact hairline list */
+.faq { gap: 0 !important; border-top: 1px solid rgba(255, 255, 255, .08); }
+.faq details { border-bottom: 1px solid rgba(255, 255, 255, .08) !important; }
+.faq summary { padding: 16px 0 !important; font-size: .9rem !important; font-weight: 600 !important; }
+.faq summary .pm { width: 26px !important; height: 26px !important; background: none !important; border: 1px solid rgba(255, 255, 255, .14); }
+.faq summary .pm svg { width: 13px !important; height: 13px !important; }
+.faq details[open] .pm { background: none !important; border-color: var(--blue-2); color: var(--blue-2) !important; }
+.faq details p { padding: 0 40px 18px 0 !important; font-size: .84rem !important; }
+
+/* Day ruler: day on one line, steady text block, tabs that wrap */
+.r-read { grid-template-columns: 132px minmax(0, 1fr) !important; align-items: start !important; min-height: 0 !important; }
+.r-day { display: flex !important; flex-wrap: wrap; align-items: baseline; gap: 2px 8px !important; border-right: 0 !important; padding-right: 0 !important; }
+.r-day span { width: 100%; font-size: .62rem !important; }
+.r-day b { font-size: clamp(2.6rem, 6vw, 3.6rem) !important; font-weight: 300 !important; letter-spacing: -.04em !important; line-height: 1 !important; }
+.r-day em { font-style: normal; font-size: .9rem; color: var(--dim); font-variant-numeric: tabular-nums; }
+.r-stage { min-height: 7.4em; align-content: start; padding-left: clamp(18px, 3vw, 32px); border-left: 1px solid rgba(255, 255, 255, .08); }
+.r-stage b { font-size: 1.15rem !important; font-weight: 700 !important; }
+.r-stage p { font-size: .88rem !important; line-height: 1.5; color: var(--muted) !important; }
+.r-stage small { font-size: .74rem !important; }
+.r-seg { background: rgba(143, 178, 255, .16) !important; border-left-color: #080c17 !important; }
+.r-seg.on { background: linear-gradient(95deg, #ffffff 0%, #8fb2ff 45%, #2f6bff 100%) !important; box-shadow: 0 0 18px rgba(80, 140, 255, .55) !important; }
+.r-tabs { flex-wrap: wrap !important; overflow: visible !important; gap: 6px !important; }
+.r-tabs button { padding: 6px 12px !important; font-size: .74rem !important; background: none !important; border: 1px solid rgba(255, 255, 255, .12) !important; }
+.r-tabs button[aria-pressed="true"] { background: #fff !important; color: #05070c !important; border-color: #fff !important; }
+@media (max-width: 560px) {
+  .r-read { grid-template-columns: minmax(0, 1fr) !important; gap: 12px !important; }
+  .r-stage { padding-left: 0; border-left: 0; min-height: 8.6em; }
+}
+
+/* Title gradient on the dashboard bars */
+.fx-bar.on i b, .q-stack i:first-child { background: linear-gradient(95deg, #ffffff 0%, #8fb2ff 45%, #2f6bff 100%) !important; }
+
+/* Hero play chip: black, the gradient glows only along its lower edge */
+.hb-ic { position: relative; overflow: hidden; background: #05070c !important; animation: none !important; box-shadow: none !important; }
+.hb-ic::before { content: ""; position: absolute; left: -40%; right: -40%; bottom: -2px; height: 55%; background: linear-gradient(90deg, #ffffff, #8fb2ff, #2f6bff, #8fb2ff, #ffffff); background-size: 200% 100%; filter: blur(4px); opacity: .95; animation: hbSlide 5s linear infinite;
+  -webkit-mask-image: linear-gradient(0deg, #000 10%, transparent 100%); mask-image: linear-gradient(0deg, #000 10%, transparent 100%); }
+@keyframes hbSlide { to { background-position: -200% 0; } }
+.hb-ic svg { position: relative; z-index: 1; fill: #fff !important; }
+
+/* No sticky price bar at the bottom */
+.mbar { display: none !important; }
+
+/* Showcase filters: one line, niche chips then approach chips after a divider */
+.filters { display: flex !important; align-items: center; gap: 10px !important; overflow-x: auto; scrollbar-width: none; flex-wrap: nowrap; }
+.filters::-webkit-scrollbar { display: none; }
+.filters .chips { overflow: visible !important; flex: none; padding: 0 !important; }
+.filter-line { flex: none; flex-wrap: nowrap !important; gap: 8px !important; padding-left: 10px; border-left: 1px solid rgba(255, 255, 255, .12); }
+.filter-line .label { display: none !important; }
+@media (max-width: 760px) { .filters { margin-inline: calc(-1 * var(--gut)) calc(-1 * var(--gut-r)); padding-inline: var(--gut) var(--gut-r) !important; } }
+
+/* Spotlight: room under the lens, its glow fades out */
+.spot-sec { padding-bottom: clamp(110px, 14vw, 170px) !important; }
+.lens-svg { -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent), linear-gradient(180deg, #000 60%, transparent 100%) !important; -webkit-mask-composite: source-in; mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent), linear-gradient(180deg, #000 60%, transparent 100%) !important; mask-composite: intersect; }
+
+.faq details[open] { box-shadow: none !important; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
@@ -2333,7 +2409,7 @@ header.top.solid { background: #05070c !important; border-color: transparent !im
     nc = chip("All niches", "all", "niche", CAT.length);
     Object.keys(NICHE).forEach(function (k) { var n = CAT.filter(function (c) { return c.n === k; }).length; if (n) nc += chip(NICHE[k], k, "niche", n); });
     $("#niche-chips").innerHTML = nc;
-    $("#ap-chips").innerHTML = chip("All", "all", "ap") + chip("AI film", "ai", "ap", undefined, "var(--ai)") + chip("Hybrid", "hybrid", "ap", undefined, "var(--hy)") + chip("Edit", "edit", "ap", undefined, "var(--real)");
+    $("#ap-chips").innerHTML = chip("AI film", "ai", "ap", undefined, "var(--ai)") + chip("Hybrid", "hybrid", "ap", undefined, "var(--hy)") + chip("Edit", "edit", "ap", undefined, "var(--real)");
   }
   function renderRows() {
     var list = CAT.filter(function (c) { return (state.niche === "all" || c.n === state.niche) && (state.ap === "all" || c.a === state.ap); });
@@ -2362,7 +2438,7 @@ header.top.solid { background: #05070c !important; border-color: transparent !im
   renderChips(); renderRows();
 
   document.addEventListener("click", function (e) {
-    var ch = e.target.closest(".chip"); if (ch) { setFilter(ch.dataset.g, ch.dataset.v); return; }
+    var ch = e.target.closest(".chip"); if (ch) { setFilter(ch.dataset.g, ch.dataset.g === "ap" && state.ap === ch.dataset.v ? "all" : ch.dataset.v); return; }
     var ar = e.target.closest(".arrows button"); if (ar) { var t = ar.closest(".row").querySelector(".track"); t.scrollBy({ left: +ar.dataset.dir * t.clientWidth * .85, behavior: "smooth" }); return; }
     var cd = e.target.closest(".card[data-id], .feat[data-id]"); if (cd && !cd.closest("#tp")) { openSheet(cd.dataset.id); return; }
     var ff = e.target.closest("[data-fmt]"); if (ff) { setFilter("niche", "all"); setFilter("ap", "all"); setTimeout(function () { var r = $("#row-" + ff.dataset.fmt); if (r) r.scrollIntoView({ behavior: "smooth", block: "center" }); }, 50); }
@@ -2441,7 +2517,7 @@ header.top.solid { background: #05070c !important; border-color: transparent !im
     var step = c.days <= 10 ? 1 : c.days <= 24 ? 3 : 5, nums = "";
     for (var dd = 1; dd <= c.days; dd += step) nums += '<span style="left:' + ((dd - 1) / c.days * 100).toFixed(2) + '%">' + dd + "</span>";
     return '<div class="ruler" id="ruler" style="--n:' + c.days + '">' +
-      '<div class="r-read" aria-live="polite"><div class="r-day"><span>Day</span><b class="rl-day" id="rl-day">01</b><span>of ' + (c.days < 10 ? "0" : "") + c.days + '</span></div>' +
+      '<div class="r-read" aria-live="polite"><div class="r-day"><span>Day</span><b class="rl-day" id="rl-day">01</b><em>/ ' + (c.days < 10 ? "0" : "") + c.days + '</em></div>' +
       '<div class="r-stage"><b class="rl-name" id="rl-name"></b><p class="rl-what" id="rl-what"></p><small class="rl-who" id="rl-who"></small></div></div>' +
       '<div class="r-scale">' + segs + '<div class="r-ticks"></div><div class="r-nums">' + nums + '</div><div class="r-marker" id="r-marker"></div>' +
       '<input class="r-input" id="r-input" type="range" min="0" max="1000" value="0" aria-label="Scrub through the production timeline"><span class="r-focus"></span></div>' +
@@ -2756,6 +2832,33 @@ header.top.solid { background: #05070c !important; border-color: transparent !im
     document.documentElement.classList.add("fp");
     var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }); }, { rootMargin: "0px 0px -12% 0px" });
     heads.forEach(function (h) { io.observe(h); });
+  })();
+
+
+  /* ================= Hero → Now playing: one guided swipe into place ================= */
+  (function () {
+    var hero = $("#hero"), sec = $("#now"), spot = $("#spot"), lens = $("#lens"), done = false, t = null, lastY = scrollY, anim = false;
+    if (!hero || !spot || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    function target() {
+      var top = function (el) { return el.getBoundingClientRect().top + scrollY; };
+      var head = top(sec.querySelector(".head")), sTop = top(spot), lBot = top(lens) + lens.offsetHeight, room = innerHeight - 72;
+      if (lBot - head <= room) return head - 72;
+      if (lBot - sTop <= room) return sTop - 72;
+      return lBot - innerHeight + 12;
+    }
+    function glide(to) {
+      anim = true; var from = scrollY, t0 = performance.now(), d = 820;
+      (function step(n) { var p = Math.min(1, (n - t0) / d), e = p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; scrollTo(0, from + (to - from) * e); if (p < 1) requestAnimationFrame(step); else { anim = false; hapt(); } })(t0);
+    }
+    addEventListener("scroll", function () {
+      if (anim) return;
+      var y = scrollY, down = y > lastY; lastY = y;
+      var h = hero.offsetHeight;
+      if (y < h * .08) { done = false; return; }
+      clearTimeout(t);
+      if (done || !down) return;
+      t = setTimeout(function () { var to = target(); if (scrollY > h * .08 && scrollY < to - 4) { done = true; glide(to); } }, 90);
+    }, { passive: true });
   })();
 
   /* ================= Brief / ordering ================= */
