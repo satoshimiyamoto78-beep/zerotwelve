@@ -830,6 +830,82 @@ button.cg-cell[aria-pressed="true"] { background: radial-gradient(circle at 50% 
 .menu .m-feat { animation-delay: .2s; } .menu .foot { animation-delay: .24s; }
 @keyframes mIn { from { opacity: 0; transform: translate3d(0, 14px, 0); } to { opacity: 1; transform: none; } }
 
+/* ===== v2: cleaner glass, centred coverflow, row headers, spec strip ===== */
+:root { --card: #0b0f18; --card-2: #141a26;
+  --surface: linear-gradient(180deg, rgba(255, 255, 255, .05) 0%, rgba(255, 255, 255, .012) 38%, rgba(255, 255, 255, 0) 100%);
+  --edge: inset 0 1px 0 rgba(255, 255, 255, .1), inset 0 0 0 1px rgba(255, 255, 255, .02);
+  --glow: radial-gradient(80% 60% at 50% -10%, rgba(80, 130, 255, .16), transparent 70%); }
+.panel, .folder, .spot-info, .cg-info, .tp-card, .ruler, .pl-row, .price-wrap, .included, .faq details, .gantt, .direct div, .ask, .tl { border-color: rgba(255, 255, 255, .07); }
+
+/* Hero spotlight: centred poster, previous and next peek on each side */
+.spot { justify-self: center; width: min(100%, 300px); }
+.spot-stage { perspective: 1200px; }
+.spot-poster { opacity: 0; transform: translate3d(0, 0, 0) scale(.66); pointer-events: none; z-index: 1; }
+.spot-poster::after { opacity: .62; }
+.spot-poster.is-active { opacity: 1; transform: none; z-index: 3; }
+.spot-poster.is-next, .spot-poster.is-prev { opacity: 1; z-index: 2; pointer-events: auto; }
+.spot-poster.is-next { transform: translate3d(36%, 0, 0) scale(.8) rotateY(-14deg); }
+.spot-poster.is-prev { transform: translate3d(-36%, 0, 0) scale(.8) rotateY(14deg); }
+.spot-badge { background: rgba(5, 7, 12, .72); border-color: rgba(255, 255, 255, .14); font-size: .62rem; letter-spacing: .18em; }
+
+.spot-info { padding: 20px 22px; gap: 12px; background: var(--glow), var(--surface), var(--card); }
+.sa { display: inline-flex; align-items: center; gap: 10px; font-size: .66rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: rgba(255, 255, 255, .78); }
+.sa i { width: 18px; height: 1px; background: var(--blue-2); box-shadow: 0 0 8px var(--blue); }
+.spot-count { font-size: .7rem; letter-spacing: .14em; }
+.sa.big { font-size: .74rem; letter-spacing: .26em; color: #fff; }
+.sa.big i { width: 28px; }
+.spot-title { font-size: 1.5rem; letter-spacing: -.035em; }
+.spot-meta { display: flex; flex-wrap: wrap; gap: 6px; }
+.spot-meta span { font-size: .74rem; font-weight: 600; color: rgba(255, 255, 255, .72); padding: 5px 9px; border-radius: 8px; background: rgba(255, 255, 255, .055); }
+.spot-foot { margin-top: 2px; padding-top: 0; border-top: 0; align-items: end; }
+.spot-foot .sp small { display: block; font-size: .62rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); }
+.spot-foot .sp b { font-size: 1.55rem; font-weight: 300; letter-spacing: -.04em; line-height: 1.1; }
+.spot-foot .btn { gap: 8px; }
+.spot-foot .btn svg.i { width: 16px; height: 16px; }
+.facts { border-top: 0 !important; }
+.filters { box-shadow: 0 18px 18px -12px var(--bg); }
+
+/* Row headers: aspect frame, kicker, title, one-line description */
+.row-top { align-items: center; margin-bottom: 18px; }
+.rt-l { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.rt-fr { flex: none; width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; background: var(--surface), var(--card); box-shadow: var(--edge); border: 1px solid rgba(255, 255, 255, .07); }
+.rt-fr i { display: block; height: 26px; max-width: 34px; border: 1.5px solid var(--blue-2); border-radius: 4px; background: rgba(47, 107, 255, .14); }
+.rt-k { display: flex; flex-wrap: wrap; gap: 0; font-size: .64rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); margin-bottom: 4px; }
+.rt-k span + span::before { content: ""; display: inline-block; width: 3px; height: 3px; border-radius: 50%; background: var(--dim); margin: 0 9px; vertical-align: middle; }
+.rt-k span:first-child { color: var(--blue-2); }
+.row-top h3 { font-size: 1.45rem; letter-spacing: -.03em; line-height: 1.1; }
+.row-top p { font-size: .86rem; color: var(--muted); margin-top: 2px; }
+.rt-n { margin-left: auto; font-size: .76rem; font-weight: 600; color: var(--muted); padding: 7px 12px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .08); white-space: nowrap; }
+@media (max-width: 700px) {
+  .rt-fr { width: 44px; height: 44px; border-radius: 12px; }
+  .rt-fr i { height: 22px; max-width: 30px; }
+  .row-top h3 { font-size: 1.2rem; }
+  .row-top p { font-size: .8rem; }
+  .rt-n { display: none; }
+}
+
+/* Package specs as a compact strip */
+.glance { display: flex; flex-wrap: wrap; gap: 8px; border: 0; border-radius: 0; overflow: visible; background: none !important; box-shadow: none !important; }
+.glance .gl { display: flex; align-items: center; gap: 10px; padding: 10px 16px 10px 12px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, .07) !important; background: var(--surface), var(--card); box-shadow: var(--edge); }
+.glance .gl svg.i { width: 18px; height: 18px; color: var(--blue-2); }
+.glance .gl small { display: block; font-size: .6rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+.glance .gl b { display: block; font-size: .98rem; font-weight: 600; letter-spacing: -.01em; }
+.tp-sec:has(> .wrap > .glance) { padding-block: 28px; }
+
+@media (max-width: 960px) { .spot { width: min(100%, 300px); grid-template-columns: minmax(0, 1fr); justify-self: center; } }
+@media (max-width: 700px) {
+  .spot { width: 100%; }
+  .spot-stage { width: 62%; margin-inline: auto; aspect-ratio: 2 / 3; }
+  .spot-poster.is-next { transform: translate3d(42%, 0, 0) scale(.78) rotateY(-14deg); }
+  .spot-poster.is-prev { transform: translate3d(-42%, 0, 0) scale(.78) rotateY(14deg); }
+  .spot-info { padding: 18px; }
+  .spot-title { font-size: 1.35rem; }
+  .spot-foot { flex-direction: row; align-items: end; }
+  .glance { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: calc(-1 * var(--gut)) calc(-1 * var(--gut-r)); padding-inline: var(--gut) var(--gut-r); }
+  .glance::-webkit-scrollbar { display: none; }
+  .glance .gl { flex: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
@@ -1182,9 +1258,9 @@ button.cg-cell[aria-pressed="true"] { background: radial-gradient(circle at 50% 
     return '<span class="laurel"><svg aria-hidden="true"><use href="#i-laurel"/></svg><span class="lt"><small>' + (top || "Nomad · 2026") + "</small><b>" + AP[a] + '</b></span><svg class="r" aria-hidden="true"><use href="#i-laurel"/></svg></span>';
   }
   var FORMAT = {
-    short: { name: "Short-form", ratio: "9:16", row: "Short-form for TikTok, Reels and Shorts", note: "6–60 sec, vertical, built to stop the scroll" },
-    promo: { name: "Promo & ads", ratio: "16:9", row: "Promo films and ads", note: "30–90 sec for launches, YouTube and paid media" },
-    film: { name: "Brand film", ratio: "2.39:1", row: "Brand films and storytelling", note: "3–10 min about a brand, a founder or a craft" }
+    short: { name: "Short-form", ratio: "9:16", ar: "9 / 16", title: "Short-form", sub: "TikTok, Reels and Shorts, built to stop the scroll", len: "6–60 sec", row: "Short-form for TikTok, Reels and Shorts", note: "6–60 sec, vertical, built to stop the scroll" },
+    promo: { name: "Promo & ads", ratio: "16:9", ar: "16 / 9", title: "Promo & ads", sub: "Launches, YouTube and paid media", len: "30–90 sec", row: "Promo films and ads", note: "30–90 sec for launches, YouTube and paid media" },
+    film: { name: "Brand film", ratio: "2.39:1", ar: "2.39 / 1", title: "Brand films", sub: "Stories about a brand, a founder or a craft", len: "3–10 min", row: "Brand films and storytelling", note: "3–10 min about a brand, a founder or a craft" }
   };
   var NICHE = { fashion: "Fashion", beauty: "Beauty", tech: "Tech", music: "Music", estate: "Real estate", story: "Brand story" };
 
@@ -1378,10 +1454,10 @@ button.cg-cell[aria-pressed="true"] { background: radial-gradient(circle at 50% 
       dotEls.forEach(function (d, k) { d.setAttribute("aria-current", String(k === i)); });
       info.classList.remove("swap"); void info.offsetWidth; info.classList.add("swap");
       info.innerHTML =
-        '<div class="spot-head">' + laurel(c.a) + '<span class="spot-count"><b>' + pad(i + 1) + "</b> / " + pad(n) + "</span></div>" +
+        '<div class="spot-head"><span class="sa ' + c.a + '"><i></i>' + AP[c.a] + '</span><span class="spot-count"><b>' + pad(i + 1) + "</b> / " + pad(n) + "</span></div>" +
         '<div class="spot-title">' + c.t + "</div>" +
-        '<div class="spot-meta">' + NICHE[c.n] + " · " + FORMAT[c.f].name + " · " + c.d + " · " + c.days + " days</div>" +
-        '<div class="spot-foot"><b>' + money(c.p) + '<small>fixed price</small></b><button type="button" class="btn sm white" data-id="' + c.id + '">View package</button></div>';
+        '<div class="spot-meta"><span>' + NICHE[c.n] + "</span><span>" + FORMAT[c.f].name + "</span><span>" + c.d + "</span><span>" + c.days + " days</span></div>" +
+        '<div class="spot-foot"><div class="sp"><small>Fixed price</small><b>' + money(c.p) + '</b></div><button type="button" class="btn sm white" data-id="' + c.id + '">View package<svg class="i"><use href="#i-arrow"/></svg></button></div>';
     }
     function schedule() {
       clearTimeout(timer);
@@ -1393,7 +1469,7 @@ button.cg-cell[aria-pressed="true"] { background: radial-gradient(circle at 50% 
     $("#spot-prev").addEventListener("click", function () { go(cur - 1); });
     $("#spot-next").addEventListener("click", function () { go(cur + 1); });
     dots.addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) go(+b.dataset.i); });
-    spot.addEventListener("click", function (e) { var t = e.target.closest("[data-id]"); if (t) openSheet(t.dataset.id); });
+    spot.addEventListener("click", function (e) { var t = e.target.closest("[data-id]"); if (!t) return; if (t.classList.contains("is-next")) { go(cur + 1); return; } if (t.classList.contains("is-prev")) { go(cur - 1); return; } openSheet(t.dataset.id); });
     spot.addEventListener("keydown", function (e) { if (e.key === "ArrowRight") go(cur + 1); if (e.key === "ArrowLeft") go(cur - 1); });
     ["mouseenter", "focusin"].forEach(function (ev) { spot.addEventListener(ev, function () { paused = true; clearTimeout(timer); }); });
     ["mouseleave", "focusout"].forEach(function (ev) { spot.addEventListener(ev, function () { paused = false; schedule(); }); });
@@ -1423,7 +1499,7 @@ button.cg-cell[aria-pressed="true"] { background: radial-gradient(circle at 50% 
       var from = Math.min.apply(null, Object.keys(BASE[f]).map(function (k) { return BASE[f][k]; }));
       var body = items.length ? items.map(function (c) { return cardHTML(c); }).join("") :
         '<div class="empty"><b style="color:var(--ink)">Nothing here yet for this filter</b><span>We make this format for every niche. Tell us what you need and get a fixed quote.</span><a class="linkbtn" href="#brief" data-prefill="' + f + '">Request a custom ' + FORMAT[f].name.toLowerCase() + ' <svg class="i"><use href="#i-arrow"/></svg></a></div>';
-      return '<div class="row reveal" id="row-' + f + '"><div class="row-top"><div><h3>' + FORMAT[f].row + " <span style=\"color:var(--dim);font-weight:600\">· " + FORMAT[f].ratio + '</span></h3><p>' + FORMAT[f].note + " · from " + money(from) + '</p></div><div class="arrows"><button type="button" data-dir="-1" aria-label="Scroll left"><svg class="i"><use href="#i-left"/></svg></button><button type="button" data-dir="1" aria-label="Scroll right"><svg class="i"><use href="#i-right"/></svg></button></div></div><div class="track">' + body + "</div></div>";
+      return '<div class="row reveal" id="row-' + f + '"><div class="row-top"><div class="rt-l"><span class="rt-fr" aria-hidden="true"><i style="aspect-ratio:' + FORMAT[f].ar + '"></i></span><div><div class="rt-k"><span>' + FORMAT[f].ratio + "</span><span>" + FORMAT[f].len + "</span><span>from " + money(from) + "</span></div><h3>" + FORMAT[f].title + "</h3><p>" + FORMAT[f].sub + '</p></div></div><span class="rt-n">' + items.length + (items.length === 1 ? " title" : " titles") + '</span><div class="arrows"><button type="button" data-dir="-1" aria-label="Scroll left"><svg class="i"><use href="#i-left"/></svg></button><button type="button" data-dir="1" aria-label="Scroll right"><svg class="i"><use href="#i-right"/></svg></button></div></div><div class="track">' + body + "</div></div>";
     }).join("");
     $$("#rows .track").forEach(updateArrows);
     $$("#rows .track").forEach(function (t) { t.addEventListener("scroll", function () { updateArrows(t); }, { passive: true }); });
@@ -1487,11 +1563,11 @@ button.cg-cell[aria-pressed="true"] { background: radial-gradient(circle at 50% 
       '<div class="tp-bar" id="tp-bar"><div class="wrap tp-bar-in"><button type="button" class="tp-back" data-tp-close><svg class="i"><use href="#i-left"/></svg>Showcase</button><span class="tp-id">Package ' + c.id + '</span><button type="button" class="btn sm" data-order="same">Order · ' + money(c.p) + "</button></div></div>" +
       '<header class="tp-hero"><div class="tp-bg">' + (c.img ? '<img src="' + c.duo + '" alt="">' : scene(c.sc)) + '</div><div class="wrap tp-hero-in">' +
         posterHTML(c, "big") +
-        '<div class="tp-info">' + laurel(c.a, "Nomad Production") + '<h1 id="tp-h">' + c.t + '</h1><div class="tp-meta"><span>' + NICHE[c.n] + '</span><i></i><span>' + FORMAT[c.f].name + '</span><i></i><span>' + c.d + '</span><i></i><b>' + FORMAT[c.f].ratio + '</b><b>4K</b></div><p class="tp-syn">' + c.purpose + "</p></div>" +
+        '<div class="tp-info"><span class="sa big ' + c.a + '"><i></i>' + AP[c.a] + '</span><h1 id="tp-h">' + c.t + '</h1><div class="tp-meta"><span>' + NICHE[c.n] + '</span><i></i><span>' + FORMAT[c.f].name + '</span><i></i><span>' + c.d + '</span><i></i><b>' + FORMAT[c.f].ratio + '</b><b>4K</b></div><p class="tp-syn">' + c.purpose + "</p></div>" +
         '<aside class="tp-card"><span class="label">Fixed price · same scope</span><div class="tp-price">' + money(c.p) + '</div><div class="kv"><span>Delivery</span><b>' + c.days + ' days</b></div><div class="kv"><span>Revisions</span><b>2 rounds per stage</b></div><button type="button" class="btn" data-order="same">Order this package<svg class="i"><use href="#i-arrow"/></svg></button><button type="button" class="btn ghost" data-order="similar"><svg class="i"><use href="#i-layers"/></svg>Order something similar</button><small>“Similar” uses this as a reference. We adapt the scope and send a fixed quote within 3 days.</small></aside>' +
       "</div></header>" +
       '<section class="tp-sec"><div class="wrap"><div class="glance">' +
-        [["Length", c.d], ["Format", FORMAT[c.f].ratio], ["Delivery", c.days + " days"], ["Videos", c.del.length + " files"], ["Master", "4K"]].map(function (g) { return "<div><span>" + g[0] + "</span><strong>" + g[1] + "</strong></div>"; }).join("") +
+        [["i-clock", "Length", c.d], ["i-monitor", "Format", FORMAT[c.f].ratio], ["i-cal", "Delivery", c.days + " days"], ["i-video", "Files", c.del.length], ["i-film", "Master", "4K"]].map(function (g) { return '<div class="gl"><svg class="i"><use href="#' + g[0] + '"/></svg><span><small>' + g[1] + "</small><b>" + g[2] + "</b></span></div>"; }).join("") +
       "</div></div></section>" +
       '<section class="tp-sec"><div class="wrap tp-two"><div class="story"><h3>How it’s made</h3><p>' + c.how + '</p></div><div class="story"><h3>Approach</h3><p>' + {real: "Filmed with a full crew, cast and locations.", ai: "Directed and generated frame by frame, then graded and mixed like a shoot.", hybrid: "People and product filmed for real, the world around them built with AI."}[c.a] + '</p></div></div></section>' +
       crewHTML(c) +
