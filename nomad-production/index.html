@@ -2170,6 +2170,93 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; heig
 footer { padding: 0 !important; background: var(--glow), var(--surface), var(--card); border-radius: 36px 36px 0 0; box-shadow: var(--edge); }
 footer .wrap { background: none !important; box-shadow: none !important; border-radius: 0 !important; padding-block: clamp(32px, 4vw, 48px) calc(24px + env(safe-area-inset-bottom, 0px)) !important; }
 
+/* ===== v23 ===== */
+.grad-t { color: transparent; background: linear-gradient(95deg, #ffffff 0%, #8fb2ff 45%, #2f6bff 100%); -webkit-background-clip: text; background-clip: text; }
+
+/* Partners stage */
+.spot-sec { padding-bottom: clamp(36px, 5vw, 64px) !important; }
+.partners { height: 175vh; padding: 0 !important; }
+.pl-stage { position: sticky; top: 0; height: 100vh; height: 100svh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+.pl-head { will-change: transform; transform-origin: 50% 50%; margin-bottom: 4px !important; }
+.globe { will-change: transform, opacity; height: min(62vh, clamp(380px, 48vw, 620px)) !important; margin-top: 0 !important; }
+.gl-stats { margin-top: -22px !important; }
+.partners.still { height: auto; } .partners.still .pl-stage { position: static; height: auto; }
+
+/* Process: the edit strip stays inside its node */
+.fl-strip { height: 58px !important; min-height: 0 !important; grid-template-rows: 58px; overflow: hidden; }
+.fl-strip img { height: 58px !important; width: 100% !important; object-fit: cover; }
+
+/* Player */
+.vp { position: fixed; inset: 0; z-index: 140; background: rgba(2, 3, 7, .92); display: grid; place-items: center; padding: clamp(0px, 3vw, 40px); animation: exIn .3s ease; }
+.vp[hidden] { display: none; }
+.vl-in { position: relative; width: min(1200px, 100%); max-height: 100%; aspect-ratio: 16 / 9; border-radius: clamp(0px, 2vw, 24px); overflow: hidden; background: #000; box-shadow: 0 40px 120px -30px rgba(47, 107, 255, .35); }
+@media (orientation: portrait) and (max-width: 760px) { .vl-in { aspect-ratio: 9 / 16; width: auto; height: 100%; } }
+.vl-v { width: 100%; height: 100%; object-fit: contain; display: block; background: #000; }
+.vl-top, .vl-bar, .vl-big { transition: opacity .35s ease; }
+.vp:not(.ui).playing .vl-top, .vp:not(.ui).playing .vl-bar, .vp.playing .vl-big { opacity: 0; pointer-events: none; }
+.vl-top { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; align-items: start; padding: 18px 20px 40px; background: linear-gradient(180deg, rgba(0, 0, 0, .65), transparent); }
+.vl-top b { display: block; font-size: 1.1rem; letter-spacing: -.02em; margin-top: 2px; }
+.vl-x { width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .2); background: rgba(0, 0, 0, .3); color: #fff; display: grid; place-items: center; cursor: pointer; }
+.vl-x svg.i { width: 16px; height: 16px; }
+.vl-big { position: absolute; left: 50%; top: 50%; width: 76px; height: 76px; margin: -38px 0 0 -38px; border-radius: 50%; border: 0; cursor: pointer; display: grid; place-items: center; background: #05070c; overflow: hidden; box-shadow: 0 0 0 1px rgba(255, 255, 255, .15); }
+.vl-big::before { content: ""; position: absolute; left: -40%; right: -40%; bottom: -2px; height: 55%; background: linear-gradient(90deg, #fff, #8fb2ff, #2f6bff, #8fb2ff, #fff); background-size: 200% 100%; filter: blur(5px); animation: hbSlide 5s linear infinite; -webkit-mask-image: linear-gradient(0deg, #000 10%, transparent); mask-image: linear-gradient(0deg, #000 10%, transparent); }
+.vl-big svg { position: relative; width: 24px; height: 24px; fill: #fff; margin-left: 3px; }
+.vl-bar { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: center; gap: 12px; padding: 40px 18px 16px; background: linear-gradient(0deg, rgba(0, 0, 0, .7), transparent); }
+.vl-bar button { flex: none; width: 34px; height: 34px; border: 0; border-radius: 50%; background: none; color: #fff; display: grid; place-items: center; cursor: pointer; }
+.vl-bar button svg { width: 18px; height: 18px; fill: currentColor; }
+.vl-bar button svg.i { fill: none; }
+.vl-ic-pause { display: none; } .vp.playing .vl-ic-pause { display: block; } .vp.playing .vl-ic-play { display: none; }
+.vp.muted .vl-mu { opacity: .45; }
+.vl-tc { font: 600 .72rem/1 ui-monospace, SFMono-Regular, Menlo, monospace; color: rgba(255, 255, 255, .8); flex: none; }
+.vl-sc { position: relative; flex: 1; height: 18px; cursor: pointer; touch-action: none; }
+.vl-sc i { position: absolute; left: 0; top: 50%; height: 3px; margin-top: -1.5px; border-radius: 2px; }
+.vl-sc::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 3px; margin-top: -1.5px; border-radius: 2px; background: rgba(255, 255, 255, .15); }
+.vl-buf { background: rgba(255, 255, 255, .25); width: 0; }
+.vl-fill { width: 0; background: linear-gradient(90deg, #fff, #8fb2ff 45%, #2f6bff); box-shadow: 0 0 10px rgba(80, 140, 255, .6); }
+.vl-head { width: 12px !important; height: 12px !important; margin: -6px 0 0 -6px !important; border-radius: 50% !important; background: #fff; box-shadow: 0 0 10px rgba(143, 178, 255, .9); }
+.tp-pwrap { position: relative; }
+.tp-play { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 8px; padding: 5px 16px 5px 5px; border: 0; border-radius: 999px; background: #fff; color: #05070c; font: 600 .8rem var(--font); cursor: pointer; white-space: nowrap; }
+.tp-play span { width: 28px; height: 28px; border-radius: 50%; background: #05070c; display: grid; place-items: center; }
+.tp-play svg { width: 11px; height: 11px; fill: #fff; margin-left: 2px; }
+
+/* Brief, redone */
+#brief .brief-grid { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr) !important; gap: clamp(32px, 6vw, 96px) !important; align-items: start; }
+#brief .brief-grid > .side { order: -1; }
+#brief .brief-grid > .panel { padding: clamp(24px, 3vw, 40px) !important; border: 1px solid transparent !important; border-radius: 32px !important;
+  background: linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.015) 40%, rgba(47,107,255,.08) 100%) padding-box, linear-gradient(#080b14, #080b14) padding-box, linear-gradient(180deg, rgba(255,255,255,.22) 0%, rgba(255,255,255,.05) 38%, rgba(110,160,255,.6) 100%) border-box !important;
+  box-shadow: inset 0 -16px 26px -16px rgba(80,140,255,.5), 0 24px 46px -28px rgba(47,107,255,.45) !important; }
+#brief form { display: grid; gap: 26px; }
+#brief .two { gap: 26px !important; }
+#brief input:not([type=radio]):not([type=checkbox]), #brief select, #brief textarea { background: transparent !important; border: 0 !important; border-bottom: 1px solid rgba(255,255,255,.16) !important; border-radius: 0 !important; padding: 10px 0 12px !important; box-shadow: none !important; font-size: 1rem !important; }
+#brief select { background-position: calc(100% - 10px) 52%, calc(100% - 5px) 52% !important; padding-right: 26px !important; }
+#brief textarea { min-height: 84px; }
+#brief input:focus, #brief select:focus, #brief textarea:focus { border-bottom-color: transparent !important; background: linear-gradient(90deg, #fff, #8fb2ff 45%, #2f6bff) 0 100% / 100% 2px no-repeat !important; }
+#brief .radio-chips { gap: 0 !important; border-bottom: 1px solid rgba(255,255,255,.1); }
+#brief .radio-chips label { border: 0 !important; background: none !important; border-radius: 0 !important; padding: 10px 14px 12px 0 !important; margin-right: 6px; color: rgba(255,255,255,.5) !important; position: relative; font-size: .86rem !important; }
+#brief .radio-chips input:checked + label { color: #fff !important; }
+#brief .radio-chips input:checked + label::after { content: ""; position: absolute; left: 0; right: 14px; bottom: -1px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, #fff, #8fb2ff 45%, #2f6bff); box-shadow: 0 0 10px rgba(80,140,255,.6); }
+#brief .form-foot .btn { background: #fff !important; color: #05070c !important; }
+#brief .side { gap: 36px !important; }
+#brief .side > .panel { padding: 0 !important; background: none !important; border: 0 !important; box-shadow: none !important; }
+#brief .side h3 { font-size: .66rem; letter-spacing: .18em; text-transform: uppercase; color: var(--blue-2); font-weight: 700; }
+#brief .next { position: relative; gap: 26px !important; margin-top: 22px !important; }
+#brief .next::before { content: ""; position: absolute; left: 16px; top: 10px; bottom: 10px; width: 1px; background: linear-gradient(180deg, #8fb2ff, rgba(47,107,255,.15)); }
+#brief .next li { grid-template-columns: 34px minmax(0, 1fr) !important; position: relative; }
+#brief .next .n { background: #080b14 !important; }
+#brief .next b { font-size: 1.05rem !important; }
+#brief .next span:not(.n) { font-size: .84rem !important; }
+.bf-contact { display: grid; gap: 14px; padding-top: 26px; border-top: 1px solid rgba(255,255,255,.08); }
+.bf-contact .m-soc { justify-content: flex-start; gap: 10px; }
+.bf-contact .m-soc a { width: 46px; height: 46px; }
+.bf-mail { font-size: 1.1rem; font-weight: 600; letter-spacing: -.01em; text-decoration: none; color: #fff; }
+@media (max-width: 860px) { #brief .brief-grid { grid-template-columns: minmax(0, 1fr) !important; } #brief .brief-grid > .side { order: 2; } }
+
+.partners { overflow: clip !important; }
+@media (max-width: 760px) {
+  .tp-pwrap { display: contents; }
+  .tp-play { position: static !important; transform: none !important; justify-self: start; order: 3; margin-top: 4px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
@@ -2283,7 +2370,7 @@ footer .wrap { background: none !important; box-shadow: none !important; border-
         <h1>We erase the barrier between <em>screen and audience</em></h1>
         <p class="lede">AI-focused video for brands. Pick a package, see the price, order one like it.</p>
         <div class="cta-row">
-          <a class="hb hb-main" href="#showcase"><span class="hb-ic"><svg viewBox="0 0 24 24"><use href="#i-play"/></svg></span>Watch showcase</a>
+          <a class="hb hb-main" href="#showcase" data-play=""><span class="hb-ic"><svg viewBox="0 0 24 24"><use href="#i-play"/></svg></span>Watch showcase</a>
           <a class="hb hb-alt" href="#estimate">Get a price<svg class="i"><use href="#i-arrow"/></svg></a>
         </div>
         <div class="facts">
@@ -2332,7 +2419,8 @@ footer .wrap { background: none !important; box-shadow: none !important; border-
   </section>
 
   <!-- SHOWCASE -->
-  <div class="partners" aria-label="Partners">
+  <div class="partners" aria-label="Partners" id="partners">
+   <div class="pl-stage">
     <div class="wrap pl-head"><svg class="pl-lau" aria-hidden="true"><use href="#i-laurel"/></svg><span class="label">Partners and clients</span><svg class="pl-lau r" aria-hidden="true"><use href="#i-laurel"/></svg></div>
     <div class="globe" id="globe">
       <canvas id="gl-cv" aria-label="Globe with our clients. Drag to rotate, tap a point to see the client." role="img"></canvas>
@@ -2340,6 +2428,7 @@ footer .wrap { background: none !important; box-shadow: none !important; border-
       <span class="gl-hint" id="gl-hint"><svg class="i"><use href="#i-globe"/></svg>Drag to spin · tap a light</span>
     </div>
     <div class="wrap gl-stats" id="gl-stats"></div>
+   </div>
   </div>
 
   <section class="sec" id="showcase">
@@ -2370,7 +2459,7 @@ footer .wrap { background: none !important; box-shadow: none !important; border-
     <div class="wrap">
       <div class="head">
         <span class="label"><b>How we make</b> · 4 ways</span>
-        <h2>Same quality bar. <span class="reel" aria-label="Four ways to get there.">Four ways to get there.</span></h2>
+        <h2>Same quality bar. <span class="grad-t">Four ways to get there.</span></h2>
         <p class="lede">The approach decides the budget and the timeline, never the quality of the final frame.</p>
       </div>
       <div class="svc" id="svc"></div>
@@ -2538,10 +2627,7 @@ footer .wrap { background: none !important; box-shadow: none !important; border-
               <li><span class="n">3</span><div><b>Fixed quote in 3 days</b><span>Idea, timeline and price, no surprises</span></div></li>
             </ol>
           </div>
-          <dl class="direct">
-            <div><span class="ic"><svg class="i"><use href="#i-mail"/></svg></span><span><dt>Email</dt><dd>hello@nomad.production</dd></span></div>
-            <div><span class="ic"><svg class="i"><use href="#i-send"/></svg></span><span><dt>Telegram</dt><dd>@nomadproduction</dd></span></div>
-          </dl>
+          <div class="bf-contact"><span class="label">Or write directly</span><div class="m-soc"><a href="mailto:hello@nomad.production" aria-label="Email"><svg class="i"><use href="#i-mail"/></svg></a><a href="https://t.me/nomadproduction" target="_blank" rel="noopener" aria-label="Telegram"><svg class="i"><use href="#i-send"/></svg></a><a href="https://wa.me/" target="_blank" rel="noopener" aria-label="WhatsApp"><svg class="i"><use href="#i-wa"/></svg></a><a href="https://instagram.com/nomad.production" target="_blank" rel="noopener" aria-label="Instagram"><svg class="i"><use href="#i-ig"/></svg></a></div><a class="bf-mail" href="mailto:hello@nomad.production">hello@nomad.production</a></div>
         </aside>
       </div>
     </div>
@@ -3013,7 +3099,7 @@ footer .wrap { background: none !important; box-shadow: none !important; border-
     tp.innerHTML =
       '<div class="tp-bar" id="tp-bar"><div class="wrap tp-bar-in"><button type="button" class="tp-back" data-tp-close><svg class="i"><use href="#i-left"/></svg>Showcase</button><span class="tp-id">Package ' + c.id + '</span><button type="button" class="btn sm" data-order="same">Order · ' + money(c.p) + "</button></div></div>" +
       '<header class="tp-hero"><div class="tp-bg">' + (c.img ? '<img src="' + c.duo + '" alt="">' : scene(c.sc)) + '</div><div class="wrap tp-hero-in">' +
-        posterHTML(c, "big") +
+        '<div class="tp-pwrap">' + posterHTML(c, "big") + '<button type="button" class="tp-play" data-play="' + c.id + '"><span><svg viewBox="0 0 24 24"><use href="#i-play"/></svg></span>Watch</button></div>' +
         '<div class="tp-info"><span class="sa big ' + c.a + '"><i></i>' + AP[c.a] + '</span><h1 id="tp-h">' + c.t + '</h1><div class="tp-meta"><span>' + NICHE[c.n] + '</span><i></i><span>' + FORMAT[c.f].name + '</span><i></i><span>' + c.d + '</span><i></i><b>' + FORMAT[c.f].ratio + '</b><b>4K</b></div><p class="tp-syn">' + c.purpose + "</p></div>" +
         '<aside class="tp-card"><span class="label">Fixed price · same scope</span><div class="tp-price">' + money(c.p) + '</div><div class="kv"><span>Delivery</span><b>' + c.days + ' days</b></div><div class="kv"><span>Revisions</span><b>2 rounds per stage</b></div><button type="button" class="btn" data-order="same">Order this package<svg class="i"><use href="#i-arrow"/></svg></button><button type="button" class="btn ghost" data-order="similar"><svg class="i"><use href="#i-layers"/></svg>Order something similar</button><small>“Similar” uses this as a reference. We adapt the scope and send a fixed quote within 3 days.</small></aside>' +
       "</div></header>" +
@@ -3534,9 +3620,9 @@ footer .wrap { background: none !important; box-shadow: none !important; border-
     var ks = {}; CL.forEach(function (c) { ks[c.k] = 1; });
     $("#gl-stats").innerHTML = [[CL.length, "Clients"], [Object.keys(ks).length, "Countries"], [CL.length, "Cities"], ["24/7", "Time zones covered"]].map(function (x) { return "<div><b>" + x[0] + "</b><span>" + x[1] + "</span></div>"; }).join("");
 
-    var box = $("#globe"), card = $("#gl-card"), ctx = cv.getContext("2d");
+    var box = $("#globe"), card = $("#gl-card"), ctx = cv.getContext("2d"), ORB = [];
     var ST = []; for (var sx = 0; sx < 140; sx++) { var rs = Math.sin(sx * 12.9898) * 43758.5453; rs -= Math.floor(rs); var rt = Math.sin(sx * 78.233) * 12543.11; rt -= Math.floor(rt); ST.push([rs, rt * .95, .15 + (sx % 5) * .08, sx, sx % 7 === 0 ? 1.6 : 1]); }
-    var ORB = ["Northfold", "ARCA", "Velour", "Kite Studio", "Monolith", "Orbit", "Saltwave", "LUMEN", "Steppe & Co", "Qazaq Tech"].map(function (nm, i) { return { n: nm, p: i / 10 * Math.PI * 2, s: (i % 2 ? 1 : -1) * (.00004 + (i % 3) * .000012), a: 1.25 + (i % 4) * .14, b: .5 + (i % 3) * .12, k: (i % 2 ? .18 : -.14) }; });
+    var ORB0 = ["Northfold", "ARCA", "Velour", "Kite Studio", "Monolith", "Orbit", "Saltwave", "LUMEN", "Steppe & Co", "Qazaq Tech"].map(function (nm, i) { return { n: nm, p: i / 10 * Math.PI * 2, s: (i % 2 ? 1 : -1) * (.00004 + (i % 3) * .000012), a: 1.25 + (i % 4) * .14, b: .5 + (i % 3) * .12, k: (i % 2 ? .18 : -.14) }; });
     var lam = -60 * Math.PI / 180, phi = 12 * Math.PI / 180, vl = 0, W = 0, H = 0, R = 0, cx = 0, cy = 0, dpr = 1, sel = -1, tgt = null, drag = null, vis = true, idle = 0, raf = 0;
     var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     function size() {
@@ -3645,6 +3731,71 @@ footer .wrap { background: none !important; box-shadow: none !important; border-
     }).join(" ");
     if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) { el.classList.add("go"); return; }
     new IntersectionObserver(function (es, ob) { if (es[0].isIntersecting) { el.classList.add("go"); ob.disconnect(); } }, { threshold: .6 }).observe(el);
+  })();
+
+
+  /* ================= Partners: title large, then it settles and the planet rises ================= */
+  (function () {
+    var sec = $("#partners"); if (!sec) return;
+    var head = $(".pl-head", sec), gl = $("#globe"), st = $("#gl-stats");
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { sec.classList.add("still"); return; }
+    var q = false;
+    function upd() {
+      q = false;
+      var r = sec.getBoundingClientRect(), span = sec.offsetHeight - innerHeight;
+      var p = Math.max(0, Math.min(1, -r.top / (span * .7))), e = p * p * (3 - 2 * p);
+      var big = innerWidth < 700 ? .28 : 1.1; head.style.transform = "translate3d(0," + ((1 - e) * 28).toFixed(2) + "vh,0) scale(" + (1 + (1 - e) * big).toFixed(3) + ")";
+      gl.style.opacity = e.toFixed(3); gl.style.transform = "translate3d(0," + ((1 - e) * 18).toFixed(2) + "vh,0) scale(" + (.86 + e * .14).toFixed(3) + ")";
+      st.style.opacity = Math.max(0, e * 1.6 - .6).toFixed(3);
+    }
+    addEventListener("scroll", function () { if (!q) { q = true; requestAnimationFrame(upd); } }, { passive: true }); addEventListener("resize", upd); upd();
+  })();
+
+  /* ================= Player ================= */
+  (function () {
+    var el = document.createElement("div"); el.className = "vp"; el.hidden = true; el.setAttribute("role", "dialog"); el.setAttribute("aria-modal", "true"); el.setAttribute("aria-label", "Video player");
+    el.innerHTML = '<div class="vl-in"><video class="vl-v" playsinline preload="metadata"></video><button type="button" class="vl-big" aria-label="Play"><svg viewBox="0 0 24 24"><use href="#i-play"/></svg></button>' +
+      '<div class="vl-top"><div><span class="pt-k" id="vl-k"></span><b id="vl-t"></b></div><button type="button" class="vl-x" aria-label="Close player"><svg class="i"><use href="#i-x"/></svg></button></div>' +
+      '<div class="vl-bar"><button type="button" class="vl-pp" aria-label="Play"><svg viewBox="0 0 24 24" class="vl-ic-play"><use href="#i-play"/></svg><svg viewBox="0 0 24 24" class="vl-ic-pause"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg></button>' +
+      '<span class="vl-tc" id="vl-tc">00:00</span><div class="vl-sc" id="vl-sc"><i class="vl-buf"></i><i class="vl-fill"></i><i class="vl-head"></i></div><span class="vl-tc" id="vl-du">00:00</span>' +
+      '<button type="button" class="vl-mu" aria-label="Mute"><svg class="i"><use href="#i-wave"/></svg></button><button type="button" class="vl-fs" aria-label="Full screen"><svg class="i" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button></div></div>';
+    document.body.appendChild(el);
+    var v = $(".vl-v", el), sc = $("#vl-sc", el), drag = false, hideT = null;
+    function f2(t) { t = Math.max(0, t || 0); var m = Math.floor(t / 60), s2 = Math.floor(t % 60); return (m < 10 ? "0" : "") + m + ":" + (s2 < 10 ? "0" : "") + s2; }
+    function paint() {
+      var d = v.duration || 0, p = d ? v.currentTime / d : 0;
+      $(".vl-fill", el).style.width = p * 100 + "%"; $(".vl-head", el).style.left = p * 100 + "%";
+      if (v.buffered.length && d) $(".vl-buf", el).style.width = v.buffered.end(v.buffered.length - 1) / d * 100 + "%";
+      $("#vl-tc", el).textContent = f2(v.currentTime); $("#vl-du", el).textContent = f2(d);
+      el.classList.toggle("playing", !v.paused);
+    }
+    function wake() { el.classList.add("ui"); clearTimeout(hideT); hideT = setTimeout(function () { if (!v.paused) el.classList.remove("ui"); }, 2400); }
+    function toggle() { if (v.paused) v.play(); else v.pause(); wake(); }
+    window.openPlayer = function (src, poster, kicker, title) {
+      v.src = src; v.poster = poster || ""; $("#vl-k", el).textContent = kicker || ""; $("#vl-t", el).textContent = title || "";
+      el.hidden = false; document.body.classList.add("lock"); wake(); v.play().catch(function () {});
+    };
+    function close() { v.pause(); el.hidden = true; if ($("#tp").hidden) document.body.classList.remove("lock"); if (document.fullscreenElement) document.exitFullscreen(); }
+    ["timeupdate", "progress", "loadedmetadata", "play", "pause"].forEach(function (ev) { v.addEventListener(ev, paint); });
+    el.addEventListener("pointermove", wake);
+    el.addEventListener("click", function (e) {
+      if (e.target.closest(".vl-x")) return close();
+      if (e.target.closest(".vl-pp, .vl-big") || e.target === v) return toggle();
+      if (e.target.closest(".vl-mu")) { v.muted = !v.muted; el.classList.toggle("muted", v.muted); return; }
+      if (e.target.closest(".vl-fs")) { var t = $(".vl-in", el); if (document.fullscreenElement) document.exitFullscreen(); else if (t.requestFullscreen) t.requestFullscreen(); else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen(); }
+    });
+    function seek(e) { var r = sc.getBoundingClientRect(), p = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)); if (v.duration) v.currentTime = p * v.duration; paint(); }
+    sc.addEventListener("pointerdown", function (e) { drag = true; sc.setPointerCapture(e.pointerId); seek(e); wake(); });
+    sc.addEventListener("pointermove", function (e) { if (drag) seek(e); });
+    sc.addEventListener("pointerup", function () { drag = false; });
+    document.addEventListener("keydown", function (e) { if (el.hidden) return; if (e.key === "Escape") close(); if (e.key === " ") { e.preventDefault(); toggle(); } if (e.key === "ArrowRight") v.currentTime += 5; if (e.key === "ArrowLeft") v.currentTime -= 5; });
+    document.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-play]"); if (!b) return;
+      e.preventDefault(); e.stopPropagation();
+      var c = byId[b.dataset.play], wide = !window.matchMedia("(max-width: 760px), (orientation: portrait)").matches;
+      var src = (c && c.video) || ("assets/video/hero-" + (wide ? "h" : "v") + ".mp4");
+      openPlayer(src, c ? c.img : "", c ? AP[c.a] + " · " + c.d : "Showreel 2026", c ? c.t : "Nomad Production");
+    }, true);
   })();
 
   /* ================= Brief / ordering ================= */
