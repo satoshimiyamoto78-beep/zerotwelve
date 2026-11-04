@@ -69,12 +69,25 @@ def a_tableset2(n):
     return b.mesh(f'Tableset2_{2 * n}p')
 @cached
 def a_boothset2():
-    """booth table set (booth-local coordinates, table x 0.15..1.05, y 0.73..1.43, top +0.76)"""
+    """booth table set (booth-local coordinates; rev. 8.4 table x 0.20..1.05, y 0.78..1.38, top +0.76)"""
     b = MB(); z = 0.76
-    for px, py in ((0.33, 0.88), (0.87, 0.88), (0.33, 1.28), (0.87, 1.28)): _plate_r(b, px, py, z, 0.105)
-    for px, py in ((0.52, 0.86), (0.68, 1.3)): _piala2(b, px, py, z)
-    _lagan_plov(b, 0.6, 1.08, z); _tray(b, 0.3, 1.08, z, 0.11); _choynak(b, 0.28, 1.08, z + 0.004, 0.8); _non(b, 0.9, 1.08, z, 0.075)
-    return b.mesh('Boothset2')
+    for px, py in ((0.40, 0.90), (0.85, 0.90), (0.40, 1.26), (0.85, 1.26)): _plate_r(b, px, py, z, 0.095)
+    for px, py in ((0.62, 0.86), (0.64, 1.30)): _piala2(b, px, py, z)
+    _lagan_plov(b, 0.625, 1.08, z); _choynak(b, 0.29, 1.08, z + 0.004, 0.75); _non(b, 0.96, 1.08, z, 0.07)
+    return b.mesh('Boothset3')
+@cached
+def a_boothtable():
+    """rev. 8.4 (owner: tables jammed against the banquettes): 850 x 600 booth table on ONE central pedestal so knees and
+    feet are free and guests slide in from the open end; walnut frame, zellige inlay top +0.72..0.76, turned column, cross foot"""
+    b = MB(); W = m['walnut']; hx, hy, f = 0.425, 0.30, 0.06
+    b.box(-hx, -hy, 0.72, hx, -hy + f, 0.76, W, 0.006); b.box(-hx, hy - f, 0.72, hx, hy, 0.76, W, 0.006)
+    b.box(-hx, -hy + f, 0.72, -hx + f, hy - f, 0.76, W, 0.006); b.box(hx - f, -hy + f, 0.72, hx, hy - f, 0.76, W, 0.006)
+    b.box(-hx + f, -hy + f, 0.72, hx - f, hy - f, 0.76, X['zellige'])
+    b.box(-0.2, -0.12, 0.69, 0.2, 0.12, 0.72, W, 0.004)                                   # under-top cleat
+    b.lathe(0, 0, 0.06, [(0.0, 0.0), (0.05, 0.0), (0.04, 0.05), (0.035, 0.2), (0.045, 0.3), (0.035, 0.42), (0.035, 0.58), (0.06, 0.63), (0.0, 0.63)], W, 20)
+    b.box(-0.27, -0.035, 0.0, 0.27, 0.035, 0.06, W, 0.004); b.box(-0.035, -0.2, 0.0, 0.035, 0.2, 0.06, W, 0.004)   # cross foot
+    for px, py in ((-0.25, 0), (0.25, 0), (0, -0.18), (0, 0.18)): b.lathe(px, py, -0.0, [(0.0, 0.0), (0.02, 0.0), (0.02, 0.008), (0.0, 0.008)], m['brass'], 12)
+    return b.mesh('Boothtable_850x600')
 
 # ---------------------------------------------------------------- CERAMICS / METALWORK for the Bukhara rotunda
 def _kuvshin(b, x, y, z, mm, s=1.0):

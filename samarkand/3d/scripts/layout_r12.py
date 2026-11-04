@@ -208,9 +208,10 @@ for k in range(B_N):
     xe = xi(y1); xw = xe - B_D; booth_west.append((y0, y1, xw))
     add('rug', R(xw, y0 + 60, xe, y1))
     add('screen', R(xw, y0, xe, y0 + 60))
-    add('bench', R(xw + 80, y0 + 100, xe - 60, y0 + 580))
-    add('btable', R(xw + 150, y0 + 650, xe - 150, y1 - 650)); tables.append(((xw + xe) / 2, (y0 + y1) / 2, 'booths'))
-    add('bench', R(xw + 80, y1 - 580, xe - 60, y1 - 100))
+    # rev. 8.4 (owner: tables jammed against the banquettes): banquettes 500 deep, 850 x 600 pedestal table, 120 to each seat front
+    add('bench', R(xw + 80, y0 + 160, xw + 1110, y0 + 660))
+    add('btable', R(xw + 200, y0 + 780, xw + 1050, y0 + 1380)); tables.append(((xw + xe) / 2, (y0 + y1) / 2, 'booths'))
+    add('bench', R(xw + 80, y1 - 500, xw + 1110, y1))
     add('lantern', C((xw + xe) / 2, (y0 + y1) / 2, 150, 20))
     add('bportal', R(xw - 60, y0, xw, y0 + 220)); add('bportal', R(xw - 60, y1 - 220, xw, y1))      # arch-portal posts, curtains between
     BOOTH_THEMES.append(((xw + xe) / 2, (y0 + y1) / 2))
@@ -223,9 +224,10 @@ add('screen', R(booth_west[-1][2], B_Y0 + B_N * B_W, xi(B_Y0 + B_N * B_W), B_Y0 
 # rev. 8.1 (owner): no 6-tops in the hall -- every row is a 4-top + a 2-top, 950 / 700 between the table ends so two parties
 # sit apart; 2.55 m clear under the dome, 1.25 m aisle to the hauz row, >= 1.35 m to the booth fronts
 # rev. 8.2 (owner): the 2-top goes to the aivan side, the 4-top to the booth side
-mtable(4400, 19400, 'north', 1); mtable(6500, 19400, 'north', 2)
-mtable(4750, 23800, 'north', 1); mtable(6350, 23800, 'north', 2)        # 2-top held east: its chairs stay off the aivan steps
-mtable(4300, 26900, 'north', 1); mtable(6000, 26900, 'north', 2)
+# rev. 8.4 (owner: the centre looked random): the 4-tops sit ON the dome axis (x 6.0), the first pair right under the chandelier;
+# the 2-tops line up along the aivan rail; a 2.35 m cross aisle (y 23.6..26.0) runs straight from the aivan stair B to the booths
+for cy in (19900, 22700, 26900):
+    mtable(4100, cy, 'north', 1); mtable(6000, cy, 'north', 2)
 # TAPCHANS 2.0 x 2.2 m for 6: kurpacha mattresses on three sides, low table 900 x 700, open to the path (east)
 TAP = (28550,)
 for y0 in TAP:

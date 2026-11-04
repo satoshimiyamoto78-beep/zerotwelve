@@ -758,7 +758,9 @@ if DO_RENDER:
              ('27_street_sign', (16.8, 9.6, 0.5), (12.3, 6.9, 0.65), 24, 0.0, [], -0.5),
              ('28_pergola_interior', (8.2, 7.6, 1.25), (4.9, 2.6, 1.75), 18, 0.0, [], -0.1),
              ('29_pergola_roof_frame', (14.5, 11.5, 6.2), (6.6, 4.6, 2.9), 26, 0.0, ['Roof_skin', 'Carpet_ceiling'], -0.3),
-             ('30_pergola_roof_junction', (15.5, 13.0, 9.0), (6.6, 4.6, 3.4), 26, 0.0, [], -0.4)]
+             ('30_pergola_roof_junction', (15.5, 13.0, 9.0), (6.6, 4.6, 3.4), 26, 0.0, [], -0.4),
+             ('31_booth_inside', (BO_[2][2] - 0.95, BO_[2][0] + 1.08, 0.95), (BO_[2][2] + 0.9, BO_[2][0] + 1.08, 0.15), 20, 0.0, [], -0.1),
+             ('32_dome_dining', (7.6, 17.3, 1.3), (5.2, 23.0, 0.4), 16, 0.0, [], -0.1)]
     only = os.environ.get('VIEWS')
     for name, loc, tgt, lens, shift, hide, ev in VIEWS:
         if only and not any(name.startswith(v) for v in only.split(',')): continue

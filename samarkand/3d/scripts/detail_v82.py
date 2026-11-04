@@ -42,11 +42,24 @@ def channel_text(body, size, depth, mm, origin, xdir, name, cname='Mangal'):
     me.materials.clear(); me.materials.append(mm)
     o_ = bpy.data.objects.new(name, me); coll(cname).objects.link(o_); return o_
 # (a) dining side: walnut sign board on the mangal flue, above the hood
-mb = MB(); mb.box(11.06, 3.85, TER + 2.48, 11.1, 7.35, TER + 3.2, XW['wd'], 0.004)
-mb.box(11.055, 3.85, TER + 2.48, 11.06, 7.35, TER + 2.5, m['brass']); mb.box(11.055, 3.85, TER + 3.18, 11.06, 7.35, TER + 3.2, m['brass'])
+# rev. 8.4 (owner: the roof beam cut across the mangal wall): the hood is boxed in up to the roof — brick chimney-breast walls
+# 100 thick round the hood from its rim (+2.0) to the roof sheet, so beam A, the purlin at x 11.8 and the flue disappear inside;
+# the SAMARKAND board hangs on its west face
+_hx0, _hx1, _hy0, _hy1, _hz = 11.0, 12.15, 3.15, 8.05, TER + 2.0
+_hb = bmesh.new()
+for _r in ((_hx0, _hy0, _hx0 + 0.1, _hy1, _hz), (_hx1, _hy0, 12.25, _hy1, TER + 2.4), (_hx0 + 0.1, _hy0, _hx1, _hy0 + 0.1, _hz), (_hx0 + 0.1, _hy1 - 0.1, _hx1, _hy1, _hz)):
+    x0_, y0_, x1_, y1_, z0_ = _r; pts_ = [(x0_, y0_), (x1_, y0_), (x1_, y1_), (x0_, y1_)]       # east wall stands on the fire wall
+    lo_ = [_hb.verts.new((x, y, z0_)) for x, y in pts_]; hi_ = [_hb.verts.new((x, y, top(x) - 0.05)) for x, y in pts_]
+    _hb.faces.new(list(reversed(lo_))); _hb.faces.new(hi_)
+    for i_ in range(4): _hb.faces.new((lo_[i_], lo_[(i_ + 1) % 4], hi_[(i_ + 1) % 4], hi_[i_]))
+bmesh.ops.recalc_face_normals(_hb, faces=_hb.faces)
+_me = bpy.data.meshes.new('Mangal_hood_wall'); _hb.to_mesh(_me); _hb.free(); _me.materials.append(m['brick'])
+_ob = bpy.data.objects.new('Mangal_hood_wall', _me); coll('Mangal').objects.link(_ob)
+mb = MB(); mb.box(10.96, 3.85, TER + 2.48, 11.0, 7.35, TER + 3.2, XW['wd'], 0.004)
+mb.box(10.955, 3.85, TER + 2.48, 10.96, 7.35, TER + 2.5, m['brass']); mb.box(10.955, 3.85, TER + 3.18, 10.96, 7.35, TER + 3.2, m['brass'])
 inst(mb.mesh('Mangal_signboard'), 'Mangal_signboard', (0, 0, 0), 0, 'Mangal')
-channel_text('Samarkand', 0.52, 0.03, X82['green'], (11.06, 5.6, TER + 2.76), (0, -1, 0), 'Logo_Samarkand_W')
-channel_text('TAJIK AND UZBEK NATIONAL CUISINE', 0.105, 0.015, X82['yellow'], (11.06, 5.6, TER + 2.56), (0, -1, 0), 'Logo_subtitle_W')
+channel_text('Samarkand', 0.52, 0.03, X82['green'], (10.96, 5.6, TER + 2.76), (0, -1, 0), 'Logo_Samarkand_W')
+channel_text('TAJIK AND UZBEK NATIONAL CUISINE', 0.105, 0.015, X82['yellow'], (10.96, 5.6, TER + 2.56), (0, -1, 0), 'Logo_subtitle_W')
 # (b) street side: letters on the firewall's back (x = 12.3), read from the sidewalk
 channel_text('Samarkand', 0.64, 0.035, X82['greenday'], (12.3, 6.1, TER + 1.2), (0, 1, 0), 'Logo_Samarkand_E')
 channel_text('TAJIK AND UZBEK NATIONAL CUISINE', 0.135, 0.02, X82['yellowday'], (12.3, 6.1, TER + 0.94), (0, 1, 0), 'Logo_subtitle_E')

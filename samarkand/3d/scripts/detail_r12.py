@@ -159,9 +159,9 @@ for k, (y0, y1, xw, xe, th) in enumerate(BO):
     pil = CUSH[th]
     inst(a_banquette(1.03, 0.5, 'emerald', pil), f'Booth{k + 1}_banquette_S', (xw + 0.08, y0 + TH, TER), 0.0, 'Booths')
     inst(a_banquette(1.03, 0.5, 'emerald', pil), f'Booth{k + 1}_banquette_N', (xw + 1.11, y0 + 2.0, TER), math.pi, 'Booths')
-    inst(a_tiletable(1.3), f'Booth{k + 1}_table', (xw + 0.6, y0 + 1.08, TER), 0.0, 'Booths')
+    inst(a_boothtable(), f'Booth{k + 1}_table', (xw + 0.625, y0 + 1.08, TER), 0.0, 'Booths')      # rev. 8.4: 850 x 600 pedestal, 120 to each bench
     inst(a_boothset2(), f'Booth{k + 1}_tableset', (xw, y0, TER), 0, 'Booths')
-    inst(a_pendant_cluster(3, (0.1, 0.2, 0.15)), f'Booth{k + 1}_pendant', (xw + 0.6, y0 + 1.08, TER + 2.165), 0, 'Booths')
+    inst(a_pendant_cluster(3, (0.1, 0.2, 0.15)), f'Booth{k + 1}_pendant', (xw + 0.625, y0 + 1.08, TER + 2.165), 0, 'Booths')
     if k == 2:                                                                  # one couple in a booth
         PEOPLE.append(('chair', (xw + 0.46, y0 + TH + 0.40, TER - 0.08), 0.0, ('silk_ikat', 'sand', 2, 1, True, 'short')))       # clear of the pillows,
         PEOPLE.append(('chair', (xw + 0.76, y0 + 2.0 - 0.40, TER - 0.08), math.pi, ('linen', 'denim', 0, 0, False, 'long')))    # legs interleave under the table
