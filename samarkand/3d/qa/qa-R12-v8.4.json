@@ -1,7 +1,7 @@
 {
  "blend": "r12v83/samarkand-base3d-R12.blend",
- "objects": 749,
- "mesh_datablocks": 450,
+ "objects": 750,
+ "mesh_datablocks": 451,
  "totals": {
   "boundary_edges": 17128,
   "nonmanifold_edges": 0,
@@ -10,15 +10,15 @@
   "zero_area_faces": 0,
   "zero_len_edges": 0,
   "flipped_edges": 0,
-  "inside_out_shells": 98,
+  "inside_out_shells": 104,
   "coincident_verts": 0,
-  "verts": 254387,
-  "faces": 295445,
-  "tris": 487094,
-  "ngons": 2331,
-  "shells": 4651
+  "verts": 264967,
+  "faces": 302471,
+  "tris": 505050,
+  "ngons": 2749,
+  "shells": 5452
  },
- "clean_meshes": 446,
+ "clean_meshes": 443,
  "unapplied_transforms": [
   "Bougainvillea",
   "Bougainvillea.001",
@@ -229,6 +229,30 @@
     "loose_verts": 7,
     "inside_out_shells": 10,
     "coincident_verts": 13
+   }
+  ],
+  [
+   "Aivan_head_1202_0",
+   {
+    "inside_out_shells": 2
+   }
+  ],
+  [
+   "Aivan_head_1210_0",
+   {
+    "inside_out_shells": 2
+   }
+  ],
+  [
+   "Aivan_head_2720_1",
+   {
+    "inside_out_shells": 1
+   }
+  ],
+  [
+   "Aivan_head_1740_1",
+   {
+    "inside_out_shells": 1
    }
   ]
  ]
