@@ -84,6 +84,9 @@ for kx in range(1, 14):
     for g in getattr(ln_, 'geoms', [ln_]):
         if g.length > 300: c = list(g.coords); pur.append([round(x * k, 4), round(min(c[0][1], c[-1][1]) * k, 4), round(max(c[0][1], c[-1][1]) * k, 4)])
 D['purlins'] = pur
+# rev. 8.3: existing pergola kept — outline (SW, SE, NE, NW), post centres, top of its beams above the terrace
+D['pergola'] = dict(outline=[[round(x * k, 4), round(y * k, 4)] for x, y in list(G['PERG'].exterior.coords)[:4]],
+                    posts=[[round(x * k, 4), round(y * k, 4)] for x, y in G['PPOSTS']], top=G['PERG_TOP'] * k)
 D['street_steps'] = [round((G['xi'](G['ENT'][0]) - 200) * k, 4), round((xb(G['ENT'][0]) + 300) * k, 4)]
 D['yr0'] = G['yr'](0) * k
 json.dump(D, open(f'{OUT}/samarkand-3d-data-{G["REV"]}.json', 'w'))

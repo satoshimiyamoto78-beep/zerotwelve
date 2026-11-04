@@ -9,7 +9,7 @@ from openpyxl.comments import Comment
 HERE = os.path.dirname(os.path.abspath(__file__)); S = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 from boq_data import SECTIONS, MATERIALS, CHECKS
-OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, 'Samarkand_BOQ_R12-v8.2_EN-VI.xlsx')
+OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, 'Samarkand_BOQ_R12-v8.3_EN-VI.xlsx')
 SHOTS, TEX, THUMB = os.path.join(HERE, 'shots'), os.path.join(S, 'r3d', 'tex2'), os.path.join(HERE, 'thumbs')
 REFS = '/home/user/zerotwelve/samarkand/refs'
 os.makedirs(THUMB, exist_ok=True)
@@ -54,7 +54,7 @@ rd.sheet_view.showGridLines = False
 for c, w in zip('ABCD', (3, 34, 62, 62)): rd.column_dimensions[c].width = w
 r = 2
 rd.cell(r, 2, 'SAMARKAND — terrace restaurant, Da Nang').font = font(bold=True, size=18, color=NAVY); r += 1
-rd.cell(r, 2, 'Bill of Quantities for pricing / Bảng khối lượng để báo giá — design revision R12-v8.2').font = font(size=12, color='595959'); r += 2
+rd.cell(r, 2, 'Bill of Quantities for pricing / Bảng khối lượng để báo giá — design revision R12-v8.3').font = font(size=12, color='595959'); r += 2
 info = [
  ('Project / Dự án', 'Tajik & Uzbek restaurant terrace: new steel roof with a glazed-tile dome, aivan platform, themed booths, tents, tapchan, bar, mangal grill, street facade.',
   'Sân thượng nhà hàng Tajik & Uzbek: mái thép mới với mái vòm gạch men, bục aivan, ô ngồi theo chủ đề, lều, tapchan, quầy bar, bếp nướng, mặt tiền.'),
@@ -71,8 +71,8 @@ info = [
  ('Please check first / Kiểm tra trước', 'Sheet "Design checks" lists 15 technical points (structure, fire, slip, gas, permits). Please read before pricing and comment.',
   'Sheet "Design checks" liệt kê 15 điểm kỹ thuật (kết cấu, PCCC, chống trơn, gas, giấy phép). Vui lòng đọc trước khi báo giá và góp ý.'),
  ('3D model / Mô hình 3D', VIEWER + '  (open in a browser; buttons: roof, ceiling, facade, dimensions)', VIEWER + '  (mở bằng trình duyệt; nút: mái, trần, mặt tiền, kích thước)'),
- ('Drawings / Bản vẽ', 'Plan R12-v8 (EN/RU) · Roof plan · S-01 Roof framing · S-02 Central dome · S-03 Chinar + skylight · S-04 Majolica column · S-05 Street portal (pishtaq) + sebil · S-06 Khiva arcade · S-07 Bar · S-08 Themed booth',
-  'Mặt bằng R12-v8 · Mặt bằng mái · S-01 Khung mái · S-02 Mái vòm · S-03 Cây chinar + giếng trời · S-04 Cột majolica · S-05 Cổng pishtaq + sebil · S-06 Hàng vòm Khiva · S-07 Quầy bar · S-08 Ô ngồi chủ đề'),
+ ('Drawings / Bản vẽ', 'Plan R12-v8 (EN/RU) · Roof plan · S-01 Roof framing · S-02 Central dome · S-03 Chinar + skylight · S-04 Majolica column · S-05 Street portal (pishtaq) + sebil · S-06 Khiva arcade · S-07 Bar · S-08 Themed booth · Existing south zone (kept pergola) · Roof over the pergola — section + install steps',
+  'Mặt bằng R12-v8 · Mặt bằng mái · S-01 Khung mái · S-02 Mái vòm · S-03 Cây chinar + giếng trời · S-04 Cột majolica · S-05 Cổng pishtaq + sebil · S-06 Hàng vòm Khiva · S-07 Quầy bar · S-08 Ô ngồi chủ đề · Hiện trạng khu phía nam (giữ giàn pergola) · Mái trên pergola — mặt cắt + các bước thi công'),
  ('Prices / Giá', 'VND, excluding VAT, including materials, labour, transport, installation, scaffolding and site cleaning. Give a separate line if something is excluded.',
   'VND, chưa VAT, bao gồm vật tư, nhân công, vận chuyển, lắp đặt, giàn giáo và vệ sinh. Ghi riêng nếu có phần không bao gồm.'),
 ]

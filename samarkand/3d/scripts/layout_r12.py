@@ -40,7 +40,7 @@ import ezdxf
 
 Z = json.load(open(sys.argv[1])); BASE_DXF = sys.argv[2]; OUT = sys.argv[3]
 L = Z['layers']; V = Z['zone_vertices']
-REV, DATE = 'R12', '2026-10-28'
+REV, DATE = 'R12', '2026-11-04'
 
 # ---------------- site ----------------
 Z2, Z3 = V['Z2_NE'], V['Z3_SE']
@@ -79,22 +79,30 @@ POCKET = Polygon([V['Z5_pocketSW'], V['Z4_S'], V['Z7_bldgSE'], V['Z6_pocketNW']]
 # rev. 7: kids corner against the hall glazing (h 900 fence + gate on the passage side); staff passage along the south lot line,
 # clear 1275 between the roof columns (y 50..350) and the kids fence (y 1625)
 KIDS = R(-7100, 1650, -150, 4100)
+# rev. 8.3 (owner 2026-11-04): the EXISTING PERGOLA against the south boundary wall is kept (as-built DWG: 6.0 x 5.8, six steel
+# posts 200 x 200; site: underside +3.2 / top +3.6 above the terrace). The new roof runs over it on short purlins bolted to its beams.
+PERG = Polygon([(4479, 1156), (10301, 2604), (8911, 8194), (3088, 6745)])        # SW, SE, NE, NW
+PPOSTS = [(4552, 1277), (10180, 2677), (8838, 8072), (3209, 6672), (3881, 3975), (9509, 5375)]   # post centres (DWG)
+PERG_TOP = 3600                                                                    # top of its beams above the terrace (site)
+def xpe(y): return 10301 - (y - 2604) * 1390 / 5590                               # pergola east line
+for c in PPOSTS: add('ppost', R(c[0] - 100, c[1] - 100, c[0] + 100, c[1] + 100), 'SMK-R12-EXIST')
+add('pergola', PERG, 'SMK-R12-EXIST')
 STAFF = R(-7250, 0, 0, 1600)
 # PHOTO LOUNGE "Ochag" (owner ref.: draped velvet, layered carpets, warm fire glow): swagged timber portal, carpets,
 # LED fire bowl on a stone plinth, khum jars, floor lanterns, low Samarkand tray tables with poufs (wait, drink, photos)
 add('phdrape', R(1400, 1700, 5200, 2050), 'SMK-R12-PHOTO')
-add('phrug', R(1600, 2150, 5000, 4350), 'SMK-R12-PHOTO')
+add('phrug', R(1600, 2150, 3750, 4350), 'SMK-R12-PHOTO')          # rev. 8.3: rug stops west of the pergola post
 add('firebowl', C(3300, 2900, 420, 32), 'SMK-R12-PHOTO')
-for c in ((2150, 3550), (4450, 3550), (6500, 3150)):
+for c in ((2150, 3550), (4650, 3350), (6500, 3150)):            # rev. 8.3: middle tray table clears the pergola post
     add('ltable', OCT(*c, 300), 'SMK-R12-PHOTO'); tables.append((c[0], c[1], 'lounge'))
     for ang in (45, 135, 225, 315):
         add('pouf', C(c[0] + 560 * math.cos(math.radians(ang)), c[1] + 560 * math.sin(math.radians(ang)), 230, 24), 'SMK-R12-PHOTO')
     seat('lounge', 4)
 for c, r in (((1650, 2350), 230), ((2060, 2250), 160), ((4950, 2350), 230), ((4540, 2250), 160)): add('jar', C(*c, r, 24), 'SMK-R12-PHOTO')   # rev. 7: no overlaps
 for c in ((1450, 4300), (5150, 4300)): add('flantern', R(c[0] - 130, c[1] - 130, c[0] + 130, c[1] + 130), 'SMK-R12-PHOTO')
-for c in ((2800, 2450), (2950, 2380), (3650, 2380), (3800, 2450)): add('candle', C(*c, 45, 12), 'SMK-R12-PHOTO')
+for c in ((2850, 2450), (3000, 2380), (3600, 2380), (3700, 2450)): add('candle', C(*c, 45, 12), 'SMK-R12-PHOTO')
 add('camera', C(3300, 5000, 160, 24), 'SMK-R12-PHOTO')
-photo_plant = Polygon([(1000, ys(1000)), (5800, ys(5800)), (5800, 1650), (1000, 1650)])
+photo_plant = Polygon([(1000, ys(1000)), (5800, ys(5800)), (5800, 1650), (1000, 1650)]).difference(R(4432, -500, 4672, 1397))   # notch round the pergola post
 # staff service station
 add('shelving', R(0, 4300, 600, 8350), 'SMK-R12-SERV')
 add('counter', R(1400, 5300, 2000, 8100), 'SMK-R12-SERV')
@@ -113,20 +121,21 @@ while y + 200 <= BAR[1] - 100:
     add('stool', C(2780, y, 200, 28), 'SMK-R12-BAR'); seat('bar', 1); y += 620
 # MANGAL kitchen — narrower and longer: 3.3 x 5.8 m linear show line (owner 2026-10-28). East: kazan -> mangal -> copper tandoor
 # toward the pass; west: firewood show wall + cold prep; south: hand-wash, pot sink, bins by the staff door; north: pass to the plaza
-BX0, BX1, BY0, BY1 = 9000, 12300, 3200, 9000
+BX0, BX1, BY0, BY1 = 9350, 12300, 3200, 9000            # rev. 8.3: west wall wraps the pergola's mid-east post
 add('bbqfloor', R(BX0, BY0, BX1, BY1), 'SMK-R12-BBQ')
 add('firewall', R(12150, BY0, BX1, BY1), 'SMK-R12-BBQ')
 add('kazanblock', R(11200, 3350, 12150, 4350), 'SMK-R12-BBQ'); add('kazan', C(11675, 3850, 380), 'SMK-R12-BBQ')
 add('mangal', R(11200, 4550, 11750, 6550), 'SMK-R12-BBQ'); add('ledge', R(11750, 4550, 12150, 6550), 'SMK-R12-BBQ')
 add('tandoorblock', R(11200, 6750, 12150, 7850), 'SMK-R12-BBQ'); add('tandoor', C(11675, 7300, 430), 'SMK-R12-BBQ')
-add('sinkbins', R(9300, BY0, 11000, BY0 + 600), 'SMK-R12-BBQ')
-add('woodstack', R(BX0, 4900, BX0 + 300, 8350), 'SMK-R12-BBQ')
-add('prep', R(BX0 + 300, 4900, BX0 + 950, 8150), 'SMK-R12-BBQ')
+add('sinkbins', R(BX0 + 300, BY0, 11000, BY0 + 600), 'SMK-R12-BBQ')
+add('woodstack', R(BX0, 4900, BX0 + 300, 5225), 'SMK-R12-BBQ'); add('woodstack', R(BX0, 5525, BX0 + 300, 8350), 'SMK-R12-BBQ')   # pergola post shows between
+add('prep', R(BX0 + 300, 6200, BX0 + 900, 8150), 'SMK-R12-BBQ')
 add('pass', R(BX0, 8350, 12150, BY1), 'SMK-R12-BBQ')
 add('glass', R(BX0, BY1 - 40, 12150, BY1), 'SMK-R12-BBQ')
 HOOD = R(11100, 3250, 12250, 7950); add('hood', HOOD, 'SMK-R12-BBQ')
 STAFF_DOOR = (3900, 4800)                     # 900 door in the west wall, opens onto the staff lane
-add('storage', Polygon([(BX0, ys(BX0) + 150), (11000, ys(11000) + 150), (11000, BY0 - 50), (BX0, BY0 - 50)]), 'SMK-R12-BBQ')
+for a_, b_ in ((BX0, 10000), (10400, 11000)):                # storage either side of the pergola's south-east post
+    add('storage', Polygon([(a_, ys(a_) + 150), (b_, ys(b_) + 150), (b_, BY0 - 50), (a_, BY0 - 50)]), 'SMK-R12-BBQ')
 LANE = R(7800, BY0, BX0, BY1)                 # 1.2 m staff lane: staff door -> pass, and south to the service route
 bbq_plant = Polygon([(BX1, BY0 - 300), (xb(BY0 - 300), BY0 - 300), (xb(BY1 + 300), BY1 + 300), (BX1, BY1 + 300)]).intersection(U)
 
@@ -146,7 +155,7 @@ def mtable(cx, cy, key, n=2, axis='x'):
     seat(key, 2 * n)
 # dining south: row 1 = 4 + 2 + 4 (aisles 900), row 2 = 4 + 4 (west table clears the bar stools by 900+)
 # rev. 8.2 (owner): the 4-top against the bar's back cabinet is split into two 2-tops; the 4-top moves to mid-row
-for cx, n in ((2850, 1), (4200, 1), (6300, 2)): mtable(cx, 6800, 'south', n)
+for cx, n in ((2650, 1), (4150, 1), (6300, 2)): mtable(cx, 6800, 'south', n)      # rev. 8.3: the pergola's north-west post stands between the 2-tops
 for cx, n in ((4650, 2), (7100, 2)): mtable(cx, 9300, 'south', n)
 def ring(c, r0, r1, a0=0, a1=360):
     an = C(c[0], c[1], r1, 96).difference(C(c[0], c[1], r0, 96))
@@ -235,7 +244,7 @@ PL = []                                                                         
 for yy in (14450, 19150): PL.append(('pom', xb(yy) - 1100, yy, 600))              # pomegranates flanking the street entrance (rev. 7: clear of the portal pylons)
 PL.append(('pom', 2900, 14900, 300)); add('pot', C(2900, 14900, 280, 24), 'SMK-R12-PLANT')
 for yy in (11000, 20000, 23400, 30300, 34100): PL.append(('plum', xb(yy) - 1100, yy, 650))
-PL.append(('areca', 5420, 2700, 700)); add('pot', C(5420, 2700, 280, 24), 'SMK-R12-PLANT')
+PL.append(('areca', 5650, 2250, 700)); add('pot', C(5650, 2250, 280, 24), 'SMK-R12-PLANT')     # rev. 8.3: clears the moved tray table
 PL.append(('areca', 1350, 1150, 700))                       # rev. 7: planted in the photo bed, keeps the staff route x 0..1300 clear
 for c in ((9150, 35600),): PL.append(('banana', *c, 450))   # rev. 7: one clump in the planter by the gate (the west one stood off the slab)   # green frame of the Khiva gate
 for yy in range(4100, 8300, 700): PL.append(('herb', xb(yy) - 450, yy, 220))
@@ -309,7 +318,7 @@ zone_m2 = {k: round(v.area / 1e6, 1) for k, v in zones.items()}
 
 # ======================= CHECKS =======================
 probs = []
-FURN = ('table', 'chair', 'btable', 'bench', 'tapchan', 'stool', 'station', 'host', 'ringbench', 'shelving', 'counter', 'banquette', 'sofa', 'otable', 'ltable', 'pouf', 'firebowl', 'hauzborder', 'pot', 'abench', 'atable')
+FURN = ('ppost', 'table', 'chair', 'btable', 'bench', 'tapchan', 'stool', 'station', 'host', 'ringbench', 'shelving', 'counter', 'banquette', 'sofa', 'otable', 'ltable', 'pouf', 'firebowl', 'hauzborder', 'pot', 'abench', 'atable')
 solid = [it for it in items if it['kind'] in FURN]
 okfloor = FLOOR.union(PLAT).buffer(5)
 door_clear = [R(0, a, 1500, b) for a, b, op in DOORS.values() if op]
@@ -317,7 +326,7 @@ pits = [C(*TREE_S, 1000)]
 blocked = unary_union([RAMP, R(PW, ENT[0], PW + 900, ENT[1]), R(PW, 24300, PW + 900, 25800), R(550, 14300, 1500, 15300), R(0, 15300, PW, ENT[0] + 1200)])
 for it in solid:
     g = it['geom']
-    if not okfloor.contains(g): probs.append(f"{it['kind']} off floor @ {g.centroid.x:.0f},{g.centroid.y:.0f}")
+    if it['kind'] != 'ppost' and not okfloor.contains(g): probs.append(f"{it['kind']} off floor @ {g.centroid.x:.0f},{g.centroid.y:.0f}")
     if any(g.intersection(d).area > 500 for d in door_clear): probs.append(f"{it['kind']} blocks a door @ {g.centroid.y:.0f}")
     if it['kind'] != 'ringbench' and any(g.intersects(p) for p in pits): probs.append(f"{it['kind']} in a tree pit")
     if g.intersection(blocked).area > 500: probs.append(f"{it['kind']} on steps/ramp @ {g.centroid.x:.0f},{g.centroid.y:.0f}")
@@ -340,7 +349,14 @@ tap_path = round(hz.buffer(200, join_style=2).bounds[0] - 4550)
 pass_gap = round(PLAZA[0][0] - MD / 2 - 40 - 450 - BY1 - 40)
 gate_pass = (round(ROT.bounds[0] - TENT.bounds[2]), round(xi(ROTC[1]) - ROT.bounds[2]))
 if any(ROT.intersects(g) for g in (TENT, *[R(w, a, xi(b), b) for a, b, w in booth_west]) ): probs.append('dome collides')
-lane_w = round(BX0 - max(it['geom'].bounds[2] for it in items if it['kind'] in ('table', 'chair') and it['geom'].bounds[1] < BY1 and it['geom'].bounds[3] > BY0 and it['geom'].bounds[2] < BX0))
+def _lane():                                 # widest free run along x between the dining and the kitchen wall, worst y (posts count)
+    obs = unary_union([it['geom'] for it in items if it['kind'] in ('table', 'chair', 'ppost', 'pouf', 'ltable')])
+    w = 1e9
+    for yy in range(BY0 + 50, BY1, 50):
+        seg = LineString([(5600, yy), (BX0, yy)]).difference(obs)
+        w = min(w, max((g.length for g in getattr(seg, 'geoms', [seg])), default=0))
+    return w
+lane_w = round(_lane())
 staff_pass = round(STAFF.bounds[3] - STAFF.bounds[1])
 if min(gate_pass) < 1000: probs.append(f'gate pass {gate_pass}')
 if lane_w < 1200: probs.append(f'staff lane {lane_w}')
@@ -412,7 +428,7 @@ T = {
                ('Топчан: высота / на 1 гостя', '400–450 / ≥600', '450 / 700'), ('Служебный проход (в свету у колонн)', '≥1200', '1275'),
                ('Сиденье / стол / подлокотник', '450–500 / 740–760', '500 / 760 / 660')],
             notes=['Основа: исполнительный DWG (Long House, 10.07.2024) 1:1. Отметки: тротуар −1.170, терраса −0.450, айван и зал ±0.000.',
-                   'Навес: стальные балки по осям, сэндвич-панель 50 мм, уклон 5% к улице, желоб вдоль улицы; низ плиты балкона +3.850, волна-ламели демонтируются.',
+                   'Кровля: стальные балки по осям, фальцевый лист Klip-Lok + утеплитель, уклон 3.5% к улице, один лист без нахлёстов, желоб вдоль улицы; низ плиты балкона +3.850. Существующий навес у южной стены сохраняется: новая кровля идёт над ним на коротких прогонах по его балкам.',
                    'Купол в кровле один — центральный Ø5,6 (карбанди, остеклённый фонарь). Чинар у бара остаётся под навесом: крона формуется на высоте 2,2–3,0 м, над ним зенитный фонарь 3,0 × 3,0 м с резной решёткой-панджарой. Северный чинар удаляется.',
                    'Все отдельно стоящие столы — модули 700 × 800: пары разъединяются на 2-местные или сдвигаются в столы на 6–8 (ряды выровнены).',
                    'Двери: C–D южная открыта; C–D северная и D–E южная закрыты (банкетка); D–E северная и E–F у лифта открыты.'],
@@ -457,7 +473,7 @@ T = {
                ('Tapchan: height / per guest', '400–450 / ≥600', '450 / 700'), ('Staff passage (clear at the columns)', '≥1200', '1275'),
                ('Seat / table / armrest', '450–500 / 740–760', '500 / 760 / 660')],
             notes=['Base: as-built DWG (Long House, 10-07-2024) 1:1. Levels: sidewalk −1.170, terrace −0.450, aivan and hall ±0.000.',
-                   'Roof: steel beams on the grid, 50 mm sandwich panel, 5% fall to the street, gutter along the street; balcony soffit +3.850, wave louvers removed.',
+                   'Roof: steel beams on the grid, Klip-Lok standing-seam sheet + insulation, 3.5% fall to the street, one sheet length (no end laps), gutter along the street; balcony soffit +3.850. The existing pergola at the south wall is kept: the new roof runs over it on short purlins bolted to its beams.',
                    'One roof dome — the central Ø5.6 karbandi dome with a glazed lantern. The chinar by the bar stays under the roof: crown trained at 2.2–3.0 m, a 3.0 × 3.0 m skylight with a carved panjara grille above it. The north chinar is removed.',
                    'Every loose table is a 700 × 800 module: pairs split into 2-tops or push together into tables for 6–8 (rows are aligned).',
                    'Doors: C–D south open; C–D north and D–E south closed (banquette); D–E north and E–F by the lift open.'],
@@ -740,8 +756,13 @@ def build(lang):
     # ---------- roof
     for yy in TRUSS_Y:
         seg = LineString([(0, yy), (xb(yy) - 750, yy)])
+        if yy == 4100: seg = seg.difference(LineString([(3650, yy), (10050, yy)]))      # rev. 8.3: grid-A beam stops at the pergola
         for g_ in getattr(seg, 'geoms', [seg]): ln(g_.coords[0], g_.coords[-1], '#5A3A22', .12, 'stroke-dasharray="2 1.2" opacity=".4"')
     for c in cols: sh(R(c[0] - 150, c[1] - 150, c[0] + 150, c[1] + 150), '#2b1d12')
+    # ---------- rev. 8.3: existing pergola kept (posts + beams), the new roof runs over it
+    sh(PERG, 'none', '#7a4a1e', .45, 'stroke-dasharray="3 1.2"')
+    for c in PPOSTS: sh(R(c[0] - 100, c[1] - 100, c[0] + 100, c[1] + 100), '#7a4a1e', '#2b1d12', .1)
+    tx(6950, 6200, 'существующий навес (сохраняется)' if lang == 'ru' else 'existing pergola (kept)', 1.7, '#7a4a1e', weight=600, extra='transform="rotate(-14 %.2f %.2f)"' % P(6950, 6200))
     # ---------- skylight over the chinar (glass + carved panjara grille), dome overhead
     sh(SKY, 'none', '#2A9DA8', .45, 'stroke-dasharray="2.2 1"')
     for k_ in range(1, 6): ln((SKY.bounds[0] + k_ * 500, SKY.bounds[1]), (SKY.bounds[0] + k_ * 500, SKY.bounds[3]), '#2A9DA8', .1, 'opacity=".5"'); ln((SKY.bounds[0], SKY.bounds[1] + k_ * 500), (SKY.bounds[2], SKY.bounds[1] + k_ * 500), '#2A9DA8', .1, 'opacity=".5"')

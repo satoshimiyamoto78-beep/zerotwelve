@@ -11,7 +11,7 @@ F = dict(family='DejaVu Sans')
 ex = [[x / 1000, y / 1000] for x, y in Z['layers']['EXIST'][4]]          # pergola outline from the as-built DWG
 posts = [Z['layers']['EXIST'][i] for i in range(5, 11)]
 posts = [[(x / 1000, y / 1000) for x, y in p] for p in posts]
-TER, TOP0, FALL = -0.45, 3.75, 0.05                                      # levels in m, ±0 = hall floor
+TER, TOP0, FALL = -0.45, 3.75, 0.035                                      # levels in m, ±0 = hall floor
 roof_top = lambda x: TOP0 - FALL * x
 PERG_LO, PERG_HI = TER + 3.2, TER + 3.6                                  # measured on site (photo 2)
 
@@ -38,8 +38,9 @@ x0, x1, y0, y1 = D['bbq']
 ax.add_patch(Rectangle((x0, y0), x1 - x0, y1 - y0, fc='none', ec='#b56a1e', lw=1.0, ls='--', zorder=4))
 ax.text((x0 + x1) / 2, y1 + 0.25, 'NEW MANGAL (our design)\nreplaces the existing one', ha='center', fontsize=7, color='#b56a1e', **F)
 for y, L in D['beams'][:2]:
-    ax.plot([0, L], [y, y], color='#2f5fb3', lw=1.2, ls=(0, (6, 3)), zorder=5)
-ax.text(0.3, 4.22, 'new roof beam IPE 300 on grid A (current design)', fontsize=6.5, color='#2f5fb3', **F)
+    for xa, xb in (((0, 3.77), (9.90, L)) if y < 5 else ((0, L),)):
+        ax.plot([xa, xb], [y, y], color='#2f5fb3', lw=1.2, ls=(0, (6, 3)), zorder=5)
+ax.text(0.3, 4.22, 'roof beam IPE 300, grid A — ends on the pergola', fontsize=6.5, color='#2f5fb3', **F)
 for c in D['cols'][:2] + D['cols'][-2:]:
     ax.add_patch(Rectangle((c[0] - .075, c[1] - .075), .15, .15, fc='#2f5fb3', zorder=6))
 
@@ -76,7 +77,7 @@ nx = fig.add_axes([0.61, 0.02, 0.37, 0.95]); nx.axis('off')
 import textwrap
 T = lambda y, s, w=88, **k: nx.text(0, y, '\n'.join(textwrap.wrap(s, w, subsequent_indent='      ' if s.startswith('   ') else '')), transform=nx.transAxes, va='top', **F, **{a: b for a, b in k.items() if a != 'wrap'})
 T(1.0, 'SAMARKAND — existing conditions, south zone', fontsize=15, weight='bold', color='#1f3a5f')
-T(0.965, 'Base plan update R12-v8.2 · from the as-built DWG + site photos 2026-11 · plan approx. 1:75', fontsize=8.5, color='#555')
+T(0.965, 'Base plan update R12-v8.3 · from the as-built DWG + site photos 2026-11 · plan approx. 1:75', fontsize=8.5, color='#555')
 y = 0.92
 T(y, 'DECISIONS (owner)', fontsize=10, weight='bold', color='#1f3a5f'); y -= 0.03
 for s in ['KEEP  existing pergola: steel posts + beams stay exactly as built; it is attached to the south boundary wall.',
@@ -85,21 +86,21 @@ for s in ['KEEP  existing pergola: steel posts + beams stay exactly as built; it
           'JOIN  the new roof to the pergola so that nothing sticks out and no water gets in.']:
     nx.text(0.0, y, '•', transform=nx.transAxes, va='top', fontsize=9); T(y, '   ' + s, fontsize=8.5); y -= 0.022 * (1 + len(s) // 88)
 y -= 0.01
-T(y, 'CLASHES WITH THE CURRENT DESIGN (R12-v8.2)', fontsize=10, weight='bold', color=CL); y -= 0.03
+T(y, 'CLASHES FOUND IN R12-v8.2 → RESOLVED IN R12-v8.3', fontsize=10, weight='bold', color=CL); y -= 0.03
 lo, hi = roof_top(3.1) - 0.55, roof_top(10.3) - 0.55
-for n, s in [(1, f'New roof beam on grid A runs THROUGH the pergola. Roof structure underside is +{lo:.2f} (west) … +{hi:.2f} (east), pergola top is +{PERG_HI:.2f}: the new roof is up to {PERG_HI - hi:.2f} m LOWER than the pergola top at the street side.'),
-             (2, 'South table row (tables 4, 5, 6 at y 6.8) sits on the pergola north edge and its posts.'),
-             (3, 'Photo lounge (drape, rug, poufs) lies partly inside the pergola, next to the west posts.'),
-             (4, 'New mangal block touches the pergola east posts — keep ≥ 1.2 m service gap / fire distance.')]:
+for n, s in [(1, 'Roof vs pergola: at 5 % the roof was up to 0.47 m below the pergola top. → Roof fall now 3.5 % (Klip-Lok standing seam), short C100 purlins on packers over the pergola beams, ≈ 100 mm clear; grid-A beam ends on the pergola main beams.'),
+             (2, 'South 2-tops sat on the north-west post. → Tables moved to x 2.65 / 4.15: the post now stands between them.'),
+             (3, 'Photo lounge crossed the mid-west post. → Rug ends west of the post, middle tray table + areca pot moved east (under the pergola).'),
+             (4, 'Mangal touched the east posts. → Kitchen west wall (firewood display) wraps the mid-east post; staff lane 1.55 m.')]:
     nx.add_patch(plt.Circle((0.012, y - 0.008), 0.011, transform=nx.transAxes, fc='none', ec=CL, lw=1.2))
     nx.text(0.012, y - 0.008, str(n), transform=nx.transAxes, ha='center', va='center', fontsize=7, color=CL, weight='bold')
     T(y, '      ' + s, fontsize=8.2); y -= 0.02 * (1 + len(s) // 82) + 0.006
 y -= 0.005
-T(y, 'ROOF OPTIONS AT THE PERGOLA (to decide)', fontsize=10, weight='bold', color='#1f3a5f'); y -= 0.03
-for s in ['A (recommended)  Keep pergola posts + beams, replace only its roof sheet: the new sandwich panel continues ON the pergola beams in this bay '
-          '(lower step, +3.15), valley gutter + flashing along the step; grid-A beam stops at the pergola and bears on its post. One roof, no gap.',
-          'B  Pergola keeps its own roof; the new roof ends 100 mm short of it, with a box gutter and a carved fascia/valance hiding the step.',
-          'C  Raise the new roof over the pergola: NOT possible at the façade (balcony slab soffit +3.85 limits the roof height).']:
+T(y, 'ROOF AT THE PERGOLA — DECIDED (owner 2026-11-04)', fontsize=10, weight='bold', color='#1f3a5f'); y -= 0.03
+for s in ['One roof over everything, including the pergola: Klip-Lok / Seamlock sheet on clips, one length facade → street gutter, fall 3.5 % (2°), insulation blanket under it. '
+          'Old pergola roof sheet removed; posts + beams kept and become the support of the new roof in this bay (engineer to confirm). See sheet "roof over the pergola — section + install steps".',
+          'Rejected: sandwich panels (need ≥ 4° — not possible under the balcony), separate pergola roof with a step and box gutter (more joints, more leaks).',
+          '']:
     T(y, s, fontsize=8.2); y -= 0.02 * (1 + len(s) // 88) + 0.006
 T(y, 'Interior of the pergola in both versions: beams clad in carved walnut, posts as Khiva columns (cladding only, steel stays), ceiling in ganch / painted panels.', fontsize=8.2, color='#444'); y -= 0.06
 T(y, 'TO MEASURE ON SITE (when convenient)', fontsize=10, weight='bold', color='#1f3a5f'); y -= 0.028
@@ -116,8 +117,8 @@ sx = fig.add_axes([0.04, 0.02, 0.53, 0.22]); sx.set_xlim(-0.8, 13.8); sx.set_yli
 sx.fill_between([-0.8, 13.8], -0.7, TER, color='#ddd')
 xs = [0, 13.4]; sx.plot(xs, [roof_top(x) for x in xs], color='#2f5fb3', lw=2)
 sx.plot(xs, [roof_top(x) - .55 for x in xs], color='#2f5fb3', lw=1, ls='--')
-sx.text(6.5, roof_top(6.5) + .12, 'new roof top (5 % fall)', fontsize=6.5, color='#2f5fb3', **F)
-sx.text(6.5, roof_top(6.5) - .78, 'underside of new beams', fontsize=6.5, color='#2f5fb3', **F)
+sx.text(6.5, roof_top(6.5) + .12, 'new roof top (3.5 % fall, Klip-Lok)', fontsize=6.5, color='#2f5fb3', **F)
+sx.text(6.5, roof_top(6.5) - .78, 'underside of new beams (outside the pergola)', fontsize=6.5, color='#2f5fb3', **F)
 sx.add_patch(Rectangle((3.5, PERG_LO), 6.6, PERG_HI - PERG_LO, fc='#7a4a1e', alpha=.35, ec='#7a4a1e'))
 for px in (3.6, 6.8, 10.0): sx.add_patch(Rectangle((px - .1, TER), .2, PERG_LO - TER, fc='#7a4a1e'))
 sx.text(6.8, PERG_LO - .35, 'existing pergola +3.2 / +3.6 above terrace', ha='center', fontsize=6.5, color='#5a3510', **F)

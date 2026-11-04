@@ -423,7 +423,7 @@ def ceiling_carpet(x0, x1, ya, yb, k):
 for ya, yb in zip(TY[:-1], TY[1:]):
     if 15.0 < ya < 29.0: ceiling_carpet(1.6, 3.0, ya + 0.1, yb - 0.1, int(ya))                       # aivan (outside the balcony slab)
 for ya, yb in ((4.1, 9.85),):
-    for x0, x1 in ((1.0, 3.4), (3.6, 6.0), (6.2, 8.6)):
+    for x0, x1 in ((1.0, 3.0),):                      # rev. 8.3: only west of the kept pergola (its own ceiling covers the rest of the bay)
         ceiling_carpet(x0, x1, ya + 0.1, yb - 0.1, int(x0))
         for dx, dy in (((0.0, -1.2), (0.0, 1.2)) if x0 > 1.0 else ((0.0, -1.2),)):                                                        # pierced-brass pendant clusters
             cx, cy = (x0 + x1) / 2 + dx, (ya + yb) / 2 + dy
@@ -431,6 +431,12 @@ for ya, yb in ((4.1, 9.85),):
             xa_, xb_ = rows_x[c_], rows_x[min(6, c_ + 1)]; t_ = (cx - xa_) / max(1e-6, xb_ - xa_)
             zt = (1 - t_) * (top(xa_) - 0.25) + t_ * (top(xb_) - 0.25) - 0.012                         # exact underside of the faceted carpet
             inst(a_pendant_cluster(3), 'Pendant_cluster', (cx, cy, zt - 0.013), 0, 'Lights')          # canopy r 0.24 under a 5 % slope
+if D.get('pergola'):                                  # rev. 8.3: two pendant clusters hung from the kept pergola's joists (2nd and 4th)
+    _pp = D['pergola']['posts']; PZT_ = TER + D['pergola']['top']
+    for i_ in (2, 4):
+        t_ = i_ / 6; wx, wy = _pp[0][0] + (_pp[3][0] - _pp[0][0]) * t_, _pp[0][1] + (_pp[3][1] - _pp[0][1]) * t_
+        ex_, ey_ = _pp[1][0] + (_pp[2][0] - _pp[1][0]) * t_, _pp[1][1] + (_pp[2][1] - _pp[1][1]) * t_
+        inst(a_pendant_cluster(3), 'Pendant_cluster', ((wx + ex_) / 2, (wy + ey_) / 2, PZT_ - 0.15), 0, 'Lights')
 print('ceiling carpets', ncc)
 
 # =============== 13b. VELVET SWAGS over the plaza (beam to beam), CARPET FRIEZE over the aivan ===============

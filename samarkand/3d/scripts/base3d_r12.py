@@ -1,5 +1,5 @@
 """Samarkand terrace — 3D BASE MODEL (LOD 200) of the whole site, built from the plan data (R12: roof domes, Bukhara dome).
-Levels (m): hall / aivan ±0, terrace −0.45, sidewalk −1.17. Roof skin top +3.75 at the façade, 5% fall to the street.
+Levels (m): hall / aivan ±0, terrace −0.45, sidewalk −1.17. Roof skin top +3.75 at the façade, 3.5% fall to the street (rev. 8.3).
 Usage: bvenv/bin/python base3d.py DATA.json OUTDIR [render: 1|0] [W H SAMPLES]
 Writes OUTDIR/samarkand-base3d-R9.blend, .glb, .fbx, .obj and (optionally) 4 overview renders.
 """
@@ -120,7 +120,7 @@ def sloped_box(name, x0, x1, y0, y1, ztop_fn, depth, mm, cname, top_mi_mat=None)
     return new_obj(name, bm, [mm] + ([top_mi_mat] if top_mi_mat else []), cname)
 
 TER, SID = -0.45, -1.17
-def top(x): return 3.75 - 0.05 * x                     # roof skin top
+def top(x): return 3.75 - 0.035 * x                    # roof skin top (rev. 8.3: 3.5 % fall, Klip-Lok)
 def on_plat(r):
     xs = [p[0] for p in r]; ys = [p[1] for p in r]; cx, cy = sum(xs) / len(xs), sum(ys) / len(ys)
     return (cx < 3.3 and 15.3 < cy < 28.5) or (cx < 2.4 and 28.5 <= cy < 30.9)
@@ -217,6 +217,7 @@ counter = {}
 DETAIL = os.environ.get('DETAIL', '1') == '1'
 SKIP = {'chair', 'lantern', 'screen', 'bportal', 'drum', 'rbox', 'woodstack', 'tandoor', 'kazan', 'table', 'bench', 'btable', 'rug', 'pole', 'gatepost',
         'flamp', 'medallion', 'bbqfloor', 'aryk', 'hauzborder', 'abench', 'sofa', 'atable', 'portal', 'runner', 'backbar', 'barbody', 'bartop', 'barreturn', 'stool', 'coffee', 'sink', 'samovar', 'sebil', 'sebilbasin', 'host', 'station'} if DETAIL else set()
+SKIP |= {'ppost', 'pergola'}                            # rev. 8.3: the kept pergola is built below from D['pergola']
 if DETAIL:                                              # things that rest on something else start on its top
     HT_FIX = {'otable': (0.015, 0.465), 'tapchantable': (0.47, 0.78), 'bridge': (0.06, 0.2)}
 else: HT_FIX = {}
@@ -401,6 +402,34 @@ def I_parts(x0, x1, yc, fn, D=0.3, B=0.15, tf=0.0107, tw=0.0071):
     """IPE-type section along x (IPE 300: 300 x 150, tf 10.7, tw 7.1), top following fn"""
     return [(x0, x1, yc - B / 2, yc + B / 2, fn, tf), (x0, x1, yc - tw / 2, yc + tw / 2, lambda x: fn(x) - tf, D - 2 * tf),
             (x0, x1, yc - B / 2, yc + B / 2, lambda x: fn(x) - D + tf, tf)]
+# ---------- rev. 8.3: EXISTING PERGOLA (kept) — six steel posts, main beams on the post lines, edge beams, joists; top at TER + 3.6
+PG = D.get('pergola')
+if PG:
+    PSW, PSE, PNE, PNW = [tuple(v) for v in PG['outline']]
+    PZT = TER + PG['top']
+    _pp = PG['posts']                                   # order: SW, SE, NE, NW, mid-W, mid-E
+    PW0, PW1, PE0, PE1 = _pp[0], _pp[3], _pp[1], _pp[2]  # post-centre lines: west SW->NW, east SE->NE
+    def _lx(a, b, y): return a[0] + (b[0] - a[0]) * (y - a[1]) / (b[1] - a[1])
+    def perg_x(y): return _lx(PW0, PW1, y), _lx(PE0, PE1, y)          # x of the west / east main beam centre lines at y
+    def perg_span(x):                                   # y-interval of the pergola outline on the vertical line x (or None)
+        ys_ = []
+        for a, b in ((PSW, PSE), (PSE, PNE), (PNE, PNW), (PNW, PSW)):
+            if (a[0] - x) * (b[0] - x) <= 0 and a[0] != b[0]: ys_.append(a[1] + (b[1] - a[1]) * (x - a[0]) / (b[0] - a[0]))
+        return (min(ys_), max(ys_)) if len(ys_) >= 2 else None
+    def seg_ring(a, b, w):
+        dx, dy = b[0] - a[0], b[1] - a[1]; L = math.hypot(dx, dy); nx, ny = -dy / L * w / 2, dx / L * w / 2
+        return [(a[0] + nx, a[1] + ny), (b[0] + nx, b[1] + ny), (b[0] - nx, b[1] - ny), (a[0] - nx, a[1] - ny)]
+    pb = bmesh.new()                                    # one object: posts (material 0) + beams (material 1)
+    for c in _pp: _prism(pb, [(c[0] - .1, c[1] - .1), (c[0] + .1, c[1] - .1), (c[0] + .1, c[1] + .1), (c[0] - .1, c[1] + .1)], TER, PZT - 0.4, 0)
+    def _ext(a, b, e):                                  # segment a->b extended by e at both ends
+        dx, dy = b[0] - a[0], b[1] - a[1]; L = math.hypot(dx, dy); return (a[0] - dx / L * e, a[1] - dy / L * e), (b[0] + dx / L * e, b[1] + dy / L * e)
+    for a, b in ((PW0, PW1), (PE0, PE1)): _prism(pb, seg_ring(*_ext(a, b, 0.25), 0.15), PZT - 0.4, PZT, 1)      # main beams 150 x 400
+    JT = []
+    for i in range(7):                                  # edge beams (i = 0, 6) and joists between the main beams, ~0.96 m apart
+        t = i / 6; a = (PW0[0] + (PW1[0] - PW0[0]) * t, PW0[1] + (PW1[1] - PW0[1]) * t); b = (PE0[0] + (PE1[0] - PE0[0]) * t, PE0[1] + (PE1[1] - PE0[1]) * t)
+        a, b = _ext(a, b, -0.075)
+        _prism(pb, seg_ring(a, b, 0.12 if i in (0, 6) else 0.08), PZT - (0.25 if i in (0, 6) else 0.15), PZT, 1); JT.append((a, b))
+    bmesh.ops.recalc_face_normals(pb, faces=pb.faces); new_obj('Pergola_existing', pb, [m['bronze'], m['roofwood']], 'Pergola_existing')
 RING_R = lambda d: d['r'] + 0.06                         # dome ring girder centre line (under the drum)
 for y, xe in D['beams']:
     segs = [(0.18 if STEEL_DETAIL else 0.0, xe)]       # beams bear on the facade ledger face (x = 0.18)
@@ -410,6 +439,9 @@ for y, xe in D['beams']:
         if dye < rt:
             h = math.sqrt(rt ** 2 - dye ** 2); c0, c1 = d['c'][0] - h, d['c'][0] + h
             segs = [(p, min(q, c0)) for p, q in segs if p < c0] + [(max(p, c1), q) for p, q in segs if q > c1]
+    if PG and min(PSW[1], PSE[1]) < y < max(PNE[1], PNW[1]):     # rev. 8.3: the beam stops against the pergola main beams (end plates)
+        c0, c1 = perg_x(y)[0] - 0.075, perg_x(y)[1] + 0.075
+        segs = [(p, min(q, c0)) for p, q in segs if p < c0] + [(max(p, c1), q) for p, q in segs if q > c1]
     for p, q in segs:
         if STEEL_DETAIL: sloped_parts(f'roof_beam_y{y:.1f}', I_parts(p, q, y, lambda x: top(x) - 0.25), m['bronze'], 'Roof_structure')
         else: sloped_box(f'roof_beam_y{y:.1f}', p, q, y - 0.1, y + 0.1, lambda x: top(x) - 0.25, 0.3, m['bronze'], 'Roof_structure')
@@ -427,6 +459,22 @@ for x, y0, y1 in D['purlins']:
     if STEEL_DETAIL:
         fn = lambda xx: top(xx) - 0.05                    # C200 purlin: web on the high side, flanges towards the street
         for y0, y1 in trim_to_domes(x, y0, y1, 0.125):
+            sp = perg_span(x) if PG else None
+            if sp and y0 < sp[1] and y1 > sp[0]:        # rev. 8.3: short C100 purlin over the kept pergola, on packers bolted to its beams
+                a_, b_ = max(y0, sp[0] - 0.05), min(y1, sp[1] + 0.05)
+                sloped_parts('purlin', [(x - 0.04, x + 0.035, a_, b_, fn, 0.006), (x - 0.04, x - 0.034, a_, b_, lambda xx: fn(xx) - 0.006, 0.088),
+                                        (x - 0.04, x + 0.035, a_, b_, lambda xx: fn(xx) - 0.094, 0.006)], m['bronze'], 'Roof_structure')
+                for (ja, jb) in JT:                    # packer at every crossing with an edge beam / joist
+                    if (ja[0] - x) * (jb[0] - x) < 0:
+                        yj = ja[1] + (jb[1] - ja[1]) * (x - ja[0]) / (jb[0] - ja[0])
+                        if a_ + 0.05 < yj < b_ - 0.05: boxes('purlin_packer', [(x - 0.04, yj - 0.04, PZT, x + 0.035, yj + 0.04, top(x) - 0.05 - 0.1)], m['steel'], 'Roof_structure')
+                for s0, s1 in ((y0, a_), (b_, y1)):
+                    if s1 - s0 > 0.05:
+                        sloped_parts('purlin', [(x - 0.04, x + 0.035, s0, s1, fn, 0.008), (x - 0.04, x - 0.034, s0, s1, lambda xx: fn(xx) - 0.008, 0.184),
+                                                (x - 0.04, x + 0.035, s0, s1, lambda xx: fn(xx) - 0.192, 0.008)], m['bronze'], 'Roof_structure')
+                for yb_, _ in D['beams']:
+                    if y0 + 0.05 < yb_ < y1 - 0.05 and not (a_ <= yb_ <= b_): cleats.append((x - 0.05, x - 0.04, yb_ - 0.04, yb_ + 0.04, lambda xx: top(xx) - 0.13, 0.12))
+                continue
             sloped_parts('purlin', [(x - 0.04, x + 0.035, y0, y1, fn, 0.008), (x - 0.04, x - 0.034, y0, y1, lambda xx: fn(xx) - 0.008, 0.184),
                                     (x - 0.04, x + 0.035, y0, y1, lambda xx: fn(xx) - 0.192, 0.008)], m['bronze'], 'Roof_structure')
             for yb_, _ in D['beams']:
@@ -653,7 +701,9 @@ if DO_RENDER:
              ('24_rotunda_close', (6.9, 32.6, 1.35), (6.1, 35.3, 0.9), 24, 0.0, [], -0.1),
              ('25_tapchan', (6.0, 27.6, 1.25), (3.5, 29.7, 0.2), 22, 0.0, [], -0.1),
              ('26_mangal_sign', (6.6, 9.8, 1.2), (11.06, 5.6, 2.35), 22, 0.0, [], -0.1),
-             ('27_street_sign', (16.8, 9.6, 0.5), (12.3, 6.9, 0.65), 24, 0.0, [], -0.5)]
+             ('27_street_sign', (16.8, 9.6, 0.5), (12.3, 6.9, 0.65), 24, 0.0, [], -0.5),
+             ('28_pergola_interior', (8.2, 7.6, 1.25), (4.9, 2.6, 1.75), 18, 0.0, [], -0.1),
+             ('29_pergola_roof_frame', (14.5, 11.5, 6.2), (6.6, 4.6, 2.9), 26, 0.0, ['Roof_skin', 'Carpet_ceiling'], -0.3)]
     only = os.environ.get('VIEWS')
     for name, loc, tgt, lens, shift, hide, ev in VIEWS:
         if only and not any(name.startswith(v) for v in only.split(',')): continue

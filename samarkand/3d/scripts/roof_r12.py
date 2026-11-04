@@ -19,7 +19,7 @@ REV, DATE = G['REV'], G['DATE']
 # ---------------- roof geometry (mm, local) ----------------
 SOFFIT = 3850                 # F2 balcony slab soffit
 TOP0 = 3750                   # top of roof skin at the façade (100 below the soffit)
-FALL = 0.05                   # 5% to the street
+FALL = 0.035                  # rev. 8.3: 3.5 % (2°) to the street — Klip-Lok standing seam, one length, no end laps
 PANEL, PURLIN, BEAM = 50, 200, 300
 EAVE_OUT = 300                # overhang past the lot line? no: gutter sits inside -> roof edge = lot line
 roof_all = U.buffer(0)
@@ -56,13 +56,13 @@ json.dump(q, open(f'{OUT}/samarkand-roof-{REV}.json', 'w'))
 print(json.dumps(q))
 
 T = {'ru': dict(t1='Навес · концепция кровли', sub='План кровли 1:200 · разрезы 1:100', A='РАЗРЕЗ 1–1 (по оси D, через центральный купол)', B='РАЗРЕЗ 2–2 (через чинар под зенитным фонарём)',
-                plan='ПЛАН КРОВЛИ', court='открыто к небу', dome='купол Ø{d:.1f} · окулус Ø{o:.1f}', dome_c='купол Ø{d:.1f} · фонарь', oc='окулус', skyl='зенитный фонарь 3,0 × 3,0', fall='5%', gutter='желоб', hall='ЗАЛ', street='ТРОТУАР', ul='ул. Võ Nguyên Giáp',
+                plan='ПЛАН КРОВЛИ', court='открыто к небу', dome='купол Ø{d:.1f} · окулус Ø{o:.1f}', dome_c='купол Ø{d:.1f} · фонарь', oc='окулус', skyl='зенитный фонарь 3,0 × 3,0', fall='3.5%', gutter='желоб', hall='ЗАЛ', street='ТРОТУАР', ul='ул. Võ Nguyên Giáp',
                 spec='РЕШЕНИЕ', S=['Балки: сталь, оцинковка + порошковая краска «тёмная бронза», по линиям колонн, шаг 3,0–5,75 м',
                                     'Опора у фасада: опорный уголок/швеллер на анкерах под плитой балкона (низ плиты +3.850)',
                                     'Опора у улицы: 9 колонн 150×150 в стенке клумбы, обшивка деревом; оголовок +2.9',
                                     'Прогоны С200 шаг 1,2 м; сэндвич-панель PU 50 мм с нижним слоем «под дерево»',
-                                    'Уклон 5% к улице; коробчатый желоб вдоль улицы, водостоки внутри колонн → дренаж клумб',
-                                    'Купол один — центральный Ø5,6 с остеклённым фонарём. Над чинаром у бара — зенитный фонарь 3,0 × 3,0 м: закалённый триплекс по прогонам в плоскости кровли (уклон 5%), алюминиевая рама с EPDM, снизу резная решётка-панджара; дерево под навесом, крона формуется. Северный чинар удаляется',
+                                    'Уклон 3,5% к улице (фальцевый лист Klip-Lok, один лист без нахлёстов, утеплитель); коробчатый желоб вдоль улицы, водостоки внутри колонн → дренаж клумб',
+                                    'Купол один — центральный Ø5,6 с остеклённым фонарём. Над чинаром у бара — зенитный фонарь 3,0 × 3,0 м: закалённый триплекс по прогонам в плоскости кровли (уклон 3,5%), алюминиевая рама с EPDM, снизу резная решётка-панджара; дерево под навесом, крона формуется. Северный чинар удаляется',
                                     'Купол: 12 гнутых рёбер 100×50 на опорном кольце +3.900, барабан с джали-окнами (свет + вытяжка горячего воздуха), внутри ГРЦ-панели «кирпич-гирих», снаружи терракотовое покрытие по мембране',
                                     'Деревянная реечная подшивка — только над баром и коридором (акцент)',
                                     'Волна-ламели под балконом демонтируются; фасад 2-го этажа остаётся открытым',
@@ -71,13 +71,13 @@ T = {'ru': dict(t1='Навес · концепция кровли', sub='Пла�
                                   ('Прогоны (пог. м)', 'purlins_m', 'м'), ('Колонны', 'n_cols', 'шт'), ('Желоб вдоль улицы', 'gutter_street_m', 'м')],
                 lv='отм.', clear='в свету', foot='Концепция · сечения и узлы подтверждает расчёт конструктора'),
      'en': dict(t1='Terrace roof · concept', sub='Roof plan 1:200 · sections 1:100', A='SECTION 1–1 (on axis D, through the central dome)', B='SECTION 2–2 (through the chinar under the skylight)',
-                plan='ROOF PLAN', court='open to the sky', dome='dome Ø{d:.1f} · oculus Ø{o:.1f}', dome_c='dome Ø{d:.1f} · lantern', oc='oculus', skyl='skylight 3.0 × 3.0', fall='5%', gutter='gutter', hall='HALL', street='SIDEWALK', ul='Võ Nguyên Giáp',
+                plan='ROOF PLAN', court='open to the sky', dome='dome Ø{d:.1f} · oculus Ø{o:.1f}', dome_c='dome Ø{d:.1f} · lantern', oc='oculus', skyl='skylight 3.0 × 3.0', fall='3.5%', gutter='gutter', hall='HALL', street='SIDEWALK', ul='Võ Nguyên Giáp',
                 spec='SOLUTION', S=['Beams: galvanised steel, dark-bronze powder coat, on the column lines at 3.0–5.75 m',
                                     'Façade bearing: steel ledger on anchors under the balcony slab (soffit +3.850)',
                                     'Street bearing: 9 columns 150×150 in the planter wall, wood-clad; cap +2.9',
                                     'C200 purlins at 1.2 m; 50 mm PU sandwich panel with a wood-look underside',
-                                    '5% fall to the street; box gutter along the street, downpipes inside the columns → planter drain',
-                                    'One dome — the central Ø5.6 with a glazed lantern. Over the chinar by the bar a 3.0 × 3.0 m skylight: toughened laminated glass on the purlins in the roof plane (5% fall), aluminium frame with EPDM, carved panjara grille below; the tree stays under the roof, crown trained. The north chinar is removed',
+                                    '3.5% fall to the street (Klip-Lok standing-seam sheet, one length, insulated); box gutter along the street, downpipes inside the columns → planter drain',
+                                    'One dome — the central Ø5.6 with a glazed lantern. Over the chinar by the bar a 3.0 × 3.0 m skylight: toughened laminated glass on the purlins in the roof plane (3.5% fall), aluminium frame with EPDM, carved panjara grille below; the tree stays under the roof, crown trained. The north chinar is removed',
                                     'Dome: 12 bent ribs 100×50 on a level ring at +3.900, drum with jali windows (light + hot-air exhaust), GRC girih brick-slip panels inside, terracotta skin on a membrane outside',
                                     'Timber slat ceiling only over the bar and the corridor (accent)',
                                     'Wave louvers under the balcony removed; the F2 façade stays open',

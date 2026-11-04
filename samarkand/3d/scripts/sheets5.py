@@ -7,9 +7,9 @@ import ezdxf
 LINES, DATA, OUT = sys.argv[1:4]; os.makedirs(OUT, exist_ok=True)
 V = json.load(open(LINES)); D = json.load(open(DATA))
 TER, SID = -0.45, -1.17
-def top(x): return 3.75 - 0.05 * x
+def top(x): return 3.75 - 0.035 * x
 W, H = 841.0, 594.0
-REV = 'R12-v8'; DATE = '2026-10-27'
+REV = 'R12-v8.3'; DATE = '2026-11-04'
 
 class Sheet:
     def __init__(s, code, title):
@@ -170,9 +170,9 @@ rows.append(('L1', 'Facade ledger', 'C300, chem. anchors M16@600', '1', '37.1 m'
 rows.append(('K1', 'Purlin cleat', 'L80x80x8, 2xM12', str(sum(1 for x, y0, y1 in D['purlins'] for yb in ybs if y0 + 0.05 < yb < y1 - 0.05)), 'at every purlin / beam crossing'))
 s.table(32, 245, rows, [14, 34, 50, 10, 120])
 s.notes_block(300, 245, 'NOTES', [
-    'Roof: insulated sandwich panel 50 mm on the purlins, fall 5 % to the street gutter (box gutter 250 wide on the street edge, outlets every 6 m).',
+    'Roof: Klip-Lok standing-seam sheet on clips + 50 mm foil-faced insulation on the purlins, fall 3.5 % (2°) to the street gutter, one sheet length, no end laps (box gutter 250 wide on the street edge, outlets every 6 m).',
     'Beams IPE 300 bear on the facade ledger (end plate 10 mm, 4xM16 8.8) and on the columns (cap plate 15 mm, 4xM16). At the domes the beams frame into the ring girders (fin plate 10 mm, 3xM16).',
-    'Ring girders IPE 300 rolled about the minor axis, 4 splices each (full-strength end plates), set in the 5 % roof plane; drum curb C200 ring welded on top.',
+    'Ring girders IPE 300 rolled about the minor axis, 4 splices each (full-strength end plates), set in the 3.5 % roof plane; drum curb C200 ring welded on top.',
     'Columns SHS 150x150x8 on base plates 300x300x20, 4 chemical anchors M20 into the slab; clad by the majolica columns (sheet S-04).',
     'All steel: blast Sa 2.5, zinc-rich primer + 2 coats, colour RAL 8019 (exposed). Fire / structural check by the local engineer before fabrication.',
 ], 330)
@@ -184,7 +184,7 @@ s = Sheet('S-02', 'Central dome C — section, ring plan, build-up')
 M, k = s.view('S02a_domeC_section', (cx - 4.0, -0.6, cx + 4.0, 7.3), 25, (30, 120), 'SECTION A-A THROUGH THE CENTRAL DOME', 'karbandi interior shell hung from the steel ribs · lantern · chandelier')
 fl = lambda z: f'{z - TER:+.3f}'
 s.level(M, (cx + 3.6, TER), fl(TER) + ' terrace floor', 1); s.level(M, (cx + r + 0.15, ZR), fl(ZR) + ' springing / ring beam top', 1)
-s.level(M, (cx + r + 0.2, top(cx + r) - 0.25), fl(top(cx + r) - 0.25) + ' ring girder top (5 % roof plane)', 1)
+s.level(M, (cx + r + 0.2, top(cx + r) - 0.25), fl(top(cx + r) - 0.25) + ' ring girder top (3.5 % roof plane)', 1)
 lz = ZR + (dC['rise'] + 0.12) * math.cos(math.asin(min(0.999, dC['lantern'] / r)))
 s.level(M, (cx + 0.6, lz), fl(lz) + ' lantern base', 1); s.level(M, (cx + 0.3, lz + 1.45), fl(lz + 1.45) + ' finial top', 1)
 s.level(M, (cx - 1.2, TER + 3.65), fl(TER + 3.65) + ' chandelier hoop', -1)
@@ -198,7 +198,7 @@ s.note(M, (cx, TER + 3.6), (24, -18), f'chandelier R950, 12+6 pierced brass lant
 M2, k2 = s.view('S02b_domeC_plan_cut', (cx - 3.6, cy - 3.6, cx + 3.6, cy + 3.6), 50, (400, 340), 'PLAN CUT AT +4.300 (springing) — RING STRUCTURE', 'ring beam + drum cut; curb, ring girder, beams and purlins below')
 s.dim(M2, (cx - r - 0.135, cy - 3.4), (cx + r + 0.135, cy - 3.4), -6, f'girder outer Ø {2 * (r + 0.135) * 1000:.0f}')
 s.notes_block(560, 330, 'BUILD-UP & ASSEMBLY SEQUENCE', [
-    '1. Erect the ring girder (IPE 300 rolled, 4 segments) on temporary props; bolt the beam fin plates; check level against the 5 % roof plane.',
+    '1. Erect the ring girder (IPE 300 rolled, 4 segments) on temporary props; bolt the beam fin plates; check level against the 3.5 % roof plane.',
     '2. Weld the C200 curb ring on the girder top flange; fix SHS 60 drum studs @ 600 (base plates 8 mm, 2xM12) and the top ring UPN 240 at +4.350.',
     '3. Set the 12 rolled T80 ribs from the ring beam to the lantern ring (CHS 1016x10), bolted 2xM16 each end; 2 hoops L60 (support the inner shell).',
     '4. Hang the karbandi GRG / FRP interior panels (moulds from the 3D file) on M10 rods from ribs and hoops; fill joints, paint the pattern.',
@@ -319,4 +319,36 @@ s.notes_block(560, 380, 'NOTES', [
     'Niche wall 160: through niche with a vase, framed epoch art panels on both faces.',
 ], 260)
 sheets.append(s.finish())
+
+# ======================================================================= S-09 ROOF OVER THE KEPT PERGOLA (rev. 8.3)
+PG = D.get('pergola')
+if PG and 'S09a_pergola_section' in V:
+    PZT = TER + PG['top']
+    s = Sheet('S-09', 'Existing pergola (kept) — new roof over it: section, framing plan, sequence')
+    M, k = s.view('S09a_pergola_section', (-0.6, TER - 0.5, 13.9, top(-0.6) + 0.45), 25, (30, 300), 'SECTION E-E THROUGH THE PERGOLA (building → street)', 'Klip-Lok sheet 3.5 %, short C100 purlins on packers over the pergola beams; grid-A beam ends on the pergola')
+    s.level(M, (0.4, top(0)), fl(top(0)) + ' roof top at the facade', 1)
+    s.level(M, (10.6, top(10.6)), fl(top(10.6)) + ' roof top over the pergola edge', 1)
+    s.level(M, (6.2, PZT), fl(PZT) + ' top of pergola beams (site: verify)', -1)
+    s.level(M, (6.2, PZT - 0.4), fl(PZT - 0.4) + ' underside of pergola main beams', -1)
+    s.level(M, (13.2, TER), '+0.000 terrace floor', -1)
+    s.note(M, (9.8, top(9.8) - 0.12), (28, 20), 'short purlin C100 + steel packer bolted to the\npergola joist (2 x M12); clear >= 90 mm to verify on site')
+    s.note(M, (5.0, PZT - 0.2), (-24, -28), 'EXISTING pergola: 6 steel posts 200 x 200,\nmain beams + joists kept; old roof sheet removed')
+    s.note(M, (2.0, top(2.0) - 0.4), (14, -26), 'roof beam IPE 300 on grid A: end plate\nagainst the pergola main beam (engineer)')
+    s.note(M, (12.6, top(12.6) - 0.1), (10, 22), 'box gutter 250 + outlets @ 6 m')
+    M2, _ = s.view('S09b_pergola_plan', (1.5, 0.0, 12.0, 9.6), 50, (30, 60), 'FRAMING PLAN OVER THE PERGOLA (roof sheet removed)', 'pergola posts / beams existing; new purlins @ 1000 run over it, beam A stops at the pergola')
+    pc = (sum(p_[0] for p_ in PG['outline']) / 4, sum(p_[1] for p_ in PG['outline']) / 4)
+    s.note(M2, pc, (60, 10), 'EXISTING PERGOLA (kept): 6.0 x 5.8 (DWG), site 6.4 x 5.9 to the roof edge\n6 steel posts 200 x 200, main beams on the post lines, joists ~ 960\nnew purlins @ 1000 pass over it (short C100 on packers)')
+    s.notes_block(300, 250, 'SEQUENCE', [
+        '1. Survey: pergola post positions, beam sizes and levels; record the old roof drainage. Engineer checks posts + footings for the new roof load + typhoon uplift (if not enough: 2-3 new posts beside them, same cladding).',
+        '2. Remove the old pergola roof sheet only. Keep posts, main beams, joists.',
+        '3. Facade ledger, roof beams IPE 300, street columns. Grid-A beam ends with an end plate on the pergola main beams.',
+        '4. Purlins C200 @ 1000; over the pergola short C100 purlins on steel packers bolted to its joists (levels from the survey).',
+        '5. Insulation blanket 50 mm foil-faced on safety mesh, then Klip-Lok sheets roll-formed on site, one length facade -> gutter, clipped (clip spacing per engineer, closer at edges).',
+        '6. Gutter, downpipes, facade + side flashings. Inside: posts clad as Khiva columns, beams in carved walnut, ceiling panels between the joists.',
+    ], 300)
+    s.notes_block(300, 120, 'WHY THIS ROOF', [
+        'Sandwich panels need >= 4 deg (7 %) without joints; under the balcony slab (+3.85) only 2 deg fits over the pergola -> standing seam (min 2 deg, no screws through the sheet).',
+        'One roof plane, one gutter: no step and no valley at the pergola -> fewer joints that can leak in the monsoon.',
+    ], 300)
+    sheets.append(s.finish())
 print('\n'.join(sheets))
