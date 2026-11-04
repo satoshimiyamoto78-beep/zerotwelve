@@ -1,7 +1,7 @@
 {
  "blend": "r12v83/samarkand-base3d-R12.blend",
- "objects": 783,
- "mesh_datablocks": 484,
+ "objects": 748,
+ "mesh_datablocks": 449,
  "totals": {
   "boundary_edges": 17128,
   "nonmanifold_edges": 0,
@@ -12,13 +12,13 @@
   "flipped_edges": 0,
   "inside_out_shells": 92,
   "coincident_verts": 0,
-  "verts": 255339,
-  "faces": 296381,
-  "tris": 488830,
-  "ngons": 2333,
-  "shells": 4693
+  "verts": 255059,
+  "faces": 296159,
+  "tris": 488434,
+  "ngons": 2335,
+  "shells": 4652
  },
- "clean_meshes": 480,
+ "clean_meshes": 445,
  "unapplied_transforms": [
   "Bougainvillea",
   "Bougainvillea.001",

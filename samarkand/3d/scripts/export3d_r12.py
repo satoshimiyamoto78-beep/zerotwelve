@@ -40,7 +40,8 @@ def holefree(g):
 
 COURTS = []                                                          # rev. 7: no open courts; one skylight over the chinar
 C_ = G['C']
-roof_p = U.difference(unary_union([C_(*d['c'], d['r'], 96) for d in G['DOMES']]))     # purlins run on under the skylight glass
+PERG_CUT = G['PERG'].buffer(300, join_style=2)                     # rev. 8.3b: closed room on top of the pergola -> roof stops 300 off its walls
+roof_p = U.difference(unary_union([C_(*d['c'], d['r'], 96) for d in G['DOMES']])).difference(PERG_CUT)     # purlins run on under the skylight glass
 roof = roof_p.difference(G['SKY'])
 D = dict(
     rev=G['REV'],
@@ -86,7 +87,7 @@ for kx in range(1, 14):
 D['purlins'] = pur
 # rev. 8.3: existing pergola kept — outline (SW, SE, NE, NW), post centres, top of its beams above the terrace
 D['pergola'] = dict(outline=[[round(x * k, 4), round(y * k, 4)] for x, y in list(G['PERG'].exterior.coords)[:4]],
-                    posts=[[round(x * k, 4), round(y * k, 4)] for x, y in G['PPOSTS']], top=G['PERG_TOP'] * k)
+                    posts=[[round(x * k, 4), round(y * k, 4)] for x, y in G['PPOSTS']], top=G['PERG_TOP'] * k, cut=0.3, room_h=2.8)
 D['street_steps'] = [round((G['xi'](G['ENT'][0]) - 200) * k, 4), round((xb(G['ENT'][0]) + 300) * k, 4)]
 D['yr0'] = G['yr'](0) * k
 json.dump(D, open(f'{OUT}/samarkand-3d-data-{G["REV"]}.json', 'w'))

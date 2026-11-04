@@ -24,7 +24,7 @@ PANEL, PURLIN, BEAM = 50, 200, 300
 EAVE_OUT = 300                # overhang past the lot line? no: gutter sits inside -> roof edge = lot line
 roof_all = U.buffer(0)
 FOOT = unary_union([C(*d['c'], d['r'], 96) for d in DOMES])          # roof panel stops at the dome rings
-roof = roof_all.difference(FOOT).difference(SKY)
+roof = roof_all.difference(FOOT).difference(SKY).difference(G['PERG'].buffer(300, join_style=2))     # rev. 8.3b: room on the pergola keeps its own roof
 cols = [(xb(y) - 750, y) for y in BEAMS] + [(-7050, 200), (-350, 250)]
 def top(x): return TOP0 - FALL * x
 def dz(d, rho):                             # dome surface: ellipsoid of revolution, springing at ZR
@@ -48,7 +48,7 @@ q = dict(roof_m2=round(roof.area / 1e6, 1), courts_m2=round(SKY.area / 1e6, 1),
 purl = []
 for k in range(1, 14):
     x = k * 1000 - 200
-    ln_ = LineString([(x, -2000), (x, 40000)]).intersection(roof_all.difference(FOOT))
+    ln_ = LineString([(x, -2000), (x, 40000)]).intersection(roof_all.difference(FOOT).difference(G['PERG'].buffer(300, join_style=2)))
     for g in getattr(ln_, 'geoms', [ln_]):
         if g.length > 0: purl.append(g)
 q['purlins_m'] = round(sum(g.length for g in purl) / 1000, 1)
@@ -130,10 +130,13 @@ def build(lang):
         if lang == 'ru': lab = lab.replace('.', ',')
         tx(cx, cy + d['r'] / S1 + 3.0, lab, 1.6, '#7a3518', 'middle', 700, 'paint-order="stroke" stroke="#f7f1e6" stroke-width=".5"')
     path(SKY, '#bfe3ea', '#2A9DA8', .35)                                                   # skylight over the chinar
+    path(G['PERG'], '#d8cfc2', '#7a4a1e', .45)                                               # rev. 8.3b: existing room on the pergola (own roof)
+    path(G['PERG'].buffer(300, join_style=2).difference(G['PERG']), 'none', '#2A9DA8', .2, 'stroke-dasharray="1 .6"')
+    _c = G['PERG'].centroid; tx(P(_c.x, _c.y)[0], P(_c.x, _c.y)[1], 'помещение над навесом (своя кровля)' if lang == 'ru' else 'room above the pergola (own roof)', 1.5, '#5a3510', 'middle', 700)
     for k_ in range(1, 6): ln((SKY.bounds[0] + k_ * 500, SKY.bounds[1]), (SKY.bounds[0] + k_ * 500, SKY.bounds[3]), '#2A9DA8', .08)
     tx(P(*SKY.centroid.coords[0])[0], P(0, SKY.bounds[1])[1] + 3.0, t['skyl'], 1.6, '#1d6f77', 'middle', 700, 'paint-order="stroke" stroke="#f7f1e6" stroke-width=".5"')
     for y in BEAMS:
-        seg = LineString([(0, y), (xb(y), y)]).difference(FOOT)
+        seg = LineString([(0, y), (xb(y), y)]).difference(FOOT).difference(G['PERG'].buffer(480, join_style=2))
         for g in getattr(seg, 'geoms', [seg]): ln(g.coords[0], g.coords[-1], '#3b2a1e', .55)
     ln((0, 0), (0, 37100), '#3b2a1e', .7)                                                  # façade ledger
     ln((xb(0) - 200, 0), (xb(37000) - 200, 37000), '#1F3F8A', .6)                         # street gutter

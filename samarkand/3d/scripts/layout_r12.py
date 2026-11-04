@@ -80,7 +80,7 @@ POCKET = Polygon([V['Z5_pocketSW'], V['Z4_S'], V['Z7_bldgSE'], V['Z6_pocketNW']]
 # clear 1275 between the roof columns (y 50..350) and the kids fence (y 1625)
 KIDS = R(-7100, 1650, -150, 4100)
 # rev. 8.3 (owner 2026-11-04): the EXISTING PERGOLA against the south boundary wall is kept (as-built DWG: 6.0 x 5.8, six steel
-# posts 200 x 200; site: underside +3.2 / top +3.6 above the terrace). The new roof runs over it on short purlins bolted to its beams.
+# posts 200 x 200; site: underside +3.2 / top +3.6 above the terrace) with a CLOSED ROOM on top (owner 2026-11-05): the new roof is cut round it.
 PERG = Polygon([(4479, 1156), (10301, 2604), (8911, 8194), (3088, 6745)])        # SW, SE, NE, NW
 PPOSTS = [(4552, 1277), (10180, 2677), (8838, 8072), (3209, 6672), (3881, 3975), (9509, 5375)]   # post centres (DWG)
 PERG_TOP = 3600                                                                    # top of its beams above the terrace (site)
@@ -428,7 +428,7 @@ T = {
                ('Топчан: высота / на 1 гостя', '400–450 / ≥600', '450 / 700'), ('Служебный проход (в свету у колонн)', '≥1200', '1275'),
                ('Сиденье / стол / подлокотник', '450–500 / 740–760', '500 / 760 / 660')],
             notes=['Основа: исполнительный DWG (Long House, 10.07.2024) 1:1. Отметки: тротуар −1.170, терраса −0.450, айван и зал ±0.000.',
-                   'Кровля: стальные балки по осям, фальцевый лист Klip-Lok + утеплитель, уклон 3.5% к улице, один лист без нахлёстов, желоб вдоль улицы; низ плиты балкона +3.850. Существующий навес у южной стены сохраняется: новая кровля идёт над ним на коротких прогонах по его балкам.',
+                   'Кровля: стальные балки по осям, фальцевый лист Klip-Lok + утеплитель, уклон 3.5% к улице, один лист без нахлёстов, желоб вдоль улицы; низ плиты балкона +3.850. Существующий навес у южной стены с закрытым помещением над ним сохраняется: новая кровля обходит его (отступ 300 от стен, желоб вдоль западной стены, примыкания с фартуками).',
                    'Купол в кровле один — центральный Ø5,6 (карбанди, остеклённый фонарь). Чинар у бара остаётся под навесом: крона формуется на высоте 2,2–3,0 м, над ним зенитный фонарь 3,0 × 3,0 м с резной решёткой-панджарой. Северный чинар удаляется.',
                    'Все отдельно стоящие столы — модули 700 × 800: пары разъединяются на 2-местные или сдвигаются в столы на 6–8 (ряды выровнены).',
                    'Двери: C–D южная открыта; C–D северная и D–E южная закрыты (банкетка); D–E северная и E–F у лифта открыты.'],
@@ -473,7 +473,7 @@ T = {
                ('Tapchan: height / per guest', '400–450 / ≥600', '450 / 700'), ('Staff passage (clear at the columns)', '≥1200', '1275'),
                ('Seat / table / armrest', '450–500 / 740–760', '500 / 760 / 660')],
             notes=['Base: as-built DWG (Long House, 10-07-2024) 1:1. Levels: sidewalk −1.170, terrace −0.450, aivan and hall ±0.000.',
-                   'Roof: steel beams on the grid, Klip-Lok standing-seam sheet + insulation, 3.5% fall to the street, one sheet length (no end laps), gutter along the street; balcony soffit +3.850. The existing pergola at the south wall is kept: the new roof runs over it on short purlins bolted to its beams.',
+                   'Roof: steel beams on the grid, Klip-Lok standing-seam sheet + insulation, 3.5% fall to the street, one sheet length (no end laps), gutter along the street; balcony soffit +3.850. The existing pergola at the south wall, with a closed room on top of it, is kept: the new roof stops 300 off its walls (box gutter along the west wall, cover flashings).',
                    'One roof dome — the central Ø5.6 karbandi dome with a glazed lantern. The chinar by the bar stays under the roof: crown trained at 2.2–3.0 m, a 3.0 × 3.0 m skylight with a carved panjara grille above it. The north chinar is removed.',
                    'Every loose table is a 700 × 800 module: pairs split into 2-tops or push together into tables for 6–8 (rows are aligned).',
                    'Doors: C–D south open; C–D north and D–E south closed (banquette); D–E north and E–F by the lift open.'],
@@ -762,7 +762,7 @@ def build(lang):
     # ---------- rev. 8.3: existing pergola kept (posts + beams), the new roof runs over it
     sh(PERG, 'none', '#7a4a1e', .45, 'stroke-dasharray="3 1.2"')
     for c in PPOSTS: sh(R(c[0] - 100, c[1] - 100, c[0] + 100, c[1] + 100), '#7a4a1e', '#2b1d12', .1)
-    tx(6950, 6200, 'существующий навес (сохраняется)' if lang == 'ru' else 'existing pergola (kept)', 1.7, '#7a4a1e', weight=600, extra='transform="rotate(-14 %.2f %.2f)"' % P(6950, 6200))
+    tx(6950, 6200, 'навес + помещение над ним (сохр.)' if lang == 'ru' else 'pergola + room above (kept)', 1.7, '#7a4a1e', weight=600, extra='transform="rotate(-14 %.2f %.2f)"' % P(6950, 6200))
     # ---------- skylight over the chinar (glass + carved panjara grille), dome overhead
     sh(SKY, 'none', '#2A9DA8', .45, 'stroke-dasharray="2.2 1"')
     for k_ in range(1, 6): ln((SKY.bounds[0] + k_ * 500, SKY.bounds[1]), (SKY.bounds[0] + k_ * 500, SKY.bounds[3]), '#2A9DA8', .1, 'opacity=".5"'); ln((SKY.bounds[0], SKY.bounds[1] + k_ * 500), (SKY.bounds[2], SKY.bounds[1] + k_ * 500), '#2A9DA8', .1, 'opacity=".5"')

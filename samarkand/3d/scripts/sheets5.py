@@ -320,35 +320,34 @@ s.notes_block(560, 380, 'NOTES', [
 ], 260)
 sheets.append(s.finish())
 
-# ======================================================================= S-09 ROOF OVER THE KEPT PERGOLA (rev. 8.3)
+# ======================================================================= S-09 ROOF ROUND THE KEPT PERGOLA + ROOM ABOVE (rev. 8.3b)
 PG = D.get('pergola')
 if PG and 'S09a_pergola_section' in V:
-    PZT = TER + PG['top']
-    s = Sheet('S-09', 'Existing pergola (kept) — new roof over it: section, framing plan, sequence')
-    M, k = s.view('S09a_pergola_section', (-0.6, TER - 0.5, 13.9, top(-0.6) + 0.45), 25, (30, 300), 'SECTION E-E THROUGH THE PERGOLA (building → street)', 'Klip-Lok sheet 3.5 %, short C100 purlins on packers over the pergola beams; grid-A beam ends on the pergola')
-    s.level(M, (0.4, top(0)), fl(top(0)) + ' roof top at the facade', 1)
-    s.level(M, (10.6, top(10.6)), fl(top(10.6)) + ' roof top over the pergola edge', 1)
-    s.level(M, (6.2, PZT), fl(PZT) + ' top of pergola beams (site: verify)', -1)
-    s.level(M, (6.2, PZT - 0.4), fl(PZT - 0.4) + ' underside of pergola main beams', -1)
+    PZT = TER + PG['top']; RH = PG.get('room_h', 2.8)
+    s = Sheet('S-09', 'Existing pergola + closed room above (kept) — new roof cut round it: section, framing, junction')
+    M, k = s.view('S09a_pergola_section', (-0.6, TER - 0.5, 13.9, PZT + RH + 0.5), 25, (30, 268), 'SECTION E-E THROUGH THE PERGOLA AND THE ROOM ABOVE (building → street)', 'new roof stops 300 off the room walls: box gutter on the up-slope (west) wall, cover flashing on the down-slope (east) wall')
+    s.level(M, (0.4, top(0)), fl(top(0)) + ' new roof top at the facade', 1)
+    s.level(M, (6.2, PZT), fl(PZT) + ' pergola beams top = room floor (site: verify)', -1)
+    s.level(M, (6.2, PZT + 0.24 + RH), fl(PZT + 0.24 + RH) + ' room roof (assumed h 2.8 — verify)', -1)
     s.level(M, (13.2, TER), '+0.000 terrace floor', -1)
-    s.note(M, (9.8, top(9.8) - 0.12), (28, 20), 'short purlin C100 + steel packer bolted to the\npergola joist (2 x M12); clear >= 90 mm to verify on site')
-    s.note(M, (5.0, PZT - 0.2), (-24, -28), 'EXISTING pergola: 6 steel posts 200 x 200,\nmain beams + joists kept; old roof sheet removed')
-    s.note(M, (2.0, top(2.0) - 0.4), (14, -26), 'roof beam IPE 300 on grid A: end plate\nagainst the pergola main beam (engineer)')
-    s.note(M, (12.6, top(12.6) - 0.1), (10, 22), 'box gutter 250 + outlets @ 6 m')
-    M2, _ = s.view('S09b_pergola_plan', (1.5, 0.0, 12.0, 9.6), 50, (30, 60), 'FRAMING PLAN OVER THE PERGOLA (roof sheet removed)', 'pergola posts / beams existing; new purlins @ 1000 run over it, beam A stops at the pergola')
+    s.note(M, (3.3, top(3.3) - 0.1), (-30, 26), 'box gutter 300 along the room west wall,\nfalls south -> downpipe Ø110 into the planter;\nwall upstand 250, counter-flashing chased in')
+    s.note(M, (9.9, top(9.9)), (24, 22), 'cover flashing 320 + upstand 250 on the room\neast wall; Klip-Lok sheets start here (apron)')
+    s.note(M, (5.0, PZT - 0.2), (-24, -30), 'EXISTING pergola: 6 steel posts 200 x 200 + beams;\nthe room above stays untouched (own roof, no new load)')
+    s.note(M, (12.6, top(12.6) - 0.1), (10, 22), 'street box gutter 250 + outlets @ 6 m')
+    M2, _ = s.view('S09b_pergola_plan', (1.5, 0.4, 12.0, 9.2), 50, (30, 40), 'FRAMING PLAN ROUND THE ROOM (roof sheet removed)', 'trimmers UPN 200: W and E from the boundary wall to beam B, N between them; purlins stop on the trimmers; beam A ends on W / E')
     pc = (sum(p_[0] for p_ in PG['outline']) / 4, sum(p_[1] for p_ in PG['outline']) / 4)
-    s.note(M2, pc, (60, 10), 'EXISTING PERGOLA (kept): 6.0 x 5.8 (DWG), site 6.4 x 5.9 to the roof edge\n6 steel posts 200 x 200, main beams on the post lines, joists ~ 960\nnew purlins @ 1000 pass over it (short C100 on packers)')
-    s.notes_block(300, 250, 'SEQUENCE', [
-        '1. Survey: pergola post positions, beam sizes and levels; record the old roof drainage. Engineer checks posts + footings for the new roof load + typhoon uplift (if not enough: 2-3 new posts beside them, same cladding).',
-        '2. Remove the old pergola roof sheet only. Keep posts, main beams, joists.',
-        '3. Facade ledger, roof beams IPE 300, street columns. Grid-A beam ends with an end plate on the pergola main beams.',
-        '4. Purlins C200 @ 1000; over the pergola short C100 purlins on steel packers bolted to its joists (levels from the survey).',
-        '5. Insulation blanket 50 mm foil-faced on safety mesh, then Klip-Lok sheets roll-formed on site, one length facade -> gutter, clipped (clip spacing per engineer, closer at edges).',
-        '6. Gutter, downpipes, facade + side flashings. Inside: posts clad as Khiva columns, beams in carved walnut, ceiling panels between the joists.',
+    s.note(M2, pc, (60, 10), 'EXISTING PERGOLA + ROOM ABOVE (kept): 6.0 x 5.8 (DWG)\nno new roof over it — 300 gap to its walls closed by\ngutter (W) and cover flashings (N, E)')
+    s.notes_block(300, 230, 'SEQUENCE', [
+        '1. Survey: room walls (line, plumb, height, finish), pergola posts + levels, the room roof drainage, the boundary wall (owner, thickness) for the trimmer brackets.',
+        '2. Facade ledger, roof beams IPE 300, street columns. Trimmers UPN 200 round the room (W, E: boundary-wall bracket -> beam A -> beam B; N between W and E). Grid-A beam ends on the W / E trimmers.',
+        '3. Purlins C200 @ 1000 stopping on the trimmers (cleats). Nothing is fixed to the pergola or the room.',
+        '4. Insulation blanket 50 mm foil-faced on safety mesh, Klip-Lok sheets roll-formed on site (west field: facade -> gutter at the room; east field: room wall -> street gutter).',
+        '5. Box gutter 300 along the room west wall (fall 1 % to the south) + downpipe into the planter; cover flashings + 250 upstands on the N and E walls, counter-flashing into a chased joint, butyl tape + PU sealant, laps >= 150.',
+        '6. Water test of the junction before the ceilings; inside: pergola posts clad as Khiva columns, beams in carved walnut, panels between the joists.',
     ], 300)
-    s.notes_block(300, 120, 'WHY THIS ROOF', [
-        'Sandwich panels need >= 4 deg (7 %) without joints; under the balcony slab (+3.85) only 2 deg fits over the pergola -> standing seam (min 2 deg, no screws through the sheet).',
-        'One roof plane, one gutter: no step and no valley at the pergola -> fewer joints that can leak in the monsoon.',
+    s.notes_block(300, 100, 'WHY THIS DETAIL', [
+        'The pergola carries a closed room: the new roof cannot pass over it and must not load it -> the roof is cut round it on its own trimmers.',
+        'Up-slope wall (west) collects the water of the facade field -> box gutter; side and down-slope walls only need cover flashings.',
     ], 300)
     sheets.append(s.finish())
 print('\n'.join(sheets))

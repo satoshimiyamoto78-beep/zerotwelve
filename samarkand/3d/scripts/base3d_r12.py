@@ -410,6 +410,9 @@ if PG:
     _pp = PG['posts']                                   # order: SW, SE, NE, NW, mid-W, mid-E
     PW0, PW1, PE0, PE1 = _pp[0], _pp[3], _pp[1], _pp[2]  # post-centre lines: west SW->NW, east SE->NE
     def _lx(a, b, y): return a[0] + (b[0] - a[0]) * (y - a[1]) / (b[1] - a[1])
+    def _isect(l1, l2):
+        (x1, y1), (x2, y2) = l1; (x3, y3), (x4, y4) = l2; den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
+        t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den; return (x1 + t * (x2 - x1), y1 + t * (y2 - y1))
     def perg_x(y): return _lx(PW0, PW1, y), _lx(PE0, PE1, y)          # x of the west / east main beam centre lines at y
     def perg_span(x):                                   # y-interval of the pergola outline on the vertical line x (or None)
         ys_ = []
@@ -429,7 +432,21 @@ if PG:
         t = i / 6; a = (PW0[0] + (PW1[0] - PW0[0]) * t, PW0[1] + (PW1[1] - PW0[1]) * t); b = (PE0[0] + (PE1[0] - PE0[0]) * t, PE0[1] + (PE1[1] - PE0[1]) * t)
         a, b = _ext(a, b, -0.075)
         _prism(pb, seg_ring(a, b, 0.12 if i in (0, 6) else 0.08), PZT - (0.25 if i in (0, 6) else 0.15), PZT, 1); JT.append((a, b))
-    bmesh.ops.recalc_face_normals(pb, faces=pb.faces); new_obj('Pergola_existing', pb, [m['bronze'], m['roofwood']], 'Pergola_existing')
+    # rev. 8.3b (owner): a CLOSED ROOM stands on the pergola — floor slab 120, walls 150, h 2.8 (verify), flat roof slab 120
+    RH = PG.get('room_h', 2.8); OUTL = [PSW, PSE, PNE, PNW]
+    _prism(pb, OUTL, PZT, PZT + 0.12, 2)
+    def _inset(poly, d):                               # CCW polygon offset inward by d (edge lines shifted, consecutive lines intersected)
+        L_ = []
+        for i in range(4):
+            a, b = poly[i], poly[(i + 1) % 4]; dx, dy = b[0] - a[0], b[1] - a[1]; n = math.hypot(dx, dy)
+            nx, ny = -dy / n * d, dx / n * d; L_.append(((a[0] + nx, a[1] + ny), (b[0] + nx, b[1] + ny)))
+        return [_isect(L_[i - 1], L_[i]) for i in range(4)]
+    for i in range(4):
+        a, b = OUTL[i], OUTL[(i + 1) % 4]; ia, ib = _inset(OUTL, 0.15)[i], _inset(OUTL, 0.15)[(i + 1) % 4]
+        _prism(pb, [a, b, ib, ia], PZT + 0.12, PZT + 0.12 + RH, 2)
+    _prism(pb, OUTL, PZT + 0.12 + RH, PZT + 0.24 + RH, 2)
+    bmesh.ops.recalc_face_normals(pb, faces=pb.faces); new_obj('Pergola_existing', pb, [m['bronze'], m['roofwood'], m['white']], 'Pergola_existing')
+    PG_OFF = lambda d: _inset(OUTL, -d)                # outline pushed OUT by d: [SW, SE, NE, NW] corners
 RING_R = lambda d: d['r'] + 0.06                         # dome ring girder centre line (under the drum)
 for y, xe in D['beams']:
     segs = [(0.18 if STEEL_DETAIL else 0.0, xe)]       # beams bear on the facade ledger face (x = 0.18)
@@ -440,7 +457,7 @@ for y, xe in D['beams']:
             h = math.sqrt(rt ** 2 - dye ** 2); c0, c1 = d['c'][0] - h, d['c'][0] + h
             segs = [(p, min(q, c0)) for p, q in segs if p < c0] + [(max(p, c1), q) for p, q in segs if q > c1]
     if PG and min(PSW[1], PSE[1]) < y < max(PNE[1], PNW[1]):     # rev. 8.3: the beam stops against the pergola main beams (end plates)
-        c0, c1 = perg_x(y)[0] - 0.075, perg_x(y)[1] + 0.075
+        _o = PG_OFF(0.38); c0, c1 = _lx(_o[0], _o[3], y), _lx(_o[1], _o[2], y)      # rev. 8.3b: ends on the W / E trimmer channels
         segs = [(p, min(q, c0)) for p, q in segs if p < c0] + [(max(p, c1), q) for p, q in segs if q > c1]
     for p, q in segs:
         if STEEL_DETAIL: sloped_parts(f'roof_beam_y{y:.1f}', I_parts(p, q, y, lambda x: top(x) - 0.25), m['bronze'], 'Roof_structure')
@@ -455,11 +472,48 @@ def trim_to_domes(x, y0, y1, extra):
         segs = [(p, min(q, a)) for p, q in segs if p < a] + [(max(p, b), q) for p, q in segs if q > b]
     return [(p, q) for p, q in segs if q - p > 0.1]
 cleats = []
+if PG:                                                  # rev. 8.3b: trimmer channel + gutter / flashings round the room on the pergola
+    def seg_sloped(name, a, b, d0, d1, fn, dep, mm, cname, nrm=None):
+        """strip along a->b between offsets d0..d1 (outward normal nrm), top z = fn(x) at every vertex, depth dep"""
+        dx, dy = b[0] - a[0], b[1] - a[1]; L = math.hypot(dx, dy); nx, ny = nrm if nrm else (dy / L, -dx / L)
+        pts = [(a[0] + nx * d0, a[1] + ny * d0), (b[0] + nx * d0, b[1] + ny * d0), (b[0] + nx * d1, b[1] + ny * d1), (a[0] + nx * d1, a[1] + ny * d1)]
+        bm = bmesh.new(); lo = [bm.verts.new((x, y, fn(x) - dep)) for x, y in pts]; hi = [bm.verts.new((x, y, fn(x))) for x, y in pts]
+        bm.faces.new(list(reversed(lo))); bm.faces.new(hi)
+        for i in range(4): bm.faces.new((lo[i], lo[(i + 1) % 4], hi[(i + 1) % 4], hi[i]))
+        bmesh.ops.recalc_face_normals(bm, faces=bm.faces); return new_obj(name, bm, [mm], cname)
+    WSTART = _isect((PNW, PSW), (PSW, PSE)); ESTART = _isect((PNE, PSE), (PSW, PSE))   # outline lines meet the boundary at SW / SE
+    def _clip(a, b, d, at_a_boundary):               # offset line a->b by d outward, trimmed to the boundary line at the boundary end
+        dx, dy = b[0] - a[0], b[1] - a[1]; L = math.hypot(dx, dy); nx, ny = dy / L, -dx / L
+        A, B = (a[0] + nx * d, a[1] + ny * d), (b[0] + nx * d, b[1] + ny * d)
+        return A, B
+    EDGES = [('W', PNW, PSW), ('N', PNE, PNW), ('E', PSE, PNE)]      # each edge a->b keeps the room on its LEFT? (outline is CCW: SW,SE,NE,NW)
+    # edge directions taken along the CCW outline so that (dy, -dx) points OUT of the room
+    EDGES = [('E', PSE, PNE), ('N', PNE, PNW), ('W', PNW, PSW)]
+    # trimmers C200 (centre 340 off the walls, top on the purlin plane): W and E run from the boundary wall (bracket) to beam B,
+    # so they bear on beams A and B; the N trimmer spans between them and carries the purlins that stop north of the room
+    yB = min(y for y, _ in D['beams'] if y > max(PNE[1], PNW[1]))
+    O = PG_OFF(0.34)                                  # [SW', SE', NE', NW']
+    def _tline(p0, p1, y):                            # point on the line p0-p1 at y
+        return (_lx(p0, p1, y), y)
+    bnd = (PSW, PSE)
+    TR = [('W', _isect((O[3], O[0]), bnd), _tline(O[3], O[0], yB - 0.075)), ('E', _isect((O[1], O[2]), bnd), _tline(O[1], O[2], yB - 0.075)), ('N', O[3], O[2])]
+    for tag, a, b in TR:
+        dx_, dy_ = b[0] - a[0], b[1] - a[1]; L_ = math.hypot(dx_, dy_); nrm = (-dy_ / L_, dx_ / L_)
+        seg_sloped(f'roof_trimmer_{tag}', a, b, -0.04, 0.04, lambda xx: top(xx) - 0.05, 0.20, m['bronze'], 'Roof_structure', nrm)
+    for tag, a, b in EDGES:
+        if tag == 'W':                                # box gutter along the up-slope wall, falls to the south end
+            seg_sloped('gutter_pergola_W', a, b, 0.02, 0.30, lambda xx: top(xx) - 0.05, 0.15, m['steel'], 'Roof_skin')
+        else:                                         # cover flashing: plate over the 300 gap + upstand on the wall
+            seg_sloped(f'flashing_pergola_{tag}', a, b, 0.0, 0.32, lambda xx: top(xx) + 0.012, 0.012, m['steel'], 'Roof_skin')
+        seg_sloped(f'flashing_upstand_{tag}', a, b, 0.0, 0.015, lambda xx: top(xx) + 0.2, 0.25, m['steel'], 'Roof_skin')
+    _dx, _dy = PSW[0] - PNW[0], PSW[1] - PNW[1]; _L = math.hypot(_dx, _dy); _n = (_dy / _L, -_dx / _L)
+    dpx, dpy = PSW[0] + _n[0] * 0.16 - _dx / _L * 0.35, PSW[1] + _n[1] * 0.16 - _dy / _L * 0.35
+    cylinder('gutter_downpipe_pergola', dpx, dpy, TER + 0.4, top(dpx) - 0.2, 0.055, m['steel'], 'Roof_skin')
 for x, y0, y1 in D['purlins']:
     if STEEL_DETAIL:
         fn = lambda xx: top(xx) - 0.05                    # C200 purlin: web on the high side, flanges towards the street
         for y0, y1 in trim_to_domes(x, y0, y1, 0.125):
-            sp = perg_span(x) if PG else None
+            sp = None                                   # rev. 8.3b: purlins stop at the trimmer round the pergola room
             if sp and y0 < sp[1] and y1 > sp[0]:        # rev. 8.3: short C100 purlin over the kept pergola, on packers bolted to its beams
                 a_, b_ = max(y0, sp[0] - 0.05), min(y1, sp[1] + 0.05)
                 sloped_parts('purlin', [(x - 0.04, x + 0.035, a_, b_, fn, 0.006), (x - 0.04, x - 0.034, a_, b_, lambda xx: fn(xx) - 0.006, 0.088),
@@ -703,7 +757,8 @@ if DO_RENDER:
              ('26_mangal_sign', (6.6, 9.8, 1.2), (11.06, 5.6, 2.35), 22, 0.0, [], -0.1),
              ('27_street_sign', (16.8, 9.6, 0.5), (12.3, 6.9, 0.65), 24, 0.0, [], -0.5),
              ('28_pergola_interior', (8.2, 7.6, 1.25), (4.9, 2.6, 1.75), 18, 0.0, [], -0.1),
-             ('29_pergola_roof_frame', (14.5, 11.5, 6.2), (6.6, 4.6, 2.9), 26, 0.0, ['Roof_skin', 'Carpet_ceiling'], -0.3)]
+             ('29_pergola_roof_frame', (14.5, 11.5, 6.2), (6.6, 4.6, 2.9), 26, 0.0, ['Roof_skin', 'Carpet_ceiling'], -0.3),
+             ('30_pergola_roof_junction', (15.5, 13.0, 9.0), (6.6, 4.6, 3.4), 26, 0.0, [], -0.4)]
     only = os.environ.get('VIEWS')
     for name, loc, tgt, lens, shift, hide, ev in VIEWS:
         if only and not any(name.startswith(v) for v in only.split(',')): continue
