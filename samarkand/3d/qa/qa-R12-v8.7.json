@@ -1,7 +1,7 @@
 {
  "blend": "r12v83/samarkand-base3d-R12.blend",
- "objects": 754,
- "mesh_datablocks": 451,
+ "objects": 756,
+ "mesh_datablocks": 453,
  "totals": {
   "boundary_edges": 17128,
   "nonmanifold_edges": 0,
@@ -10,15 +10,15 @@
   "zero_area_faces": 64,
   "zero_len_edges": 64,
   "flipped_edges": 0,
-  "inside_out_shells": 98,
+  "inside_out_shells": 102,
   "coincident_verts": 64,
-  "verts": 267809,
-  "faces": 313747,
-  "tris": 513538,
-  "ngons": 2305,
-  "shells": 4967
+  "verts": 295401,
+  "faces": 345729,
+  "tris": 568778,
+  "ngons": 2227,
+  "shells": 4971
  },
- "clean_meshes": 446,
+ "clean_meshes": 447,
  "unapplied_transforms": [
   "Bougainvillea",
   "Bougainvillea.001",
@@ -71,12 +71,6 @@
  "n_floating": 0,
  "worst": [
   [
-   "Chinar_trained_foliage",
-   {
-    "boundary_edges": 30404
-   }
-  ],
-  [
    "Pomegranate_foliage",
    {
     "boundary_edges": 8088,
@@ -88,6 +82,13 @@
    {
     "boundary_edges": 8088,
     "inside_out_shells": 1
+   }
+  ],
+  [
+   "Mango_foliage",
+   {
+    "boundary_edges": 5256,
+    "inside_out_shells": 849
    }
   ],
   [
@@ -161,6 +162,13 @@
    }
   ],
   [
+   "Croton_foliage",
+   {
+    "boundary_edges": 2052,
+    "inside_out_shells": 247
+   }
+  ],
+  [
    "Shrub_green_10_foliage",
    {
     "boundary_edges": 1920,
@@ -216,6 +224,12 @@
     "zero_area_faces": 64,
     "zero_len_edges": 64,
     "coincident_verts": 64
+   }
+  ],
+  [
+   "Chandelier_cascade_C",
+   {
+    "inside_out_shells": 4
    }
   ]
  ]
