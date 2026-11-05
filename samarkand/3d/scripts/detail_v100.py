@@ -105,3 +105,4 @@ if pr:
     ox, oy = (bx * c_ - by * s_) * sc_, (bx * s_ + by * c_) * sc_
     place_fixed(DN, 'Doner_machine', (lo_[0] + hi_[0]) / 2 - ox, lo_[1] + 0.6 - oy, hi_[2], sc_, rz_, 'Mangal')
 print('rev 10.0 models placed', placed)
+_json.dump(PNEW, open(PCF, 'w'))                                         # remember the placements for the next build

@@ -66,7 +66,20 @@ def _supported(o_):
     o_.hide_viewport = False
     return ok
 OFFS = [(0, 0), (0.15, 0), (-0.15, 0), (0, 0.15), (0, -0.15), (0.3, 0), (-0.3, 0), (0, 0.3), (0, -0.3), (0.2, 0.2), (-0.2, -0.2), (0.2, -0.2), (-0.2, 0.2)]
+import json as _json
+PCF = os.path.join(HERE, 'place_cache.json')
+PCACHE = _json.load(open(PCF)) if os.path.exists(PCF) else {}
+PNEW = {}
 def place(me, name, x, y, z, s, cname):
+    key = f'{name}@{x:.2f},{y:.2f}'
+    if key in PCACHE:                                                     # placement found in an earlier build
+        c = PCACHE[key]; PNEW[key] = c
+        if c is None: return None
+        o_ = bpy.data.objects.new(name, me); o_.location = c[:3]; o_.scale = (c[3],) * 3; o_.rotation_euler = (0, 0, c[4]); coll(cname).objects.link(o_); return o_
+    o_ = _place(me, name, x, y, z, s, cname)
+    PNEW[key] = None if o_ is None else [*o_.location, o_.scale[0], o_.rotation_euler[2]]
+    return o_
+def _place(me, name, x, y, z, s, cname):
     o_ = bpy.data.objects.new(name, me); o_.location = (x, y, z); coll(cname).objects.link(o_)
     for k in range(12):                                                    # largest scale, then nearby spots in the bed, several turns
         sk = s * (1.0 - 0.07 * (k // 2))

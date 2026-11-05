@@ -304,3 +304,5 @@ exec(open(os.path.join(HERE, 'detail_v97.py')).read())                    # rev.
 exec(open(os.path.join(HERE, 'detail_v98.py')).read())                    # rev. 9.8: hazarbaf mangal wall, closed boundary wall, Persian rugs for kilims/suzanis
 exec(open(os.path.join(HERE, 'detail_v99.py')).read())                    # rev. 9.9: aivan settees in the chair family, tables set back
 exec(open(os.path.join(HERE, 'detail_v100.py')).read())                   # rev. 10.0: owner's palms, topiary, sansevieria, bonsai, doner
+exec(open(os.path.join(HERE, 'detail_v101.py')).read())                   # rev. 10.1: booths per the owner's lattice refs, city names
+exec(open(os.path.join(HERE, 'detail_v102.py')).read())                   # rev. 10.2: floor + wall sockets
