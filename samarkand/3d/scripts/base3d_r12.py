@@ -763,7 +763,8 @@ if DO_RENDER:
              ('32_dome_dining', (7.6, 17.3, 1.3), (5.2, 23.0, 0.4), 16, 0.0, [], -0.1),
              ('33_aivan_arcade_close', (5.4, 21.0, 1.0), (3.18, 22.6, 1.9), 22, 0.0, [], -0.1),
              ('34_aivan_inside', (2.6, 16.2, 1.25), (0.9, 22.5, 1.6), 18, 0.0, [], -0.1),
-             ('35_aivan_ceiling', (2.4, 17.0, 0.9), (1.6, 21.0, 3.1), 18, 0.0, [], -0.1)]
+             ('35_aivan_ceiling', (2.4, 17.0, 0.9), (1.6, 21.0, 3.1), 18, 0.0, [], -0.1),
+             ('36_dome_exterior', (12.5, 26.5, 8.6), (6.0, 19.9, 5.4), 24, 0.0, [], -0.4)]
     only = os.environ.get('VIEWS')
     for name, loc, tgt, lens, shift, hide, ev in VIEWS:
         if only and not any(name.startswith(v) for v in only.split(',')): continue

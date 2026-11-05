@@ -289,3 +289,5 @@ for k_, (y0_, y1_, xw_, xe_, th_) in enumerate(D['booths']):
     inst(a_booth_trim(), f'Booth{k_ + 1}_trim', (xw_, y0_, TER), 0, 'Booths')
 print('rev 8.2 detail ok')
 exec(open(os.path.join(HERE, 'detail_v85.py')).read())                    # rev. 8.5: aivan fabrication-grade detailing (replaces v84)
+exec(open(os.path.join(HERE, 'detail_v86.py')).read())                    # rev. 8.6: simplified aivan arcade (posts + CNC arch panels)
+exec(open(os.path.join(HERE, 'detail_v87.py')).read())                    # rev. 8.7: dome alem finial

@@ -305,7 +305,7 @@ cols = [(xb(y) - 750, y) for y in COL_E] + [(-7050, 200), (-350, 250)]
 # open-to-sky courts over the chinars (roof stops at a gutter frame around them)
 # R12: the courts become the oculi of two roof domes; a third, closed dome with a glazed lantern sits between the chinars
 # rev. 7 (owner): only the central dome stays; the roof closes over both chinars. The south chinar gets a flat skylight instead
-DOMES = [dict(key='C', c=(6000, 19900), r=2800, oc=0, rise=1700, lantern=500)]
+DOMES = [dict(key='C', c=(6000, 19900), r=2400, oc=0, rise=1500, lantern=450)]     # rev. 8.7: Ø4.8 — clear of the aivan arcade (x 3.25) and the booth fronts, centred on the 4-top axis
 DOME_RING = 3900                               # level springing ring (drum fills down to the sloping roof skin)
 SKY = R(TREE_S[0] - 1500, TREE_S[1] - 1500, TREE_S[0] + 1500, TREE_S[1] + 1500)     # glazed skylight 3.0 x 3.0 between beams B and C
 

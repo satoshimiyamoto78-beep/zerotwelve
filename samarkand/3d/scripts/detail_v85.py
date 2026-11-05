@@ -361,7 +361,7 @@ for i_, (x0, y0, x1, y1) in enumerate(ats):
 
 # CEILING over the aivan — coffered timber ceiling after Cafe De Bobo (Dushanbe, owner ref.): primary beams on the booth
 # rhythm, each coffer = timber frame + warm LED cove + kilim panel recessed 80 mm + diagonal X ribs; wall plate on the facade
-CY0, CY1, CX0, CX1, ZT = 15.3, 28.49, 0.22, XA - 0.21, ZB          # stops at the cornice face; plate clear of the door heads
+CY0, CY1, CX0, CX1, ZT = 15.3, 28.49, 0.22, XA - 0.07, ZB          # stops at the cornice face; plate clear of the door heads
 mb = MB(); KP = [X['kilim2'], X['kilim']]
 mb.box(CX0, CY0, ZT - 0.22, CX0 + 0.12, CY1, ZT, HD, 0.004)                                   # wall plate (chem. anchors to the facade)
 NC = 7; ys_ = [CY0 + (CY1 - CY0) * k / NC for k in range(NC + 1)]
