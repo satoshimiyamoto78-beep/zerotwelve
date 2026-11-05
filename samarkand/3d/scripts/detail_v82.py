@@ -294,3 +294,4 @@ exec(open(os.path.join(HERE, 'detail_v87.py')).read())                    # rev.
 exec(open(os.path.join(HERE, 'detail_v88.py')).read())                    # rev. 8.8: walnut everywhere, mangal wall, planter, majlis zone
 exec(open(os.path.join(HERE, 'detail_v89.py')).read())                    # rev. 8.9: entrance corridor per the owner's velvet-tunnel ref
 exec(open(os.path.join(HERE, 'detail_v90.py')).read())                    # rev. 9.0: kids corner per the owner's refs
+exec(open(os.path.join(HERE, 'detail_v91.py')).read())                    # rev. 9.1: boundary clay wall, kids rocking camels

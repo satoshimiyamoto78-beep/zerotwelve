@@ -14,14 +14,21 @@ def velvet_mat(name, base, tint):
     if name in bl._mats: return bl._mats[name]
     mm = bpy.data.materials.new(name); mm.use_nodes = True; N = mm.node_tree.nodes; Lk = mm.node_tree.links
     b = N['Principled BSDF']; b.inputs['Roughness'].default_value = 0.72
-    b.inputs['Sheen Weight'].default_value = 1.0; b.inputs['Sheen Tint'].default_value = (*tint, 1); b.inputs['Sheen Roughness'].default_value = 0.35
+    b.inputs['Sheen Weight'].default_value = 0.55; b.inputs['Sheen Tint'].default_value = (*tint, 1); b.inputs['Sheen Roughness'].default_value = 0.35
     tc = N.new('ShaderNodeTexCoord'); nz = N.new('ShaderNodeTexNoise'); nz.inputs['Scale'].default_value = 6.0; nz.inputs['Detail'].default_value = 4
     Lk.new(tc.outputs['Object'], nz.inputs['Vector'])
     cr = N.new('ShaderNodeValToRGB'); cr.color_ramp.elements[0].color = (*[c * 0.75 for c in base], 1); cr.color_ramp.elements[1].color = (*[min(1, c * 1.2) for c in base], 1)
-    Lk.new(nz.outputs['Fac'], cr.inputs['Fac']); Lk.new(cr.outputs['Color'], b.inputs['Base Color'])
+    Lk.new(nz.outputs['Fac'], cr.inputs['Fac'])
+    lw = N.new('ShaderNodeLayerWeight'); lw.inputs['Blend'].default_value = 0.45
+    mx = N.new('ShaderNodeMix'); mx.data_type = 'RGBA'; Lk.new(lw.outputs['Facing'], mx.inputs['Factor'])
+    dk = N.new('ShaderNodeMix'); dk.data_type = 'RGBA'; dk.inputs['Factor'].default_value = 0.45; Lk.new(cr.outputs['Color'], dk.inputs[6]); dk.inputs[7].default_value = (0, 0, 0, 1)
+    lt = N.new('ShaderNodeMix'); lt.data_type = 'RGBA'; lt.inputs['Factor'].default_value = 0.16; Lk.new(cr.outputs['Color'], lt.inputs[6]); lt.inputs[7].default_value = (*tint, 1)
+    Lk.new(dk.outputs[2], mx.inputs[6]); Lk.new(lt.outputs[2], mx.inputs[7]); Lk.new(mx.outputs[2], b.inputs['Base Color'])   # dark face-on, glowing at grazing angles
+    fb = N.new('ShaderNodeTexNoise'); fb.inputs['Scale'].default_value = 900.0; Lk.new(tc.outputs['Object'], fb.inputs['Vector'])
+    bp = N.new('ShaderNodeBump'); bp.inputs['Strength'].default_value = 0.12; bp.inputs['Distance'].default_value = 0.001; Lk.new(fb.outputs['Fac'], bp.inputs['Height']); Lk.new(bp.outputs['Normal'], b.inputs['Normal'])
     bl._mats[name] = mm; return mm
-V89 = dict(rust=velvet_mat('velvet_rust', (0.2, 0.055, 0.022), (1.0, 0.55, 0.3)),
-           copper=velvet_mat('velvet_copper', (0.28, 0.095, 0.03), (1.0, 0.65, 0.4)),
+V89 = dict(rust=velvet_mat('velvet_rust', (0.24, 0.07, 0.025), (1.0, 0.55, 0.3)),
+           copper=velvet_mat('velvet_copper', (0.34, 0.13, 0.045), (1.0, 0.7, 0.42)),
            wine=velvet_mat('velvet_wine89', (0.15, 0.022, 0.028), (1.0, 0.5, 0.45)),
            ochre=velvet_mat('velvet_ochre', (0.36, 0.19, 0.04), (1.0, 0.8, 0.5)),
            steel=mat('steel_black_matt', (0.02, 0.02, 0.02), rough=0.6),
@@ -45,132 +52,104 @@ for x in PX:
     for y in (YS, YN): mb.box(x - 0.07, y - 0.03, TER, x + 0.07, y + 0.03, TER + 0.008, S_)   # base plates 140x60 (2 x M10 anchors along the wall)
 inst(mb.mesh('Corridor_frame'), 'Corridor_frame', (0, 0, 0), 0, 'Corridor')
 
-# ---------------------------------------------------------------- 2. full-height velvet walls on a track
-for nm, yb_, sg in (('S', e0 + 0.09, 1), ('N', e1 - 0.09, -1)):          # back face of the drape, sg = towards the aisle
+
+# ================================================================ rev. 9.1 (owner: "посмотри ещё раз на референс")
+# curtain portals at every frame bay (soft copper velvet drawn to the sides, tent-like pointed openings), heavy transverse swags,
+# Persian rugs laid end to end down the path, low black candle lanterns on the floor, terracotta jar clusters at the far portal.
+DS, DN = e0 + 0.18, e1 - 0.18                                  # aisle faces of the wall drapes (fold crests)
+# ---------------------------------------------------------------- wall drapes: big soft folds
+for nm, yb_, sg in (('S', e0 + 0.09, 1), ('N', e1 - 0.09, -1)):
     n_ = int((t1 - t0) / 0.01); front = []
     for j in range(n_ + 1):
         x = t0 + (t1 - t0) * j / n_
-        front.append((x, yb_ + sg * (0.035 + 0.016 * math.sin(2 * math.pi * (x - t0) / 0.1) + 0.009 * math.sin(2 * math.pi * (x - t0) / 0.37 + 1.3))))   # irregular pleats
+        front.append((x, yb_ + sg * (0.05 + 0.035 * math.cos(2 * math.pi * (x - t0) / 0.29) + 0.008 * math.sin(2 * math.pi * (x - t0) / 0.11 + 0.7))))
     poly = [(t0, yb_), (t1, yb_)] + front[::-1] if sg > 0 else front + [(t1, yb_), (t0, yb_)]
-    mb = MB(); mb.extrude(poly, TER, ZB - 0.035, V89['rust'])                                # hem on the floor
+    mb = MB(); mb.extrude(poly, TER, ZB - 0.035, V89['copper'])
     yr = yb_ + sg * 0.035
-    mb.rod((t0 + 0.01, yr, ZB - 0.02), (t1 - 0.01, yr, ZB - 0.02), 0.015, V89['steel'], 12)             # curtain track (hidden by the swags)
+    mb.rod((t0 + 0.01, yr, ZB - 0.02), (t1 - 0.01, yr, ZB - 0.02), 0.015, V89['steel'], 12)
     for x in PX: mb.box(x - 0.015, min(yr, YS + 0.03 if sg > 0 else YN - 0.03), ZB - 0.02, x + 0.015, max(yr, YS + 0.03 if sg > 0 else YN - 0.03), ZB, V89['steel'])
     inst(mb.mesh(f'Corridor_velvet_wall_{nm}'), f'Corridor_velvet_wall_{nm}', (0, 0, 0), 0, 'Corridor')
-DS, DN = e0 + 0.09 + 0.06, e1 - 0.09 - 0.06                 # aisle faces of the drapes (pleat crests)
 
-# ---------------------------------------------------------------- 3. dense layered swag ceiling
-def swag3(b, p0, p1, sag, width, mm, wdir, folds=5, n=18, gather=0.07):
-    """gathered velvet swag from p0 to p1 sagging `sag`; width laid along the horizontal unit vector wdir; ends gathered"""
+def swag3(b, p0, p1, sag, width, mm, wdir, folds=6, n=22, gather=0.06, depth=0.045):
     rows = []; wd = Vector((wdir[0], wdir[1], 0.0))
     for k in range(n + 1):
         t = k / n; c = Vector(p0).lerp(Vector(p1), t); c.z -= sag * math.sin(math.pi * t)
-        w = gather + (width - gather) * math.sin(math.pi * t) ** 0.7; row = []
+        w = gather + (width - gather) * math.sin(math.pi * t) ** 0.6; row = []
         for j in range(folds * 2 + 1):
-            u = -w / 2 + w * j / (folds * 2); q = c + wd * u; row.append((q.x, q.y, q.z + (0.03 if j % 2 else 0.0) * math.sin(math.pi * t) ** 0.5))
+            u = -w / 2 + w * j / (folds * 2); q = c + wd * u
+            row.append((q.x, q.y, q.z + depth * (0.5 + 0.5 * math.cos(math.pi * j)) * math.sin(math.pi * t) ** 0.5 - depth * 0.5 * (u / max(w, 1e-3)) ** 2))
         rows.append(row)
     b.sheet(rows, mm, 0.006, picture=False)
-def tassel(b, x, y, z, L=0.24):
-    b.lathe(x, y, z - 0.07, [(0.0, 0.0), (0.03, 0.0), (0.035, 0.03), (0.02, 0.06), (0.012, 0.07), (0.0, 0.07)], V89['gold'], 16)   # rosette knot
-    b.lathe(x, y, z - L, [(0.0, 0.0), (0.028, 0.0), (0.022, L - 0.12), (0.01, L - 0.07), (0.0, L - 0.07)], V89['ochre'], 16)        # fringe
+def portal(b, xp, side, mm):
+    """one curtain panel hung at x = xp from the wall (y = DS / DN) towards the centre; inner edge sweeps from 0.36 m at the floor
+    to 0.25 m short of the centre line at the top (pointed tent opening), soft folds of +-50 mm in x"""
+    yw = DS + 0.006 if side > 0 else DN - 0.006; ytop = YC - side * 0.25; Hz = ZB - 0.012 - TER
+    rows = []; NZ, NY = 30, 14
+    for k in range(NZ + 1):
+        sz = k / NZ; z = TER + 0.002 + Hz * sz
+        yin = yw + side * 0.36 + (ytop - yw - side * 0.36) * sz ** 2.2
+        row = []
+        for j in range(NY + 1):
+            t = j / NY; y = yw + (yin - yw) * t
+            dx = (0.05 - 0.02 * sz) * math.sin(2 * math.pi * 2.5 * t + 0.4 * side) * (0.4 + 0.6 * t)
+            row.append((xp + dx, y, z))
+        rows.append(row)
+    b.sheet(rows, mm, 0.006, picture=False)
 mb = MB(); ZE = ZB - 0.006
-cols = [V89['rust'], V89['wine'], V89['copper'], V89['wine'], V89['rust']]
-for i_, (xa, xb_) in enumerate(zip(PX[:-1], PX[1:])):
-    x0, x1 = xa + 0.035, xb_ - 0.035
-    # layer 1 (top): seven lengthwise swags, overlapping, beam to beam
-    for j_, y in enumerate([DS + 0.3 + (DN - DS - 0.6) * j / 6 for j in range(7)]):
-        swag3(mb, (x0, y, ZE - 0.01 * (j_ % 2)), (x1, y, ZE - 0.01 * (j_ % 2)), 0.15 + 0.03 * (j_ % 2), 0.56, cols[(j_ + i_) % 5], (0, 1), folds=6)
-    # mid-bay transverse swag
-    xm = (x0 + x1) / 2
-    swag3(mb, (xm, DS + 0.02, ZE - 0.1), (xm, DN - 0.02, ZE - 0.1), 0.42, 0.34, V89['copper'], (1, 0), folds=4)
-    # layer 2: crossing diagonals
-    swag3(mb, (x0, DS + 0.25, ZE - 0.05), (x1, DN - 0.25, ZE - 0.05), 0.3, 0.6, V89['copper'] if i_ % 2 else V89['wine'], (0, 1))
-    swag3(mb, (x0, DN - 0.25, ZE - 0.08), (x1, DS + 0.25, ZE - 0.08), 0.27, 0.58, V89['ochre'], (0, 1))
-# layer 3 (lowest): a transverse swag along every cross beam, wall to wall
-for i_, x in enumerate(PX):
-    xx = x + (0.05 if i_ == 0 else -0.05 if i_ == 3 else 0.0)
-    swag3(mb, (xx, DS + 0.02, ZE - 0.12), (xx, DN - 0.02, ZE - 0.12), 0.34, 0.3 if 0 < i_ < 3 else 0.2, V89['wine'] if i_ % 2 else V89['rust'], (1, 0), folds=4)
-    for y in (DS + 0.04, DN - 0.04): tassel(mb, x, y, ZE - 0.1, 0.5)                     # long tassels where the swag meets the wall
-    if 0 < i_ < 3: tassel(mb, x, YC, ZE - 0.12 - 0.34 + 0.02, 0.22)                      # tassel at the low point of the swag
-# flat velvet tent ceiling hides the frame + roof; pleated pelmets cover the track along both walls
-mb.box(t0, DS, ZB - 0.004, t1, DN, ZB, V89['wine'])
-for y0_, y1_ in ((DS + 0.004, DS + 0.03), (DN - 0.03, DN - 0.004)):
-    pts = [(t0 + (t1 - t0) * j / 200, 0.0) for j in range(201)]
-    sg_ = 1 if y0_ < YC else -1; yb0 = y0_ if sg_ > 0 else y1_
-    poly = [(t0, yb0), (t1, yb0)] + [(x, yb0 + sg_ * (0.012 + 0.012 * math.sin(2 * math.pi * (x - t0) / 0.08))) for x, _ in pts][::-1]
-    if sg_ < 0: poly = poly[::-1]
-    mb.extrude(poly, ZB - 0.2, ZB - 0.004, V89['wine'])
-    mb.box(t0, yb0 + sg_ * 0.024 if sg_ > 0 else yb0 - 0.03, ZB - 0.215, t1, yb0 + sg_ * 0.03 if sg_ > 0 else yb0 - 0.024, ZB - 0.2, V89['gold'])   # gold braid
+mb.box(t0, DS, ZB - 0.004, t1, DN, ZB, V89['wine'])                                       # tent ceiling (hides frame + roof)
+for y0_, sg_ in ((DS + 0.004, 1), (DN - 0.004, -1)):                                     # pleated pelmet over the track
+    poly = [(t0, y0_), (t1, y0_)] + [(t0 + (t1 - t0) * j / 200, y0_ + sg_ * (0.012 + 0.012 * math.sin(2 * math.pi * j / 200 * (t1 - t0) / 0.08))) for j in range(201)][::-1]
+    mb.extrude(poly if sg_ > 0 else poly[::-1], ZB - 0.2, ZB - 0.004, V89['copper'])
+cols = [V89['copper'], V89['rust'], V89['ochre'], V89['copper'], V89['wine']]
+xs_ = [t0 + 0.1 + k * 0.2 for k in range(int((t1 - t0 - 0.2) / 0.2) + 1)]
+for k, x in enumerate(xs_):                                                               # heavy transverse swags, wall to wall, layered
+    swag3(mb, (x, DS + 0.03, ZE - 0.012 * (k % 3)), (x, DN - 0.03, ZE - 0.012 * (k % 3)), (0.34, 0.5, 0.42)[k % 3], 0.42, cols[k % 5], (1, 0))
+for i_, xp in enumerate(PX):
+    for side in (1, -1): portal(mb, xp, side, V89['copper'] if i_ % 2 else V89['rust'])
 inst(mb.mesh('Corridor_swag_ceiling'), 'Corridor_swag_ceiling', (0, 0, 0), 0, 'Corridor')
 
-# ---------------------------------------------------------------- 4. layered rugs: Malayer runner + three Persian rugs on top
-RUGS_ = []
+# ---------------------------------------------------------------- rugs end to end down the path
+X['rug_persian_navy'] = uvmat('rug_persian_navy_uv', 'rug_persian_navy.png'); pile_shader(X['rug_persian_navy'])
+X['rug_old_crop'] = uvmat('rug_old_crop_uv', 'rug_oldpersian_crop.jpg'); pile_shader(X['rug_old_crop'])
 def rug(name, cx, cy, L, W, ang, mm, layer):
     mb = MB(); zb = TER + 0.008 * layer
     fs = mb.picture_box(-L / 2, -W / 2, zb, L / 2, W / 2, zb + 0.008, mm, '+z')
     for v in {v for f in fs for v in f.verts}:
         x_, y_ = v.co.x, v.co.y; v.co.x, v.co.y = cx + x_ * math.cos(ang) - y_ * math.sin(ang), cy + x_ * math.sin(ang) + y_ * math.cos(ang)
-    inst(mb.mesh(name), name, (0, 0, 0), 0, 'Corridor'); RUGS_.append((cx, cy, ang, L / 2, W / 2, zb + 0.008))
-rug('Corridor_rug_base', (t0 + t1) / 2, YC, t1 - t0 - 0.04, DN - DS - 0.04, 0.0, X['oldrug_uv'], 0)     # wall-to-wall old Persian
-rug('Corridor_rug_runner', (t0 + t1) / 2, YC, t1 - t0 - 0.1, 0.9, 0.0, X['runner_uv'], 1)
-rug('Corridor_rug_1', 8.3, YC + 0.03, 1.15, 1.15, 0.035, X['rug_persian'], 2)
-rug('Corridor_rug_2', 9.25, YC - 0.04, 1.0, 1.2, -0.05, X['carpet2'], 3)
-rug('Corridor_rug_3', 10.05, YC + 0.02, 0.8, 1.15, 0.04, X['rug_bukhara'], 2)
-ZF = TER + 0.008                                     # side objects stand on the base rug
-RUGY = (YC - 0.68, YC + 0.68)                                 # rug band (incl. rotation) — side objects stay outside it
+    inst(mb.mesh(name), name, (0, 0, 0), 0, 'Corridor')
+rug('Corridor_rug_1', 9.98, YC + 0.02, 0.95, 1.0, 0.03, X['rug_persian'], 0)
+rug('Corridor_rug_2', 9.12, YC - 0.03, 1.0, 0.95, -0.045, X['rug_old_crop'], 1)
+rug('Corridor_rug_3', 8.28, YC + 0.03, 0.95, 1.0, 0.05, X['rug_persian_navy'], 0)
 
-# ---------------------------------------------------------------- 5. ribbed terracotta amphorae (far end, both sides)
+# ---------------------------------------------------------------- terracotta jar clusters at the far portal
 @cached
-def a_amph89(h, kind):
-    """thrown terracotta amphora with real horizontal ribs (5 mm, every 35 mm) on the belly; origin = bottom centre"""
-    s = h / 0.9; prof = []
-    base = [(0.0, 0.0), (0.075, 0.0), (0.085, 0.02), (0.16, 0.12), (0.2, 0.3), (0.205, 0.42), (0.18, 0.56), (0.12, 0.68), (0.075, 0.76),
-            (0.07, 0.83), (0.09, 0.87), (0.09, 0.9), (0.0, 0.9)] if kind == 'tall' else \
-           [(0.0, 0.0), (0.07, 0.0), (0.08, 0.02), (0.18, 0.15), (0.21, 0.32), (0.19, 0.5), (0.13, 0.62), (0.085, 0.68), (0.08, 0.74), (0.095, 0.77), (0.0, 0.77)]
-    zs = [z for r, z in base]
-    def R(z):
-        for (r0, z0), (r1, z1) in zip(base[:-1], base[1:]):
-            if z0 <= z <= z1 and z1 > z0: return r0 + (r1 - r0) * (z - z0) / (z1 - z0)
-        return base[-2][0]
-    zmax_rib = base[-5][1] if kind == 'tall' else base[-4][1]
-    prof.append(base[0]); prof.append(base[1]); prof.append(base[2])
-    z = base[2][1] + 0.01
-    while z < zmax_rib:
-        prof.append((R(z), z)); prof.append((R(z + 0.012) + 0.007, z + 0.012)); prof.append((R(z + 0.028) + 0.007, z + 0.028)); z += 0.04
-    prof += [p for p in base if p[1] >= zmax_rib and p[0] > 0] + [base[-1]]
-    prof = [(r * s, z * s) for r, z in prof]
-    b = MB(); b.lathe(0, 0, 0, prof, TC['orange'] if kind == 'tall' else TC['rust'], 40)
-    return b.mesh(f'Amphora89_{kind}_{int(h * 100)}')
-AMPH = [(0.45, 'tall'), (1.0, 'tall'), (0.72, 'round'), (0.5, 'round')]          # packed along each wall from the dining end
-na = 0
-for side, yw in ((1, DS), (-1, DN)):
-    x = t0 + 0.05
-    for h, kind in (AMPH if side > 0 else AMPH[::-1][:1] + AMPH[:1] + AMPH[1:3]):     # the two sides mirror loosely, not exactly
-        rmax = (0.205 * h / 0.9) if kind == 'tall' else (0.21 * h / 0.77)
-        x += rmax; na += 1
-        inst(a_amph89(h, kind), f'Corridor_amphora_{na}', (x, yw + side * (rmax + 0.02), ZF), 0.7 * na, 'Corridor')
-        x += rmax + 0.02
-    print('amphora run ends at', round(x, 2))
-
-# ---------------------------------------------------------------- 6. black iron floor candlesticks with LED pillar candles
+def a_jar91(h):
+    b = MB(); s = h / 0.8; T_ = TC['orange']
+    b.lathe(0, 0, 0, [(0.0, 0), (0.07 * s, 0), (0.09 * s, 0.03 * s), (0.19 * s, 0.25 * s), (0.2 * s, 0.4 * s), (0.15 * s, 0.6 * s), (0.08 * s, 0.7 * s), (0.065 * s, 0.75 * s),
+                      (0.085 * s, 0.79 * s), (0.08 * s, 0.8 * s), (0.055 * s, 0.77 * s), (0.0, 0.74 * s)], T_, 32)
+    for sg in (-1, 1): _curve(b, [(sg * 0.07 * s, 0, 0.72 * s), (sg * 0.13 * s, 0, 0.73 * s), (sg * 0.16 * s, 0, 0.66 * s), (sg * 0.155 * s, 0, 0.6 * s)], 0.012 * s, 0.012 * s, T_, 8)
+    return b.mesh(f'Jar91_{int(h * 100)}')
+nj = 0
+for side in (1, -1):
+    for x, dy, h in ((8.30, 0.02 + 0.2, 0.8), (7.96, 0.02 + 0.1375, 0.55), (8.05, 0.43, 0.38)):
+        nj += 1; inst(a_jar91(h), f'Corridor_amphora_{nj}', (x, YC - side * (YC - DS - dy) if side > 0 else YC + (DN - dy - YC), TER), 0.9 * nj + 0.3, 'Corridor')
+# ---------------------------------------------------------------- low black candle lanterns along the floor
 @cached
-def a_candlestick(H):
-    """forged iron floor candlestick: round base 240, turned collar, 20 mm stem, drip dish 150, LED pillar candle 90 x 150"""
+def a_floorlantern(H):
+    """black powder-coated steel tube d 150, open top, LED pillar candle inside glowing up the tube"""
     b = MB(); I = V89['iron']
-    b.lathe(0, 0, 0, [(0.0, 0.0), (0.12, 0.0), (0.12, 0.012), (0.07, 0.03), (0.03, 0.06), (0.0, 0.06)], I, 32)
-    b.lathe(0, 0, 0.06, [(0.0, 0.0), (0.025, 0.0), (0.03, 0.03), (0.018, 0.06), (0.0, 0.06)], I, 24)
-    b.cyl(0, 0, 0.12, H - 0.03, 0.01, I, 16)
-    b.lathe(0, 0, H - 0.03, [(0.0, 0.0), (0.02, 0.0), (0.075, 0.02), (0.075, 0.03), (0.0, 0.03)], I, 32)
-    b.cyl(0, 0, H, H + 0.15, 0.045, X82['candle'], 24); b.cyl(0, 0, H + 0.15, H + 0.154, 0.04, X82['flame'], 24)
-    return b.mesh(f'Candlestick_{int(H * 100)}')
-nc = 0
-for gx in (9.5, 10.16):
-    for side, yw in ((1, DS), (-1, DN)):
-        for dx, dy, H in ((-0.2, 0.15, 1.2), (0.2, 0.15, 0.9), (0.0, 0.33, 0.6)):
-            x, y = gx + dx, yw + side * dy; nc += 1
-            inst(a_candlestick(H), f'Corridor_candlestick_{nc}', (x, y, ZF), 0, 'Corridor')
-            L_ = bpy.data.lights.new('cand89', 'POINT'); L_.energy = 8; L_.color = (1.0, 0.6, 0.28); L_.shadow_soft_size = 0.04
-            lo_ = bpy.data.objects.new('Corridor_candle_light', L_); lo_.location = (x, y, ZF + H + 0.22); coll('Lights').objects.link(lo_)
-L_ = bpy.data.lights.new('corr_fill', 'POINT'); L_.energy = 30; L_.color = (1.0, 0.55, 0.3); L_.shadow_soft_size = 0.4
-lo_ = bpy.data.objects.new('Corridor_fill_light', L_); lo_.location = ((t0 + t1) / 2, YC, TER + 2.1); coll('Lights').objects.link(lo_)
-print('rev 8.9 corridor ok', na, nc)
+    b.ring(0, 0, 0, [(0.065, 0.0), (0.075, 0.0), (0.075, H), (0.065, H)], I, 32)
+    b.cyl(0, 0, 0.0, 0.012, 0.065, I, 32)
+    b.cyl(0, 0, H - 0.17, H - 0.03, 0.045, X82['candle'], 24); b.cyl(0, 0, H - 0.03, H - 0.026, 0.04, X82['flame'], 24)
+    b.lathe(0, 0, 0.012, [(0.0, 0.0), (0.045, 0.0), (0.045, H - 0.17 - 0.012), (0.0, H - 0.17 - 0.012)], I, 16)    # stand for the candle
+    return b.mesh(f'Floor_lantern_{int(H * 100)}')
+nl = 0
+for side in (1, -1):
+    for x, H in ((8.92, 0.42), (9.3, 0.34), (9.86, 0.46), (10.12, 0.36)):
+        y = DS + 0.1 if side > 0 else DN - 0.1; nl += 1
+        inst(a_floorlantern(H), f'Corridor_lantern_{nl}', (x, y, TER), 0, 'Corridor')
+        L_ = bpy.data.lights.new('lant91', 'POINT'); L_.energy = 7; L_.color = (1.0, 0.58, 0.26); L_.shadow_soft_size = 0.05
+        lo_ = bpy.data.objects.new('Corridor_candle_light', L_); lo_.location = (x, y, TER + H + 0.08); coll('Lights').objects.link(lo_)
+L_ = bpy.data.lights.new('corr_fill', 'POINT'); L_.energy = 25; L_.color = (1.0, 0.55, 0.3); L_.shadow_soft_size = 0.4
+lo_ = bpy.data.objects.new('Corridor_fill_light', L_); lo_.location = ((t0 + t1) / 2, YC, TER + 2.0); coll('Lights').objects.link(lo_)
+print('rev 9.1 corridor ok', nj, nl)
