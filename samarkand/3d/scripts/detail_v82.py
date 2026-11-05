@@ -298,3 +298,4 @@ exec(open(os.path.join(HERE, 'detail_v91.py')).read())                    # rev.
 exec(open(os.path.join(HERE, 'struct_v92.py')).read())                    # rev. 9.2: load paths for the whole roof frame
 exec(open(os.path.join(HERE, 'detail_v93.py')).read())                    # rev. 9.3: mangal hood in real brick + tile, chilled display
 exec(open(os.path.join(HERE, 'detail_v94.py')).read())                    # rev. 9.4: fountain court in real tiles (star basin, zellige cross, terracotta)
+exec(open(os.path.join(HERE, 'detail_v95.py')).read())                    # rev. 9.5: street benches per the owner's ref
