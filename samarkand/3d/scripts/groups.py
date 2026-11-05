@@ -7,7 +7,7 @@ COLG = {'Roof_skin': 'skin', 'Roof_structure': 'structure', 'Pergola_existing': 
         'Aivan': 'aivan', 'Booths': 'booths', 'Mangal': 'mangal', 'Corridor': 'corridor', 'Bar': 'bar', 'Service': 'bar', 'Fountain': 'fountain',
         'Tapchans_tent': 'tents', 'Photo_lounge': 'majlis', 'Bukhara_dome': 'decor', 'Lights': 'decor'}
 NAMEG = [(r'^(flashing_|gutter_pergola|gutter_downpipe|roof_panel)', 'skin'), (r'^Skylight_(glass|panjara)', 'skin'), (r'^Skylight_frame', 'structure'), (r'^(Chandelier_dome|Dome_alem)', 'domes'),
-         (r'^(Corridor_frame|column_steel|dome_curb|dome_ring_girder|roof_|purlin|facade_ledger|gutter_street)', 'structure'),
+         (r'^(Aivan_ceiling_rod|Aivan_tie_cleat|Corridor_frame|column_steel|dome_curb|dome_ring_girder|roof_|purlin|facade_ledger|gutter_street)', 'structure'),
          (r'^(Ceiling_carpet|Flying_carpet|Rod_carpet|Velvet_swag|Pendant_cluster|Bar_drum_pendant|Booth\d_pendant|Rattan_pendant|Corridor_swag)', 'hung'),
          (r'^(Chair|Table|Tableset|Boothset|Booth\d_(table|tableset|banquette)|Aivan_(table|tableset|banquette)|Tent\d_(majlis|tray)|Tent_octatable|Tapchan_(lowtable|tableset|soft)|Barstool|Majlis_(bench|cushion|pouf|table))', 'furniture'),
          (r'^(Olive_|Croton_|Areca|Banana|Bougainvillea|Herbs|Jasmine|Planter_shrub|Plumeria|Pomegranate|Street_palm|Chinar_|Aivan_vase)', 'planting'),

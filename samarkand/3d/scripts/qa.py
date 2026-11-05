@@ -96,7 +96,7 @@ if PLACE_COLLS is not None:
             oj, loj, hij, bj = info[j]
             if any(loi[k] > hij[k] or loj[k] > hii[k] for k in range(3)): continue
             if 'foliage' in oi.data.name or 'foliage' in oj.data.name: continue   # leaves among twigs / around limbs
-            if any(n.startswith('Street_pishtaq') for n in (oi.name, oj.name)) and any(n.startswith(('roof_beam_y15', 'roof_beam_y18')) for n in (oi.name, oj.name)): continue   # beam ends encased in the portal pylons
+            if any(n.startswith('Street_pishtaq') for n in (oi.name, oj.name)) and any(n.startswith(('roof_beam_y15', 'roof_beam_y18', 'column_portal')) for n in (oi.name, oj.name)): continue   # beam ends encased in the portal pylons
             if bi.overlap(bj): pen.append([oi.name, oj.name])
     # floating: every standing piece must rest on something (a floor, deck or another piece) within 2 mm
     HANG = ('Olive_foliage', 'Croton_foliage', 'Aivan_ceiling', 'Aivan_ramp_handrail', 'Lantern', 'Zardevor', 'Corridor_swag', 'Mangal_signboard', 'Logo_', 'Rod', 'Flying_carpet', 'Heat_lamp', 'Corridor_niche', 'Aivan_wallcarpet', 'Corridor_velvet', 'Mangal_hood', 'Mangal_skewers',

@@ -536,12 +536,12 @@ for x, y0, y1 in D['purlins']:
     else: sloped_box('purlin', x - 0.04, x + 0.04, y0, y1, lambda xx: top(xx) - 0.05, 0.2, m['bronze'], 'Roof_structure')
 cleats = list({(round(c[0], 4), round(c[1], 4)): c for c in cleats}.values())          # one cleat per crossing
 if cleats: sloped_parts('purlin_cleats', cleats, m['steel'], 'Roof_structure')
-boxes('facade_ledger', [(0.0, 0.0, 3.25, 0.18, 37.1, top(0) - 0.05)], m['bronze'], 'Roof_structure')        # ledger channel above the F1 glazing
+boxes('facade_ledger', [(0.0, 4.1, 3.25, 0.18, 37.1, top(0) - 0.05)], m['bronze'], 'Roof_structure')        # ledger channel above the F1 glazing, hung from the F2 slab (rev. 9.2)
 for x, y in D['cols']:
     if y < 0.6 and x < 0: continue
     if DETAIL and any(a <= y <= b for a, b in ((D['ent'][0] - 0.7, D['ent'][0]), (D['ent'][1], D['ent'][1] + 0.7))): continue   # carried by the portal pylons
     zt = top(x) - 0.55
-    boxes('column_steel', [(x - 0.075, y - 0.075, TER, x + 0.075, y + 0.075, zt)], m['bronze'], 'Roof_structure')
+    boxes('column_steel', [(x - 0.075, y - 0.075, TER + (0.02 if DETAIL else 0.0), x + 0.075, y + 0.075, zt - (0.02 if DETAIL else 0.0))], m['bronze'], 'Roof_structure')   # rev. 9.2: base + cap plates
     if DETAIL: continue                                 # detail pass clads the column (Samarkand majolica column)
     z0c, z1c = TER + 0.2, TER + 2.4                     # wood sleeve: 4 boards around the steel column, flush, no overlap
     boxes('column_wood_clad', [(x - 0.15, y - 0.15, z0c, x + 0.15, y - 0.075, z1c), (x - 0.15, y + 0.075, z0c, x + 0.15, y + 0.15, z1c),
@@ -767,7 +767,10 @@ if DO_RENDER:
              ('36_dome_exterior', (12.5, 26.5, 8.6), (6.0, 19.9, 5.4), 24, 0.0, [], -0.4),
              ('37_corridor_entrance', (10.95, 16.8, 1.1), (7.0, 16.8, 0.8), 15, 0.0, [], -0.1),
              ('38_corridor_ceiling', (10.1, 16.3, 0.7), (8.3, 17.1, 2.3), 14, 0.0, [], -0.1),
-             ('39_corridor_from_hall', (7.45, 16.8, 1.1), (11.0, 16.8, 0.8), 16, 0.0, [], -0.1)]
+             ('39_corridor_from_hall', (7.45, 16.8, 1.1), (11.0, 16.8, 0.8), 16, 0.0, [], -0.1),
+             ('40_frame_overview', (18.5, -7.5, 9.5), (3.5, 14.0, 1.0), 20, 0.0, ['Roof_skin', 'Domes', 'Carpet_ceiling', 'Building', 'Context', 'People'], -0.3),
+             ('41_frame_dome_columns', (10.5, 13.0, 1.4), (5.5, 20.5, 2.6), 16, 0.0, ['Roof_skin', 'Carpet_ceiling'], -0.1),
+             ('42_frame_pocket', (4.5, -3.5, 2.2), (-3.5, 2.5, 2.6), 18, 0.0, ['Roof_skin', 'Carpet_ceiling'], -0.2)]
     W, H, S = (int(args[1]), int(args[2]), int(args[3])) if len(args) >= 4 else (1600, 1000, 64)   # detail modules reuse these names
     only = os.environ.get('VIEWS')
     for name, loc, tgt, lens, shift, hide, ev in VIEWS:

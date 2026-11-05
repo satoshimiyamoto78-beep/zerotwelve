@@ -295,3 +295,4 @@ exec(open(os.path.join(HERE, 'detail_v88.py')).read())                    # rev.
 exec(open(os.path.join(HERE, 'detail_v89.py')).read())                    # rev. 8.9: entrance corridor per the owner's velvet-tunnel ref
 exec(open(os.path.join(HERE, 'detail_v90.py')).read())                    # rev. 9.0: kids corner per the owner's refs
 exec(open(os.path.join(HERE, 'detail_v91.py')).read())                    # rev. 9.1: boundary clay wall, kids rocking camels
+exec(open(os.path.join(HERE, 'struct_v92.py')).read())                    # rev. 9.2: load paths for the whole roof frame
