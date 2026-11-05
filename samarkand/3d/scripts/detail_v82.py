@@ -292,3 +292,5 @@ exec(open(os.path.join(HERE, 'detail_v85.py')).read())                    # rev.
 exec(open(os.path.join(HERE, 'detail_v86.py')).read())                    # rev. 8.6: simplified aivan arcade (posts + CNC arch panels)
 exec(open(os.path.join(HERE, 'detail_v87.py')).read())                    # rev. 8.7: dome alem finial
 exec(open(os.path.join(HERE, 'detail_v88.py')).read())                    # rev. 8.8: walnut everywhere, mangal wall, planter, majlis zone
+exec(open(os.path.join(HERE, 'detail_v89.py')).read())                    # rev. 8.9: entrance corridor per the owner's velvet-tunnel ref
+exec(open(os.path.join(HERE, 'detail_v90.py')).read())                    # rev. 9.0: kids corner per the owner's refs

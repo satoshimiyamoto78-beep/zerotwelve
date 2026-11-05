@@ -764,7 +764,11 @@ if DO_RENDER:
              ('33_aivan_arcade_close', (5.4, 21.0, 1.0), (3.18, 22.6, 1.9), 22, 0.0, [], -0.1),
              ('34_aivan_inside', (2.6, 16.2, 1.25), (0.9, 22.5, 1.6), 18, 0.0, [], -0.1),
              ('35_aivan_ceiling', (2.4, 17.0, 0.9), (1.6, 21.0, 3.1), 18, 0.0, [], -0.1),
-             ('36_dome_exterior', (12.5, 26.5, 8.6), (6.0, 19.9, 5.4), 24, 0.0, [], -0.4)]
+             ('36_dome_exterior', (12.5, 26.5, 8.6), (6.0, 19.9, 5.4), 24, 0.0, [], -0.4),
+             ('37_corridor_entrance', (10.95, 16.8, 1.1), (7.0, 16.8, 0.8), 15, 0.0, [], -0.1),
+             ('38_corridor_ceiling', (10.1, 16.3, 0.7), (8.3, 17.1, 2.3), 14, 0.0, [], -0.1),
+             ('39_corridor_from_hall', (7.45, 16.8, 1.1), (11.0, 16.8, 0.8), 16, 0.0, [], -0.1)]
+    W, H, S = (int(args[1]), int(args[2]), int(args[3])) if len(args) >= 4 else (1600, 1000, 64)   # detail modules reuse these names
     only = os.environ.get('VIEWS')
     for name, loc, tgt, lens, shift, hide, ev in VIEWS:
         if only and not any(name.startswith(v) for v in only.split(',')): continue
@@ -778,7 +782,8 @@ if DO_RENDER:
 
 # ======================= EXPORT (flat colours) =======================
 export_prep(); flatten_materials()
-try: bpy.ops.export_scene.gltf(filepath=base + '.glb', export_format='GLB', export_apply=True, export_yup=True, export_image_format='JPEG', export_image_quality=78)
+exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'groups.py')).read()); tag_groups()
+try: bpy.ops.export_scene.gltf(filepath=base + '.glb', export_format='GLB', export_apply=True, export_yup=True, export_image_format='JPEG', export_image_quality=78, export_extras=True)
 except TypeError: bpy.ops.export_scene.gltf(filepath=base + '.glb', export_format='GLB', export_apply=True, export_yup=True)
 bpy.ops.export_scene.fbx(filepath=base + '.fbx', apply_unit_scale=True, axis_forward='-Z', axis_up='Y', mesh_smooth_type='FACE')
 bpy.ops.wm.obj_export(filepath=base + '.obj', forward_axis='NEGATIVE_Z', up_axis='Y', export_materials=True)

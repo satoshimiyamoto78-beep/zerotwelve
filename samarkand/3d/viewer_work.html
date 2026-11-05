@@ -47,13 +47,14 @@ body.clean .tools button { opacity: .6; }
   button { padding: 6px 10px; font-size: .78rem; }
 }
 body.rot .bar span { display: none; }
+  #layers button.dep-off { opacity: .45; text-decoration: line-through; }
 </style>
 
 <div id="app">
 <div id="stage"></div><div id="dims" class="off"></div>
 <div id="status">Загружаю модель…</div>
 <div class="tools"><button id="hd-toggle" aria-pressed="false" title="Максимальное качество этого ракурса для вашего устройства">HD</button><button id="dim-toggle" aria-pressed="false" title="Показать основные размеры">Размеры</button><button id="fs-toggle" aria-pressed="false" title="Во весь экран, горизонтально">Во весь экран</button><button id="ui-toggle" aria-pressed="false" title="Скрыть / показать панели (клавиша H)">Скрыть кнопки</button></div>
-<header class="bar"><h1>SAMARKAND</h1><span>Рабочая версия (правки) · R12-v8.8 · всё дерево в цвет стульев · под навесом маджлис-фотозона · стена мангала до балок навеса · дерево в кольце Ø1,8 · столы у мангала раздвинуты · смотреть вверх: ⬆ или U · 141 место</span></header>
+<header class="bar"><h1>SAMARKAND</h1><span>Рабочая версия (правки) · R12-v9.0 · слои по группам: «Каркас» убирает и кровлю с подвесами, «Кровля» — и подвесные ковры/светильники, «Купол и люстра» — вместе · детская зона по референсам · входной коридор по референсу: бархатные стены, потолок из драпировок, ковры внахлёст, амфоры, свечи · маджлис под навесом · дерево в цвет стульев · смотреть вверх: ⬆ или U · 141 место</span></header>
 <nav class="dock" aria-label="Управление моделью">
   <div class="row" id="views"><span class="lbl">Вид</span>
     <button class="view" data-v="overview" aria-pressed="true">Сверху</button>
@@ -68,19 +69,29 @@ body.rot .bar span { display: none; }
     <button id="lookup" aria-pressed="false" title="Поднять взгляд к потолку (U)">⬆ Смотреть вверх</button>
     <button class="view" data-v="bukhara">Бухарский купол</button>
     <button class="view" data-v="corridor">Коридор</button>
+    <button class="view" data-v="kids">Детская</button>
     <button class="view" data-v="booths">Кабинки</button>
     <button class="view" data-v="mangal">Мангал</button>
     <button class="view" data-v="bar">Бар</button>
     <button class="view" data-v="portal">Портал</button>
   </div>
   <div class="row" id="layers"><span class="lbl">Слои</span>
-    <button data-l="skin" aria-pressed="true">Кровля</button>
-    <button data-l="domes" aria-pressed="true">Купола</button>
-    <button data-l="structure" aria-pressed="true">Каркас</button>
+    <button data-l="structure" aria-pressed="true" title="Колонны, балки, прогоны, навес, каркас коридора — вместе с ними уходит кровля и всё подвешенное">Каркас</button>
+    <button data-l="skin" aria-pressed="true" title="Кровля, водостоки, фонарь над деревом — вместе с ней уходят подвесные ковры и светильники">Кровля</button>
+    <button data-l="domes" aria-pressed="true" title="Купол вместе с люстрой">Купол и люстра</button>
+    <button data-l="hung" aria-pressed="true">Подвесные ковры и светильники</button>
     <button data-l="furniture" aria-pressed="true">Мебель</button>
     <button data-l="planting" aria-pressed="true">Растения</button>
+    <button data-l="aivan" aria-pressed="true">Айван</button>
+    <button data-l="booths" aria-pressed="true">Кабинки</button>
+    <button data-l="corridor" aria-pressed="true">Коридор</button>
+    <button data-l="mangal" aria-pressed="true">Мангал</button>
+    <button data-l="bar" aria-pressed="true">Бар</button>
+    <button data-l="tents" aria-pressed="true">Топчаны и шатры</button>
+    <button data-l="majlis" aria-pressed="true">Маджлис</button>
+    <button data-l="fountain" aria-pressed="true">Хауз</button>
+    <button data-l="kids" aria-pressed="true">Детская</button>
     <button data-l="building" aria-pressed="true">Здание</button>
-    <button data-l="ceiling" aria-pressed="true">Ковры и люстры</button>
     <button data-l="facade" aria-pressed="true">Фасад</button>
   </div>
   <div class="hint">Вращение — один палец, масштаб — два пальца, сдвиг — правая кнопка или два пальца. «Размеры» — основные габариты и проходы; при вращении они скрываются. «HD» — остановите модель, и этот ракурс перерисуется в максимальном качестве для вашего устройства.</div>
@@ -128,25 +139,21 @@ body.rot .bar span { display: none; }
     overview: [P(30, -8, 24), P(6, 18, 0)], cutaway: [P(26, -4, 20), P(5.5, 18, 0)],
     street: [P(17.5, 9, 0.4), P(6, 18.5, 0.9)], aivan: [P(3.0, 15.8, 1.6), P(1.2, 27, 0.6)], arcade: [P(6.2, 23.6, 1.3), P(3.2, 19.6, 1.4)],
     tapchan: [P(7.4, 27.4, 1.6), P(3.5, 33.5, 0.4)],
+    kids: [P(-0.6, 0.9, 1.7), P(-4.2, 3.3, 0.2)],
     domes: [P(24, 6, 9), P(6, 20, 3.5)], underdome: [P(7.6, 16.6, 1.1), P(6.0, 19.9, 4.4)], aivanceil: [P(2.6, 16.0, 1.0), P(1.7, 21.5, 3.0)],
     bukhara: [P(5.0, 30.4, 1.6), P(6.1, 35.3, 0.9)],
     corridor: [P(11.0, 16.8, 0.95), P(7.0, 16.8, 1.0)], booths: [P(6.4, 17.2, 1.2), P(8.6, 24.5, 0.6)], mangal: [P(7.4, 11.4, 1.3), P(10.6, 6.0, 0.5)], bar: [P(4.3, 14.6, 1.3), P(0.6, 10.6, 1.0)], portal: [P(17.6, 12.6, 0.8), P(11.4, 16.8, 1.0)]
   };
-  const groups = { skin: [], domes: [], structure: [], furniture: [], planting: [], building: [], people: [], ceiling: [], facade: [] };
-  const CEIL = new Set(["Bar_drum_pendant_1", "Bar_drum_pendant_2", "Bar_drum_pendant_3", "Bar_drum_pendant_4", "Ceiling_carpet_01", "Ceiling_carpet_02", "Ceiling_carpet_03", "Ceiling_carpet_04", "Ceiling_carpet_05", "Ceiling_carpet_06", "Ceiling_carpet_07", "Chandelier_dome_C", "Flying_carpet_01", "Flying_carpet_02", "Flying_carpet_03", "Flying_carpet_04", "Pendant_cluster", "Pendant_cluster001", "Pendant_cluster002", "Pendant_cluster003", "Pendant_cluster004", "Rod_carpet", "Rod_carpet001", "Rod_carpet002", "Rod_carpet003", "Rod_carpet004", "Rod_carpet005", "Rod_carpet006", "Rod_carpet007", "Rod_carpet008", "Rod_carpet009", "Rod_carpet010", "Rod_carpet011", "Rod_carpet012", "Rod_carpet013", "Rod_carpet014", "Rod_carpet015", "Sconce_firewall_1", "Tree_uplight", "Tree_uplight001", "Tree_uplight002", "Velvet_swag_1", "Velvet_swag_2", "Velvet_swag_3", "fire"]), FACADE = new Set(["Street_bench_stone", "Street_pishtaq", "Street_sebil", "planter_band", "sarch", "sback", "sback001", "sback002", "sback003", "sback004", "sbench", "sbench001", "sbench002", "sbench003", "sbench004", "sbench005", "street_steps"]);
-  const rules = [
-    ['people', /^Person/], ['ceiling', /^(Aivan_lantern|Bar_drum_pendant|Booth\d_pendant|Ceiling_carpet|Chandelier|Corridor_swag|Corridor_velvet_ceiling|Flying_carpet|Pendant_cluster|Rod|Lantern|Tent\d_lantern|Rattan_pendant|Velvet_swag|Heat_lamp)/],
-    ['facade', /^(Sam_column|Street_|sarch|sback|sbench|planter_band|planter_soil)/], ['skin', /^roof_panel/], ['domes', /^dome_/], ['structure', /^(roof_beam|purlin|facade_ledger|column_|gutter|court_gutter)/],
-    ['planting', /^(Chinar_|Pomegranate|Plumeria|Areca|Banana|Herbs|Jasmine|Planter_shrub|Bougainvillea|Street_palm|chinar_canopy|chinar_branch|Aivan_shrub)/],
-    ['building', /^(building_hall|parapet|facade_|slab_F2|balcony_rail|Hall_door|Lift_portal)/],
-    ['furniture', /^(Host_cabinet|Station_|Kids_|Tapchan_lowtable|Booth\d_banquette|Booth\d_table|Aivan_banquette|Aivan_table|Tent\d_banquette|Tent\d_majlis|Tent_octatable|Aivan_screen|Tableset|Boothset|Chair_|Table_|Tableware_|Aivan_tableware|Tent\d_tray|Tapchan_|Aivan_backcushion|Tent\d_cushion|chairs_carved|tables_tableware|booth_tableware|table|chair|bar_stool|abench|atable|bench|btable|sofa|otable|tapchan|kurpacha|pouf|ltable)/]
-  ];
+  // layers come from the model: every object carries extras.grp (see r3d/groups.py); a layer is shown only while the layers it hangs from are on
+  const groups = { skin: [], domes: [], structure: [], hung: [], furniture: [], planting: [], building: [], people: [], facade: [], kids: [], decor: [], context: [], floors: [], aivan: [], booths: [], corridor: [], mangal: [], bar: [], tents: [], majlis: [], fountain: [] };
+  const PARENTS = { skin: ['structure'], hung: ['skin', 'structure'] };
+  const state = {}; Object.keys(groups).forEach(k => { state[k] = true; });
   function setView(v) {
     const [p, t] = VIEWS[v];
     const far = (v === 'overview' || v === 'cutaway') && camera.aspect < 1 ? 1.75 : 1;
     camera.position.copy(t.clone().add(p.clone().sub(t).multiplyScalar(far))); controls.target.copy(t); controls.update();
     document.querySelectorAll('#views button[data-v]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
-    if (v === 'cutaway') { toggle('skin', false); toggle('domes', false); toggle('ceiling', false); } else if (['overview', 'street', 'domes', 'underdome'].includes(v)) { toggle('skin', true); toggle('domes', true); toggle('ceiling', true); }
+    if (v === 'cutaway') { toggle('skin', false); toggle('domes', false); toggle('hung', false); } else if (['overview', 'street', 'domes', 'underdome'].includes(v)) { toggle('structure', true); toggle('skin', true); toggle('domes', true); toggle('hung', true); }
     markChange();
   }
   // look up: lift the orbit target to ceiling height in front of the camera (camera stays at eye level); press again to come back
@@ -163,8 +170,13 @@ body.rot .bar span { display: none; }
   document.getElementById('lookup').addEventListener('click', lookUp);
   window.addEventListener('keydown', e => { if (e.key === 'u' || e.key === 'U' || e.key === 'г' || e.key === 'Г') lookUp(); });
   function toggle(l, on) {
-    groups[l].forEach(o => { o.visible = on; }); markChange();
-    const b = document.querySelector(`#layers button[data-l="${l}"]`); if (b) b.setAttribute('aria-pressed', String(on));
+    if (!(l in state)) return;
+    state[l] = on;
+    Object.keys(groups).forEach(g => { const vis = state[g] && (PARENTS[g] || []).every(p => state[p]); groups[g].forEach(o => { o.visible = vis; }); });
+    document.querySelectorAll('#layers button[data-l]').forEach(b => {
+      const g = b.dataset.l; b.setAttribute('aria-pressed', String(state[g])); b.classList.toggle('dep-off', state[g] && !(PARENTS[g] || []).every(p => state[p]));
+    });
+    markChange();
   }
   const uiBtn = document.getElementById('ui-toggle');
   function setClean(on) { document.body.classList.toggle('clean', on); uiBtn.setAttribute('aria-pressed', String(on)); uiBtn.textContent = on ? 'Показать кнопки' : 'Скрыть кнопки'; uiBtn.style.opacity = on ? '.55' : ''; }
@@ -182,8 +194,9 @@ body.rot .bar span { display: none; }
       mats.forEach(m => { if (m.transmission) { m.transparent = true; m.opacity = 0.35; } m.side = THREE.DoubleSide; });
       const nm = (o.parent && o.parent !== root ? o.parent.name : o.name) || '';
       const tgt = o.parent && o.parent !== root ? o.parent : o;
-      if (CEIL.has(nm)) groups.ceiling.push(tgt); else if (FACADE.has(nm)) groups.facade.push(tgt);
-      else for (const [g, re] of rules) if (re.test(nm)) { groups[g].push(tgt); break; }
+      let g = (tgt.userData && tgt.userData.grp) || (o.userData && o.userData.grp) || 'decor';
+      if (!(g in groups)) g = 'decor';
+      groups[g].push(tgt);
       mats.forEach(m => ['map', 'normalMap', 'roughnessMap', 'emissiveMap'].forEach(k => { if (m[k]) { m[k].anisotropy = MAXANISO; m[k].needsUpdate = true; } }));
       mats.forEach(m => {                                   // wood reads as matt carved walnut, not a glossy grey sheen; carving stays legible
         if (/walnut|carved|oak|deck|roofwood|jali/i.test(m.name || '') && !m.userData.tuned) { m.roughness = Math.max(m.roughness, 0.72); if (m.map) m.color.setScalar(1.35); m.userData.tuned = true; }
