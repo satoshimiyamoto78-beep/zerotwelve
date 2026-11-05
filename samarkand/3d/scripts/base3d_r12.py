@@ -777,7 +777,10 @@ if DO_RENDER:
              ('41_frame_dome_columns', (10.5, 13.0, 1.4), (5.5, 20.5, 2.6), 16, 0.0, ['Roof_skin', 'Carpet_ceiling'], -0.1),
              ('42_frame_pocket', (4.5, -3.5, 2.2), (-3.5, 2.5, 2.6), 18, 0.0, ['Roof_skin', 'Carpet_ceiling'], -0.2),
              ('43_booths_row', (6.2, 17.0, 1.2), (8.6, 26.0, 0.6), 16, 0.0, [], -0.1),
-             ('44_booth_inside', (7.4, 21.3, 1.0), (9.6, 21.3, 0.5), 15, 0.0, [], -0.1)]
+             ('44_booth_inside', (7.4, 21.3, 1.0), (9.6, 21.3, 0.5), 15, 0.0, [], -0.1),
+             ('45_j_aivan_south', (4.6, 14.2, 1.0), (2.6, 15.6, 0.4), 16, 0.0, [], -0.1),
+             ('46_j_aivan_north', (3.9, 31.6, 1.2), (2.2, 29.2, 0.4), 16, 0.0, [], -0.1),
+             ('47_j_ramp', (2.6, 37.4, 1.0), (0.9, 33.0, 0.0), 16, 0.0, [], -0.1)]
     W, H, S = (int(args[1]), int(args[2]), int(args[3])) if len(args) >= 4 else (1600, 1000, 64)   # detail modules reuse these names
     only = os.environ.get('VIEWS')
     for name, loc, tgt, lens, shift, hide, ev in VIEWS:
