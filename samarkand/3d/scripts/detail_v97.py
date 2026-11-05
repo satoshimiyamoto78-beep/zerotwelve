@@ -31,7 +31,7 @@ def load_ficus():
     bpy.ops.object.select_all(action='DESELECT'); bpy.context.view_layer.objects.active = o; o.select_set(True)
     bpy.ops.object.mode_set(mode='EDIT'); bpy.ops.mesh.select_all(action='DESELECT')
     for i in leaf_i: o.active_material_index = i; bpy.ops.object.material_slot_select()
-    bpy.ops.mesh.decimate(ratio=0.3); bpy.ops.object.mode_set(mode='OBJECT')
+    bpy.ops.mesh.decimate(ratio=0.15); bpy.ops.object.mode_set(mode='OBJECT')
     # pot-less copy (planted in soil)
     me2 = me.copy(); me2.name = 'Ficus_foliage_nopot'
     bm = _bm.new(); bm.from_mesh(me2)
@@ -59,11 +59,21 @@ def _clear(o_):
         if t is None: t = _tree(o_)
         if t.overlap(_tree(q)): _clear.last = q.name; return False
     return True
+def _supported(o_):
+    bpy.context.view_layer.update(); dg_ = bpy.context.evaluated_depsgraph_get(); x, y, z = o_.location
+    o_.hide_viewport = True; bpy.context.view_layer.update()
+    ok, loc, nor, idx, ob, mx = bpy.context.scene.ray_cast(bpy.context.evaluated_depsgraph_get(), Vector((x, y, z + 0.02)), Vector((0, 0, -1)), distance=0.05)
+    o_.hide_viewport = False
+    return ok
+OFFS = [(0, 0), (0.15, 0), (-0.15, 0), (0, 0.15), (0, -0.15), (0.3, 0), (-0.3, 0), (0, 0.3), (0, -0.3), (0.2, 0.2), (-0.2, -0.2), (0.2, -0.2), (-0.2, 0.2)]
 def place(me, name, x, y, z, s, cname):
     o_ = bpy.data.objects.new(name, me); o_.location = (x, y, z); coll(cname).objects.link(o_)
-    for k in range(16):                                                    # largest scale / turn whose crown touches nothing
-        sk = s * (1.0 - 0.08 * (k // 2)); o_.scale = (sk, sk, sk); o_.rotation_euler = (0, 0, rq.uniform(0, 6.28))
-        if _clear(o_): return o_
+    for k in range(12):                                                    # largest scale, then nearby spots in the bed, several turns
+        sk = s * (1.0 - 0.07 * (k // 2))
+        for dx, dy in OFFS:
+            for t in range(3):
+                o_.location = (x + dx, y + dy, z); o_.scale = (sk, sk, sk); o_.rotation_euler = (0, 0, 2.1 * t + 0.7 * k)
+                if _supported(o_) and _clear(o_): return o_
     print('ficus dropped at', round(x, 2), round(y, 2), 'blocked by', getattr(_clear, 'last', '?')); bpy.data.objects.remove(o_); return None
 for o_ in [o for o in bpy.data.objects if o.type == 'MESH' and o.name.startswith(('Plumeria', 'Pomegranate', 'Areca'))]:
     lo_, hi_ = _bb(o_); x, y, z = (lo_[0] + hi_[0]) / 2, (lo_[1] + hi_[1]) / 2, lo_[2]; H = hi_[2] - lo_[2]; nm = o_.name

@@ -303,3 +303,4 @@ exec(open(os.path.join(HERE, 'detail_v96.py')).read())                    # rev.
 exec(open(os.path.join(HERE, 'detail_v97.py')).read())                    # rev. 9.7: owner's ficus model replaces generic plants
 exec(open(os.path.join(HERE, 'detail_v98.py')).read())                    # rev. 9.8: hazarbaf mangal wall, closed boundary wall, Persian rugs for kilims/suzanis
 exec(open(os.path.join(HERE, 'detail_v99.py')).read())                    # rev. 9.9: aivan settees in the chair family, tables set back
+exec(open(os.path.join(HERE, 'detail_v100.py')).read())                   # rev. 10.0: owner's palms, topiary, sansevieria, bonsai, doner
