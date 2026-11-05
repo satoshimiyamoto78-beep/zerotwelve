@@ -308,3 +308,4 @@ exec(open(os.path.join(HERE, 'detail_v101.py')).read())                   # rev.
 exec(open(os.path.join(HERE, 'detail_v102.py')).read())                   # rev. 10.2: floor + wall sockets
 exec(open(os.path.join(HERE, 'detail_v103.py')).read())                   # rev. 10.3: real stair flights + handrails (joints)
 exec(open(os.path.join(HERE, 'detail_v104.py')).read())                   # rev. 10.4: table sets fitted to their tables
+exec(open(os.path.join(HERE, 'detail_v105.py')).read())                   # rev. 10.5: real sewn cushions
