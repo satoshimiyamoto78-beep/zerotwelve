@@ -85,24 +85,22 @@ PERG = Polygon([(4479, 1156), (10301, 2604), (8911, 8194), (3088, 6745)])       
 PPOSTS = [(4552, 1277), (10180, 2677), (8838, 8072), (3209, 6672), (3881, 3975), (9509, 5375)]   # post centres (DWG)
 PERG_TOP = 3600                                                                    # top of its beams above the terrace (site)
 def xpe(y): return 10301 - (y - 2604) * 1390 / 5590                               # pergola east line
-for c in PPOSTS: add('ppost', R(c[0] - 100, c[1] - 100, c[0] + 100, c[1] + 100), 'SMK-R12-EXIST')
+for c in PPOSTS: add('ppost', R(c[0] - 130, c[1] - 130, c[0] + 130, c[1] + 130), 'SMK-R12-EXIST')     # rev. 8.8: clad 260 (walnut)
 add('pergola', PERG, 'SMK-R12-EXIST')
 STAFF = R(-7250, 0, 0, 1600)
 # PHOTO LOUNGE "Ochag" (owner ref.: draped velvet, layered carpets, warm fire glow): swagged timber portal, carpets,
 # LED fire bowl on a stone plinth, khum jars, floor lanterns, low Samarkand tray tables with poufs (wait, drink, photos)
-add('phdrape', R(1400, 1700, 5200, 2050), 'SMK-R12-PHOTO')
-add('phrug', R(1600, 2150, 3750, 4350), 'SMK-R12-PHOTO')          # rev. 8.3: rug stops west of the pergola post
-add('firebowl', C(3300, 2900, 420, 32), 'SMK-R12-PHOTO')
-for c in ((2150, 3550), (4650, 3350), (6500, 3150)):            # rev. 8.3: middle tray table clears the pergola post
-    add('ltable', OCT(*c, 300), 'SMK-R12-PHOTO'); tables.append((c[0], c[1], 'lounge'))
-    for ang in (45, 135, 225, 315):
-        add('pouf', C(c[0] + 560 * math.cos(math.radians(ang)), c[1] + 560 * math.sin(math.radians(ang)), 230, 24), 'SMK-R12-PHOTO')
-    seat('lounge', 4)
-for c, r in (((1650, 2350), 230), ((2060, 2250), 160), ((4950, 2350), 230), ((4540, 2250), 160)): add('jar', C(*c, r, 24), 'SMK-R12-PHOTO')   # rev. 7: no overlaps
-for c in ((1450, 4300), (5150, 4300)): add('flantern', R(c[0] - 130, c[1] - 130, c[0] + 130, c[1] + 130), 'SMK-R12-PHOTO')
-for c in ((2850, 2450), (3000, 2380), (3600, 2380), (3700, 2450)): add('candle', C(*c, 45, 12), 'SMK-R12-PHOTO')
-add('camera', C(3300, 5000, 160, 24), 'SMK-R12-PHOTO')
-photo_plant = Polygon([(1000, ys(1000)), (5800, ys(5800)), (5800, 1650), (1000, 1650)]).difference(R(4432, -500, 4672, 1397))   # notch round the pergola post
+# rev. 8.8 (owner): the photo lounge moves UNDER THE PERGOLA as a special majlis zone (floor seating on a red kilim, velvet + carpet
+# backdrop on the south wall, bench, low tables, poufs) — footprint drawn here, furniture built in 3D (detail_v88); a 4-top takes its old place
+PU = ((10301 - 4479) / 6000.0, (2604 - 1156) / 6000.0); PV = ((3088 - 4479) / 5760.0, (6745 - 1156) / 5760.0)
+def PL(u, v): return (4479 + PU[0] * u + PV[0] * v, 1156 + PU[1] * u + PV[1] * v)
+def PR(u0, v0, u1, v1): return Polygon([PL(u0, v0), PL(u1, v0), PL(u1, v1), PL(u0, v1)])
+add('mrug', PR(500, 1100, 4200, 4100), 'SMK-R12-PHOTO'); add('mbench', PR(1700, 350, 3200, 850), 'SMK-R12-PHOTO')
+add('mtable_low', PR(2100, 2300, 2800, 3000), 'SMK-R12-PHOTO'); add('mdrape', PR(350, 40, 4600, 140), 'SMK-R12-PHOTO')
+for cu, cv in ((1300, 2650), (3600, 2650), (2450, 1550), (2450, 3750)): add('mcushion', PR(cu - 300, cv - 300, cu + 300, cv + 300), 'SMK-R12-PHOTO')
+for cu, cv in ((1000, 650), (3900, 650), (4500, 2000), (4500, 3200)): add('mpouf', PR(cu - 200, cv - 200, cu + 200, cv + 200), 'SMK-R12-PHOTO')
+seat('lounge', 4 + 2 + 4)                                   # 4 floor cushions, bench for 2, 4 poufs
+photo_plant = Polygon([(1000, ys(1000)), (4300, ys(4300)), (4300, 1650), (1000, 1650)])          # rev. 8.8: bed stops west of the pergola zone
 # staff service station
 add('shelving', R(0, 4300, 600, 8350), 'SMK-R12-SERV')
 add('counter', R(1400, 5300, 2000, 8100), 'SMK-R12-SERV')
@@ -155,15 +153,16 @@ def mtable(cx, cy, key, n=2, axis='x'):
     seat(key, 2 * n)
 # dining south: row 1 = 4 + 2 + 4 (aisles 900), row 2 = 4 + 4 (west table clears the bar stools by 900+)
 # rev. 8.2 (owner): the 4-top against the bar's back cabinet is split into two 2-tops; the 4-top moves to mid-row
-for cx, n in ((2650, 1), (4150, 1), (6300, 2)): mtable(cx, 6800, 'south', n)      # rev. 8.3: the pergola's north-west post stands between the 2-tops
-for cx, n in ((4650, 2), (7100, 2)): mtable(cx, 9300, 'south', n)
+# rev. 8.8: one row north of the pergola zone + a 2-top beside the tree + a 4-top where the photo lounge was
+for cx, n in ((3950, 1), (5650, 2), (7100, 1)): mtable(cx, 8300, 'south', n)
+mtable(4350, 11000, 'south', 1); mtable(2550, 2900, 'south', 2)
 def ring(c, r0, r1, a0=0, a1=360):
     an = C(c[0], c[1], r1, 96).difference(C(c[0], c[1], r0, 96))
     if a1 - a0 >= 360: return an
     return an.intersection(Polygon([c] + [(c[0] + 6000 * math.cos(math.radians(a)), c[1] + 6000 * math.sin(math.radians(a))) for a in range(a0, a1 + 1, 5)]))
-add('pit', C(*TREE_S, 1000), 'SMK-R12-TREE'); add('ringbench', ring(TREE_S, 1000, 1450), 'SMK-R12-TREE'); seat('chinar_s', 10)
+add('pit', C(*TREE_S, 900), 'SMK-R12-TREE')                                   # rev. 8.8 (owner: the tree took too much room): planter ring Ø1.8 with crotons, no bench
 # plaza tables facing the mangal pass; each pair can be pushed together into a table for 8
-PLAZA = ((11500, ((8650, 2), (10450, 1))), (13950, ((8350, 2), (10150, 1))))   # rev. 8.2: the outer (street-side) tables are 2-tops
+PLAZA = ((11200, ((8300, 2), (10150, 1))), (14200, ((8300, 2), (10150, 1))))   # rev. 8.8: rows 3.0 apart (was 2.45): 1.15 between chair backs   # rev. 8.2: the outer (street-side) tables are 2-tops
 for cy, cxs in PLAZA:
     for cx, n in cxs:
         mtable(cx, cy, 'plaza', n)
@@ -246,7 +245,7 @@ PL = []                                                                         
 for yy in (14450, 19150): PL.append(('pom', xb(yy) - 1100, yy, 600))              # pomegranates flanking the street entrance (rev. 7: clear of the portal pylons)
 PL.append(('pom', 2900, 14900, 300)); add('pot', C(2900, 14900, 280, 24), 'SMK-R12-PLANT')
 for yy in (11000, 20000, 23400, 30300, 34100): PL.append(('plum', xb(yy) - 1100, yy, 650))
-PL.append(('areca', 5650, 2250, 700)); add('pot', C(5650, 2250, 280, 24), 'SMK-R12-PLANT')     # rev. 8.3: clears the moved tray table
+
 PL.append(('areca', 1350, 1150, 700))                       # rev. 7: planted in the photo bed, keeps the staff route x 0..1300 clear
 for c in ((9150, 35600),): PL.append(('banana', *c, 450))   # rev. 7: one clump in the planter by the gate (the west one stood off the slab)   # green frame of the Khiva gate
 for yy in range(4100, 8300, 700): PL.append(('herb', xb(yy) - 450, yy, 220))
@@ -413,11 +412,11 @@ T = {
                ('Фонтан-хауз и арык', 'хауз Ø1,2 м, арык 0,3 м ведёт от северного входа'), ('Северный вход · «Хивинские ворота»', 'ворота 4,1 м, Бухарский купол — витрина и лавка, пандус 1:12'),
                ('Зал север', 'ряды 4 + 2, центр под куполом свободен'), ('Бар', 'чай, самовар, кофе · 9 стульев'), ('Станция персонала', 'стеллажи, касса, вода, лёд, посуда'),
                ('Зал юг', 'ряд 4 + 2 + 4 и ряд 4 + 4'), ('Чинар под фонарём + столы у входа', 'дерево под навесом, зенитный фонарь 3 × 3 м; 4 стола у мангала'),
-               ('Мангальная 3,3 × 5,8 м', 'тандыр · мангал · казан · раздача · вывеска SAMARKAND'), ('Фото-лаунж «Очаг»', 'драпировки, ковры, огонь-чаша, 3 столика, 12 пуфов'),
+               ('Мангальная 3,3 × 5,8 м', 'тандыр · мангал · казан · раздача · вывеска SAMARKAND'), ('Маджлис под навесом', 'фотозона: красный килим, бархат + ковёр, скамья, пуфы'),
                ('Детская зона', 'у стекла зала — дети видны из зала; мягкое покрытие'), ('Уличные скамьи', 'литой бетон в стенке клумбы, майолика'),
                ('Фонтан-себиль', 'майоликовая стена, латунный носик, чаша'), ('Уличная фото-арка', 'ниша со скамьёй, подсветка, пальмы')],
             S={'platform': 'Айван: седир-кабинки (4 × 6)', 'booths': 'Тематические кабинки', 'north': 'Зал север + столы у фонтана', 'tapchans': 'Топчан',
-               'tent': 'Шатры-маджлисы (2 × 8)', 'lounge': 'Фото-лаунж (пуфы)', 'bar': 'Барная стойка', 'south': 'Зал юг',
+               'tent': 'Шатры-маджлисы (2 × 8)', 'lounge': 'Маджлис под навесом', 'bar': 'Барная стойка', 'south': 'Зал юг',
                'chinar_s': 'Скамья у чинара (юг)', 'plaza': 'Столы у входа'},
             street_seats='+ уличные скамьи (вне счёта)', mods='Столы: на 2 — {t2}, на 4 — {t4} (все делятся на модули 2-местные; столов на 6 нет), кабинки на 6 — 4',
             K=['Колонна навеса (сталь, обшивка деревом)', 'Балка навеса', 'Ось здания', 'Вход гостей', 'Маршрут персонала', 'Дверь зала открыта',
@@ -458,11 +457,11 @@ T = {
                ('Hauz fountain and aryk', 'hauz Ø1.2 m, 0.3 m aryk leads from the north entrance'), ('North entrance · "Khiva gate"', '4.1 m gate, Bukhara dome — vitrine and shop, ramp 1:12'),
                ('Dining north', 'rows of a 4-top + a 2-top, the space under the dome kept open'), ('Bar', 'tea, samovar, coffee · 9 stools'), ('Staff station', 'shelving, POS, water, ice, dishes'),
                ('Dining south', 'row 4 + 2 + 4 and row 4 + 4'), ('Chinar under the lantern + entrance tables', 'tree under the roof, 3 × 3 m skylight; 4 tables by the mangal'),
-               ('Mangal kitchen 3.3 × 5.8 m', 'tandoor · mangal · kazan · pass · SAMARKAND sign'), ('Photo lounge "Ochag"', 'drapes, carpets, fire bowl, 3 low tables, 12 poufs'),
+               ('Mangal kitchen 3.3 × 5.8 m', 'tandoor · mangal · kazan · pass · SAMARKAND sign'), ('Majlis under the pergola', 'photo zone: red kilim, velvet + carpet backdrop, bench, poufs'),
                ('Kids zone', 'against the hall glazing — seen from inside; soft floor'), ('Street benches', 'cast concrete in the planter wall, majolica'),
                ('Sebil fountain', 'majolica wall, brass spout, basin'), ('Street photo arch', 'bench niche, uplight, palms')],
             S={'platform': 'Aivan: sedir booths (4 × 6)', 'booths': 'Themed booths', 'north': 'Dining north + tables by the hauz', 'tapchans': 'Tapchan',
-               'tent': 'Majlis tents (2 × 8)', 'lounge': 'Photo lounge (poufs)', 'bar': 'Bar counter', 'south': 'Dining south',
+               'tent': 'Majlis tents (2 × 8)', 'lounge': 'Majlis under the pergola', 'bar': 'Bar counter', 'south': 'Dining south',
                'chinar_s': 'Chinar bench south', 'plaza': 'Entrance tables'},
             street_seats='+ street benches (not counted)', mods='Tables: {t2} two-tops, {t4} four-tops (all split into 2-top modules; no six-tops), 4 booths for 6',
             K=['Roof column (steel, wood-clad)', 'Roof beam', 'Building axis', 'Guest entrance', 'Staff route', 'Hall door, open',
@@ -552,7 +551,8 @@ DEFS = ('<defs>' + tile_pat('terr', 600, terr, '#efe1c6') + tile_pat('alley', 60
         '</defs>')
 
 DIMC = '#7a2e1f'
-STY = {'table': ('#a87444', '#5a3a22', 'sh'), 'btable': ('#a87444', '#5a3a22', 'sh'), 'rug': ('#f0dfc2', 'none', ''), 'bench': ('url(#ikat)', '#3b2a1e', 'sh'),
+STY = {'mrug': ('url(#carpet)', '#7a1d18', ''), 'mdrape': ('url(#velvetP)', '#5a2410', 'sh'), 'mbench': ('#a87444', '#5a3a22', 'sh'), 'mtable_low': ('#b5332a', '#5a1a14', 'sh'), 'mcushion': ('#c0392b', '#6b1a12', 'sh'), 'mpouf': ('#c0392b', '#6b1a12', 'sh'),
+       'table': ('#a87444', '#5a3a22', 'sh'), 'btable': ('#a87444', '#5a3a22', 'sh'), 'rug': ('#f0dfc2', 'none', ''), 'bench': ('url(#ikat)', '#3b2a1e', 'sh'),
        'screen': ('url(#lattice)', '#2b1d12', 'sh'), 'tapchan': ('#b88a58', '#5a3a22', 'sh'), 'tapchanrug': ('url(#suzani)', 'none', ''), 'tapchantable': ('#6b4429', '#3b2a1e', 'sh'),
        'stool': ('#8a5a36', '#3b2a1e', 'sh'), 'storage': ('#8a7f70', '#3b2a1e', 'sh'), 'station': ('#2A9DA8', '#1d6f77', ''), 'host': ('#2A9DA8', '#1d6f77', 'sh'),
        'backbar': ('#4a2f1c', '#2b1d12', 'sh'), 'barbody': ('#A4482B', '#5a2a18', 'sh'), 'bartop': ('#efe6d8', '#8a7f70', ''), 'barreturn': ('#efe6d8', '#8a7f70', 'sh'),
@@ -568,7 +568,7 @@ STY = {'table': ('#a87444', '#5a3a22', 'sh'), 'btable': ('#a87444', '#5a3a22', '
        'runner': ('url(#carpet)', '#5a1a1c', ''), 'jar': ('#c4703f', '#7a3d22', 'sh'), 'flamp': ('url(#glow)', 'none', ''),
        'sbench': ('url(#concrete)', '#6b5a48', 'sh'), 'sback': ('url(#majolica)', '#13285a', ''), 'sebil': ('url(#majolica)', '#13285a', 'sh'), 'sebilbasin': ('url(#water)', '#1F3F8A', 'sh'),
        'sarch': ('url(#jali)', '#b8893a', 'sh'), 'spalm': ('#b5653a', '#6b3a1e', 'sh'), 'portal': ('#A4482B', '#5a2a18', 'sh')}
-ORDER = ['plantbed', 'rug', 'tapchan', 'kurpacha', 'tapchanrug', 'carpet', 'runner', 'phrug', 'aryk', 'rotunda', 'drum', 'rbox', 'medallion', 'hauzborder', 'hauz', 'bridge', 'pit', 'ringbench', 'banquette', 'abench', 'atable', 'ascreen', 'table', 'btable', 'bench', 'screen', 'bportal', 'tapchantable',
+ORDER = ['plantbed', 'mrug', 'mdrape', 'mbench', 'mtable_low', 'mcushion', 'mpouf', 'rug', 'tapchan', 'kurpacha', 'tapchanrug', 'carpet', 'runner', 'phrug', 'aryk', 'rotunda', 'drum', 'rbox', 'medallion', 'hauzborder', 'hauz', 'bridge', 'pit', 'ringbench', 'banquette', 'abench', 'atable', 'ascreen', 'table', 'btable', 'bench', 'screen', 'bportal', 'tapchantable',
          'sofa', 'otable', 'stool', 'station', 'host', 'backbar', 'barbody', 'bartop', 'barreturn', 'samovar', 'coffee', 'sink', 'shelving', 'counter', 'screenwall',
          'firewall', 'tandoorblock', 'tandoor', 'mangal', 'ledge', 'kazanblock', 'kazan', 'sinkbins', 'woodstack', 'prep', 'pass', 'glass', 'storage', 'phdrape', 'firebowl', 'ltable', 'pouf', 'camera',
          'sbench', 'sback', 'sebil', 'sebilbasin', 'sarch', 'portal', 'jar', 'pot', 'pole', 'vitrine', 'gatepost', 'flantern', 'candle', 'lantern', 'flamp']
@@ -693,14 +693,6 @@ def build(lang):
     ln((-150, 1625), (-150, 4100), '#7a5a1a', .45); ln((-7250, 1625), (-7250, 4100), '#7a5a1a', .45)
     tx(-3600, 1080, t['staffp'], 1.5, '#9a4f12', weight=700, extra='letter-spacing=".4"')
     tx(-3600, 620, t['staffto'], 1.15, '#9a4f12')
-    # photo lounge: fire glow, flames, swags on the portal
-    cx, cy = P(3300, 2900); out.append(f'<circle cx="{cx:.2f}" cy="{cy:.2f}" r="9" fill="url(#glow)" opacity=".75"/>')
-    for k_, (dx_, dy_) in enumerate(((0, -1.2), (-1.1, .3), (1.1, .4), (0, .9))):
-        out.append(f'<path d="M{cx + dx_ - .9:.2f} {cy + dy_ + .7:.2f}Q{cx + dx_:.2f} {cy + dy_ - 1.8:.2f} {cx + dx_ + .9:.2f} {cy + dy_ + .7:.2f}Z" fill="{("#ffb347", "#ff7a2a", "#ffd27a", "#ff9a3a")[k_]}" opacity=".9"/>')
-    for xx in range(1500, 5200, 620):
-        a_, b_ = P(xx, 2050), P(xx + 620, 2050)
-        out.append(f'<path d="M{a_[0]:.2f} {a_[1]:.2f}Q{(a_[0] + b_[0]) / 2:.2f} {a_[1] + 2.2:.2f} {b_[0]:.2f} {b_[1]:.2f}" fill="none" stroke="#7a3518" stroke-width=".55"/>')
-    cx, cy = P(3300, 5000); out.append(f'<path d="M{cx:.2f} {cy:.2f}L{cx - 3:.2f} {cy - 8.5:.2f}M{cx:.2f} {cy:.2f}L{cx + 3:.2f} {cy - 8.5:.2f}" stroke="#3b2a1e" stroke-width=".18" stroke-dasharray=".6 .5"/>')
     # palms (fronds over the pots)
     def palm(c, r, M=P, sc=S_):
         cx, cy = M(*c); rr = r / sc
@@ -902,7 +894,7 @@ def build(lang):
         yy = ly + 7 + i * 6.25; num(lx + 2.1, yy - .9, i + 1, page=True, r=2.0)
         tx(lx + 5.6, yy - .55, t1, 2.25, '#3b2a1e', anchor='start', weight=600, page=True); tx(lx + 5.6, yy + 1.95, t2, 1.8, '#6b5a48', anchor='start', page=True)
     sy0 = ly + 7 + len(t['L']) * 6.25 + 3; head(sy0, t['seats'])
-    order = ['plaza', 'chinar_s', 'south', 'lounge', 'bar', 'platform', 'north', 'booths', 'tapchans', 'tent']
+    order = ['plaza', 'south', 'lounge', 'bar', 'platform', 'north', 'booths', 'tapchans', 'tent']
     for i, k in enumerate(order):
         yy = sy0 + 6 + i * 3.9
         tx(lx, yy, t['S'][k], 2.1, '#3b2a1e', anchor='start', page=True); tx(rx, yy, str(seats[k]), 2.1, '#3b2a1e', anchor='end', weight=600, page=True)

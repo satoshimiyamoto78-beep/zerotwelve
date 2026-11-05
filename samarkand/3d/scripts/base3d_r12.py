@@ -423,7 +423,7 @@ if PG:
         dx, dy = b[0] - a[0], b[1] - a[1]; L = math.hypot(dx, dy); nx, ny = -dy / L * w / 2, dx / L * w / 2
         return [(a[0] + nx, a[1] + ny), (b[0] + nx, b[1] + ny), (b[0] - nx, b[1] - ny), (a[0] - nx, a[1] - ny)]
     pb = bmesh.new()                                    # one object: posts (material 0) + beams (material 1)
-    for c in _pp: _prism(pb, [(c[0] - .1, c[1] - .1), (c[0] + .1, c[1] - .1), (c[0] + .1, c[1] + .1), (c[0] - .1, c[1] + .1)], TER, PZT - 0.4, 0)
+    for c in _pp: _prism(pb, [(c[0] - .13, c[1] - .13), (c[0] + .13, c[1] - .13), (c[0] + .13, c[1] + .13), (c[0] - .13, c[1] + .13)], TER, PZT - 0.4, 0)     # rev. 8.8: steel post clad 260 (walnut)
     def _ext(a, b, e):                                  # segment a->b extended by e at both ends
         dx, dy = b[0] - a[0], b[1] - a[1]; L = math.hypot(dx, dy); return (a[0] - dx / L * e, a[1] - dy / L * e), (b[0] + dx / L * e, b[1] + dy / L * e)
     for a, b in ((PW0, PW1), (PE0, PE1)): _prism(pb, seg_ring(*_ext(a, b, 0.25), 0.15), PZT - 0.4, PZT, 1)      # main beams 150 x 400
