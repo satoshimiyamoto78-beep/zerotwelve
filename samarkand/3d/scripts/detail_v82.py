@@ -299,3 +299,5 @@ exec(open(os.path.join(HERE, 'struct_v92.py')).read())                    # rev.
 exec(open(os.path.join(HERE, 'detail_v93.py')).read())                    # rev. 9.3: mangal hood in real brick + tile, chilled display
 exec(open(os.path.join(HERE, 'detail_v94.py')).read())                    # rev. 9.4: fountain court in real tiles (star basin, zellige cross, terracotta)
 exec(open(os.path.join(HERE, 'detail_v95.py')).read())                    # rev. 9.5: street benches per the owner's ref
+exec(open(os.path.join(HERE, 'detail_v96.py')).read())                    # rev. 9.6: owner's Persian rug photos on every rug
+exec(open(os.path.join(HERE, 'detail_v97.py')).read())                    # rev. 9.7: owner's ficus model replaces generic plants
