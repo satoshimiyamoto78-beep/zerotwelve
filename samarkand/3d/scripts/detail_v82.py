@@ -301,3 +301,5 @@ exec(open(os.path.join(HERE, 'detail_v94.py')).read())                    # rev.
 exec(open(os.path.join(HERE, 'detail_v95.py')).read())                    # rev. 9.5: street benches per the owner's ref
 exec(open(os.path.join(HERE, 'detail_v96.py')).read())                    # rev. 9.6: owner's Persian rug photos on every rug
 exec(open(os.path.join(HERE, 'detail_v97.py')).read())                    # rev. 9.7: owner's ficus model replaces generic plants
+exec(open(os.path.join(HERE, 'detail_v98.py')).read())                    # rev. 9.8: hazarbaf mangal wall, closed boundary wall, Persian rugs for kilims/suzanis
+exec(open(os.path.join(HERE, 'detail_v99.py')).read())                    # rev. 9.9: aivan settees in the chair family, tables set back

@@ -66,11 +66,11 @@ inst(mb.mesh('Hauz_star_wall'), 'Hauz_star_wall', (0, 0, 0), 0, 'Fountain')
 mb = MB(); pts = list(star.exterior.coords)[:-1]; TS = 0.05
 if not SP_(pts).exterior.is_ccw: pts = pts[::-1]
 for k in range(len(pts)):                                                                        # 50 mm glazed tiles on every outer face
-    (xa, ya), (xb, yb) = pts[k], pts[(k + 1) % len(pts)]; L = math.hypot(xb - xa, yb - ya); an = math.atan2(yb - ya, xb - xa)
+    (xa4, ya4), (xb4, yb4) = pts[k], pts[(k + 1) % len(pts)]; L = math.hypot(xb4 - xa4, yb4 - ya4); an = math.atan2(yb4 - ya4, xb4 - xa4)
     nx, ny = math.sin(an), -math.cos(an)                                                          # outward normal of a CCW ring
     n = max(1, int(L / (TS + 0.003))); st_ = (L - n * (TS + 0.003)) / 2 + (TS + 0.003) / 2
     for i in range(n):
-        t = st_ + i * (TS + 0.003); cx, cy = xa + (xb - xa) * t / L + nx * 0.004, ya + (yb - ya) * t / L + ny * 0.004
+        t = st_ + i * (TS + 0.003); cx, cy = xa4 + (xb4 - xa4) * t / L + nx * 0.004, ya4 + (yb4 - ya4) * t / L + ny * 0.004
         for j in range(7):
             z0 = TER + j * (TS + 0.003)
             mm = TILE[0] if j in (0, 6) else (TILE[2] if (i + j) % 2 else TILE[1])

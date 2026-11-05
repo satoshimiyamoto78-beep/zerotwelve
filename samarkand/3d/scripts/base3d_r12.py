@@ -546,8 +546,13 @@ for x, y in D['cols']:
     z0c, z1c = TER + 0.2, TER + 2.4                     # wood sleeve: 4 boards around the steel column, flush, no overlap
     boxes('column_wood_clad', [(x - 0.15, y - 0.15, z0c, x + 0.15, y - 0.075, z1c), (x - 0.15, y + 0.075, z0c, x + 0.15, y + 0.15, z1c),
                                (x - 0.15, y - 0.075, z0c, x - 0.075, y + 0.075, z1c), (x + 0.075, y - 0.075, z0c, x + 0.15, y + 0.075, z1c)], m['oak'], 'Roof_structure')
-gut = [(xb(y), y, top(xb(y)) - 0.2, xb(y) + 0.25, y + 0.6, top(xb(y)) - 0.04) for y in [0.6 * k for k in range(-2, 63)]]   # box gutter hung on the street edge
-boxes('gutter_street', gut, m['bronze'], 'Roof_structure')
+# rev. 9.8: one continuous box gutter along the street eave, only where the roof is (it used to step past both roof ends)
+_gy0, _gy1 = 3.39, 36.43
+_bm = bmesh.new(); _q = [(xb(_gy0), _gy0), (xb(_gy0) + 0.25, _gy0), (xb(_gy1) + 0.25, _gy1), (xb(_gy1), _gy1)]
+_lo = [_bm.verts.new((x_, y_, top(x_) - 0.2)) for x_, y_ in _q]; _hi = [_bm.verts.new((x_, y_, top(x_) - 0.04)) for x_, y_ in _q]
+_bm.faces.new(list(reversed(_lo))); _bm.faces.new(_hi)
+for _i in range(4): _bm.faces.new((_lo[_i], _lo[(_i + 1) % 4], _hi[(_i + 1) % 4], _hi[_i]))
+bmesh.ops.recalc_face_normals(_bm, faces=_bm.faces); new_obj('gutter_street', _bm, [m['bronze']], 'Roof_structure')
 # ======================= ROOF DOMES (R12) =======================
 ZR = D.get('dome_ring', 3.9); SEG = 48
 T_ = 0.12

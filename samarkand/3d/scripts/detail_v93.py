@@ -89,10 +89,10 @@ for x in (DX0 + 0.005, DX1 - 0.005): mb.box(x - 0.012, DY0 + 0.01, ZD, x + 0.012
 inst(mb.mesh('Mangal_display_base'), 'Mangal_display_base', (0, 0, 0), 0, 'Mangal')
 mb = MB(); G = m['glass']; ZG = ZD + 0.42
 pts_f = [(DY1 - 0.01, ZD + 0.01), (DY1 - 0.24, ZG)]                                                       # angled front glass
-(ya, za), (yb, zb) = pts_f; L = math.hypot(yb - ya, zb - za); an = math.atan2(zb - za, yb - ya)
+(ya3, za3), (yb3, zb3) = pts_f; L = math.hypot(yb3 - ya3, zb3 - za3); an = math.atan2(zb3 - za3, yb3 - ya3)
 fs = mb.box(DX0 + 0.02, 0, -0.006, DX1 - 0.02, L, 0.0, G)
 for v in {v for f in fs for v in f.verts}:
-    y_, z_ = v.co.y, v.co.z; v.co.y, v.co.z = ya + y_ * math.cos(an) - z_ * math.sin(an), za + y_ * math.sin(an) + z_ * math.cos(an)
+    y_, z_ = v.co.y, v.co.z; v.co.y, v.co.z = ya3 + y_ * math.cos(an) - z_ * math.sin(an), za3 + y_ * math.sin(an) + z_ * math.cos(an)
 mb.box(DX0 + 0.02, DY0 + 0.03, ZG + 0.001, DX1 - 0.02, DY1 - 0.24, ZG + 0.009, G)                                # top glass (serving shelf)
 mb.box(DX0 + 0.02, DY1 - 0.26, ZG - 0.02, DX1 - 0.02, DY1 - 0.245, ZG - 0.005, K93['led'])               # LED strip under the top
 for x in (DX0 + 0.024, DX1 - 0.024): mb.box(x - 0.003, DY0 + 0.03, ZD + 0.005, x + 0.003, DY1 - 0.03, ZG - 0.001, G)   # end glass
