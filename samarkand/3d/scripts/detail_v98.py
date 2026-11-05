@@ -12,7 +12,7 @@ GT, GC = GLZ[0], GLZ[1]
 CREAM = mat('stone_cream', (0.85, 0.78, 0.64), rough=0.6, bump=0.3, noise_var=0.05)
 # ---------------------------------------------------------------- core
 mb = MB()
-segs = [(BY0_, 3.9, TER), (3.9, 4.8, TER + 2.1), (4.8, PY0, TER), (PY1, 8.35, TER)]
+segs = [(BY0_, 3.9, TER), (3.9, 4.8, TER + 2.1), (4.8, PY0, TER), (PY1, 8.35, TER + 2.08)]   # owner: firewood again from the post to the end
 for y0_, y1_, z0_ in segs: mb.box(BX0_ + 0.02, y0_, z0_, BX0_ + 0.3, y1_, ZW, MORTAR, 0.003)
 inst(mb.mesh('Mangal_west_wall'), 'Mangal_west_wall', (0, 0, 0), 0, 'Mangal')
 # ---------------------------------------------------------------- hazarbaf face (x = BX0 + 0.02, bricks towards the dining, -x)
@@ -41,7 +41,7 @@ mb = MB(); ZD = TER + 0.9
 FACE = {0: (BY0_, 3.78), 1: (3.9, 4.8), 2: (4.92, PY0), 3: (PY1, 8.35)}
 for si_, (y0_, y1_, z0_) in enumerate(segs):
     fa, fb = FACE[si_]
-    if z0_ > TER: face_haz(mb, fa, fb, TER + 2.226, ZW - 0.01); continue
+    if z0_ > TER: face_haz(mb, fa, fb, (TER + 2.226) if si_ == 1 else (z0_ + 0.01), ZW - 0.01); continue
     face_haz(mb, fa, fb, ZD + 0.03, ZW - 0.01)
     if si_ == 0: face_haz(mb, 3.78, 3.9, TER + 2.226, ZW - 0.01)
     if si_ == 2: face_haz(mb, 4.8, 4.92, TER + 2.226, ZW - 0.01)
@@ -56,6 +56,16 @@ for si_, (y0_, y1_, z0_) in enumerate(segs):
         mb.extrude(st, BX0_ - 0.022, BX0_ - 0.01, GC if k % 2 else GT, 'yz')
         mb.extrude([(yc + 0.04 * math.cos(math.pi * i / 4), zc + 0.04 * math.sin(math.pi * i / 4)) for i in range(8)], BX0_ - 0.026, BX0_ - 0.022, CU, 'yz')
 inst(mb.mesh('Mangal_west_hazarbaf'), 'Mangal_west_hazarbaf', (0, 0, 0), 0, 'Mangal')
+# firewood stack in a walnut frame between the post and the wall end (it shows to the dining)
+mb = MB(); x0w, x1w, y0w, y1w = BX0_, BX0_ + 0.3, PY1, 8.35; r = 0.0625
+mb.box(x0w, y0w, TER, x1w, y1w, TER + 0.08, XW['wd'], 0.003); mb.box(x0w, y0w, TER + 2.0, x1w, y1w, TER + 2.08, XW['wd'], 0.003)
+mb.box(x0w, y0w, TER + 0.08, x1w, y0w + 0.06, TER + 2.0, XW['wd'], 0.003); mb.box(x0w, y1w - 0.06, TER + 0.08, x1w, y1w, TER + 2.0, XW['wd'], 0.003)
+row = 0; zz = TER + 0.08 + r
+while zz + r <= TER + 2.0 + 1e-6:
+    yy = y0w + 0.06 + r + (r if row % 2 else 0)
+    while yy + r <= y1w - 0.06 + 1e-6: mb.rod((x0w + 0.01, yy, zz), (x1w - 0.01, yy, zz), r - 0.001, m['oak'], 8); yy += 2 * r
+    zz += r * math.sqrt(3); row += 1
+inst(mb.mesh('Firewood_wall'), 'Firewood_wall', (0, 0, 0), 0, 'Mangal')
 # staff door: walnut double door with fielded panels in a tiled frame
 mb = MB(); WD = XW['wd']
 mb.box(BX0_ + 0.12, 3.92, TER, BX0_ + 0.16, 4.78, TER + 2.08, WD, 0.004)

@@ -4,13 +4,15 @@
   * aivan bays (1.74 between the screens): two settees 1.30 long face each other at the wall, table 1.10 x 0.60 (walnut + real
     100 mm glazed tile inlay) set back to the wall, so the last 0.40 by the aisle is free to step into the bay."""
 @cached
-def a_settee(L):
+def a_settee(L, n=2):
     b = MB(); W = XW['wd']; BR = m['brass']; hx = L / 2
     py0, py1 = 0.21, 0.26
-    for xs in ((-hx, -hx + 0.05), (hx - 0.05, hx), (-0.025, 0.025)):
+    MIDS = [-hx + L * k / n for k in range(1, n)]                                  # middle leg pairs between the seats
+    BAYS = list(zip([-hx + 0.05] + [c + 0.025 for c in MIDS], [c - 0.025 for c in MIDS] + [hx - 0.05]))
+    for xs in [(-hx, -hx + 0.05), (hx - 0.05, hx)] + [(c - 0.025, c + 0.025) for c in MIDS]:
         for sy in (-1, 1):
             x0, x1 = xs; y0, y1 = sorted((sy * py0, sy * py1)); cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
-            mid = abs(cx) < 0.1
+            mid = any(abs(cx - c) < 0.03 for c in MIDS)
             b.lathe(cx, cy, 0.0, [(0.0, 0.0), (0.012, 0.0), (0.022, 0.012), (0.021, 0.026), (0.016, 0.035), (0.0, 0.035)], BR, 16)
             top_ = (0.43 if sy > 0 else 0.875) if mid else (0.62 if sy > 0 else 0.955)
             b.box(x0, y0, 0.035, x1, y1, top_, W, 0.004)
@@ -20,7 +22,7 @@ def a_settee(L):
     b.box(-ix, 0.22, 0.36, ix, 0.25, 0.43, W, 0.003); b.box(-ix, -0.25, 0.36, ix, -0.22, 0.43, W, 0.003)
     for sx in (-1, 1): b.box(sx * (hx - 0.045), -py0, 0.36, sx * (hx - 0.012), py0, 0.43, W, 0.003)
     b.box(-ix + 0.005, -0.22, 0.40, ix - 0.005, 0.22, 0.42, W)
-    for a0, a1 in ((-ix, -0.025), (0.025, ix)):                                                      # arched aprons, two bays
+    for a0, a1 in BAYS:                                                                              # arched aprons, one per seat
         for q in arch_apron(a0, 0.13, a1, 0.36, 0.25, 0.33): b.extrude(list(q.exterior.coords)[:-1], 0.226, 0.244, W, 'xz')
         for q in arch_apron(a0, 0.13, a1, 0.36, 0.25, 0.33): b.extrude(list(q.exterior.coords)[:-1], -0.244, -0.226, W, 'xz')
     for sx in (-1, 1):
@@ -30,15 +32,15 @@ def a_settee(L):
         x0, x1 = sorted((sx * (hx - 0.054), sx * (hx + 0.012)))
         b.box(x0, -py0, 0.62, x1, 0.29, 0.645, W, 0.006); b.box(x0 + 0.006, -py0, 0.645, x1 - 0.006, 0.282, 0.66, W, 0.004)
     b.box(-ix, -0.25, 0.43, ix, -0.222, 0.55, W, 0.003)
-    for a0, a1 in ((-ix, -0.025), (0.025, ix)):
+    for a0, a1 in BAYS:
         for q in jali(a0, 0.55, a1, 0.875, 0.058, 0.014): ext_holes(b, q, -0.244, -0.228, W, 'xz')
     b.box(-ix, -0.252, 0.875, ix, -0.218, 0.94, W, 0.004); b.box(-ix, -0.256, 0.94, ix, -0.214, 0.955, W, 0.004)
-    hard = b.mesh(f'Settee_frame_{int(L * 100)}')
-    s = MB(); hw = (ix - 0.012) / 2
-    for k, cx in enumerate((-(hw + 0.006), hw + 0.006)):
+    hard = b.mesh(f'Settee_frame_{int(L * 100)}_{n}')
+    s = MB(); hw = (2 * ix - 0.012 * (n - 1)) / n / 2
+    for k, cx in enumerate([-ix + hw + k_ * (2 * hw + 0.012) for k_ in range(n)]):
         s.box(cx - hw, -0.21, 0.42, cx + hw, 0.215, 0.515, XW['k1' if k else 'k2'], 0.03)
         s.box(cx - hw + 0.02, -0.219, 0.515, cx + hw - 0.02, -0.15, 0.71, XW['k2' if k else 'k1'], 0.03)
-    return merge(f'Settee_{int(L * 100)}', [hard, soften(s.mesh(f'Settee_cushions_{int(L * 100)}'), 2)])
+    return merge(f'Settee_{int(L * 100)}_{n}', [hard, soften(s.mesh(f'Settee_cushions_{int(L * 100)}_{n}'), 2)])
 @cached
 def a_teatable(L, Dp):
     """walnut table L x Dp, top +0.75 with a flush field of 100 mm glazed tiles, four turned legs"""
@@ -66,13 +68,13 @@ for (lo1, hi1), (lo2, hi2) in zip(scr[:-1], scr[1:]):
     y0, y1 = hi1[1], lo2[1]
     if not (1.6 < y1 - y0 < 1.9): continue
     if not any(y0 < yb < y1 for yb in OLDB): continue                     # the door bay stays a free passage
-    nb += 1; XC = 0.2 + 0.65
-    inst(a_settee(1.3), f'Aivan_settee_{nb}a', (XC, y0 + 0.259, 0.0), 0.0, 'Aivan')
-    inst(a_settee(1.3), f'Aivan_settee_{nb}b', (XC, y1 - 0.259, 0.0), math.pi, 'Aivan')
-    inst(a_teatable(1.1, 0.6), f'Aivan_table_{nb}', (0.8, (y0 + y1) / 2, 0.0), 0.0, 'Aivan')
+    nb += 1; XC = 0.2 + 0.83                                                # 3-seat settees (owner: 6 per bay as planned)
+    inst(a_settee(1.66, 3), f'Aivan_settee_{nb}a', (XC, y0 + 0.259, 0.0), 0.0, 'Aivan')
+    inst(a_settee(1.66, 3), f'Aivan_settee_{nb}b', (XC, y1 - 0.259, 0.0), math.pi, 'Aivan')
+    inst(a_teatable(1.2, 0.6), f'Aivan_table_{nb}', (1.0, (y0 + y1) / 2, 0.0), 0.0, 'Aivan')
     for o_ in sets:                                                       # tea set moves onto the new table, a little tighter
         lo_, hi_ = _bb(o_)
         if y0 < (lo_[1] + hi_[1]) / 2 < y1:
-            cx_ = (lo_[0] + hi_[0]) / 2; o_.location.x += 0.8 - cx_; o_.scale.x = 0.82; o_.location.z += 0.758 - lo_[2]
-            bpy.context.view_layer.update(); l2, h2 = _bb(o_); o_.location.x += 0.8 - (l2[0] + h2[0]) / 2
+            cx_ = (lo_[0] + hi_[0]) / 2; o_.location.x += 1.0 - cx_; o_.scale.x = 0.82; o_.location.z += 0.758 - lo_[2]
+            bpy.context.view_layer.update(); l2, h2 = _bb(o_); o_.location.x += 1.0 - (l2[0] + h2[0]) / 2
 print('rev 9.9 aivan bays rebuilt', nb)
