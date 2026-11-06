@@ -82,24 +82,8 @@ for o in bal.values():
         if t3 is None:                                                          # free end: newel post just beyond the end
             off = Vector((0, 0, 0)); off[ax] = -0.047 if which == 'lo' else 0.047
             newel(pt.x + off.x, pt.y + off.y, 0.0); nj += 1
-# ---- stair handrails: top end to the column face with a flange
-for nm_ in ('stepsA_handrail_0', 'stepsA_handrail_1', 'stepsB_handrail_0', 'stepsB_handrail_1'):
-    o = bpy.data.objects.get(nm_)
-    if not o: continue
-    pt = end_pts(o, 0, 'lo', zmin=0.6)
-    if pt is None: continue
-    d_, q_, t_ = nearest_on(pt, ('Khiva_column', 'Khiva_arcade'), 0.3)
-    if t_ is None: continue
-    q_ = Vector((q_.x, pt.y, pt.z)); stub(pt, q_, 0.042, 0.042, BRS); escutcheon(q_, q_ - pt, 0.04); nj += 1
-# ---- corridor drapes: rod to the frame with a bracket
-for nm_ in ('Corridor_drape_N', 'Corridor_drape_S'):
-    o = bpy.data.objects.get(nm_)
-    if not o: continue
-    lo, hi = _bb(o); pt = end_pts(o, 0, 'lo', zmin=hi[2] - 0.08)
-    if pt is None: continue
-    d_, q_, t_ = nearest_on(pt, ('Corridor_frame',), 0.2)
-    if t_ is None: continue
-    q_ = Vector((q_.x, pt.y, pt.z)); stub(pt, q_, 0.02, 0.02, BRS); escutcheon(q_, q_ - pt, 0.03); nj += 1
+# (stair handrails removed in rev 11.3 at the owner's request: decorative jugs instead)
+# (corridor drapes replaced by the arch corridor in rev 11.5)
 # ---- mangal west wall: brick return closing the slot to the storage
 o = bpy.data.objects.get('Mangal_west_wall'); st_ = bpy.data.objects.get('storage')
 if o and st_:

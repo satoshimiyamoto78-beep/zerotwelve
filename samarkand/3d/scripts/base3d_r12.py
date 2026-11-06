@@ -17,6 +17,13 @@ DO_RENDER = (args[0] == '1') if args else False
 W, H, S = (int(args[1]), int(args[2]), int(args[3])) if len(args) >= 4 else (1600, 1000, 64)
 D = json.load(open(DATA))
 REV = D['rev']
+# rev. 11.4 (owner: 'booths wider and longer, as free as possible, 3-seat settees, up to the Bukhara dome'):
+# 7 booths at 2.40 pitch from y 18.3 to 35.1 (were 8 x 2.00), 1.90 wide (were 1.30): +0.30 to the aisle, +0.30 to the street,
+# still stepping with the street line (x0 = 8.99 - 0.0986 (y - 18.3) at the booth centre)
+_BK = [b_[4] for b_ in D['booths']]
+def _x0(y): return 8.991714 - 0.0985693 * (y - 18.3)
+_YB = 18.86                                                                      # clear of the pishtaq (y <= 18.83)
+D['booths'] = [[round(_YB + 2.4 * k, 4), round(_YB + 2.4 * (k + 1), 4), round(max(7.2, _x0(_YB + 2.4 * k + 1.2) - 0.27), 4), round(_x0(_YB + 2.4 * k + 1.2) + 1.63, 4), _BK[k]] for k in range(7)]
 
 sc = bl2.reset(sky=True, sun_elev=38, sky_strength=0.35, exposure=-0.9)
 for o in list(bpy.data.objects):                     # drop the helper far-ground plane, we model our own ground
