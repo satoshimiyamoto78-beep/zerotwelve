@@ -115,12 +115,13 @@ for o in [o for o in bpy.data.objects if o.name.startswith('Sam_column_') and o.
     o.data = a_sam_column2(int(o.data.name.split('_')[-1].split('.')[0]) / 1000); ncol += 1
 print('rev 10.7 columns rebuilt', ncol)
 SKIP = ('Booth', 'Bukhara_vitrine', 'Bukhara_rotunda', 'vase', 'Aivan_tableset', 'Tableset', 'Tapchan', 'aryk', 'street_steps', 'Tree_planter', 'Bar_drum')
+HORIZ = set(); CULL_MINZ = None; UVS = 0.5; UVOFF = [0.0, 0.0]
 SIDES = {'hazarbaf_t', 'bannai_t', 'bannai2_t', 'stone_t'}            # fired bricks / ashlar get real arrises; glazed tiles are thin slips
 def realize(me, zf=-99.0):
     """me: mesh in local coords; returns cladding mesh (or None); edits me in place (ground pulled back, photo mats swapped)"""
     idx = {i: m_.name for i, m_ in enumerate(me.materials) if m_ and m_.name in PAT}
     if not idx: return None
-    cb = _bm7.new(); cmats = []
+    cb = _bm7.new(); cmats = []; cuv = cb.loops.layers.uv.new('UVMap')
     def mi(mm):
         if mm not in cmats: cmats.append(mm)
         return cmats.index(mm)
@@ -134,12 +135,14 @@ def realize(me, zf=-99.0):
         if p.material_index not in idx: continue
         ground, ins, gen, solid, mn = PAT[idx[p.material_index]]
         n = p.normal.copy() * sgn
-        if n.length < 0.5 or abs(n.z) > 0.5: continue                              # walls only: tops / soffits / bottoms stay solid
+        if n.length < 0.5 or (abs(n.z) > 0.5 and not (n.z > 0.9 and idx[p.material_index] in HORIZ)): continue   # walls (and listed floors) only
         u = Vector((0, 0, 1)).cross(n) if abs(n.z) < 0.9 else Vector((1, 0, 0)) - n * n.x
         u.normalize(); v = n.cross(u)
         P3 = [me.vertices[i].co for i in p.vertices]
         pts = [(q.dot(u), q.dot(v)) for q in P3]; d0 = P3[0].dot(n)
-        try: poly = _P(pts).buffer(0).buffer(-0.004).intersection(_box(-1e4, zf + 0.004, 1e4, 1e4))   # nothing below the finished floor
+        try:
+            poly = _P(pts).buffer(0).buffer(-0.004 if abs(n.z) < 0.5 else 0.0)
+            if abs(n.z) < 0.5: poly = poly.intersection(_box(-1e4, zf + 0.004, 1e4, 1e4))   # nothing below the finished floor
         except Exception: continue
         if poly.is_empty: continue
         bx = poly.bounds
@@ -159,6 +162,7 @@ def realize(me, zf=-99.0):
                 k_ = mi(mm); f0 = len(cb.faces)
                 try:
                     f = cb.faces.new(hi); f.material_index = k_
+                    for lp in f.loops: lp[cuv].uv = ((lp.vert.co.dot(u) + UVOFF[0]) / UVS, (lp.vert.co.dot(v) + UVOFF[1]) / UVS)
                     if idx[p.material_index] in SIDES:
                         for a in range(len(ring)):
                             s = cb.faces.new((lo[a], lo[(a + 1) % len(ring)], hi[(a + 1) % len(ring)], hi[a])); s.material_index = k_
@@ -205,6 +209,7 @@ def cull(c2, host):
         if o.type != 'MESH' or o is c2 or o.name.endswith('_real') or 'foliage' in o.data.name: continue
         l2, h2 = _bb(o)
         if any(h2[i] < lo[i] or l2[i] > hi[i] for i in range(3)): continue
+        if CULL_MINZ is not None and l2[2] > CULL_MINZ: continue                      # floors: only what goes through them
         for a, b_ in tc.overlap(tree(o)): bad.add(a)
     if not bad: return 0
     starts = [a for a, b_ in fr]; import bisect
