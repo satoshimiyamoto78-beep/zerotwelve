@@ -125,10 +125,15 @@ def realize(me, zf=-99.0):
         if mm not in cmats: cmats.append(mm)
         return cmats.index(mm)
     push = {}; nf = 0; realf = set(); pieces.clear()
+    vol = 0.0                                                                          # inside-out meshes: work with the true outward normal
+    for p in me.polygons:
+        vs_ = [me.vertices[i].co for i in p.vertices]
+        for k in range(1, len(vs_) - 1): vol += vs_[0].dot(vs_[k].cross(vs_[k + 1]))
+    sgn = -1.0 if vol < 0 else 1.0
     for p in me.polygons:
         if p.material_index not in idx: continue
         ground, ins, gen, solid, mn = PAT[idx[p.material_index]]
-        n = p.normal.copy()
+        n = p.normal.copy() * sgn
         if n.length < 0.5 or abs(n.z) > 0.5: continue                              # walls only: tops / soffits / bottoms stay solid
         u = Vector((0, 0, 1)).cross(n) if abs(n.z) < 0.9 else Vector((1, 0, 0)) - n * n.x
         u.normalize(); v = n.cross(u)
@@ -210,25 +215,30 @@ def cull(c2, host):
     me2 = bpy.data.meshes.new(c2.data.name + 'c'); b_.to_mesh(me2); b_.free()
     for mm in c2.data.materials: me2.materials.append(mm)
     c2.data = me2; return len(kill)
-done7 = {}; nobj = 0; nmesh = 0; ncull = 0
-for o in list(bpy.data.objects):
-    if o.type != 'MESH' or o.name.endswith('_real') or o.name.startswith(SKIP): continue
-    me = o.data
-    if not any(m_ and m_.name in PAT for m_ in me.materials): continue
-    if any(abs(s_ - 1) > 1e-3 for s_ in o.scale):
-        for i, m_ in enumerate(me.materials):                                   # scaled instances: solid colours only
-            if m_ and m_.name in PAT: me.materials[i] = PAT[m_.name][3]
-        continue
-    if me.name not in done7:
-        done7[me.name] = realize(me, TER - o.matrix_world.translation.z); nmesh += 1
-        if done7[me.name]: PIECES[done7[me.name].name] = list(pieces)
-    cl = done7[me.name]
-    if cl:
-        c2 = bpy.data.objects.new(o.name + '_real', cl); c2.matrix_world = o.matrix_world.copy()
-        for col in o.users_collection: col.objects.link(c2)
-        bpy.context.view_layer.update(); PIECES[c2.data.name] = PIECES[cl.name]; ncull += cull(c2, o); nobj += 1
-for o in bpy.data.objects:                                                      # small decor keeps nothing photographic either
-    if o.type == 'MESH':
-        for i, m_ in enumerate(o.data.materials):
-            if m_ and m_.name in PAT: o.data.materials[i] = PAT[m_.name][3]
+nobj = nmesh = ncull = 0
+def realize_all(skip=SKIP):
+    global nobj, nmesh, ncull
+    done7 = {}; nobj = 0; nmesh = 0; ncull = 0
+    for o in list(bpy.data.objects):
+        if o.type != 'MESH' or o.name.endswith('_real') or o.name.startswith(skip): continue
+        me = o.data
+        if not any(m_ and m_.name in PAT for m_ in me.materials): continue
+        if any(abs(s_ - 1) > 1e-3 for s_ in o.scale):
+            for i, m_ in enumerate(me.materials):                                   # scaled instances: solid colours only
+                if m_ and m_.name in PAT: me.materials[i] = PAT[m_.name][3]
+            continue
+        if me.name not in done7:
+            done7[me.name] = realize(me, TER - o.matrix_world.translation.z); nmesh += 1
+            if done7[me.name]: PIECES[done7[me.name].name] = list(pieces)
+        cl = done7[me.name]
+        if cl:
+            c2 = bpy.data.objects.new(o.name + '_real', cl); c2.matrix_world = o.matrix_world.copy()
+            for col in o.users_collection: col.objects.link(c2)
+            bpy.context.view_layer.update(); PIECES[c2.data.name] = PIECES[cl.name]; ncull += cull(c2, o); nobj += 1
+    for o in bpy.data.objects:                                                      # small decor keeps nothing photographic either
+        if o.type == 'MESH':
+            for i, m_ in enumerate(o.data.materials):
+                if m_ and m_.name in PAT: o.data.materials[i] = PAT[m_.name][3]
+    return nmesh, nobj, ncull
+realize_all()
 print('rev 10.7 realized meshes', nmesh, 'cladding objects', nobj, 'pieces culled', ncull)
