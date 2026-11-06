@@ -309,3 +309,4 @@ exec(open(os.path.join(HERE, 'detail_v102.py')).read())                   # rev.
 exec(open(os.path.join(HERE, 'detail_v103.py')).read())                   # rev. 10.3: real stair flights + handrails (joints)
 exec(open(os.path.join(HERE, 'detail_v104.py')).read())                   # rev. 10.4: table sets fitted to their tables
 exec(open(os.path.join(HERE, 'detail_v105.py')).read())                   # rev. 10.5: real sewn cushions
+exec(open(os.path.join(HERE, 'detail_v106.py')).read())                   # rev. 10.6: owner-marked extra seating (156 inside)
