@@ -312,3 +312,4 @@ exec(open(os.path.join(HERE, 'detail_v105.py')).read())                   # rev.
 exec(open(os.path.join(HERE, 'detail_v106.py')).read())                   # rev. 10.6: owner-marked extra seating (156 inside)
 exec(open(os.path.join(HERE, 'detail_v107.py')).read())                   # rev. 10.7: photo textures -> real bricks, tiles, stars, ashlar
 exec(open(os.path.join(HERE, 'detail_v108.py')).read())                   # rev. 10.8: real chip carving + jali lattice, straight walnut
+exec(open(os.path.join(HERE, 'detail_v109.py')).read())                   # rev. 10.9: De Bobo backlit carpet coffer ceiling + framed wall carpets
