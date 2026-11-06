@@ -1,0 +1,9 @@
+newmtl leaves_sansevier
+Kd 0.7294 0.7294 0.7294
+map_Kd leaves_sansevieria.jpg
+newmtl stone_white
+Kd 0.2314 0.2314 0.2314
+map_Kd stone_white.jpg
+newmtl vase_red_01
+Kd 0.3490 0.0000 0.0000
+map_Kd vase_red.jpg
