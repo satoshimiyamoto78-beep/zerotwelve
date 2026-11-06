@@ -99,7 +99,7 @@ if PLACE_COLLS is not None:
             if any(n.startswith('Street_pishtaq') for n in (oi.name, oj.name)) and any(n.startswith(('roof_beam_y15', 'roof_beam_y18', 'column_portal')) for n in (oi.name, oj.name)): continue   # beam ends encased in the portal pylons
             if bi.overlap(bj): pen.append([oi.name, oj.name])
     # floating: every standing piece must rest on something (a floor, deck or another piece) within 2 mm
-    HANG = ('Street_bench_pads', 'Street_bench_tables', 'Hauz_star_water', 'Olive_foliage', 'Croton_foliage', 'Aivan_ceiling', 'Aivan_ramp_handrail', 'Lantern', 'Zardevor', 'Corridor_swag', 'Mangal_signboard', 'Logo_', 'Rod', 'Flying_carpet', 'Heat_lamp', 'Corridor_niche', 'Aivan_wallcarpet', 'Corridor_velvet', 'Mangal_hood', 'Mangal_skewers',
+    HANG = ('Street_bench_pads', '_real', 'Street_bench_tables', 'Hauz_star_water', 'Olive_foliage', 'Croton_foliage', 'Aivan_ceiling', 'Aivan_ramp_handrail', 'Lantern', 'Zardevor', 'Corridor_swag', 'Mangal_signboard', 'Logo_', 'Rod', 'Flying_carpet', 'Heat_lamp', 'Corridor_niche', 'Aivan_wallcarpet', 'Corridor_velvet', 'Mangal_hood', 'Mangal_skewers',
             'Khiva_gate', 'Street_pishtaq', 'Booth', 'dome_', 'Tent_', 'Corridor_arch', 'Carpet_frieze', 'Ceiling_carpet', 'Rattan', 'Velvet_swag', 'Pendant', 'Chandelier', 'Khiva_arcade_head', 'Khiva_arcade_beam', 'Reed_fringe', 'Bar_cornice', 'Bar_drum', 'Bar_wallcarpet', 'Sconce', 'Skylight', 'Chinar_crown')
     sup = []
     for o in objs:
@@ -108,7 +108,7 @@ if PLACE_COLLS is not None:
         sup.append((o, Vector((min(v.x for v in vs), min(v.y for v in vs), min(v.z for v in vs))), Vector((max(v.x for v in vs), max(v.y for v in vs), max(v.z for v in vs))),
                     BVHTree.FromPolygons(vs, [list(p.vertices) for p in o.data.polygons])))
     for o, lo, hi, _ in [t for t in sup if any(c.name in PLACE_COLLS for c in t[0].users_collection)]:
-        if o.name.startswith(HANG) or 'lantern' in o.name.lower(): continue
+        if o.name.startswith(HANG) or o.name.endswith('_real') or 'lantern' in o.name.lower(): continue
         mw = o.matrix_world; bot = [mw @ v.co for v in o.data.vertices]; zmin = min(v.z for v in bot)
         lowv = [v for v in bot if v.z < zmin + 0.001]; bx0, bx1 = min(v.x for v in lowv), max(v.x for v in lowv); by0, by1 = min(v.y for v in lowv), max(v.y for v in lowv)
         pts = lowv[:8] + [Vector((bx0 + (bx1 - bx0) * i / 4, by0 + (by1 - by0) * j / 4, zmin)) for i in range(5) for j in range(5)]

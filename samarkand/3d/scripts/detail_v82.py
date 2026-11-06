@@ -310,3 +310,4 @@ exec(open(os.path.join(HERE, 'detail_v103.py')).read())                   # rev.
 exec(open(os.path.join(HERE, 'detail_v104.py')).read())                   # rev. 10.4: table sets fitted to their tables
 exec(open(os.path.join(HERE, 'detail_v105.py')).read())                   # rev. 10.5: real sewn cushions
 exec(open(os.path.join(HERE, 'detail_v106.py')).read())                   # rev. 10.6: owner-marked extra seating (156 inside)
+exec(open(os.path.join(HERE, 'detail_v107.py')).read())                   # rev. 10.7: photo textures -> real bricks, tiles, stars, ashlar
