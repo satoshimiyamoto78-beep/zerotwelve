@@ -88,10 +88,11 @@ for i, (y0, y1, x0, x1, key) in enumerate(B):
     inst(mb.mesh(f'Booth{i + 1}_valance'), f'Booth{i + 1}_valance', (0, 0, 0), 0, 'Booths')
     # settees + table (+ the tea set moves onto it)
     xc = (x0 + xp) / 2
-    SL = 1.66 if xp - x0 >= 1.70 else 1.08                                                # rev 11.4: the aivan's 3-seat settee
-    inst(a_settee(SL, 3 if SL > 1.5 else 2), f'Booth{i + 1}_settee_S', (xc, ya + 0.27, ZP), 0.0, 'Booths')
-    inst(a_settee(SL, 3 if SL > 1.5 else 2), f'Booth{i + 1}_settee_N', (xc, yb_ - 0.27, ZP), math.pi, 'Booths')
-    inst(a_teatable(1.4 if SL > 1.5 else 0.8, 0.85 if SL > 1.5 else 0.7), f'Booth{i + 1}_table', (xc, (y0 + y1) / 2, ZP), 0.0, 'Booths')
+    SL = 1.40                                                                              # rev 11.7: wide 2-seat settees (700 per person)
+    xc = xp - 0.05 - SL / 2                                                                # set deep, towards the parapet: the entrance stays free
+    inst(a_settee(SL, 2), f'Booth{i + 1}_settee_S', (xc, ya + 0.27, ZP), 0.0, 'Booths')
+    inst(a_settee(SL, 2), f'Booth{i + 1}_settee_N', (xc, yb_ - 0.27, ZP), math.pi, 'Booths')
+    inst(a_teatable(1.2, 0.85), f'Booth{i + 1}_table', (xc, (y0 + y1) / 2, ZP), 0.0, 'Booths')
     ts = bpy.data.objects.get(f'Booth{i + 1}_tableset')
     if ts:
         lo_, hi_ = _bb(ts); ts.location.x += xc - (lo_[0] + hi_[0]) / 2; ts.location.y += (y0 + y1) / 2 - (lo_[1] + hi_[1]) / 2
