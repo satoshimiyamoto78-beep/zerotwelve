@@ -8,6 +8,7 @@
     on the north end wall (see below)"""
 from shapely.geometry import Polygon as _P9, box as _b9
 from shapely.ops import unary_union as _uu9
+from shapely.geometry import LineString as _LS9
 _rm('Flying_carpet', 'Rod_carpet')
 ZC = lambda x: top(x) - 0.70                                                    # ceiling soffit (beam underside - 20)
 LED = mat('led_warm', (1.0, 0.72, 0.42), emit=(1.0, 0.72, 0.42), strength=6.0)
@@ -70,10 +71,29 @@ for ya, yb in zip(ys, ys[1:]):
         for g in (getattr(cell, 'geoms', None) or [cell]):
             if g.geom_type != 'Polygon' or g.area < 0.25: continue
             k = (int(xa / M) * 7 + int(ya / M) * 3) % 19 + 1; nco += 1
-            def mk(b, g=g, k=k):
+            kind = (int(xa / M) * 5 + int(ya / M) * 3 + int(ya / M) // 2) % 5    # rev 11.6: mixed coffers (owner refs) — carpet / slats / ribbed / dropped
+            def mk(b, g=g, k=k, kind=kind):
+                ring = g.buffer(-0.003, join_style=2).difference(g.buffer(-0.045, join_style=2))
+                if kind == 1:                                                                          # timber slat box dropped 150, lit from above
+                    spoly(b, ring, -0.15, 0.10, FRM)
+                    spoly(b, g.buffer(-0.045, join_style=2), 0.112, 0.122, CHAR if 'CHAR' in globals() else FRM)
+                    spoly(b, g.buffer(-0.05, join_style=2).difference(g.buffer(-0.09, join_style=2)), 0.10, 0.112, LED)
+                    x0_, y0_, x1_, y1_ = g.bounds; inner = g.buffer(-0.046, join_style=2)
+                    along = (x1_ - x0_) < (y1_ - y0_)
+                    n_ = int(((x1_ - x0_) if along else (y1_ - y0_)) / 0.075)
+                    for s_ in range(n_):
+                        c_ = (x0_ if along else y0_) + 0.0375 + s_ * 0.075
+                        sl = (_b9(c_ - 0.016, y0_, c_ + 0.016, y1_) if along else _b9(x0_, c_ - 0.016, x1_, c_ + 0.016)).intersection(inner)
+                        if not sl.is_empty: spoly(b, sl, -0.13, -0.02, FRM)
+                    return
                 spoly(b, g.buffer(-0.06, join_style=2), 0.10, 0.112, rugmat(k, False))                     # carpet panel up in the coffer
                 spoly(b, g.buffer(-0.03, join_style=2).difference(g.buffer(-0.07, join_style=2)), 0.112, 0.124, LED)   # LED strip behind
-                spoly(b, g.buffer(-0.003, join_style=2).difference(g.buffer(-0.045, join_style=2)), 0.0, 0.10, FRM)                     # timber frame lining the coffer
+                spoly(b, ring, -0.10 if kind == 3 else 0.0, 0.10, FRM)                                   # timber frame lining the coffer (deeper on 3)
+                if kind in (2, 3):                                                                      # diagonal walnut ribs under the carpet
+                    x0_, y0_, x1_, y1_ = g.buffer(-0.045, join_style=2).bounds
+                    for p0_, p1_ in (((x0_, y0_), (x1_, y1_)), ((x0_, y1_), (x1_, y0_))):
+                        rib = _LS9([p0_, p1_]).buffer(0.022, cap_style=2).intersection(g.buffer(-0.046, join_style=2))
+                        if not rib.is_empty: spoly(b, rib, 0.04, 0.098, FRM)
             piece(f'Ceiling_coffer_{nco:03d}', mk)
 # walnut grid beams (segments between nodes, clipped to the region)
 for x in xs:

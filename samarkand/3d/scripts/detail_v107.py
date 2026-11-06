@@ -115,7 +115,7 @@ for o in [o for o in bpy.data.objects if o.name.startswith('Sam_column_') and o.
     o.data = a_sam_column2(int(o.data.name.split('_')[-1].split('.')[0]) / 1000); ncol += 1
 print('rev 10.7 columns rebuilt', ncol)
 SKIP = ('Booth', 'Bukhara_vitrine', 'Bukhara_rotunda', 'vase', 'Aivan_tableset', 'Tableset', 'Tapchan', 'aryk', 'street_steps', 'Tree_planter', 'Bar_drum')
-HORIZ = set(); CULL_MINZ = None; UVS = 0.5; UVOFF = [0.0, 0.0]
+HORIZ = set(); CULL_MINZ = None; HMINZ = -99.0; UVS = 0.5; UVOFF = [0.0, 0.0]
 SIDES = {'hazarbaf_t', 'bannai_t', 'bannai2_t', 'stone_t'}            # fired bricks / ashlar get real arrises; glazed tiles are thin slips
 def realize(me, zf=-99.0):
     """me: mesh in local coords; returns cladding mesh (or None); edits me in place (ground pulled back, photo mats swapped)"""
@@ -139,6 +139,8 @@ def realize(me, zf=-99.0):
         u = Vector((0, 0, 1)).cross(n) if abs(n.z) < 0.9 else Vector((1, 0, 0)) - n * n.x
         u.normalize(); v = n.cross(u)
         P3 = [me.vertices[i].co for i in p.vertices]
+        if abs(n.z) > 0.5 and P3[0].z < HMINZ: continue                               # floors: only above this level
+        if abs(n.z) < 0.5 and idx[p.material_index] in HORIZ: continue                # floor materials: no wall treatment
         pts = [(q.dot(u), q.dot(v)) for q in P3]; d0 = P3[0].dot(n)
         try:
             poly = _P(pts).buffer(0).buffer(-0.004 if abs(n.z) < 0.5 else 0.0)

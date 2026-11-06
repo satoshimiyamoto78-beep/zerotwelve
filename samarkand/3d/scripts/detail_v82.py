@@ -318,3 +318,4 @@ exec(open(os.path.join(HERE, 'detail_v111.py')).read())                   # rev.
 exec(open(os.path.join(HERE, 'detail_v112.py')).read())                   # rev. 11.2: joints — rails to columns, newels, flanges, wall return
 exec(open(os.path.join(HERE, 'detail_v113.py')).read())                   # rev. 11.3: stair jugs, trestle tables, cascade chandeliers, carved frieze
 exec(open(os.path.join(HERE, 'detail_v115.py')).read())                   # rev. 11.5: arched corridor per ref (rev 11.4 booths: base3d_r12 data)
+exec(open(os.path.join(HERE, 'detail_v116.py')).read())                   # rev. 11.6: plain tables, aivan brick pinwheel floor, doors/screen off

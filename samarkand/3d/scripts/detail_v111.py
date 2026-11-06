@@ -2,6 +2,11 @@
 white marble slabs 500 x 500 on the diagonal (each its own stone, veins only, own rotation), 3 mm joints; 90 mm bands between them:
 cobalt edge strips, white middle strip with inlaid diamonds (black / honey / green / brown); at every crossing a cobalt square with a
 honey diamond. The screed under the pieces is pulled down 6 mm; anything standing through the floor gets the pieces cut around it."""
+_zc = [_bb(o) for o in bpy.data.objects if o.name.startswith('zellige_carpet')]
+_rm('zellige_carpet')                                                          # rev 11.6 (owner): one floor everywhere; only the corridor runner differs
+for k_, (lo_, hi_) in enumerate(_zc):                                          # the slab under them gets the same marble floor
+    fb_ = MB(); fb_.box(lo_[0], lo_[1], TER - 0.1, hi_[0], hi_[1], TER, XW['marble'])
+    inst(fb_.mesh(f'terrace_floor_fill_{k_}'), f'terrace_floor_fill_{k_}', (0, 0, 0), 0, 'Floors')
 MARB = uvmat('marble_slab_uv', 'marble_slab.png', rough=0.18, sheen=0.0)
 GROUT = mat('grout_grey', (0.55, 0.55, 0.53), rough=0.9)
 FC = {'cob': mat('fl_cobalt', (0.03, 0.08, 0.38), rough=0.2, coat=0.6), 'white': mat('fl_white', (0.9, 0.89, 0.86), rough=0.25),

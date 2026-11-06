@@ -34,13 +34,7 @@ for nm_, (x0, x1, y0, y1) in (('A', (3.3, 4.2, 15.55, 18.05)), ('B', (3.3, 4.2, 
 def a_trestle(L, Dp):
     b = MB(); Wd = XW['wd']
     b.box(-L / 2, -Dp / 2, 0.70, L / 2, Dp / 2, 0.75, Wd, 0.008)                               # 50 mm top
-    b.box(-L / 2 + 0.06, -Dp / 2 + 0.06, 0.75, L / 2 - 0.06, Dp / 2 - 0.06, 0.752, MORTAR)
-    n, mrows = int((L - 0.12) / 0.103), int((Dp - 0.12) / 0.103)
-    for i in range(n):
-        for j in range(mrows):
-            x0 = -n * 0.103 / 2 + i * 0.103; y0 = -mrows * 0.103 / 2 + j * 0.103
-            pat = ((i % 4) in (1, 2)) == ((j % 4) in (1, 2))
-            b.box(x0, y0, 0.75, x0 + 0.1, y0 + 0.1, 0.758, TILE[0] if pat else (TILE[2] if (i + j) % 2 else TILE[1]), 0.002)
+    b.box(-L / 2 + 0.01, -Dp / 2 + 0.01, 0.75, L / 2 - 0.01, Dp / 2 - 0.01, 0.758, Wd, 0.004)                # rev 11.6: plain wood, no tile field
     xs = L / 2 - min(0.16, L * 0.2)
     for sx in (-1, 1):
         x = sx * xs

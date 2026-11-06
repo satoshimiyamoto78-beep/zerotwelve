@@ -52,7 +52,7 @@ B = D['booths']; ZP = TER + 0.15; ZC = TER + 2.40
 bounds = [B[0][0]] + [b_[1] for b_ in B]
 for k, yb in enumerate(bounds):
     nb = [b_ for b_ in B if abs(b_[0] - yb) < 1e-3 or abs(b_[1] - yb) < 1e-3]
-    xa, xe = max(b_[2] for b_ in nb), min(b_[3] for b_ in nb)
+    xa, xe = min(b_[2] for b_ in nb), min(b_[3] for b_ in nb)          # rev 11.6: partition runs to the more aisle-ward booth (no settee back sticks out)
     kind, cell = THEMES[min(k, 7)][3], THEMES[min(k, 7)][4]
     mb = MB()
     mb.box(xa + 0.04, yb - 0.009, TER, xe - 0.18, yb + 0.009, ZC, CHAR)                                   # charcoal core
@@ -69,9 +69,7 @@ for i, (y0, y1, x0, x1, key) in enumerate(B):
     mb = MB()
     mb.box(x0, ya, TER, xp, yb_, ZP - 0.01, WD, 0.004)                                                    # podium carcass
     n = int((yb_ - ya - 0.04) / 0.103)
-    for j in range(n):                                                                                    # tile band on the riser
-        yy = ya + 0.02 + (yb_ - ya - 0.04 - n * 0.103) / 2 + j * 0.103
-        mb.box(x0 - 0.012, yy, TER + 0.025, x0, yy + 0.1, TER + 0.125, tmat if j % 2 == 0 else TILE[1], 0.002)
+    mb.box(x0 - 0.008, ya + 0.02, TER + 0.06, x0, yb_ - 0.02, TER + 0.07, m['brass'], 0.002)            # rev 11.6: plain walnut riser, brass strip
     mb.box(xp, y0 + 0.04, TER, x1, y1 - 0.04, TER + 0.75, WD, 0.004)                                     # parapet to the street
     mb.box(xp, y0 + 0.04, TER + 0.75, x1 + 0.02, y1 - 0.04, TER + 0.78, STONE_, 0.004)             # stone cap (vases stand on it)
     mb.box(x0, ya, ZC, xp, yb_, ZC + 0.04, CHAR)                                                          # charcoal soffit
