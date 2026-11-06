@@ -23,10 +23,10 @@ def uvcopy(mm):
     bump = N.new('ShaderNodeBump'); bump.inputs['Strength'].default_value = 0.15; bump.inputs['Distance'].default_value = 0.001
     Lk.new(it.outputs['Color'], bump.inputs['Height']); Lk.new(bump.outputs['Normal'], bs.inputs['Normal'])
     _UVC[mm.name] = m2; return m2
-def pillow(name, w, d, h, mm, soft=0.5, pipe=None, buttons=(0, 0), upright=False, tilt=0.0):
+def pillow(name, w, d, h, mm, soft=0.5, pipe=None, buttons=(0, 0), upright=False, tilt=0.0, cuts=7):
     """cushion w (x) x d (y) x h (z), centred at the origin; soft 0 = box cushion, 1 = throw pillow; upright: thickness along y"""
     bm = _bmesh.new(); _bmesh.ops.create_cube(bm, size=1.0)
-    _bmesh.ops.subdivide_edges(bm, edges=bm.edges[:], cuts=7, use_grid_fill=True)
+    _bmesh.ops.subdivide_edges(bm, edges=bm.edges[:], cuts=cuts, use_grid_fill=True)
     bm.normal_update(); uvl = bm.loops.layers.uv.new('UVMap')                                    # each face shows the whole rug (medallion centred)
     for f in bm.faces:
         n_ = f.normal; ax = max(range(3), key=lambda i: abs(n_[i])); a_, b_ = [i for i in range(3) if i != ax]

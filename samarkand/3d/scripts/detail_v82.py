@@ -315,3 +315,4 @@ exec(open(os.path.join(HERE, 'detail_v108.py')).read())                   # rev.
 exec(open(os.path.join(HERE, 'detail_v109.py')).read())                   # rev. 10.9: De Bobo backlit carpet coffer ceiling + framed wall carpets
 exec(open(os.path.join(HERE, 'detail_v110.py')).read())                   # rev. 11.0: street eave — carved beam casings, tiled fascia, carved fringe
 exec(open(os.path.join(HERE, 'detail_v111.py')).read())                   # rev. 11.1: marble floor laid as real slabs, bands, inlays
+exec(open(os.path.join(HERE, 'detail_v112.py')).read())                   # rev. 11.2: joints — rails to columns, newels, flanges, wall return
