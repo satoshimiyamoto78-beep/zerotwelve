@@ -320,3 +320,4 @@ exec(open(os.path.join(HERE, 'detail_v113.py')).read())                   # rev.
 exec(open(os.path.join(HERE, 'detail_v115.py')).read())                   # rev. 11.5: arched corridor per ref (rev 11.4 booths: base3d_r12 data)
 exec(open(os.path.join(HERE, 'detail_v116.py')).read())                   # rev. 11.6: plain tables, aivan brick pinwheel floor, doors/screen off
 exec(open(os.path.join(HERE, 'detail_v117.py')).read())                   # rev. 11.7: real materials, booth chandeliers + curtains
+exec(open(os.path.join(HERE, 'detail_v118.py')).read())                   # rev. 11.8: ergonomic bar, Bukhara brass installation
