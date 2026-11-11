@@ -30,6 +30,16 @@ D['items'] = [it_ for it_ in D['items'] if it_['kind'] not in ('aryk', 'bridge')
 if D.get('inlays', {}).get('aryk'):
     D['floor_main'] = D['floor_main'] + D['inlays']['aryk']; D['inlays']['aryk'] = []
 def _rc(x0, y0, x1, y1): return [[x0, y0], [x1, y0], [x1, y1], [x0, y1]]
+# rev. 12.0 (owner: 'widen the main aisles, up to 5-8 seats may go'): the 2-tops along the aivan move 0.25 to it (middle aisle
+# 0.85 -> 1.10), the two table columns east of the tree move to the street (spine 0.70 -> 1.0); the 2-top m2 by booth 1 is dropped
+def _shift(x0, y0, x1, y1, dx):
+    for it_ in D['items']:
+        if it_['kind'] not in ('table', 'chair'): continue
+        for r_ in it_['poly']:
+            cx_ = sum(p_[0] for p_ in r_) / len(r_); cy_ = sum(p_[1] for p_ in r_) / len(r_)
+            if x0 < cx_ < x1 and y0 < cy_ < y1:
+                for p_ in r_: p_[0] = round(p_[0] + dx, 4)
+_shift(3.6, 18.8, 4.6, 28.0, -0.25); _shift(7.5, 10.2, 9.1, 15.3, 0.30); _shift(9.7, 10.2, 10.6, 15.3, 0.15)
 for _yt in (31.27, 34.12):                                                         # rev. 11.10: two 4-tops, 1.35 m between the chair backs
     D['items'].append({'kind': 'table', 'mods': 2, 'axis': 'x', 'poly': [_rc(4.90, _yt, 6.30, _yt + 0.8)]})
     for _xc in (4.96, 5.66):

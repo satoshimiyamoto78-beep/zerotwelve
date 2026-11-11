@@ -30,73 +30,8 @@ def _rm(pref):
 # ================= BAR =================
 for p_ in ('Bar_backwall', 'Bar_counter', 'Bar_cornice', 'Bar_espresso', 'Bar_wallcarpet'): _rm(p_)
 F0 = TER; Y0b, Y1b = 8.62, 14.28
-b = MB()
-# thin brick back wall + cornice
-b.box(0.14, 8.6, F0, 0.22, 14.3, 3.10, _BRICK)
-b.box(0.22, 8.6, 2.86, 0.36, 14.3, 3.06, _WD, 0.004)
-b.box(0.22, 8.6, 2.84, 0.38, 14.3, 2.86, m['brass'])
-# back-bar under-counter units (front face at x 0.70)
-def unit(y0, y1, kind):
-    if kind == 'fridge':
-        b.box(0.16, y0 + 0.005, F0 + 0.1, 0.69, y1 - 0.005, F0 + 0.86, _STEEL, 0.003)
-        b.box(0.69, y0 + 0.04, F0 + 0.16, 0.705, y1 - 0.04, F0 + 0.8, _GLASSD)
-        b.rod((0.715, y0 + 0.08, F0 + 0.74), (0.715, y1 - 0.08, F0 + 0.74), 0.008, _STEEL)
-    elif kind == 'ice':
-        b.box(0.16, y0 + 0.005, F0 + 0.1, 0.69, y1 - 0.005, F0 + 0.86, _STEEL, 0.003)
-        b.box(0.69, y0 + 0.06, F0 + 0.45, 0.705, y1 - 0.06, F0 + 0.8, _STEEL)
-        b.box(0.69, y0 + 0.06, F0 + 0.2, 0.705, y1 - 0.06, F0 + 0.26, _BLACK)
-    else:
-        n_ = max(1, round((y1 - y0) / 0.6)); w_ = (y1 - y0) / n_
-        b.box(0.16, y0, F0 + 0.1, 0.69, y1, F0 + 0.86, _WD, 0.003)
-        for k in range(n_):
-            ya = y0 + k * w_
-            b.box(0.69, ya + 0.01, F0 + 0.12, 0.70, ya + w_ - 0.01, F0 + 0.84, _WD, 0.002)
-            b.rod((0.715, ya + w_ / 2 - 0.08, F0 + 0.72), (0.715, ya + w_ / 2 + 0.08, F0 + 0.72), 0.007, m['brass'])
-    b.box(0.18, y0, F0, 0.66, y1, F0 + 0.1, _BLACK)                                     # recessed plinth
-for y0, y1, k in ((8.62, 9.22, 'ice'), (9.22, 9.82, 'fridge'), (9.82, 10.42, 'fridge'), (10.42, 12.22, 'cab'),
-                  (12.22, 12.82, 'fridge'), (12.82, 13.42, 'fridge')): unit(y0, y1, k)
-b.box(0.14, 8.62, F0 + 0.86, 0.72, 13.42, F0 + 0.90, _WD, 0.004)                         # walnut worktop +0.90
-# glass bottle cooler, full height, north end
-b.box(0.16, 13.44, F0, 0.70, 14.28, F0 + 2.0, _STEEL, 0.004)
-b.box(0.70, 13.48, F0 + 0.12, 0.712, 14.24, F0 + 1.92, _GLASSD)
-GLS = mat('cooler_glass', (0.75, 0.85, 0.9), rough=0.05)
+# (back wall, back bar, equipment and shelves: detail_v121.py)
 cols_ = [(0.8, 0.25, 0.1), (0.95, 0.6, 0.1), (0.25, 0.55, 0.2), (0.85, 0.82, 0.7), (0.55, 0.1, 0.25)]
-for r_, zz in enumerate((0.3, 0.75, 1.2, 1.62)):
-    b.box(0.2, 13.5, F0 + zz - 0.02, 0.66, 14.22, F0 + zz, _STEEL)
-    for k in range(9):
-        cm = mat(f'drink_{r_ % 5}', cols_[(r_ + k) % 5], rough=0.15)
-        b.cyl(0.6, 13.56 + k * 0.08, F0 + zz, F0 + zz + 0.24, 0.03, cm, 10)
-b.box(0.705, 13.47, F0 + 1.75, 0.715, 14.25, F0 + 1.9, _LEDW)
-# worktop equipment
-def espresso(y):
-    b.box(0.22, y, F0 + 0.90, 0.66, y + 0.72, F0 + 1.32, _STEEL, 0.01); b.box(0.24, y + 0.02, F0 + 1.32, 0.62, y + 0.7, F0 + 1.35, m['brass'])
-    for k in range(2):
-        yy = y + 0.2 + k * 0.32; b.cyl(0.70, yy, F0 + 1.08, F0 + 1.14, 0.04, _BLACK, 12); b.rod((0.70, yy, F0 + 1.11), (0.78, yy, F0 + 1.1), 0.01, _BLACK)
-    b.box(0.6, y + 0.05, F0 + 0.92, 0.72, y + 0.67, F0 + 0.94, _STEEL)                       # drip tray
-    for k in range(6): b.cyl(0.3 + 0.07 * (k % 3), y + 0.15 + 0.1 * (k // 3), F0 + 1.35, F0 + 1.42, 0.035, m.get('porcelain', _ICE), 10)
-espresso(10.5)
-for yy in (11.32, 11.58):                                                                  # grinders
-    b.box(0.3, yy - 0.09, F0 + 0.90, 0.5, yy + 0.09, F0 + 1.22, _BLACK, 0.01); b.cyl(0.4, yy, F0 + 1.22, F0 + 1.42, 0.08, GLS, 12, r2=0.05)
-for yy in (9.55, 9.85):                                                                    # blenders
-    b.box(0.32, yy - 0.09, F0 + 0.90, 0.5, yy + 0.09, F0 + 1.05, _BLACK, 0.01); b.cyl(0.41, yy, F0 + 1.05, F0 + 1.35, 0.06, GLS, 12, r2=0.075)
-b.cyl(0.42, 12.5, F0 + 0.90, F0 + 1.12, 0.1, _STEEL, 16)                                    # citrus juicer
-b.cyl(0.42, 12.9, F0 + 0.90, F0 + 1.15, 0.12, GLS, 16)                                      # lemonade dispenser
-b.cyl(0.42, 13.2, F0 + 0.90, F0 + 1.15, 0.12, GLS, 16)
-# shelves + LED + dividers + stock
-for zz in (1.45, 1.85, 2.25):
-    b.box(0.22, 8.7, F0 + zz - 0.03, 0.50, 13.35, F0 + zz, _WD, 0.002)
-    b.box(0.46, 8.72, F0 + zz - 0.04, 0.48, 13.33, F0 + zz - 0.03, _LEDW)
-    for k in range(30):
-        y_ = 8.82 + k * 0.15
-        if any(abs(y_ - d) < 0.06 for d in (10.25, 11.8)): continue
-        if (k + int(zz * 10)) % 3 == 0: b.cyl(0.36, y_, F0 + zz, F0 + zz + 0.11, 0.045, m.get('porcelain', _ICE), 12)        # cups / jars
-        else:
-            cm = mat(f'drink_{(k + int(zz * 10)) % 5}', cols_[(k + int(zz * 10)) % 5], rough=0.15)
-            b.cyl(0.36, y_, F0 + zz, F0 + zz + 0.22, 0.033, cm, 10); b.cyl(0.36, y_, F0 + zz + 0.22, F0 + zz + 0.27, 0.012, cm, 8)
-for yd in (8.7, 10.25, 11.8, 13.35):
-    b.box(0.22, yd - 0.015, F0 + 1.42, 0.50, yd + 0.015, F0 + 2.25, _WD, 0.002)
-inst(b.mesh('Bar_backbar'), 'Bar_backbar', (0, 0, 0), 0, 'Bar')
-
 # front counter, y 8.10 .. 14.30
 YA, YB = 8.10, 14.30
 b = MB()

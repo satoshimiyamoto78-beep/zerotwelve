@@ -11,6 +11,18 @@ if GN.x < 0: GN = -GN
 BEAMCV = mat('walnut_beam', (0.2, 0.12, 0.07), rough=0.5); BEAMCV.node_tree.nodes  # replaced by real carving below
 _wdn = XW['wd']
 COLS = {4.1: 12.64, 9.85: 12.07, 15.3: 11.53, 18.3: 11.23, 21.35: 10.93, 25.6: 10.51, 29.1: 10.17, 32.1: 9.87, 36.3: 9.46}
+# ---------------- roof frame is new-build (owner): the beams that span 10-12.6 m from the building to the street columns become
+# HEB 300 (300 wide flange; was a 150 flange I-section) — preliminary size, deflection ~L/340; final by the structural engineer
+nb_ = 0
+for o_ in [o for o in bpy.data.objects if o.type == 'MESH' and o.name.startswith('roof_beam_y')]:
+    lo_, hi_ = _bb(o_)
+    if hi_[0] - lo_[0] < 8.0: continue
+    cy_ = (lo_[1] + hi_[1]) / 2; mwi = o_.matrix_world.inverted(); mw = o_.matrix_world
+    for v in o_.data.vertices:
+        w_ = mw @ v.co; w_.y = cy_ + (w_.y - cy_) * 2.0; v.co = mwi @ w_
+    o_.data.update(); o_['section'] = 'HEB300'; nb_ += 1
+print('rev 12.0: long beams to HEB 300:', nb_)
+bpy.context.view_layer.update()
 pieces10 = []
 def bottom_z(x): return top(x) - 0.55
 for o_ in [o for o in bpy.data.objects if o.name.startswith('roof_beam_y')]:
@@ -29,13 +41,9 @@ for o_ in [o for o in bpy.data.objects if o.name.startswith('roof_beam_y')]:
     vs = [V(xc, yc - hw + 0.03, -0.03), V(xe, yc - hw + 0.03, -0.03), V(xe, yc + hw - 0.03, -0.03), V(xc, yc + hw - 0.03, -0.03),
           V(xc, yc - hw + 0.03, -0.002), V(xe, yc - hw + 0.03, -0.002), V(xe, yc + hw - 0.03, -0.002), V(xc, yc + hw - 0.03, -0.002)]
     for q in ((0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)): bm_.faces.new([vs[k] for k in q]).material_index = i_w
-    # stepped carved corbel under the beam end + brass end cap
+    # rev 12.0 (owner: 'the wooden things at the columns are unclear'): no stepped corbel — a plain boxed walnut beam end with a brass cap
     zb = bottom_z(xe) - 0.03
-    for k, (L, h) in enumerate(((0.42, 0.05), (0.32, 0.05), (0.22, 0.05), (0.12, 0.05))):
-        L = min(L, (xe - xc) * (1 - 0.2 * k) - 0.02)
-        if L < 0.05: break
-        b.box(xe - L, yc - hw + 0.01 + 0.006 * k, zb - h * (k + 1), xe - 0.0, yc + hw - 0.01 - 0.006 * k, zb - h * k, _wdn, 0.004)
-    b.box(xe - 0.002, yc - hw, zb - 0.2, xe + 0.006, yc + hw, bottom_z(xe) + 0.295, m['brass'], 0.002)
+    b.box(xe - 0.002, yc - hw, zb, xe + 0.006, yc + hw, bottom_z(xe) + 0.295, m['brass'], 0.002)
     pieces10.append((f'Facade_beam_casing_{yc:.1f}', b))
 # ---------------------------------------------------------------- eave fascia + tile band + carved fringe (local frame: x along gutter)
 FT = mat('fascia_tile', (0.03, 0.1, 0.42), rough=0.12, coat=0.9)

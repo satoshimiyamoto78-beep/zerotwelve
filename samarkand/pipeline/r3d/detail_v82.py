@@ -324,3 +324,6 @@ exec(open(os.path.join(HERE, 'detail_v117.py')).read())                   # rev.
 exec(open(os.path.join(HERE, 'detail_v118.py')).read())                   # rev. 11.8: ergonomic bar, Bukhara brass installation
 exec(open(os.path.join(HERE, 'detail_v119.py')).read())                   # rev. 11.9: aryk out (data), 2 tables, street name board
 exec(open(os.path.join(HERE, 'detail_v120.py')).read())                   # rev. 12.0 block 1: aivan wall, mangal beam, hall light, sockets
+exec(open(os.path.join(HERE, 'detail_v121.py')).read())                   # rev. 12.0 block 2: bar in real brick, equipment, shelves, fridges
+exec(open(os.path.join(HERE, 'detail_v122.py')).read())                   # rev. 12.0 block 3: street plinth, no holes
+exec(open(os.path.join(HERE, 'detail_v123.py')).read())                   # rev. 12.0 block 4: photo zone, waiter station, booth trim
