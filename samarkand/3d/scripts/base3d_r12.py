@@ -30,10 +30,11 @@ D['items'] = [it_ for it_ in D['items'] if it_['kind'] not in ('aryk', 'bridge')
 if D.get('inlays', {}).get('aryk'):
     D['floor_main'] = D['floor_main'] + D['inlays']['aryk']; D['inlays']['aryk'] = []
 def _rc(x0, y0, x1, y1): return [[x0, y0], [x1, y0], [x1, y1], [x0, y1]]
-for _yt in (31.25, 33.11):
-    D['items'].append({'kind': 'table', 'mods': 1, 'axis': 'x', 'poly': [_rc(5.70, _yt, 6.40, _yt + 0.8)]})
-    D['items'].append({'kind': 'chair', 'back': 's', 'poly': [_rc(5.76, _yt - 0.52, 6.34, _yt + 0.02)]})
-    D['items'].append({'kind': 'chair', 'back': 'n', 'poly': [_rc(5.76, _yt + 0.77, 6.34, _yt + 1.32)]})
+for _yt in (31.27, 34.47):                                                         # rev. 11.10: two 4-tops, 1.35 m between the chair backs
+    D['items'].append({'kind': 'table', 'mods': 2, 'axis': 'x', 'poly': [_rc(4.98, _yt, 6.38, _yt + 0.8)]})
+    for _xc in (5.04, 5.74):
+        D['items'].append({'kind': 'chair', 'back': 's', 'poly': [_rc(_xc, _yt - 0.52, _xc + 0.58, _yt + 0.02)]})
+        D['items'].append({'kind': 'chair', 'back': 'n', 'poly': [_rc(_xc, _yt + 0.77, _xc + 0.58, _yt + 1.33)]})
 
 sc = bl2.reset(sky=True, sun_elev=38, sky_strength=0.35, exposure=-0.9)
 for o in list(bpy.data.objects):                     # drop the helper far-ground plane, we model our own ground

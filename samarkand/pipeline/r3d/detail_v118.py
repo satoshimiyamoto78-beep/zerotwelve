@@ -134,81 +134,50 @@ for y0, y1 in ((10.75, 11.18), (11.22, 11.65), (11.75, 12.05)):                 
 for k in range(3): b.box(1.70 + 0.09 * k, 13.5, F0 + 0.90, 1.77 + 0.09 * k, 14.1, F0 + 0.91, _STEEL)                     # glass rack mats
 inst(b.mesh('Bar_counter'), 'Bar_counter', (0, 0, 0), 0, 'Bar')
 
-# ================= BUKHARA INSTALLATION =================
+# ================= NORTH END (rev. 11.10, owner: 'remove the whole construction and its decor, keep only a chandelier, make it as
+# simple as possible to make / buy; add flowers and pots') =================
 for o_ in [o for o in bpy.data.collections['Bukhara_dome'].all_objects]: bpy.data.objects.remove(o_)
-CX, CY = 6.0, 35.15
-import bmesh as _bmesh
-HS = 1.15                                                                                      # open the coffers above it: square cut, capped
-for o_ in [o for o in bpy.data.collections['Carpet_ceiling'].all_objects if o.type == 'MESH']:
-    bm = _bmesh.new(); bm.from_mesh(o_.data); bm.transform(o_.matrix_world)
-    for co_, no_ in (((CX - HS, 0, 0), (1, 0, 0)), ((CX + HS, 0, 0), (1, 0, 0)), ((0, CY - HS, 0), (0, 1, 0)), ((0, CY + HS, 0), (0, 1, 0))):
-        _bmesh.ops.bisect_plane(bm, geom=bm.verts[:] + bm.edges[:] + bm.faces[:], plane_co=co_, plane_no=no_)
-    def _in(c): return abs(c.x - CX) < HS - 1e-4 and abs(c.y - CY) < HS - 1e-4 and c.z > 2.2
-    dead = [f for f in bm.faces if _in(f.calc_center_median())]
-    if dead:
-        _bmesh.ops.delete(bm, geom=dead, context='FACES')
-        bnd = [e for e in bm.edges if e.is_boundary and all(abs(abs(v.co.x - CX) - HS) < 2e-3 or abs(abs(v.co.y - CY) - HS) < 2e-3 for v in e.verts)]
-        if bnd: _bmesh.ops.holes_fill(bm, edges=bnd, sides=0)
-        bm.transform(o_.matrix_world.inverted()); bm.to_mesh(o_.data); o_.data.update()
-    bm.free()
+CX, CY = 5.68, 33.27                                                              # between the two 4-top tables
 dg = bpy.context.evaluated_depsgraph_get(); dg.update()
-hit = bpy.context.scene.ray_cast(dg, (CX, CY, TER + 0.3), (0, 0, -1), distance=0.5)
-if not hit[0] or abs(hit[1].z - TER) > 0.02:                                                   # floor patch where the rotunda base was
-    prism('terrace_floor_fill_bk', [[(CX + 1.1 * _m.cos(a), CY + 1.1 * _m.sin(a)) for a in [k * _m.pi / 24 for k in range(48)]]], TER - 0.2, TER, XW['marble'], 'Floors')
-    o_ = bpy.data.objects.get('terrace_floor_fill_bk')
-    if o_: _uv_top(o_, CX - 1.1, CY - 1.1, CX + 1.1, CY + 1.1)
-ZR = 3.27                                                                                      # purlin underside
-PAN = [(10, 70, 0.90, 2.15, 3.45), (65, 60, 0.98, 2.55, 3.60), (115, 65, 0.90, 2.30, 3.35), (170, 55, 0.98, 2.70, 3.55),
-       (215, 65, 0.90, 2.20, 3.50), (270, 60, 0.98, 2.60, 3.40), (320, 60, 0.90, 2.35, 3.60), (100, 200, 0.45, 2.45, 3.30)]
-TH = 0.004
-def _slice(pb, L, step=0.05):                                                                  # densify along u before bending
-    k = 1
-    while k * step < L - 1e-3:
-        g = pb.bm.verts[:] + pb.bm.edges[:] + pb.bm.faces[:]
-        _bmesh.ops.bisect_plane(pb.bm, geom=g, plane_co=(k * step, 0, 0), plane_no=(1, 0, 0)); k += 1
-for i_, (a0, span, R, zb, zt) in enumerate(PAN):
-    L = R * _m.radians(span); pb = MB()
-    for q in lattice_poly(0.0, TER + zb, L, TER + zt, 'star', 0.09, 0.013, 0.025): ext_holes(pb, q, 0.0, TH, _BRS, 'xz')
-    for u in (0.004, L - 0.004): pb.rod((u, TH / 2, TER + zb), (u, TH / 2, TER + zt), 0.008, _BRS, 8)     # tube edges
-    _slice(pb, L)
-    me = pb.mesh(f'Bk_panel_{i_ + 1}')
-    for v in me.vertices:
-        th = _m.radians(a0) + v.co.x / R; r = R + v.co.y
-        v.co.x, v.co.y = CX + r * _m.cos(th), CY + r * _m.sin(th)
-    me.update(); inst(me, f'Bukhara_panel_{i_ + 1}', (0, 0, 0), 0, 'Bukhara_dome')
-    rb = MB()
-    for f in (0.15, 0.5, 0.85):                                                               # hanging rods to the purlins
-        th = _m.radians(a0 + span * f); x, y = CX + (R + TH / 2) * _m.cos(th), CY + (R + TH / 2) * _m.sin(th)
-        if TER + zt < ZR - 0.01: rb.rod((x, y, TER + zt - 0.02), (x, y, ZR), 0.004, m['brass'], 6)
-    if rb.bm.verts: inst(rb.mesh(f'Bk_rods_{i_ + 1}'), f'Bukhara_rods_{i_ + 1}', (0, 0, 0), 0, 'Bukhara_dome')
-# the spiral ribbon down to the podium (hall / tent side, clear of the booth entrance)
-PX, PY, PR = 5.35, 34.75, 0.40; HZ = TER + 0.45
-H_ = 0.30; t0, t1 = 100.0, 235.0; L = 0.95 * _m.radians(t1 - t0); pb = MB()
-for q in lattice_poly(0.0, 0.0, L, H_, 'star', 0.09, 0.013, 0.025): ext_holes(pb, q, 0.0, TH, _BRS, 'xz')
-for zz in (0.006, H_ - 0.006): pb.rod((0.0, TH / 2, zz), (L, TH / 2, zz), 0.008, _BRS, 8)
-_slice(pb, L, 0.04)
-me = pb.mesh('Bk_spiral')
-zt0, zt1 = TER + 2.45, HZ + H_
+for px_, py_ in ((6.0, 35.15), (5.3, 34.7), (6.6, 35.6)):                          # floor patch where the rotunda base was
+    hit = bpy.context.scene.ray_cast(dg, (px_, py_, TER + 0.3), (0, 0, -1), distance=0.5)
+    if not hit[0] or abs(hit[1].z - TER) > 0.02:
+        prism('terrace_floor_fill_bk', [[(6.0 + 1.1 * _m.cos(a), 35.15 + 1.1 * _m.sin(a)) for a in [k * _m.pi / 24 for k in range(48)]]], TER - 0.2, TER, XW['marble'], 'Floors')
+        o_ = bpy.data.objects.get('terrace_floor_fill_bk')
+        if o_: _uv_top(o_, 4.9, 34.05, 7.1, 36.25)
+        break
+# one plain drum chandelier: rolled pierced-brass band 900 dia x 380, two brass hoops, 3 rods to the ceiling grid, 6 lamps inside
+ZC_ = top(CX) - 0.75; ZB = TER + 2.30; HB = 0.38; RD = 0.45; TH = 0.003
+L = 2 * _m.pi * RD; pb = MB()
+for q in lattice_poly(0.0, ZB, L, ZB + HB, 'star', 0.095, 0.014, 0.03): ext_holes(pb, q, 0.0, TH, _BRS, 'xz')
+k = 1
+while k * 0.05 < L - 1e-3:
+    _bmesh_ = __import__('bmesh'); g = pb.bm.verts[:] + pb.bm.edges[:] + pb.bm.faces[:]
+    _bmesh_.ops.bisect_plane(pb.bm, geom=g, plane_co=(k * 0.05, 0, 0), plane_no=(1, 0, 0)); k += 1
+me = pb.mesh('Drum_band')
 for v in me.vertices:
-    t = min(max(v.co.x / L, 0.0), 1.0); s = t * t * (3 - 2 * t); th = _m.radians(t0 + (t1 - t0) * t)
-    r = 0.98 - 0.22 * t * t + v.co.y; ztop = zt0 + (zt1 - zt0) * s
-    v.co.x, v.co.y, v.co.z = CX + r * _m.cos(th), CY + r * _m.sin(th), ztop - H_ + v.co.z
-me.update(); inst(me, 'Bukhara_spiral', (0, 0, 0), 0, 'Bukhara_dome')
-# walnut hoop with spots + its rods; walnut podium with samovar
-b = MB(); RH = 0.94; ZH = TER + 2.80
-b.ring(CX, CY, ZH, [(RH - 0.02, 0.0), (RH + 0.02, 0.0), (RH + 0.02, 0.08), (RH - 0.02, 0.08)], _WD, 64)
-for k in range(8):
-    a = k * _m.pi / 4 + _m.pi / 8; x, y = CX + RH * _m.cos(a), CY + RH * _m.sin(a)
-    b.cyl(x, y, ZH - 0.09, ZH, 0.03, _BLACK, 12); b.cyl(x, y, ZH - 0.095, ZH - 0.09, 0.022, _LEDW, 12)
-for k in range(4):
-    a = k * _m.pi / 2 + _m.pi / 8; x, y = CX + RH * _m.cos(a), CY + RH * _m.sin(a); b.rod((x, y, ZH + 0.08), (x, y, ZR), 0.005, m['brass'], 6)
-inst(b.mesh('Bukhara_hoop'), 'Bukhara_hoop', (0, 0, 0), 0, 'Bukhara_dome')
+    th = v.co.x / RD; r = RD + v.co.y; v.co.x, v.co.y = CX + r * _m.cos(th), CY + r * _m.sin(th)
+me.update(); inst(me, 'North_chandelier_band', (0, 0, 0), 0, 'Bukhara_dome')
 b = MB()
-b.cyl(PX, PY, TER, HZ - 0.03, PR, _WD, 48); b.cyl(PX, PY, HZ - 0.03, HZ, PR + 0.015, _WD, 48)
-b.cyl(PX, PY, TER + 0.06, TER + 0.09, PR + 0.004, m['brass'], 48); b.cyl(PX, PY, HZ - 0.06, HZ - 0.045, PR + 0.004, m['brass'], 48)
-b.lathe(PX + 0.08, PY + 0.05, HZ, [(0.0, 0.0), (0.09, 0.0), (0.06, 0.04), (0.14, 0.12), (0.15, 0.3), (0.11, 0.38), (0.06, 0.42),
-                                   (0.08, 0.47), (0.03, 0.55), (0.0, 0.56)], m['brass'], 32)                 # samovar
-b.rod((PX + 0.22, PY + 0.05, HZ + 0.18), (PX + 0.3, PY + 0.05, HZ + 0.16), 0.012, m['brass'])
-b.lathe(PX + 0.08, PY + 0.05, HZ + 0.56, [(0.0, 0.0), (0.06, 0.0), (0.07, 0.07), (0.04, 0.12), (0.0, 0.13)], m.get('porcelain', _ICE), 16)
-inst(b.mesh('Bukhara_podium'), 'Bukhara_podium', (0, 0, 0), 0, 'Bukhara_dome')
-print('rev 11.8: bar rebuilt, Bukhara installation placed')
+for zz in (ZB - 0.012, ZB + HB - 0.012):
+    b.ring(CX, CY, zz, [(RD - 0.012, 0.0), (RD + 0.012, 0.0), (RD + 0.012, 0.024), (RD - 0.012, 0.024)], m['brass'], 48)
+for k in range(3):
+    a = k * 2 * _m.pi / 3 + 0.5; x, y = CX + RD * _m.cos(a), CY + RD * _m.sin(a); b.rod((x, y, ZB + HB), (x, y, ZC_), 0.005, m['brass'], 6)
+    b.rod((CX, CY, ZB + HB - 0.05), (x, y, ZB + HB - 0.002), 0.006, m['brass'], 6)
+b.rod((CX, CY, ZB + HB - 0.05), (CX, CY, ZB + 0.2), 0.008, m['brass'], 6)
+for k in range(6):
+    a = k * _m.pi / 3; x, y = CX + 0.2 * _m.cos(a), CY + 0.2 * _m.sin(a)
+    b.rod((CX, CY, ZB + 0.2), (x, y, ZB + 0.17), 0.005, m['brass'], 6); b.cyl(x, y, ZB + 0.09, ZB + 0.17, 0.035, _LEDW, 12)
+inst(b.mesh('North_chandelier'), 'North_chandelier', (0, 0, 0), 0, 'Bukhara_dome')
+# flower pots: a row of three between the tables, two by the gate
+_POT = mat('pot_terracotta', (0.62, 0.33, 0.2), rough=0.85); _SOIL = mat('pot_soil', (0.08, 0.06, 0.04), rough=0.95)
+def _pot(nm, x, y, r, h, kind, seed):
+    b = MB(); b.lathe(x, y, TER, [(0.0, 0.0), (r * 0.62, 0.0), (r * 0.7, 0.03), (r * 0.98, h * 0.82), (r * 1.06, h * 0.84), (r * 1.06, h), (r * 0.9, h),
+                                 (r * 0.88, h - 0.03), (0.0, h - 0.03)], _POT, 28)
+    b.cyl(x, y, TER + h - 0.04, TER + h - 0.025, r * 0.87, _SOIL, 20)
+    inst(b.mesh(nm), nm, (0, 0, 0), 0, 'Planting')
+    inst(a_shrub(seed, kind), nm + '_flowers', (x, y, TER + h - 0.03), seed * 0.7, 'Planting', scale=(r / 0.27,) * 3)
+for k, (x, y, r, h, kind) in enumerate(((5.16, 33.27, 0.19, 0.36, 'bou'), (5.68, 33.27, 0.23, 0.48, 'jas'), (6.20, 33.27, 0.19, 0.36, 'bou'),
+                                        (4.42, 36.0, 0.22, 0.45, 'bou'), (6.80, 36.0, 0.22, 0.45, 'jas'))):
+    _pot(f'North_pot_{k + 1}', x, y, r, h, kind, 70 + k)
+print('rev 11.10: bar rebuilt; installation removed, drum chandelier + pots placed')
