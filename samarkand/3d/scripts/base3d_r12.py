@@ -23,16 +23,16 @@ REV = D['rev']
 _BK = [b_[4] for b_ in D['booths']]
 def _x0(y): return 8.991714 - 0.0985693 * (y - 18.3)
 _YB = 18.86                                                                      # clear of the pishtaq (y <= 18.83)
-D['booths'] = [[round(_YB + 2.4 * k, 4), round(_YB + 2.4 * (k + 1), 4), round(max(7.2, _x0(_YB + 2.4 * k + 1.2) - 0.27), 4), round(_x0(_YB + 2.4 * k + 1.2) + 1.63, 4), _BK[k]] for k in range(7)]
+D['booths'] = [[round(_YB + 2.4 * k, 4), round(_YB + 2.4 * (k + 1), 4), round(_x0(_YB + 2.4 * k + 1.2) - 0.27, 4), round(_x0(_YB + 2.4 * k + 1.2) + 1.63, 4), _BK[k]] for k in range(7)]
 # rev. 11.9 (owner: 'take the water channel out completely and put tables where it was'): aryk + its bridge removed, the floor
 # runs through, two 2-top tables (4 seats) on the old channel line between the tents and the booths (aisles 1.5 / 0.85)
 D['items'] = [it_ for it_ in D['items'] if it_['kind'] not in ('aryk', 'bridge')]
 if D.get('inlays', {}).get('aryk'):
     D['floor_main'] = D['floor_main'] + D['inlays']['aryk']; D['inlays']['aryk'] = []
 def _rc(x0, y0, x1, y1): return [[x0, y0], [x1, y0], [x1, y1], [x0, y1]]
-for _yt in (31.27, 34.47):                                                         # rev. 11.10: two 4-tops, 1.35 m between the chair backs
-    D['items'].append({'kind': 'table', 'mods': 2, 'axis': 'x', 'poly': [_rc(4.98, _yt, 6.38, _yt + 0.8)]})
-    for _xc in (5.04, 5.74):
+for _yt in (31.27, 34.12):                                                         # rev. 11.10: two 4-tops, 1.35 m between the chair backs
+    D['items'].append({'kind': 'table', 'mods': 2, 'axis': 'x', 'poly': [_rc(4.90, _yt, 6.30, _yt + 0.8)]})
+    for _xc in (4.96, 5.66):
         D['items'].append({'kind': 'chair', 'back': 's', 'poly': [_rc(_xc, _yt - 0.52, _xc + 0.58, _yt + 0.02)]})
         D['items'].append({'kind': 'chair', 'back': 'n', 'poly': [_rc(_xc, _yt + 0.77, _xc + 0.58, _yt + 1.33)]})
 

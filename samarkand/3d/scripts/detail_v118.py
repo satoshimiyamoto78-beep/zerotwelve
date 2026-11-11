@@ -137,7 +137,7 @@ inst(b.mesh('Bar_counter'), 'Bar_counter', (0, 0, 0), 0, 'Bar')
 # ================= NORTH END (rev. 11.10, owner: 'remove the whole construction and its decor, keep only a chandelier, make it as
 # simple as possible to make / buy; add flowers and pots') =================
 for o_ in [o for o in bpy.data.collections['Bukhara_dome'].all_objects]: bpy.data.objects.remove(o_)
-CX, CY = 5.68, 33.27                                                              # between the two 4-top tables
+CX, CY = 5.60, 33.10                                                              # between the two 4-top tables
 dg = bpy.context.evaluated_depsgraph_get(); dg.update()
 for px_, py_ in ((6.0, 35.15), (5.3, 34.7), (6.6, 35.6)):                          # floor patch where the rotunda base was
     hit = bpy.context.scene.ray_cast(dg, (px_, py_, TER + 0.3), (0, 0, -1), distance=0.5)
@@ -177,7 +177,7 @@ def _pot(nm, x, y, r, h, kind, seed):
     b.cyl(x, y, TER + h - 0.04, TER + h - 0.025, r * 0.87, _SOIL, 20)
     inst(b.mesh(nm), nm, (0, 0, 0), 0, 'Planting')
     inst(a_shrub(seed, kind), nm + '_flowers', (x, y, TER + h - 0.03), seed * 0.7, 'Planting', scale=(r / 0.27,) * 3)
-for k, (x, y, r, h, kind) in enumerate(((5.16, 33.27, 0.19, 0.36, 'bou'), (5.68, 33.27, 0.23, 0.48, 'jas'), (6.20, 33.27, 0.19, 0.36, 'bou'),
-                                        (4.42, 36.0, 0.22, 0.45, 'bou'), (6.80, 36.0, 0.22, 0.45, 'jas'))):
+for k, (x, y, r, h, kind) in enumerate(((4.32, 36.02, 0.2, 0.42, 'bou'), (7.38, 35.98, 0.2, 0.42, 'jas'))):   # out of the walking lines (rev 11.11 audit)
     _pot(f'North_pot_{k + 1}', x, y, r, h, kind, 70 + k)
 print('rev 11.10: bar rebuilt; installation removed, drum chandelier + pots placed')
+for o_ in [o for o in bpy.data.objects if o.name.startswith('Ficus_potted_8')]: bpy.data.objects.remove(o_)   # it closed the approach to the aivan steps by the bar

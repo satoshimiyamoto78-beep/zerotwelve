@@ -159,6 +159,12 @@ def a_tent(w, d):
     for f in fs: f.material_index = i
     bmesh.ops.recalc_face_normals(b.bm, faces=fs)
     b.lathe(w / 2, d / 2, ap, [(0.0, 0), (0.035, 0.02), (0.05, 0.08), (0.02, 0.16), (0.0, 0.24)], m['brass'], 12)
+    # rev 11.11 (buildable frame): top ring 60 x 40 on the 4 posts, 4 hip rafters 40 x 40 to an apex block; the canopy is laced to them
+    for (x0, y0, x1, y1) in ((-p, -p, w + p, -p + 0.04), (-p, d + p - 0.04, w + p, d + p), (-p, -p, -p + 0.04, d + p), (w + p - 0.04, -p, w + p, d + p)):
+        b.box(x0, y0, zw - 0.06, x1, y1, zw - 0.001, W)
+    for cx_, cy_ in ((-p + 0.02, -p + 0.02), (w + p - 0.02, -p + 0.02), (w + p - 0.02, d + p - 0.02), (-p + 0.02, d + p - 0.02)):
+        b.rod((cx_, cy_, zw - 0.03), (w / 2, d / 2, ap - 0.05), 0.02, W, 4)
+    b.box(w / 2 - 0.05, d / 2 - 0.05, ap - 0.1, w / 2 + 0.05, d / 2 + 0.05, ap - 0.02, W)
     # scalloped valance hanging from the roof edge (closed thin band)
     for k in range(4):
         (x0, y0), (x1, y1) = base[k], base[(k + 1) % 4]; L = math.hypot(x1 - x0, y1 - y0); n = max(4, int(L / 0.3)); top_, bot = [], []

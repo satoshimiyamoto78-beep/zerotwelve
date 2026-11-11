@@ -9,7 +9,7 @@ from shapely.geometry import Polygon as SP_, box as SB_
 from shapely.ops import unary_union as SU_
 from shapely import affinity as SAff
 _rm('hauz', 'hauz_rim', 'Hauz_coping', 'Hauz_lotus_jet')
-HX, HY = D['hzc']; R = 0.95
+HX, HY = D['hzc']; R = 0.70                                              # rev 11.11 audit: star 1.9 -> 1.4 m, 0.85 m passes both sides
 star = SU_([SAff.rotate(SB_(HX - R / 2 ** 0.5, HY - R / 2 ** 0.5, HX + R / 2 ** 0.5, HY + R / 2 ** 0.5), a, origin=(HX, HY)) for a in (0, 45)])
 inner = star.buffer(-0.1, join_style=2, mitre_limit=5)
 MED = SP_(D['inlays']['medallion'][0])

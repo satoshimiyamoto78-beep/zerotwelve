@@ -8,7 +8,7 @@ _ch = {k: next(o.data for o in bpy.data.objects if o.name.startswith('Chair_') a
 _ts = {n: next((o.data for o in bpy.data.objects if o.name.startswith('Tableset_') and o.data.name.startswith(f'Tableset2_{n}p')), None) for n in (1, 2)}
 _ts[1] = next((o.data for o in bpy.data.objects if o.name.startswith('Tableset_') and '2p' in o.data.name), None)
 _ts[2] = next((o.data for o in bpy.data.objects if o.name.startswith('Tableset_') and '4p' in o.data.name), None)
-NEW = [('m1', 6.0, 24.8, 2, True), ('m2', 7.4, 19.9, 1, False), ('m3', 4.25, 13.25, 2, False), ('m4', 5.95, 10.45, 2, True)]
+NEW = [('m1', 6.0, 24.8, 2, True), ('m2', 7.4, 19.9, 1, False), ('m3', 4.6, 13.25, 1, False), ('m4', 5.95, 10.45, 2, True)]
 _rm('Table_m', 'Tableset_m', 'Chair_m')
 nseat = 0
 for tag, cx, cy, n, rot in NEW:

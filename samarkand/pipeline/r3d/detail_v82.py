@@ -221,15 +221,16 @@ def a_lowtable2(L=1.0, Wt=0.66, H=0.32):
         for sy in (-1, 1):
             b.lathe(sx * (L / 2 - 0.08), sy * (Wt / 2 - 0.08), 0, [(0.0, 0), (0.022, 0), (0.016, 0.03), (0.026, 0.08), (0.018, 0.14), (0.03, 0.2), (0.024, H - 0.1), (0.03, H - 0.1), (0.03, H - 0.035), (0.0, H - 0.035)], WD, 12)
     return b.mesh(f'Lowtable2_{int(L * 100)}')
+TAPX = 2.47                                                              # rev 11.11 audit: against the aivan landing rail
 for y0 in D['tap']:
     _rm('tapchan', 'kurpacha', 'Tapchan_railing', 'Tapchan_bolster', 'Tapchan_lowtable', 'Tapchan_dastarkhan')
-    inst(a_tapchan2(), 'Tapchan_v82', (2.55, y0, TER), 0, 'Tapchans_tent')
-    inst(a_tapchan_soft(), 'Tapchan_soft', (2.55, y0, TER + 0.45), 0, 'Tapchans_tent')
-    inst(a_lowtable2(), 'Tapchan_lowtable', (2.55 + 1.3, y0 + 1.1, TER + 0.456), 0, 'Tapchans_tent')
+    inst(a_tapchan2(), 'Tapchan_v82', (TAPX, y0, TER), 0, 'Tapchans_tent')
+    inst(a_tapchan_soft(), 'Tapchan_soft', (TAPX, y0, TER + 0.45), 0, 'Tapchans_tent')
+    inst(a_lowtable2(), 'Tapchan_lowtable', (TAPX + 1.3, y0 + 1.1, TER + 0.456), 0, 'Tapchans_tent')
     mb = MB(); zt_ = 0.32
     _lagan_plov(mb, -0.2, 0.0, zt_); _non(mb, 0.15, 0.17, zt_, 0.085); _tray(mb, 0.27, -0.12, zt_, 0.12); _choynak(mb, 0.25, -0.12, zt_ + 0.004, 0.85)
     for px, py in ((-0.38, 0.22), (-0.38, -0.22), (0.05, -0.24)): _piala2(mb, px, py, zt_)
-    inst(mb.mesh('Tapchan_set_v82'), 'Tapchan_tableset', (2.55 + 1.3, y0 + 1.1, TER + 0.456), 0, 'Tapchans_tent')
+    inst(mb.mesh('Tapchan_set_v82'), 'Tapchan_tableset', (TAPX + 1.3, y0 + 1.1, TER + 0.456), 0, 'Tapchans_tent')
 
 # =============== 6. TENTS: majlis floor seating + octagonal inlaid tables (moodboard) ===============
 @cached

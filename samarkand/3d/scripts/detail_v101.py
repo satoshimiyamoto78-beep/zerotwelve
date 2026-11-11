@@ -9,10 +9,12 @@ Ergonomics: seat +0.65 over the floor (+0.50 over the podium), seat depth 430, b
 from shapely.geometry import LineString as _LS, box as _SB
 from shapely.ops import unary_union as _UU
 THEMES = [  # (name, tile colour, globe colour, lattice kind, cell)
-    ('Самарканд', (0.03, 0.1, 0.42), (0.1, 0.25, 0.9), 'star', 0.30), ('Бухара', (0.06, 0.5, 0.52), (0.1, 0.75, 0.7), 'diamond', 0.26),
-    ('Хива', (0.08, 0.38, 0.18), (0.2, 0.8, 0.3), 'hex', 0.32), ('Худжанд', (0.75, 0.52, 0.12), (1.0, 0.7, 0.2), 'star', 0.26),
-    ('Пенджикент', (0.6, 0.15, 0.08), (1.0, 0.35, 0.15), 'diamond', 0.32), ('Ташкент', (0.05, 0.2, 0.5), (0.85, 0.85, 1.0), 'hex', 0.28),
-    ('Маргилан', (0.5, 0.08, 0.32), (0.95, 0.25, 0.6), 'star', 0.34), ('Памир', (0.88, 0.86, 0.8), (0.95, 0.95, 0.85), 'diamond', 0.3)]
+    ('Самарканд', (0.03, 0.1, 0.42), (0.1, 0.25, 0.9), 'star', 0.30), ('Бухара', (0.06, 0.5, 0.52), (0.1, 0.75, 0.7), 'star', 0.30),
+    ('Хива', (0.08, 0.38, 0.18), (0.2, 0.8, 0.3), 'star', 0.30), ('Худжанд', (0.75, 0.52, 0.12), (1.0, 0.7, 0.2), 'star', 0.30),
+    ('Пенджикент', (0.6, 0.15, 0.08), (1.0, 0.35, 0.15), 'star', 0.30), ('Ташкент', (0.05, 0.2, 0.5), (0.85, 0.85, 1.0), 'star', 0.30),
+    ('Маргилан', (0.5, 0.08, 0.32), (0.95, 0.25, 0.6), 'star', 0.30), ('Памир', (0.88, 0.86, 0.8), (0.95, 0.95, 0.85), 'star', 0.30)]
+# rev 11.11 (owner: booths as easy to make as possible): ONE lattice pattern (star, 300 cell) for all booths -> one CNC file,
+# identical prefab partition / ceiling panels; the booths differ only by colour (tiles, curtains) and the name board
 CHAR = mat('charcoal_mdf', (0.035, 0.032, 0.03), rough=0.75); WD = XW['wd']
 STONE_ = bl._mats.get('cap_stone_white') or mat('cap_stone_white', (0.86, 0.84, 0.79), rough=0.35)
 VELV = bl._mats.get('velvet_wine89') or X['velvet_wine']
