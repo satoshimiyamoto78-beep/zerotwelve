@@ -323,3 +323,4 @@ exec(open(os.path.join(HERE, 'detail_v116.py')).read())                   # rev.
 exec(open(os.path.join(HERE, 'detail_v117.py')).read())                   # rev. 11.7: real materials, booth chandeliers + curtains
 exec(open(os.path.join(HERE, 'detail_v118.py')).read())                   # rev. 11.8: ergonomic bar, Bukhara brass installation
 exec(open(os.path.join(HERE, 'detail_v119.py')).read())                   # rev. 11.9: aryk out (data), 2 tables, street name board
+exec(open(os.path.join(HERE, 'detail_v120.py')).read())                   # rev. 12.0 block 1: aivan wall, mangal beam, hall light, sockets
