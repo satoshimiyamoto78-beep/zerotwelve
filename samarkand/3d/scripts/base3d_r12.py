@@ -24,6 +24,16 @@ _BK = [b_[4] for b_ in D['booths']]
 def _x0(y): return 8.991714 - 0.0985693 * (y - 18.3)
 _YB = 18.86                                                                      # clear of the pishtaq (y <= 18.83)
 D['booths'] = [[round(_YB + 2.4 * k, 4), round(_YB + 2.4 * (k + 1), 4), round(max(7.2, _x0(_YB + 2.4 * k + 1.2) - 0.27), 4), round(_x0(_YB + 2.4 * k + 1.2) + 1.63, 4), _BK[k]] for k in range(7)]
+# rev. 11.9 (owner: 'take the water channel out completely and put tables where it was'): aryk + its bridge removed, the floor
+# runs through, two 2-top tables (4 seats) on the old channel line between the tents and the booths (aisles 1.5 / 0.85)
+D['items'] = [it_ for it_ in D['items'] if it_['kind'] not in ('aryk', 'bridge')]
+if D.get('inlays', {}).get('aryk'):
+    D['floor_main'] = D['floor_main'] + D['inlays']['aryk']; D['inlays']['aryk'] = []
+def _rc(x0, y0, x1, y1): return [[x0, y0], [x1, y0], [x1, y1], [x0, y1]]
+for _yt in (31.25, 33.11):
+    D['items'].append({'kind': 'table', 'mods': 1, 'axis': 'x', 'poly': [_rc(5.70, _yt, 6.40, _yt + 0.8)]})
+    D['items'].append({'kind': 'chair', 'back': 's', 'poly': [_rc(5.76, _yt - 0.52, 6.34, _yt + 0.02)]})
+    D['items'].append({'kind': 'chair', 'back': 'n', 'poly': [_rc(5.76, _yt + 0.77, 6.34, _yt + 1.32)]})
 
 sc = bl2.reset(sky=True, sun_elev=38, sky_strength=0.35, exposure=-0.9)
 for o in list(bpy.data.objects):                     # drop the helper far-ground plane, we model our own ground
@@ -172,7 +182,7 @@ if 'inlays' in D:                                       # inlays sit flush in th
     prism('terrace_floor', D['floor_main'], -1.45, TER, m['floor'], 'Floors')
     prism('alley_girih', IN['alley'], -1.45, TER, m['girih'], 'Floors'); prism('kids_rubber', IN['kids'], -1.45, TER, m['rubber'], 'Floors')
     prism('bbq_floor_slate', IN['bbq'], -1.45, TER, m['slate'], 'Floors'); prism('medallion_mosaic', IN['medallion'], -1.45, TER, m['majolica'], 'Floors')
-    prism('aryk_channel', IN['aryk'], -1.45, TER - 0.08, m['majolica'], 'Fountain'); prism('aryk_water', IN['aryk'], TER - 0.08, TER - 0.03, m['water'], 'Fountain')
+    if IN.get('aryk'): prism('aryk_channel', IN['aryk'], -1.45, TER - 0.08, m['majolica'], 'Fountain'); prism('aryk_water', IN['aryk'], TER - 0.08, TER - 0.03, m['water'], 'Fountain')
     prism('hauz_rim', D['hauz_ring'], TER, TER + (0.38 if os.environ.get('DETAIL', '1') == '1' else 0.45), m['majolica'], 'Fountain')     # detail pass adds the stone coping
 else:
     prism('terrace_floor', D['floor'], -1.45, TER, m['floor'], 'Floors')
