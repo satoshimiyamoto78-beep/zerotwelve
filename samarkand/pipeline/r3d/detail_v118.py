@@ -35,11 +35,9 @@ cols_ = [(0.8, 0.25, 0.1), (0.95, 0.6, 0.1), (0.25, 0.55, 0.2), (0.85, 0.82, 0.7
 # front counter, y 8.10 .. 14.30
 YA, YB = 8.10, 14.30
 b = MB()
-b.box(2.00, YA, F0 + 0.10, 2.28, YB, F0 + 1.01, _TERRA)                                     # body
+b.box(2.00, YA, F0 + 0.10, 2.268, YB, F0 + 1.01, mat('mortar_joint', (0.5, 0.46, 0.4), rough=0.95))                                     # body
 b.box(2.02, YA + 0.02, F0, 2.26, YB - 0.02, F0 + 0.10, _BLACK)                              # kick
-nfl = int((YB - YA - 0.06) / 0.06)
-for k in range(nfl + 1):                                                                    # fluted front
-    yy = YA + 0.03 + k * (YB - YA - 0.06) / nfl; b.rod((2.285, yy, F0 + 0.12), (2.285, yy, F0 + 0.98), 0.024, _TERRA, 8)
+# (front face: laid brick, detail_v124.py)
 b.box(1.98, YA - 0.02, F0 + 1.01, 2.44, YB, F0 + 1.05, _WD, 0.006)                           # walnut guest top +1.05
 b.box(1.98, YA, F0 + 0.90, 2.02, YB, F0 + 1.01, _WD)                                        # riser
 b.box(1.64, YA, F0 + 0.86, 2.00, YB, F0 + 0.90, _STEEL, 0.002)                              # stainless work shelf +0.90

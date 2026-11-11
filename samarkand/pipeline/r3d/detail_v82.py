@@ -327,3 +327,4 @@ exec(open(os.path.join(HERE, 'detail_v120.py')).read())                   # rev.
 exec(open(os.path.join(HERE, 'detail_v121.py')).read())                   # rev. 12.0 block 2: bar in real brick, equipment, shelves, fridges
 exec(open(os.path.join(HERE, 'detail_v122.py')).read())                   # rev. 12.0 block 3: street plinth, no holes
 exec(open(os.path.join(HERE, 'detail_v123.py')).read())                   # rev. 12.0 block 4: photo zone, waiter station, booth trim
+exec(open(os.path.join(HERE, 'detail_v124.py')).read())                   # rev. 12.1: plain buildable portal, brick bar counter
