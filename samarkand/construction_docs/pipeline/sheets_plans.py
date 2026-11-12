@@ -20,14 +20,14 @@ def sheet_plan(pdf, num, tot):
     # depth at the entrance + aivan + booth aisle
     dim(v, v.P(0.0, 15.0, 0), v.P(3.3, 15.0, 0), 4, side=-1, text='3.300 aivan')
     dim(v, v.P(0.0, 38.0, 0), v.P(9.46, 38.0, 0), 4, side=1)
-    dim(v, v.P(6.64, 29.7, 0), v.P(7.57, 29.7, 0), 3, side=1, text='≥930 lối đi / aisle')
+    dim(v, v.P(6.92, 24.8, 0), v.P(8.07, 24.8, 0), 3, side=1, text='1.150 lối cabin / aisle')
     b = [o for o in D['booth'] if o[0] == 'Booth4_shell'][0]; lo, hi = b[1], b[2]
     dim(v, v.P(lo[0], lo[1], 0), v.P(lo[0], hi[1], 0), 5, side=-1, text='2.400 cabin')
     dim(v, v.P(lo[0], hi[1], 0), v.P(hi[0], hi[1], 0), 5, side=1, text='1.950')
     dim(v, v.P(7.66, 15.64, 0), v.P(7.66, 17.96, 0), 6, side=1, text='2.320 hành lang')
-    dim(v, v.P(1.45, 7.74, 0), v.P(1.45, 14.3, 0), 6, side=1, text='6.560 quầy bar')
+    dim(v, v.P(1.64, 8.10, 0), v.P(1.64, 14.3, 0), 6, side=1, text='6.200 quầy bar')
     # zone labels (number bubbles) + levels
-    Z = [(1, 1.9, 11.2, 'Quầy bar'), (2, 6.0, 9.6, 'Sảnh ăn chính'), (3, 6.0, 19.9, 'Mái vòm'), (4, 9.0, 27.5, 'Cabin VIP'),
+    Z = [(1, 1.9, 11.2, 'Quầy bar'), (2, 6.0, 9.6, 'Sảnh ăn chính'), (3, 6.0, 18.9, 'Mái vòm'), (4, 9.0, 27.5, 'Cabin VIP'),
          (5, 1.4, 23.0, 'Aivan +0.450'), (6, 2.7, 33.5, 'Lều / Tents'), (7, 3.6, 29.7, 'Tapchan'), (8, 1.5, 4.5, 'Majlis'),
          (9, -3.6, 2.9, 'Khu trẻ em'), (10, 10.8, 6.0, 'Mangal'), (11, 9.0, 16.8, 'Hành lang vòm'), (12, 11.5, 16.8, 'Cổng Pishtaq'), (13, 6.0, 12.7, 'Cây ô liu'), (14, 11.6, 27.5, 'Ghế đường phố')]
     for n, x, y, t in Z: bubble(v, *v.P(x, y, 0), str(n), r=2.6, col=BLUE, fs=6)
@@ -39,8 +39,8 @@ def sheet_plan(pdf, num, tot):
     # legend + seat schedule
     leg = [f'{n}  {t}' for n, _, _, t in Z]
     text_block(pg, 214, 36.5, ['CHÚ THÍCH KHU / ZONES'] + [' · '.join(leg[i:i + 5]) for i in range(0, len(leg), 5)], fs=5.0, lh=3.1, bold_first=True)
-    table(pg, 330, 37, ['Khu / Zone', 'Chỗ / Seats'], [['Sảnh 19 bàn / Hall', '58'], ['Cabin 7 / Booths', '28'], ['Aivan 4 vịnh / bays', '24'],
-          ['Bar / Lều / Majlis / Tapchan', '10 / 16 / 10 / 6'], ['TỔNG TRONG NHÀ / TOTAL INSIDE', '152']], [52, 26], fs=4.6, rh=3.3)
+    table(pg, 330, 37, ['Khu / Zone', 'Chỗ / Seats'], [['Sảnh 20 bàn / Hall', '62'], ['Cabin 7 / Booths', '28'], ['Aivan 4 vịnh / bays', '24'],
+          ['Bar / Lều / Majlis / Tapchan', '10 / 16 / 10 / 6'], ['TỔNG TRONG NHÀ / TOTAL INSIDE', '156']], [52, 26], fs=4.6, rh=3.3)
     pg.save(pdf)
 if __name__ == '__main__':
     from matplotlib.backends.backend_pdf import PdfPages

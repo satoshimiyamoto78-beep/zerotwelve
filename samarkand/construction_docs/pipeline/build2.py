@@ -85,7 +85,7 @@ def sheet_column(pdf, num, tot):
         title(pg, 150, 29, 2, 'Mặt đứng cổng pishtaq', 'Pishtaq portal elevation', 'TL 1:50', w=90)
         dim(v2, v2.P(12, 15.55, -0.3), v2.P(12, 18.05, -0.3), 4, side=-1, text='2.500 lối vào')
         level(v2, *v2.P(12, 18.4, 1.868), '+2.318 thông thuỷ vòm', fs=4.8)
-    detail(pdf, num, tot, 'CT-01', 'Chi tiết cột Samarkand & cổng pishtaq', 'Samarkand column & pishtaq', 'det_column', 20, (-1.1, 1.1, -1.95, 2.0), calls, lev, dims, notes, extra=ex, legend_x=262, dmax=29.9)
+    detail(pdf, num, tot, 'CT-01', 'Chi tiết cột Samarkand', 'Samarkand street column', 'det_column', 20, (-1.1, 1.1, -1.95, 2.0), calls, lev, dims, notes, extra=None, legend_x=262, dmax=29.9)
 
 def sheet_aivan(pdf, num, tot):
     calls = [(((1.0, 23.4, 0.0), 'Sàn gạch nung 300×150 xếp chong chóng + gạch men 150 (F3) | Terracotta pinwheel + glazed inserts'), (6, 14)),
@@ -96,8 +96,8 @@ def sheet_aivan(pdf, num, tot):
              (((1.6, 23.4, 3.0), 'Trần ô hộp aivan +3.47: khung gỗ, thảm, LED hắt | Coffered aivan ceiling'), (8, 6)),
              (((1.72, 23.4, 2.4), 'Đèn chùm kiểu mái vòm (7 bộ, tâm mỗi ô trần) | Cascade chandelier at coffer centre'), (8, 2)),
              (((0.9, 23.45, 0.5), 'Sofa 3 chỗ 1660, đệm thảm có viền | 3-seat carved settee'), (-6, 8)),
-             (((0.17, 23.4, 1.4), 'Thảm treo tường trong khung, thanh đồng | Wall carpets on brass rods'), (8, -4)),
-             (((0.19, 23.4, 2.45), 'Diềm gỗ chạm sao thay zardevor | Carved walnut frieze'), (8, 4))]
+             (((0.17, 23.4, 1.4), 'Thảm treo từ sàn aivan tới trần (cao ≈2.75), thanh đồng Ø24 | Wall carpets floor-to-ceiling on brass rods'), (8, -4)),
+             (((0.19, 23.4, 2.45), 'Vách lưới sao gỗ óc chó 30 (giống hành lang) ở các ô không treo thảm | Star lattice panels as in the corridor'), (8, 4))]
     lev = [((3.6, 23.4, TER), '±0.000'), ((3.6, 23.4, 0.0), '+0.450 aivan'), ((3.6, 23.4, 3.02), '+3.470 trần')]
     dims = [((0.0, 23.4, TER - 0.05), (3.3, 23.4, TER - 0.05), 4, -1, '3.300'), ((3.5, 23.4, TER), (3.5, 23.4, 0.0), 4, 1, '450')]
     notes = ['• Mẫu chong chóng: gạch 300×150 quay quanh ô vuông 150 (gạch men); lưới', '  lặp (300,150)/(−150,300). Mạch 3 mm vữa xám. Viền giữ bằng nẹp đồng.',
@@ -191,18 +191,22 @@ def sheet_dome(pdf, num, tot):
     detail(pdf, num, tot, 'CT-05', 'Chi tiết mái vòm', 'Dome — section', 'det_dome', 40, (-4.0, 4.0, -3.7, 4.4), calls, lev, dims, notes, legend_x=232, dmax=53.0)
 
 def sheet_bar(pdf, num, tot):
-    calls = [(((0.45, 11.6, 1.2), 'Tường bar: gạch bannai + hốc vòm, kệ gỗ | Bannai brick back wall with arched niches'), (10, 10)),
-             (((0.55, 11.6, 3.0), 'Gờ phào gỗ chạm | Carved cornice'), (10, 4)),
-             (((1.9, 11.6, 0.64), 'Mặt quầy gỗ óc chó dày 40 +1.090 | Walnut counter top'), (10, 8)),
-             (((2.42, 11.6, 0.1), 'Mặt quầy: terracotta rãnh đứng + gạch men | Fluted terracotta front'), (10, -4)),
-             (((2.78, 11.6, 0.1), 'Ghế bar gỗ (10 cái) | Timber bar stools'), (10, -8)),
-             (((1.95, 11.6, 1.8), 'Đèn trống kết hạt (4 bộ) — ống treo xuyên trần | Beaded drum pendants'), (10, 0)),
-             (((1.8, 11.6, 2.95), 'Trần ô hộp (C1–C4) | Coffered ceiling'), (10, 6))]
-    lev = [((3.3, 11.6, TER), '±0.000'), ((3.3, 11.6, 0.64), '+1.090 quầy')]
-    dims = [((1.45, 11.6, TER - 0.15), (2.42, 11.6, TER - 0.15), 4, -1, '970'), ((0.14, 11.6, TER - 0.15), (1.45, 11.6, TER - 0.15), 4, -1, '1.310 lối nhân viên')]
-    notes = ['• Quầy dài 6.560; lối nhân viên 1.310; chân ghế cách quầy 150.', '• Kỹ thuật dưới quầy: cấp/thoát nước, ổ cắm IP44, rãnh kỹ thuật 200 (phối hợp M&E).',
-             '• Tường hậu: lõi gạch + gạch bannai ốp, hốc vòm có LED 2700K, kệ gỗ.', '• Bar length 6.56 m, staff aisle 1.31 m; MEP under counter by others.']
-    detail(pdf, num, tot, 'CT-06', 'Chi tiết quầy bar', 'Bar — section', 'det_bar', 20, (-2.3, 2.3, -2.3, 2.1), calls, lev, dims, notes, legend_x=262, dmax=42.8)
+    calls = [(((0.18, 11.6, 2.4), 'Tường gạch ốp vàng 230×65 dày 75 trên tường nền, mạch 10 lõm | Buff brick-slip wall, recessed 10 mm joints'), (10, 10)),
+             (((0.28, 11.6, 2.99), 'Phào gỗ óc chó + nẹp đồng | Walnut cornice + brass strip'), (10, 4)),
+             (((0.36, 11.6, 1.45), 'Kệ gỗ óc chó dày 40 sâu 285 (+1.50 / +1.90 / +2.30), ke đồng, LED dưới kệ | Walnut shelves on brass brackets'), (12, 4)),
+             (((0.45, 11.6, 0.2), 'Quầy sau sâu 550: tủ mát cửa kính / tủ gỗ, mặt gỗ +0.900 | Back bar 550 deep, worktop +0.90'), (12, -12)),
+             (((0.47, 11.6, 0.75), 'Thiết bị pha chế trên mặt quầy sau (DV-02) | Equipment on the back bar'), (12, 8)),
+             (((1.82, 11.6, 0.42), 'Mặt làm việc inox +0.900 rộng 360: chậu, khay đá, POS | Stainless work shelf +0.90'), (-14, 12)),
+             (((2.2, 11.6, 0.6), 'Mặt quầy khách gỗ óc chó 40, +1.050, rộng 460 | Walnut guest top +1.05'), (8, 12)),
+             (((2.27, 11.6, 0.1), 'Mặt trước quầy: gạch ốp vàng + gạch men đầu, cùng loại với tường | Counter front in the same brick'), (12, 2)),
+             (((2.40, 11.6, -0.23), 'Thanh gác chân đồng Ø48, +0.220 | Brass foot rail'), (12, -6)),
+             (((2.78, 11.6, 0.1), 'Ghế bar gỗ (10 cái), bước 620 | Bar stools ×10'), (12, -10)),
+             (((1.95, 11.6, 1.8), 'Đèn trống kết hạt (4 bộ), ống treo xuyên trần | Beaded drum pendants ×4'), (12, 0))]
+    lev = [((3.3, 11.6, TER), '±0.000'), ((3.3, 11.6, TER + 0.90), '+0.900'), ((3.3, 11.6, TER + 1.05), '+1.050 quầy')]
+    dims = [((1.64, 11.6, TER - 0.15), (2.44, 11.6, TER - 0.15), 4, -1, '800'), ((0.72, 11.6, TER - 0.15), (1.64, 11.6, TER - 0.15), 4, -1, '920 lối nhân viên'), ((0.14, 11.6, TER - 0.15), (0.72, 11.6, TER - 0.15), 4, -1, '580')]
+    notes = ['• Bar không cồn. Tổng sâu 2.300: tường 75 + quầy sau 550 + lối 920 + quầy trước 800.', '• Dưới quầy trước: máy rửa ly, 2 tủ mát, chậu đôi, chậu rửa tay, thùng rác, tủ.',
+             '• Cấp / thoát nước, ổ cắm IP44, rãnh kỹ thuật 200 sát tường — phối hợp M&E.', '• Non-alcoholic bar; total depth 2.30 m; MEP under both counters by others.']
+    detail(pdf, num, tot, 'CT-06', 'Chi tiết quầy bar — mặt cắt', 'Bar — cross section', 'det_bar', 20, (-2.3, 2.3, -2.3, 2.1), calls, lev, dims, notes, legend_x=262, dmax=42.8)
 
 def sheet_corr(pdf, num, tot):
     calls = [(((8.6, 15.72, 2.0), 'Vòm nhọn gỗ óc chó, bề mặt 160, dày 140 (4 vòm) | Pointed walnut arch 160 face × 140'), (-12, 6)),
@@ -223,7 +227,7 @@ def sheet_eave(pdf, num, tot):
     calls = [(((11.35, 27.3, 3.15), 'Máng xối phố (hiện trạng) | Street gutter'), (10, 6)),
              (((11.36, 27.3, 2.92), 'Diềm gỗ óc chó 40×300 + 2 hàng gạch men 100 (cobalt/trắng/ngọc) | Walnut fascia + glazed tile band'), (12, 2)),
              (((11.36, 27.3, 2.7), 'Diềm chạm nhọn gỗ 25, bước 250, lỗ tròn | Carved pointed-drop fringe'), (12, -4)),
-             (((10.9, 25.6, 2.95), 'Ốp dầm gỗ chạm sao + công-xon bậc + nắp đồng | Carved beam casing, corbel, brass cap'), (-14, 6)),
+             (((10.9, 25.6, 2.95), 'Hộp gỗ óc chó bọc đầu dầm + nắp đồng (không công-xon) | Plain walnut beam casing + brass end cap'), (-14, 6)),
              (((10.52, 25.6, 1.4), 'Cột Samarkand (CT-01)'), (-14, 0)),
              (((11.1, 27.3, TER + 0.45), 'Ghế xây trát vôi + đệm, bồn cây | Plaster bench + planter'), (10, -6))]
     lev = [((12.5, 27.3, TER), '±0.000'), ((12.5, 27.3, 3.07), '+3.520 đáy máng')]
@@ -241,21 +245,22 @@ def sheet_mangal(pdf, num, tot):
 
 def sheet_floor_details(pdf, num, tot):
     pg = Page('Chi tiết sàn đá & gạch', 'Floor details — marble module, bands, joints', 'CT-10', num, tot)
-    ax = pg.ax; s = 5.0                                           # 1:5 -> 1 m = 200 mm ... use mm/5
-    x0, y0 = 30, 150; k = 1 / s
+    ax = pg.ax; s = 10.0                                          # 1:10
+    x0, y0 = 100, 120; k = 1 / s
     A, W = 500, 90; P = A + W; CS = 0.16 * W
     def R(x, y, w, h, col, ang=45, cx=0, cy=0):
         import math
         pts = np.array([[x, y], [x + w, y], [x + w, y + h], [x, y + h]], float)
         c, s_ = math.cos(math.radians(ang)), math.sin(math.radians(ang))
         pts = np.array([[cx + (px - cx) * c - (py - cy) * s_, cy + (px - cx) * s_ + (py - cy) * c] for px, py in pts])
-        ax.add_patch(MPoly(x0 + pts * k / 1.0, closed=True, fc=col, ec='#555', lw=0.25, zorder=4))
-    for i in range(-1, 2):
-        for j in range(-1, 2):
+        q_ = pts * k + np.array([x0, y0])
+        if q_[:, 0].min() > 14 and q_[:, 0].max() < 190 and q_[:, 1].min() > 40 and q_[:, 1].max() < 252: ax.add_patch(MPoly(q_, closed=True, fc=col, ec='#555', lw=0.25, zorder=4))
+    for i in range(-3, 4):
+        for j in range(-3, 4):
             sx, sy = i * P, j * P
             R(sx, sy, A, A, '#f3f0ea'); R(sx + A, sy, W, A, '#ffffff'); R(sx, sy + A, A, W, '#ffffff')
             R(sx + A, sy, CS, A, '#1f3f8a'); R(sx + A + W - CS, sy, CS, A, '#1f3f8a'); R(sx, sy + A, A, CS, '#1f3f8a'); R(sx, sy + A + W - CS, A, CS, '#1f3f8a'); R(sx + A, sy + A, W, W, '#1f3f8a')
-    ax.text(30, 260, 'F1 — Module đá marble 500×500 lát chéo 45° + viền 90 (TL 1:5)', fontsize=6.5, fontweight='bold')
+    ax.text(30, 260, 'F1 — Module đá marble 500×500 lát chéo 45° + viền 90 (TL 1:10)', fontsize=6.5, fontweight='bold')
     rows = [['Đá / Slab', 'Marble trắng Carrara (hoặc tương đương) 500×500×20, đánh bóng mờ'], ['Viền / Band', 'Cobalt 14 + trắng 62 + cobalt 14 (gạch men 20 dày)'],
             ['Khảm / Inlay', 'Kim cương men: đen / mật ong / lá / nâu xen kẽ'], ['Giao / Crossing', 'Ô cobalt 90×90 + kim cương mật ong'], ['Ron / Joint', '1,5 – 3 mm epoxy xám nhạt'],
             ['Lớp lót / Bed', 'Vữa xi măng cát 40 + keo C2TE; khe co giãn @6 m'], ['Dung sai / Tol.', 'Độ phẳng ≤ 2 mm / 2 m; chống trơn R10']]
@@ -278,7 +283,7 @@ def _bbox(name, pad=0.03, plan=False):
 
 def sheet_furniture(pdf, num, tot):
     pg = Page('Chi tiết nội thất: ghế, sofa, bàn', 'Furniture — carved chair, settees, trestle table', 'CT-11', num, tot)
-    rows = [('chair', 'Ghế gỗ chạm (58 cái)', 'Carved armchair', ['Mặt ngồi +468, đệm thảm có viền', 'Lưng lưới sao chạm, chân đồng']),
+    rows = [('chair', 'Ghế gỗ chạm (62 cái)', 'Carved armchair', ['Mặt ngồi +468, đệm thảm có viền', 'Lưng lưới sao chạm, chân đồng']),
             ('settee', 'Sofa cabin 2 chỗ (14 cái)', 'Booth settee 2-seat', ['Mặt ngồi +500 trên bục +0.150', 'Đệm thảm Ba Tư có viền ống']),
             ('aivset', 'Sofa aivan 3 chỗ (8 cái)', 'Aivan settee 3-seat', ['Cùng mẫu với sofa cabin', 'Đệm thảm có viền']),
             ('table', 'Bàn chân chữ T (cabin 7 / aivan 4)', 'Trestle table', ['Mặt gỗ dày 50, chân giữa + thanh giằng', 'Cabin 1200 × 850 · aivan 1200 × 560'])]
@@ -308,10 +313,10 @@ def sheet_furniture(pdf, num, tot):
 
 def sheet_finishes(pdf, num, tot):
     pg = Page('Bảng vật liệu hoàn thiện', 'Finishes & materials schedule', 'BV-01', num, tot)
-    rows = [['F1', 'Sàn sảnh', 'Marble trắng 500×500 chéo 45°, viền cobalt 90, khảm kim cương', 'KT-04, CT-10'], ['F2', 'Sàn hành lang', 'Gạch zellige sao 8 cánh trên nền men trắng', 'CT-07'],
+    rows = [['F1', 'Sàn sảnh', 'Marble trắng 500×500 chéo 45°, viền cobalt 90, khảm kim cương', 'KT-04, CT-10'], ['F2', 'Sàn hành lang', 'Gạch zellige sao 8 cánh trên nền men trắng (chỉ ở hành lang)', 'CT-07'],
             ['F3', 'Sàn aivan', 'Gạch nung 300×150 chong chóng + gạch men 150', 'CT-02'], ['F4', 'Bục cabin', 'Gỗ óc chó + thảm Ba Tư, nẹp đồng', 'CT-03'], ['F5', 'Sàn trẻ em', 'Cao su EPDM 500×500, 4 màu', 'KT-04'],
-            ['W1', 'Cột phố', 'Gạch cong + men lam, kufic, muqarnas, bệ đá', 'CT-01'], ['W2', 'Pishtaq / sebil', 'Gạch men sao girih, kufic gạch, vòm nhọn', 'CT-01'],
-            ['W3', 'Tường bar', 'Gạch bannai + hốc vòm, kệ gỗ', 'CT-06'], ['W4', 'Tường mangal', 'Gạch hazarbaf vàng + men lam', 'CT-09'], ['W5', 'Tường đất (ranh nam)', 'Vữa đất sét, hốc vòm nổi, thảm khung đèn hắt', 'KT-07'],
+            ['W1', 'Cột phố', 'Gạch cong + men lam, kufic, muqarnas, bệ đá', 'CT-01'], ['W2', 'Cổng vào / sebil', 'Gạch men 150×150 ba màu trong viền cobalt, lanh-tô gạch ốp, mũ đá', 'CT-12'],
+            ['W3', 'Tường & mặt quầy bar', 'Gạch ốp vàng 230×65 mạch 10 + gạch men đầu (lam / ngọc) xếp lưới thoi', 'CT-06'], ['W4', 'Tường mangal', 'Gạch hazarbaf vàng + men lam', 'CT-09'], ['W5', 'Tường đất (ranh nam)', 'Vữa đất sét, hốc vòm nổi, thảm khung đèn hắt', 'KT-07'],
             ['W6', 'Vách cabin', 'Lưới gỗ óc chó 40 hai mặt + lõi MDF than 18', 'CT-03'], ['C1–C4', 'Trần', 'Ô hộp gỗ óc chó, thảm Ba Tư, nan gỗ, LED 2700K', 'CT-04'],
             ['C5', 'Trần aivan', 'Ô hộp gỗ, thảm kilim, sườn chéo', 'CT-02'], ['C6', 'Mái vòm', 'Vỏ GRC ốp men lam ngọc, karbandi vẽ tay', 'CT-05'],
             ['T1', 'Gỗ nội thất', 'Óc chó (walnut) vân thẳng, PU mờ; chạm khắc sao & kim cương', 'CT-11'], ['T2', 'Kim loại', 'Đồng thau (bóng mờ), inox 316 ngoài trời', '—'],
@@ -323,17 +328,17 @@ def sheet_finishes(pdf, num, tot):
 
 def sheet_lighting(pdf, num, tot):
     pg = Page('Bảng chiếu sáng & điện', 'Lighting & power schedule', 'BV-02', num, tot)
-    rows = [['L1', 'Đèn chùm thác mái vòm (61 cầu đồng đục lỗ)', '1', '2700K · ~600 W LED · treo đỉnh vòm'], ['L2', 'Đèn chùm nhỏ kiểu mái vòm (7 cầu)', '7+3+3+4+7', 'Aivan · hành lang · pergola · lều · cabin'],
-            ['L3', 'Dải LED hắt ô trần', '150 ô', '2700K · 9,6 W/m · 24 V · IP20'], ['L4', 'Dải LED chân vách hành lang', '6', '2700K · IP65'], ['L5', 'Đèn trống kết hạt (bar)', '4', '2700K · E27 LED 8 W'],
-            ['L6', 'Đèn sưởi mangal', '4', 'Hồng ngoại 2 kW — ổ riêng'], ['L7', 'Bra đồng tường lửa', '1', 'IP65'], ['L8', 'Đèn hắt cây', '3', 'IP67 · 2700K'], ['L9', 'Đèn LED sau thảm khung', '2', '2700K · IP44'],
-            ['P1', 'Hộp ổ cắm sàn 2S2U', '22', 'IP44 · cạnh bàn / sofa'], ['P2', 'Ổ cắm lan can cabin', '14', '2 / cabin · +0.600'], ['P3', 'Cấp nguồn bar / mangal', '—', 'Theo M&E — RCBO 30 mA']]
+    rows = [['L1', 'Đèn chùm thác mái vòm (61 cầu đồng đục lỗ)', '1', '2700K · ~600 W LED · treo đỉnh vòm'], ['L2', 'Đèn chùm nhỏ kiểu mái vòm (7 cầu)', '7+3+9+2+4+7', 'Aivan · hành lang · sảnh · majlis · lều · cabin'],
+            ['L3', 'Dải LED hắt ô trần', '150 ô', '2700K · 9,6 W/m · 24 V · IP20'], ['L4', 'Dải LED chân vách hành lang', '6', '2700K · IP65'], ['L5', 'Đèn trống kết hạt (bar 4) · đèn trống đồng đục lỗ Ø900 (khu bắc 1)', '4 + 1', '2700K · E27 LED'],
+            ['L6', 'Đèn sưởi mangal', '4', 'Hồng ngoại 2 kW — ổ riêng'], ['L7', 'Đèn bra đồng lồng đục lỗ (cột vòm 4, cột phố 6, mangal 1)', '11', '2700K · IP44 trong / IP65 phố · +1.95'], ['L8', 'Đèn âm sàn hắt lên (cây 3, cột aivan 5)', '8', 'IP67 · 2700K · mặt đồng Ø100'], ['L9', 'Đèn LED sau thảm khung', '2', '2700K · IP44'],
+            ['P1', 'Hộp ổ cắm sàn bật nắp 180×180 (2 ổ + 2 USB)', '24', 'IP44 · đầu bàn, cạnh chân bàn'], ['P2', 'Ổ cắm tường: lan can cabin 14 · tường aivan 4', '18', 'cabin +0.600 · aivan +0.300'], ['P3', 'Cấp nguồn bar / mangal', '—', 'Theo M&E — RCBO 30 mA']]
     table(pg, 14, 270, ['Mã', 'Thiết bị / Fitting', 'SL / Qty', 'Thông số / Data'], rows, [16, 120, 40, 140], fs=5.6, rh=6.0)
     text_block(pg, 14, 180, ['Điều khiển: 4 kịch bản (ngày / chiều / tối / dọn dẹp), dimmer DALI hoặc 0–10 V cho L1–L3.', 'Controls: 4 scenes, DALI / 0-10 V dimming for L1–L3.',
                              'Mạch riêng cho mangal, bar, chiếu sáng trần, ổ cắm sàn; tủ điện phụ đặt trong kho nhân viên.', 'Tất cả thiết bị ngoài trời IP65, dây đi ống luồn chống cháy.'], fs=5.6, lh=4.6)
     pg.save(pdf)
 
 def sheet_persp(pdf, num, tot, code, imgs, title_vi):
-    pg = Page(title_vi, 'Perspectives (3D model R12-v11.7)', code, num, tot)
+    pg = Page(title_vi, 'Model views (3D model R12-v12.1) — final renders by the owner to follow', code, num, tot)
     pos = [(14, 150, 194, 122), (214, 150, 194, 122), (14, 22, 194, 118), (214, 22, 194, 118)]
     for (f, cap), (x, y, w, h) in zip(imgs, pos): img_box(pg, os.path.join(REND, f), x, y + 4, w, h - 4, cap)
     pg.save(pdf)

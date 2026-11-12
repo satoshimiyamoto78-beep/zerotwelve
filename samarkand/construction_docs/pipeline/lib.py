@@ -11,7 +11,7 @@ PAPER = '#f6f1e6'; GREEN = '#a9d18e'; GREEN_D = '#2f5d23'; INK = '#1b1b1b'; RED 
 SERIF = 'DejaVu Serif'; SANS = 'DejaVu Sans'
 plt.rcParams.update({'font.family': SANS, 'font.size': 7, 'pdf.fonttype': 42, 'svg.fonttype': 'none'})
 PROJECT = 'Dự án «SAMARKAND» — Nhà hàng ẩm thực Trung Á · Đà Nẵng'
-SETNAME = 'HỒ SƠ THIẾT KẾ THI CÔNG NỘI THẤT · CONSTRUCTION DRAWINGS · R12-v11.7 · 11/2026'
+SETNAME = 'HỒ SƠ THIẾT KẾ THI CÔNG NỘI THẤT · CONSTRUCTION DRAWINGS · R12-v12.1 · 11/2026'
 MM = 1 / 25.4
 
 class Page:
@@ -33,6 +33,8 @@ class Page:
         ax.text(303, 10, 'Thiết kế / Design: Samarkand design team', fontsize=5.2, va='center')
         ax.text(303, 6.2, 'Kiểm tra / Checked: —   ·   Ngày / Date: 11/2026', fontsize=5.2, va='center')
     def save(self, pdf):
+        for t_ in self.fig.findobj(matplotlib.text.Text):                      # v2: small annotation text 22 % larger (readable on an A3 print)
+            if t_.get_fontsize() < 7.6: t_.set_fontsize(t_.get_fontsize() * 1.22)
         pdf.savefig(self.fig, facecolor=PAPER); plt.close(self.fig)
 
 # ------------------------------------------------------------------ views

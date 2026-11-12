@@ -17,13 +17,13 @@ def sheet_cover(pdf, num, tot):
     ax.add_patch(Rectangle((0, 0), 420, 297, color=PAPER))
     class P_: pass
     pg = P_(); pg.fig = fig; pg.ax = ax
-    img_box(pg, os.path.join(REND, 'r_street.jpg'), 12, 64, 396, 150)
+    img_box(pg, os.path.join(REND, 'i_fac.jpg'), 12, 64, 396, 150)
     ax.text(210, 262, 'SAMARKAND', fontfamily=SERIF, fontsize=40, fontweight='bold', color='#16264d', ha='center', va='center')
     ax.text(210, 245, 'NHÀ HÀNG ẨM THỰC TRUNG Á · CENTRAL ASIAN RESTAURANT', fontsize=12, color=GREEN_D, ha='center', va='center')
     ax.text(210, 234, 'HỒ SƠ THIẾT KẾ THI CÔNG NỘI THẤT & KIẾN TRÚC CẢNH QUAN SÂN HIÊN · CONSTRUCTION DRAWING SET', fontsize=9, ha='center', va='center')
-    ax.text(210, 224, 'Sân hiên 446 m² · 152 chỗ trong nhà · Đà Nẵng, Việt Nam', fontsize=8, color=MUTED, ha='center', va='center')
+    ax.text(210, 224, 'Sân hiên 446 m² · 156 chỗ trong nhà · Đà Nẵng, Việt Nam', fontsize=8, color=MUTED, ha='center', va='center')
     ax.plot([60, 360], [56, 56], color=INK, lw=1.2)
-    ax.text(210, 47, 'Phiên bản / Revision R12-v11.7  ·  Tháng 11 / 2026  ·  Khổ A3 — tỷ lệ in đúng khi in 100 % / print at 100 % on A3', fontsize=7.5, ha='center')
+    ax.text(210, 47, 'Phiên bản / Revision R12-v12.1  ·  Tháng 11 / 2026  ·  Khổ A3 — tỷ lệ in đúng khi in 100 % / print at 100 % on A3', fontsize=7.5, ha='center')
     ax.text(210, 38, 'Tài liệu dùng cho đội thi công: mọi kích thước bằng mm (cao độ bằng m), kiểm tra tại hiện trường trước khi gia công.', fontsize=7, ha='center', color=MUTED)
     ax.text(210, 31, 'For the construction team: all dimensions in mm (levels in m) — verify on site before fabrication.', fontsize=7, ha='center', color=MUTED)
     pdf.savefig(fig, facecolor=PAPER); plt.close(fig)
@@ -32,24 +32,26 @@ INDEX = [('KT-00', 'Bìa / Cover'), ('KT-01', 'Thông tin chung, ghi chú, danh 
          ('KT-03', 'Mặt bằng bố trí nội thất & kích thước / Furniture & dimension plan'), ('KT-04', 'Mặt bằng hoàn thiện sàn / Floor finishes plan'),
          ('KT-05', 'Mặt bằng trần & chiếu sáng / Reflected ceiling & lighting'), ('KT-06', 'Mặt bằng kết cấu mái / Roof framing plan'),
          ('KT-07', 'Mặt đứng / Elevations'), ('KT-08', 'Mặt cắt A-A, B-B, C-C / Sections'),
-         ('CT-01', 'Chi tiết cột Samarkand & cổng pishtaq / Column & pishtaq'), ('CT-02', 'Chi tiết aivan / Aivan'), ('CT-03', 'Chi tiết cabin VIP / Booths'),
-         ('CT-04', 'Chi tiết trần ô hộp / Ceiling coffers'), ('CT-05', 'Chi tiết mái vòm / Dome'), ('CT-06', 'Chi tiết quầy bar / Bar'),
+         ('DV-01', 'Khai triển tường aivan / Aivan wall development'), ('DV-02', 'Khai triển tường bar / Bar back wall'), ('DV-03', 'Bar: mặt bằng, mặt trước, trạm phục vụ / Bar plan, front, station'),
+         ('DV-04', 'Khai triển dãy cabin / Booth row'), ('DV-05', 'Khu chụp ảnh / Photo zone'), ('DV-06', 'Khu bắc & lều / North zone & tent'),
+         ('CT-01', 'Chi tiết cột Samarkand / Street column'), ('CT-02', 'Chi tiết aivan / Aivan'), ('CT-03', 'Chi tiết cabin VIP / Booths'),
+         ('CT-04', 'Chi tiết trần ô hộp / Ceiling coffers'), ('CT-05', 'Chi tiết mái vòm / Dome'), ('CT-06', 'Chi tiết quầy bar (cắt) / Bar section'),
          ('CT-07', 'Chi tiết hành lang vòm / Arcade corridor'), ('CT-08', 'Chi tiết diềm mái mặt tiền / Street eave'), ('CT-09', 'Chi tiết khu mangal / Mangal'),
-         ('CT-10', 'Chi tiết sàn đá & gạch / Floor details'), ('CT-11', 'Nội thất: ghế, sofa, bàn / Furniture'), ('BV-01', 'Bảng vật liệu hoàn thiện / Finishes schedule'),
-         ('BV-02', 'Bảng chiếu sáng & điện / Lighting & power schedule'), ('PC-01', 'Phối cảnh / Perspectives 1'), ('PC-02', 'Phối cảnh / Perspectives 2')]
+         ('CT-10', 'Chi tiết sàn đá & gạch / Floor details'), ('CT-11', 'Nội thất: ghế, sofa, bàn / Furniture'), ('CT-12', 'Cổng vào / Entrance portal'),
+         ('BV-01', 'Bảng vật liệu hoàn thiện / Finishes schedule'), ('BV-02', 'Bảng chiếu sáng & điện / Lighting & power schedule'), ('PC-01', 'Phối cảnh / Perspectives 1'), ('PC-02', 'Phối cảnh / Perspectives 2')]
 
 def sheet_general(pdf, num, tot):
     pg = Page('Thông tin chung & ghi chú kỹ thuật', 'General information, notes & drawing index', 'KT-01', num, tot)
     panel(pg, 12, 150, 130, 124, 'THÔNG TIN DỰ ÁN / PROJECT DATA')
     rows = [['Dự án / Project', 'SAMARKAND — nhà hàng Trung Á'], ['Địa điểm / Site', 'Sân hiên trệt, Đà Nẵng'], ['Hạng mục / Scope', 'Nội thất, mái che, cảnh quan sân hiên'],
-            ['Diện tích / Area', '446 m² (gồm sân hiên)'], ['Chiều dài mặt tiền', '37,1 m dọc phố'], ['Sức chứa / Seats', '152 trong nhà + ~30 ghế phố'],
+            ['Diện tích / Area', '446 m² (gồm sân hiên)'], ['Chiều dài mặt tiền', '37,1 m dọc phố'], ['Sức chứa / Seats', '156 trong nhà + ~30 ghế phố'],
             ['Cao độ chuẩn / Datum', '±0.000 = sàn hoàn thiện sân hiên'], ['Aivan / Cabin', '+0.450 / +0.150'], ['Mái / Roof', 'Klip-Lok dốc 3,5 % ra phố'],
-            ['Đỉnh mái vòm / Dome', '+5.94 (đỉnh alem +7.85)'], ['Mô hình 3D / Model', 'R12-v11.7 (viewer + Blender)']]
+            ['Đỉnh mái vòm / Dome', '+5.94 (đỉnh alem +7.85)'], ['Mô hình 3D / Model', 'R12-v12.1 (viewer + Blender)']]
     table(pg, 15, 266, ['Mục / Item', 'Thông số / Data'], rows, [42, 82], fs=5.2, rh=4.5)
     panel(pg, 148, 150, 128, 124, 'GHI CHÚ CHUNG / GENERAL NOTES')
     notes = ['1. Kích thước bằng mm, cao độ bằng m. Không đo trên bản vẽ — dùng số ghi.', '   Dimensions in mm, levels in m. Do not scale — use written dimensions.',
              '2. Nhà thầu kiểm tra hiện trạng (cột, dầm, sàn, cửa toà nhà) trước khi gia công.', '   Verify existing building, slab and openings before fabrication.',
-             '3. Kết cấu thép (cột 150×150, dầm I300×150, xà gồ) — kỹ sư kết cấu', '   duyệt tiết diện & liên kết trước khi thi công.',
+             '3. Khung mái THÉP MỚI (cột 150×150, dầm HEB 300 nhịp 10–12,6 m, xà gồ) — kỹ sư', '   kết cấu tính & duyệt tiết diện, liên kết trước khi thi công.',
              '4. Gỗ: óc chó / gỗ tự nhiên sấy ≤12 %, xử lý chống mối mọt, sơn PU mờ.', '   Walnut / kiln-dried hardwood ≤12 % MC, anti-termite, matt PU.',
              '5. Gạch men / gạch ốp: keo dán C2TE, ron epoxy 2–3 mm.', '   Glazed tiles & brick slips: C2TE adhesive, 2–3 mm epoxy grout.',
              '6. Vải bọc & rèm: chống cháy (BS 5867 / tương đương), giặt được.', '   Upholstery & curtains: flame-retardant, washable.',
@@ -58,7 +60,7 @@ def sheet_general(pdf, num, tot):
              '9. Mọi mẫu vật liệu được chủ đầu tư duyệt trước khi đặt hàng.', '   All samples approved by the owner before ordering.']
     text_block(pg, 151, 265, notes, fs=5.0, lh=4.4)
     panel(pg, 282, 150, 126, 124, 'DANH MỤC BẢN VẼ / DRAWING INDEX')
-    table(pg, 285, 266, ['Số / No.', 'Tên bản vẽ / Title'], [[c, t] for c, t in INDEX], [16, 104], fs=4.7, rh=4.35)
+    table(pg, 285, 266, ['Số / No.', 'Tên bản vẽ / Title'], [[c, t] for c, t in INDEX], [16, 104], fs=4.3, rh=3.55)
     panel(pg, 12, 20, 196, 124, 'KÝ HIỆU / SYMBOLS')
     ax = pg.ax; y = 128
     sy = [('grid', 'Trục định vị / Grid axis'), ('level', 'Cao độ hoàn thiện / Finished level'), ('dim', 'Đường kích thước (mm) / Dimension'), ('cut', 'Phần bị cắt / Cut element (poché)'),
@@ -92,10 +94,10 @@ def sheet_general(pdf, num, tot):
     pg.save(pdf)
 
 ZONES = [('Bar', '#e9c48f', [(0.14, 7.7), (3.3, 7.7), (3.3, 15.3), (0.14, 15.3)]), ('Sảnh chính / Hall', '#f4e6c8', [(3.3, 8.6), (9.3, 8.6), (9.3, 15.6), (7.6, 15.6), (7.6, 30.9), (3.3, 30.9), (3.3, 15.3)]),
-         ('Aivan', '#d7b98f', [(0, 15.3), (3.3, 15.3), (3.3, 30.9), (0, 30.9)]), ('Cabin VIP', '#c9a3a3', [(8.5, 18.9), (10.47, 18.9), (9.05, 35.62), (7.17, 35.62)]),
+         ('Aivan', '#d7b98f', [(0, 15.3), (3.3, 15.3), (3.3, 30.9), (0, 30.9)]), ('Cabin VIP', '#c9a3a3', [(8.5, 18.9), (10.47, 18.9), (9.05, 35.66), (7.1, 35.66)]),
          ('Lều & tapchan', '#b9c9a5', [(1.4, 28.5), (4.6, 28.5), (4.6, 36.7), (1.4, 36.7)]), ('Majlis & pergola', '#cdb8d8', [(3.1, 1.0), (9.4, 1.0), (9.4, 8.3), (3.1, 8.3)]),
          ('Mangal', '#e3a58c', [(9.4, 3.2), (12.3, 3.2), (12.3, 9.0), (9.4, 9.0)]), ('Hành lang vòm / Corridor', '#a9c4d9', [(7.67, 15.64), (10.4, 15.64), (10.4, 17.96), (7.67, 17.96)]),
-         ('Khu trẻ em / Kids', '#f2d36b', [(-7.1, 0.3), (-0.15, 0.3), (-0.15, 4.1), (-7.1, 4.1)]), ('Bukhara dome / lối ra', '#b7d3c3', [(4.9, 31.0), (7.6, 31.0), (7.6, 36.6), (4.9, 36.6)])]
+         ('Khu trẻ em / Kids', '#f2d36b', [(-7.1, 0.3), (-0.15, 0.3), (-0.15, 4.1), (-7.1, 4.1)]), ('Bàn khu bắc / north tables', '#b7d3c3', [(4.9, 31.0), (7.6, 31.0), (7.6, 36.6), (4.9, 36.6)])]
 def poly_area(P): x = np.array([p[0] for p in P]); y = np.array([p[1] for p in P]); return 0.5 * abs(np.dot(x, np.roll(y, 1)) - np.dot(y, np.roll(x, 1)))
 def sheet_zoning(pdf, num, tot):
     pg = Page('Mặt bằng phân khu chức năng & diện tích', 'Zoning, circulation & area schedule', 'KT-02', num, tot)
@@ -169,7 +171,7 @@ def sheet_roof(pdf, num, tot):
     tag(v, v.P(streetx(29.1), 29.1, 2.8), 'Cột thép SHS150×150 bọc gạch (cột Samarkand)', dxy=(8, -10))
     tag(v, v.P(4.13, 18.3, 3.0), 'Cột mái vòm SHS150 bọc gỗ', dxy=(-12, 8))
     title(pg, 17, 33, 1, 'Mặt bằng kết cấu mái', 'Roof framing plan (roof sheeting removed)', 'TL / Scale 1:100', w=120); north(pg, 145, 31, ang=180)
-    rows = [['K1', 'Cột thép SHS 150×150×6, đế 300×300×16, 4 bu lông M16', '7+4'], ['K2', 'Dầm I300×150×6.5×9, liên kết bản mã 10', '12'], ['K3', 'Xà gồ C200×80×2.5 @1000', '20'],
+    rows = [['K1', 'Cột thép SHS 150×150×6, đế 300×300×16, 4 bu lông M16', '7+4'], ['K2', 'Dầm chính nhịp 10–12,6 m: HEB 300 (sơ bộ, võng ≈ L/340); dầm ngắn: I300×150', '6 + 6'], ['K3', 'Xà gồ C200×80×2.5 @1000', '20'],
             ['K4', 'Dầm vòng mái vòm SHS 200×100, 4 cột đỡ', '1'], ['K5', 'Tôn Klip-Lok 0.48, dốc 3,5 %, máng xối phố', '—'], ['K6', 'Dầm biên + móc treo M12 vào sàn L2 (khoan cấy hoá chất)', '28']]
     table(pg, 160, 38, ['Mã', 'Cấu kiện / Member (kỹ sư kết cấu duyệt)', 'SL'], rows, [8, 120, 10], fs=4.6, rh=3.4)
     pg.save(pdf)
