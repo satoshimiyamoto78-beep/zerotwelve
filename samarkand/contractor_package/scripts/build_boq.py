@@ -93,10 +93,10 @@ SHEETS['5 Nội thất - Furniture'] = [
  ('N17', 'Bình gốm trang trí (hành lang, bậc aivan)', 'Decorative terracotta jugs (corridor, aivan steps)', 'cái/pcs', n(r'jug|Jug'), ''),
  ('N18', 'Cây trồng: ficus 8, cây cắt tỉa 7, cọ 3, ô liu 2, lưỡi hổ 2, chinar 1, chậu hoa 2', 'Plants: ficus 8, topiary 7, palms 3, olive 2, sansevieria 2, chinar 1, flower pots 2', 'cây/pcs', 25, 'Theo mô hình / per the model'),
  ('N19', 'Đồ chơi & nội thất khu trẻ em', 'Kids zone furniture & play items', 'bộ/sets', 1, f"{n(r'^Kids_')} hạng mục")]
-ch = [r for r in INV if ('chandelier' in r[0].lower() and 'rod' not in r[0]) or 'lantern_hang' in r[0]]
+ch = [r for r in INV if (('chandelier' in r[0].lower() and 'rod' not in r[0] and 'band' not in r[0]) or 'lantern_hang' in r[0]) and not r[0].startswith(('Chandelier_dome', 'North_chandelier'))]
 SHEETS['6 Điện - Lighting & power'] = [
  ('L1', 'Đèn chùm thác mái vòm (61 cầu đồng đục lỗ)', 'Dome cascade chandelier (61 pierced brass globes)', 'bộ/sets', 1, 'Treo đỉnh vòm, ≈180 kg'),
- ('L2', 'Đèn chùm nhỏ kiểu mái vòm (7 cầu)', 'Small cascade chandelier (7 globes)', 'bộ/sets', len(ch), 'Aivan 7 · hành lang 3 · sảnh 9 · cabin 7 · lều 4 · majlis · khác'),
+ ('L2', 'Đèn chùm nhỏ kiểu mái vòm (7 cầu)', 'Small cascade chandelier (7 globes)', 'bộ/sets', len(ch), 'Aivan 7 · hành lang 3 · sảnh 9 · cabin 7 · lều 4 · khu nam 3 · khu chụp ảnh 1'),
  ('L3', 'Đèn trống kết hạt (bar)', 'Beaded drum pendant (bar)', 'bộ/sets', n(r'^Bar_drum_pendant_'), ''),
  ('L4', 'Đèn trống đồng đục lỗ Ø900 (khu bắc)', 'Pierced brass drum Ø900 (north zone)', 'bộ/sets', n(r'^North_chandelier$'), ''),
  ('L5', 'Đèn bra đồng lồng đục lỗ', 'Brass lantern wall sconce', 'bộ/sets', n(r'^Sconce_'), 'Cột vòm 4 · cột phố 6 · mangal 1'),
