@@ -1,0 +1,328 @@
+{
+ "blend": "r12v83/samarkand-base3d-R12.blend",
+ "objects": 928,
+ "mesh_datablocks": 627,
+ "totals": {
+  "boundary_edges": 23305,
+  "nonmanifold_edges": 6,
+  "wire_edges": 0,
+  "loose_verts": 0,
+  "zero_area_faces": 75,
+  "zero_len_edges": 120,
+  "flipped_edges": 0,
+  "inside_out_shells": 147,
+  "coincident_verts": 120,
+  "verts": 409273,
+  "faces": 486779,
+  "tris": 785209,
+  "ngons": 2307,
+  "shells": 8979
+ },
+ "clean_meshes": 611,
+ "unapplied_transforms": [
+  "Aivan_tableset_1",
+  "Aivan_tableset_2",
+  "Aivan_tableset_3",
+  "Aivan_tableset_4",
+  "Bonsai_host",
+  "Booth1_tableset",
+  "Booth2_tableset",
+  "Booth3_tableset",
+  "Booth4_tableset",
+  "Booth5_tableset",
+  "Booth6_tableset",
+  "Booth7_tableset",
+  "Booth8_tableset",
+  "Bougainvillea",
+  "Bougainvillea.001",
+  "Bougainvillea.002",
+  "Bougainvillea.003",
+  "Bougainvillea.004",
+  "Bougainvillea.005",
+  "Bougainvillea.006",
+  "Bougainvillea.007",
+  "Bougainvillea.008",
+  "Bougainvillea.009",
+  "Bougainvillea.010",
+  "Bougainvillea.011",
+  "Bougainvillea.012",
+  "Bougainvillea.013",
+  "Bougainvillea.014",
+  "Bougainvillea.015",
+  "Bougainvillea.016",
+  "Bougainvillea.017",
+  "Doner_machine",
+  "Ficus_planted_0",
+  "Ficus_planted_1",
+  "Ficus_planted_2",
+  "Ficus_planted_3",
+  "Ficus_planted_4",
+  "Ficus_planted_5",
+  "Ficus_planted_6",
+  "Ficus_planted_7",
+  "Ficus_potted_8",
+  "Jasmine",
+  "Jasmine.002",
+  "Jasmine.003",
+  "Jasmine.004",
+  "Jasmine.005",
+  "Jasmine.006",
+  "Jasmine.007",
+  "Jasmine.008",
+  "Jasmine.009"
+ ],
+ "n_unapplied": 65,
+ "penetrations": [],
+ "n_penetrations": 0,
+ "floating": [],
+ "n_floating": 0,
+ "worst": [
+  [
+   "Model_palm_date_foliage",
+   {
+    "boundary_edges": 60701,
+    "wire_edges": 11314,
+    "inside_out_shells": 2232,
+    "coincident_verts": 2077
+   }
+  ],
+  [
+   "Ficus_foliage_src",
+   {
+    "boundary_edges": 49596,
+    "nonmanifold_edges": 336,
+    "flipped_edges": 27,
+    "inside_out_shells": 29
+   }
+  ],
+  [
+   "Ficus_foliage_nopot",
+   {
+    "boundary_edges": 49562,
+    "nonmanifold_edges": 336,
+    "flipped_edges": 27,
+    "inside_out_shells": 28
+   }
+  ],
+  [
+   "Model_palm_kentia_foliage",
+   {
+    "boundary_edges": 26511,
+    "wire_edges": 2568,
+    "inside_out_shells": 539,
+    "coincident_verts": 74
+   }
+  ],
+  [
+   "Model_bonsai_foliage",
+   {
+    "boundary_edges": 21685,
+    "nonmanifold_edges": 8,
+    "inside_out_shells": 25
+   }
+  ],
+  [
+   "Model_sansevieria_foliage",
+   {
+    "boundary_edges": 15942,
+    "wire_edges": 2,
+    "inside_out_shells": 961,
+    "coincident_verts": 3
+   }
+  ],
+  [
+   "Model_topiary_foliage",
+   {
+    "boundary_edges": 15989,
+    "wire_edges": 1,
+    "inside_out_shells": 170
+   }
+  ],
+  [
+   "Mango_foliage",
+   {
+    "boundary_edges": 5256,
+    "inside_out_shells": 849
+   }
+  ],
+  [
+   "Logo_subtitle_E_c",
+   {
+    "boundary_edges": 4824,
+    "inside_out_shells": 36
+   }
+  ],
+  [
+   "Logo_Samarkand_E_c",
+   {
+    "boundary_edges": 3740,
+    "inside_out_shells": 13
+   }
+  ],
+  [
+   "Olive_foliage",
+   {
+    "boundary_edges": 3114,
+    "inside_out_shells": 499
+   }
+  ],
+  [
+   "Olive_foliage.001",
+   {
+    "boundary_edges": 3096,
+    "inside_out_shells": 508
+   }
+  ],
+  [
+   "Booth1_name_c",
+   {
+    "boundary_edges": 3216,
+    "inside_out_shells": 14
+   }
+  ],
+  [
+   "Shrub_bou_20_foliage",
+   {
+    "boundary_edges": 2600,
+    "inside_out_shells": 12
+   }
+  ],
+  [
+   "Shrub_bou_21_foliage",
+   {
+    "boundary_edges": 2600,
+    "inside_out_shells": 10
+   }
+  ],
+  [
+   "Shrub_bou_22_foliage",
+   {
+    "boundary_edges": 2600,
+    "inside_out_shells": 7
+   }
+  ],
+  [
+   "Booth2_name_c",
+   {
+    "boundary_edges": 2368,
+    "inside_out_shells": 9
+   }
+  ],
+  [
+   "Shrub_jas_30_foliage",
+   {
+    "boundary_edges": 2360,
+    "inside_out_shells": 8
+   }
+  ],
+  [
+   "Croton_foliage",
+   {
+    "boundary_edges": 2052,
+    "inside_out_shells": 247
+   }
+  ],
+  [
+   "Booth7_name_c",
+   {
+    "boundary_edges": 2216,
+    "inside_out_shells": 13
+   }
+  ],
+  [
+   "Booth4_name_c",
+   {
+    "boundary_edges": 1576,
+    "inside_out_shells": 10
+   }
+  ],
+  [
+   "Booth8_name_c",
+   {
+    "boundary_edges": 1436,
+    "inside_out_shells": 8
+   }
+  ],
+  [
+   "Booth5_name_c",
+   {
+    "boundary_edges": 1308,
+    "inside_out_shells": 15
+   }
+  ],
+  [
+   "Booth3_name_c",
+   {
+    "boundary_edges": 1312,
+    "inside_out_shells": 7
+   }
+  ],
+  [
+   "Booth6_name_c",
+   {
+    "boundary_edges": 1216,
+    "inside_out_shells": 8
+   }
+  ],
+  [
+   "Shrub_herb_6_foliage",
+   {
+    "boundary_edges": 920,
+    "inside_out_shells": 1
+   }
+  ],
+  [
+   "Banana_foliage",
+   {
+    "boundary_edges": 194,
+    "loose_verts": 7,
+    "inside_out_shells": 10,
+    "coincident_verts": 13
+   }
+  ],
+  [
+   "Dome_alem",
+   {
+    "zero_area_faces": 64,
+    "zero_len_edges": 64,
+    "coincident_verts": 64
+   }
+  ],
+  [
+   "Model_doner",
+   {
+    "boundary_edges": 93,
+    "nonmanifold_edges": 6,
+    "zero_area_faces": 3,
+    "inside_out_shells": 4
+   }
+  ],
+  [
+   "Mangal_staff_door",
+   {
+    "zero_len_edges": 48,
+    "coincident_verts": 48
+   }
+  ],
+  [
+   "Wall_socket_2S2U",
+   {
+    "zero_area_faces": 8,
+    "zero_len_edges": 8,
+    "coincident_verts": 8
+   }
+  ],
+  [
+   "Court_zellige",
+   {
+    "inside_out_shells": 6
+   }
+  ],
+  [
+   "Chandelier_cascade_C",
+   {
+    "inside_out_shells": 4
+   }
+  ]
+ ]
+}

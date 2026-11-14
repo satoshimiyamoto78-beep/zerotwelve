@@ -1,0 +1,36 @@
+import sys, os, math
+sys.path.insert(0, os.path.dirname(__file__))
+from bl import *
+sc = reset(); m = M()
+OUT, W, H, S = sys.argv[-4], int(sys.argv[-3]), int(sys.argv[-2]), int(sys.argv[-1])
+# booths along +y; booth depth x 0..1.3 (x>1.3 planter, then the street and the sea)
+box(-4, -3, -0.05, 4, 20, 0, m['floor'])
+slat_ceiling(m, -4, 2.2, -3, 20, 3.5)
+box(1.3, -3, 0, 2.6, 20, 0.5, m['brick'])
+for y in range(-2, 19): bush(m, 1.95, y, 0.5, 0.7, n=7, seed=y + 120)
+sky_plane(25, 8, 3, 60, 14, rot_z=math.pi / 2, strength=1.6)
+box(30, -40, -2, 31, 60, 0.6, mat('sea', (0.08, 0.15, 0.22), rough=0.15))
+for k in range(6):
+    y0 = k * 2.0
+    o = prism_xz(arch_pts(0, 1.3, 0, 1.75, 2.2), -0.03, 0.03, m['jali'], 'scr'); o.rotation_euler[2] = math.pi / 2; o.location = (0.65, y0, 0)
+    f = pointed_frame(m['walnut'], 0, -0.045, 0.045, 1.3, 1.75, 2.2, t=0.06, z0=0); f.rotation_euler[2] = math.pi / 2; f.location = (0.65, y0, 0)
+    box(0.05, y0 + 0.12, 0, 1.25, y0 + 0.6, 0.42, m['walnut'], bevel=0.01)              # bench bases
+    box(0.05, y0 + 1.4, 0, 1.25, y0 + 1.88, 0.42, m['walnut'], bevel=0.01)
+    box(0.07, y0 + 0.14, 0.42, 1.23, y0 + 0.6, 0.5, m['ikat'], bevel=0.03)
+    box(0.07, y0 + 1.4, 0.42, 1.23, y0 + 1.86, 0.5, m['ikat'], bevel=0.03)
+    box(0.07, y0 + 0.08, 0.5, 1.23, y0 + 0.2, 0.95, m['ikat'], bevel=0.03)
+    box(0.07, y0 + 1.8, 0.5, 1.23, y0 + 1.92, 0.95, m['ikat'], bevel=0.03)
+    box(0.15, y0 + 0.66, 0.71, 1.15, y0 + 1.34, 0.75, m['walnut'], bevel=0.008)
+    box(0.15, y0 + 0.66, 0.705, 1.15, y0 + 1.34, 0.715, m['brass'])
+    cyl(0.65, y0 + 1.0, 0.36, 0.06, 0.7, m['walnut'], verts=16)
+    lantern(m, 0.65, y0 + 1.0, 2.05, s=0.95, rod_top=3.5, energy=40)
+    point(0.35, y0 + 1.0, 1.2, 8)
+    lathe(0.5, y0 + 0.9, 0.75, [(0, 0), (0.05, 0), (0.07, 0.04), (0.06, 0.08), (0.03, 0.1), (0, 0.11)], m['turq'], steps=24)
+    for dy in (-0.15, 0.2): lathe(0.85, y0 + 1.0 + dy, 0.75, [(0, 0), (0.02, 0), (0.035, 0.045), (0, 0.045)], m['lapis'], steps=20)
+o = prism_xz(arch_pts(0, 1.3, 0, 1.75, 2.2), -0.03, 0.03, m['jali'], 'scr'); o.rotation_euler[2] = math.pi / 2; o.location = (0.65, 12.0, 0)
+for y in (3.0, 7.5):
+    for sy in (-1, 1): chair(m, -2.6, y + sy * 0.6, face=-sy * math.pi / 2)
+    table(m, -2.6, y)
+area(-1, 6, 3.3, 5, 140, rot=(0, 0, 0))
+camera((-1.55, -1.6, 1.45), (0.9, 5.5, 1.05), lens=24)
+render(OUT, W, H, S)

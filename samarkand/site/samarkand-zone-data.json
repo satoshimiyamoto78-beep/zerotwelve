@@ -1,0 +1,177 @@
+{
+ "units": "mm",
+ "origin": "axis 6 x axis A'",
+ "origin_site_coords": [
+  1006949.0,
+  -259352.0
+ ],
+ "offsets": {
+  "F1_to_site": [
+   41530.0,
+   120147.0
+  ],
+  "F2_to_site": [
+   41530.0,
+   183668.0
+  ]
+ },
+ "zone": [
+  [
+   0.0,
+   42340.2
+  ],
+  [
+   9656.2,
+   41965.1
+  ],
+  [
+   13458.6,
+   3389.2
+  ],
+  [
+   -167.5,
+   0.0
+  ],
+  [
+   -7250.0,
+   0.0
+  ],
+  [
+   -7250.0,
+   4100.0
+  ],
+  [
+   0.0,
+   4100.0
+  ],
+  [
+   0.0,
+   42340.2
+  ]
+ ],
+ "zone_vertices": {
+  "Z1_NW": [
+   0.0,
+   42340.2
+  ],
+  "Z2_NE": [
+   9656.2,
+   41965.1
+  ],
+  "Z3_SE": [
+   13458.6,
+   3389.2
+  ],
+  "Z4_S": [
+   -167.5,
+   0.0
+  ],
+  "Z5_pocketSW": [
+   -7250.0,
+   0.0
+  ],
+  "Z6_pocketNW": [
+   -7250.0,
+   4100.0
+  ],
+  "Z7_bldgSE": [
+   0.0,
+   4100.0
+  ]
+ },
+ "grid": {
+  "A'": [
+   "h",
+   0.0
+  ],
+  "A": [
+   "h",
+   4100.0
+  ],
+  "B": [
+   "h",
+   9850.0
+  ],
+  "C": [
+   "h",
+   15600.0
+  ],
+  "D": [
+   "h",
+   21350.0
+  ],
+  "E": [
+   "h",
+   27100.0
+  ],
+  "F": [
+   "h",
+   32100.0
+  ],
+  "G": [
+   "h",
+   37100.0
+  ],
+  "5": [
+   "v",
+   -7250.0
+  ],
+  "6": [
+   "v",
+   0.0
+  ]
+ },
+ "levels": {
+  "building_floor": 0.0,
+  "forecourt": -0.47,
+  "sidewalk_VNG": -1.17
+ },
+ "measurements": {
+  "facade_to_boundary_at_A": 13389,
+  "facade_to_boundary_at_B": 12822,
+  "facade_to_boundary_at_C": 12255,
+  "facade_to_boundary_at_D": 11688,
+  "facade_to_boundary_at_E": 11121,
+  "facade_to_boundary_at_F": 10629,
+  "facade_to_boundary_at_G": 10136,
+  "north_edge_Z1_Z2": 9663,
+  "east_edge_Z2_Z3": 38763,
+  "south_edge_Z3_Z4": 14041,
+  "facade_A_to_north_boundary": 38240,
+  "facade_A_to_G": 33000,
+  "pocket_5_6_x_A_Aprime": [
+   7250,
+   4100
+  ],
+  "zone_area_m2": 499.9,
+  "pocket_area_m2": 29.7,
+  "east_boundary_bearing_deg_from_north": 5.63,
+  "south_edge_angle_deg": 13.97
+ },
+ "texts": [
+  {
+   "p": [
+    4951.1,
+    21194.5
+   ],
+   "s": "-0.470",
+   "kind": "level"
+  },
+  {
+   "p": [
+    14137.6,
+    24795.6
+   ],
+   "s": "-1.170",
+   "kind": "level"
+  },
+  {
+   "p": [
+    4246.2,
+    1235.1
+   ],
+   "s": "-0.470",
+   "kind": "level"
+  }
+ ]
+}

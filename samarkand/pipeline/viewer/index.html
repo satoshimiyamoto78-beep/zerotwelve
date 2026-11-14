@@ -1,0 +1,546 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Samarkand 3D Workspace</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Manrope:wght@400;600&display=swap">
+<style>
+/* Layout: full-screen 3D canvas, a slim title bar on top, view + layer controls floating at the bottom */
+:root {
+  --bg: #efe6d6; --panel: rgba(251,246,236,.92); --fg: #2e2016; --muted: #75614d; --accent: #1f3f8a; --clay: #a4482b; --line: #d8c7aa;
+  --display: "Cormorant Garamond", Georgia, serif; --body: "Manrope", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #17120e; --panel: rgba(32,25,19,.9); --fg: #f2e8d8; --muted: #b8a58c; --accent: #8fb0ff; --clay: #e07a52; --line: #4a3a2b; color-scheme: dark } }
+:root[data-theme="dark"] { --bg: #17120e; --panel: rgba(32,25,19,.9); --fg: #f2e8d8; --muted: #b8a58c; --accent: #8fb0ff; --clay: #e07a52; --line: #4a3a2b; color-scheme: dark }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); overflow: hidden; }
+#stage { position: fixed; inset: 0; }
+#stage canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.bar { position: fixed; left: 0; right: 0; top: 0; padding-top: calc(env(safe-area-inset-top, 0px) + 10px); padding-bottom: 10px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; background: linear-gradient(var(--panel), transparent); pointer-events: none; }
+.bar h1 { font-family: var(--display); font-weight: 600; font-size: 1.6rem; letter-spacing: .14em; margin: 0; }
+.bar span { color: var(--muted); font-size: .82rem; }
+.dock { position: fixed; left: 0; right: 0; bottom: 0; padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); padding-top: 10px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 8px; }
+.row { display: flex; gap: 6px; flex-wrap: wrap; }
+.row .lbl { font-size: .7rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); align-self: center; min-width: 4.5em; }
+button { font: 600 .82rem var(--body); color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 7px 12px; cursor: pointer; backdrop-filter: blur(6px); }
+button[aria-pressed="true"] { background: var(--accent); color: #fff; border-color: var(--accent); }
+button.view[aria-pressed="true"] { background: var(--clay); border-color: var(--clay); }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#status { position: fixed; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: .95rem; pointer-events: none; }
+.hint { color: var(--muted); font-size: .72rem; }
+[hidden] { display: none !important; }
+#app { position: fixed; inset: 0; }
+#dims { position: fixed; inset: 0; pointer-events: none; z-index: 3; overflow: hidden; }
+body.rot #app { inset: auto; top: 0; transform: rotate(90deg); transform-origin: top left; }
+.tools { position: fixed; z-index: 5; top: calc(env(safe-area-inset-top, 0px) + 8px); right: max(16px, env(safe-area-inset-right, 0px)); display: flex; gap: 6px; }
+body.clean .bar, body.clean .dock { display: none; }
+body.clean .tools button { opacity: .6; }
+.dim-label { position: absolute; transform: translate(-50%, -50%); pointer-events: none; font: 700 11px/1.1 var(--body); color: #fff; background: rgba(142, 31, 36, .9);
+  padding: 2px 6px; border-radius: 6px; white-space: nowrap; box-shadow: 0 1px 3px rgba(0,0,0,.35); transition: opacity .2s; }
+.dim-label small { display: block; font-weight: 400; font-size: 9.5px; opacity: .9; }
+#dims.off .dim-label, #dims.moving .dim-label { opacity: 0; }
+@media (max-width: 700px) {            /* phone: tools drop under the title, the subtitle hides, buttons get tighter */
+  .bar span { display: none; }
+  .tools { top: calc(env(safe-area-inset-top, 0px) + 50px); left: max(16px, env(safe-area-inset-left, 0px)); right: auto; flex-wrap: wrap; }
+  button { padding: 6px 10px; font-size: .78rem; }
+}
+body.rot .bar span { display: none; }
+  #layers button.dep-off { opacity: .45; text-decoration: line-through; }
+
+.mini { padding: 4px 9px; font-size: .74rem; }
+.bar .mini { pointer-events: auto; margin-left: auto; }
+.sheet { position: fixed; z-index: 8; top: calc(env(safe-area-inset-top, 0px) + 54px); right: max(16px, env(safe-area-inset-right, 0px)); width: min(520px, calc(100vw - 32px)); max-height: 60vh; overflow: auto;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 10px 14px; font-size: .82rem; backdrop-filter: blur(8px); }
+.sheet ul { margin: 6px 0 0; padding-left: 18px; } .sheet li { margin: 3px 0; }
+.sheet-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.sl { display: inline-flex; align-items: center; gap: 6px; font: 600 .78rem var(--body); background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; }
+.sl input { width: 110px; accent-color: var(--accent); } .sl output { min-width: 3.2em; color: var(--muted); font-weight: 400; }
+#layers.folded button[data-l] { display: none; }
+#t-saved { display: inline-flex; gap: 4px; flex-wrap: wrap; }
+#t-saved button { padding: 4px 9px; font-size: .74rem; }
+#meas { position: fixed; inset: 0; pointer-events: none; z-index: 3; }
+.m-label { position: absolute; transform: translate(-50%, -50%); font: 700 12px/1 var(--body); color: #fff; background: rgba(31,63,138,.92); padding: 3px 7px; border-radius: 6px; white-space: nowrap; }
+#pad { position: fixed; z-index: 6; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(env(safe-area-inset-bottom, 0px) + 150px); display: grid; grid-template-columns: repeat(3, 48px); grid-template-rows: repeat(2, 48px); gap: 6px; }
+#pad button { padding: 0; font-size: 1.1rem; touch-action: none; user-select: none; -webkit-user-select: none; }
+#pad [data-k=fwd] { grid-column: 2; grid-row: 1; } #pad [data-k=left] { grid-column: 1; grid-row: 2; } #pad [data-k=back] { grid-column: 2; grid-row: 2; } #pad [data-k=right] { grid-column: 3; grid-row: 2; }
+#pad [data-k=tl] { grid-column: 1; grid-row: 1; } #pad [data-k=tr] { grid-column: 3; grid-row: 1; }
+body.walking #stage canvas { cursor: grab; } body.ruler #stage canvas { cursor: crosshair; }
+@media (max-width: 700px) { .sl input { width: 80px; } }
+</style>
+
+<div id="app">
+<div id="stage"></div><div id="dims" class="off"></div><div id="meas"></div>
+<div id="pad" hidden><button data-k="fwd">▲</button><button data-k="left">◀</button><button data-k="back">▼</button><button data-k="right">▶</button><button data-k="tl" class="mini">⟲</button><button data-k="tr" class="mini">⟳</button></div>
+<div id="status">Загружаю модель…</div>
+<div class="tools"><button id="hd-toggle" aria-pressed="false" title="Максимальное качество этого ракурса для вашего устройства">HD</button><button id="dim-toggle" aria-pressed="false" title="Показать основные размеры">Размеры</button><button id="fs-toggle" aria-pressed="false" title="Во весь экран, горизонтально">Во весь экран</button><button id="ui-toggle" aria-pressed="false" title="Скрыть / показать панели (клавиша H)">Скрыть кнопки</button></div>
+<header class="bar"><h1>SAMARKAND</h1><span>R12-v12.1</span></header>
+<div id="news" class="sheet" hidden><div class="sheet-h"><b>Что нового в R12-v12.1</b><button class="mini x" data-close="news">✕</button></div><ul><li>кабинки: широкие диваны на двоих, сдвинуты вглубь, бархатные шторы с подхватами, люстры как в куполе</li><li>сгенерированные текстуры заменены реальными материалами</li><li>столы — просто дерево</li><li>пол айвана — кирпич «вертушкой» со вставками плитки</li><li>пол везде один, другой только дорожка коридора</li><li>потолок: ковры, деревянные рейки, рёбра, разная глубина</li><li>в кабинках без плитки, стенки длиннее спинок</li><li>за коврами айвана без дверей, без экрана</li><li>7 больших кабинок (диваны на 3 + 3, стол на козлах, до бухарского купола)</li><li>коридор аркадой: 4 арки, резные решётки, подсветка снизу, люстры между арками</li><li>каскадные люстры на айване по центру кессонов, в шатрах и у перголы</li><li>столы на айване и в кабинках — опоры по центру</li><li>кувшины вместо перил у лестниц</li><li>резной фриз вместо зардевора</li><li>пол — настоящие мраморные плиты и вставки</li><li>стены и колонны — настоящий кирпич и плитка</li><li>резьба по дереву настоящая</li><li>потолок — кессоны с коврами и подсветкой</li><li>карниз фасада с плиткой и резной бахромой</li><li>152 места внутри</li><li>подушки: настоящие сшитые подушки с кантом, пуговицами и мягкими краями (диваны, стулья, маджлис, тапчан, шатры)</li><li>айван 4×6 мест (трёхместные диваны)</li><li>сервировка по размеру столов</li><li>дрова от столба до конца стены мангала</li><li>лестницы на айван: каменные ступени со свесом, плиточные подступенки, латунные поручни</li><li>кабинки по референсам: решётка, подиум, диваны, фонари, названия городов</li><li>розетки у столов</li><li>ваши модели: пальмы, кусты, сансевиерия, бонсай, донер</li><li>айван: диваны в стиле стульев, столы отодвинуты</li><li>стена мангала — самаркандская кладка, без дров</li><li>стена за маджлисом до потолка</li><li>водосток по краю кровли</li><li>шатры в хлопке экрю</li><li>килимы и сюзане → персидские ковры</li><li>ковры: ваши 19 персидских фото</li><li>фикусы из присланной модели вместо плюмерий и гранатов</li><li>уличные скамьи: штукатурка, килимные подушки, столики на J-стойке</li><li>фонтан: звезда из настоящей плитки, зелиж и терракота</li><li>мангал: логотип снят, вытяжка из настоящего кирпича и плитки, витрина с шашлыком</li><li>у каркаса есть опоры: подвес ригеля к плите 2-го этажа, колонны с базами и оголовками, 4 колонны под кольцом купола, балка по южной границе, каркас над детской, тяжи потолка айвана</li><li>коридор переделан по референсу (порталы из штор, поперечные драпировки, ковры цепочкой, низкие фонари, кувшины у дальнего проёма)</li><li>глиняная стена по южной границе за маджлисом и мангалом</li><li>новые текстуры ковров и тканей</li><li>в детской вместо песочницы качалки-верблюды</li><li>слои по группам: «Каркас» убирает и кровлю с подвесами, «Кровля» — и подвесные ковры/светильники, «Купол и люстра» — вместе</li><li>детская зона по референсам</li><li>входной коридор по референсу: бархатные стены, потолок из драпировок, ковры внахлёст, амфоры, свечи</li><li>маджлис под навесом</li><li>дерево в цвет стульев</li><li>смотреть вверх: ⬆ или U</li></ul></div>
+<div id="help" class="sheet" hidden><div class="sheet-h"><b>Управление</b><button class="mini x" data-close="help">✕</button></div><ul><li><b>Обзор:</b> тянуть — вращать, колесо / два пальца — масштаб, правая кнопка / два пальца — сдвиг.</li><li><b>Двойной клик / двойной тап</b> по модели — сделать эту точку центром вращения.</li><li><b>Прогулка:</b> W A S D или стрелки — идти, Q / E — повернуться, тянуть — осмотреться, Shift — быстрее, двойной клик по полу — перейти туда. На телефоне — кнопки-джойстик.</li><li><b>Линейка:</b> клик в две точки — расстояние в мм; «Очистить» убирает замеры.</li><li><b>Срез:</b> ползунок срезает всё выше выбранной высоты — видно комнаты сверху при кровле.</li><li><b>Клавиши:</b> A — арки айвана вкл/выкл, H — скрыть панели, U — смотреть вверх, R — сброс вида, F — прогулка, M — линейка, + / − — ближе / дальше, 1…9 — ваши сохранённые виды.</li></ul></div>
+<nav class="dock" aria-label="Управление моделью">
+  <div class="row" id="views"><span class="lbl">Вид</span>
+    <button class="view" data-v="overview" aria-pressed="true">Сверху</button>
+    <button class="view" data-v="cutaway">Без кровли</button>
+    <button class="view" data-v="street">С улицы</button>
+    <button class="view" data-v="aivan">Айван</button>
+    <button class="view" data-v="arcade">Колоннада айвана</button>
+    <button class="view" data-v="tapchan">Топчаны и шатёр</button>
+    <button class="view" data-v="domes">Купола</button>
+    <button class="view" data-v="underdome">Под куполом</button>
+    <button class="view" data-v="aivanceil">Потолок айвана</button>
+    <button id="lookup" aria-pressed="false" title="Поднять взгляд к потолку (U)">⬆ Смотреть вверх</button>
+    <button class="view" data-v="bukhara">Бухарский купол</button>
+    <button class="view" data-v="corridor">Коридор</button>
+    <button class="view" data-v="kids">Детская</button>
+    <button class="view" data-v="booths">Кабинки</button>
+    <button class="view" data-v="mangal">Мангал</button>
+    <button class="view" data-v="bar">Бар</button>
+    <button class="view" data-v="portal">Портал</button>
+  </div>
+  <div class="row" id="tools2"><span class="lbl">Инструменты</span>
+    <button id="t-walk" aria-pressed="false" title="Прогулка от первого лица (F)">🚶 Прогулка</button>
+    <button id="t-ruler" aria-pressed="false" title="Линейка: клик в две точки (M)">📏 Линейка</button>
+    <button id="t-clear" class="mini" hidden>Очистить замеры</button>
+    <label class="sl" title="Срезать всё выше этой высоты">✂ Срез <input id="t-cut" type="range" min="0.6" max="9" step="0.1" value="9"><output id="t-cut-v">выкл</output></label>
+    <label class="sl" title="Яркость">☀ <input id="t-exp" type="range" min="0.5" max="2.2" step="0.05" value="1"></label>
+    <button id="t-zin" class="mini" title="Ближе (+)">＋</button><button id="t-zout" class="mini" title="Дальше (−)">－</button>
+    <button id="t-spin" aria-pressed="false" title="Медленное автовращение">⟳ Вращение</button>
+    <button id="t-reset" title="Сброс вида (R)">⌂ Сброс</button>
+    <button id="t-save" title="Запомнить этот ракурс">★ Запомнить вид</button>
+    <span id="t-saved"></span>
+    <button id="t-help" class="mini" title="Управление и клавиши">?</button>
+  </div>
+  <div class="row" id="layers"><span class="lbl"><button id="layers-fold" class="mini" aria-expanded="true" title="Свернуть слои">Слои ▾</button></span>
+    <button data-l="structure" aria-pressed="true" title="Колонны, балки, прогоны, навес, каркас коридора — вместе с ними уходит кровля и всё подвешенное">Каркас</button>
+    <button data-l="skin" aria-pressed="true" title="Кровля, водостоки, фонарь над деревом — вместе с ней уходят подвесные ковры и светильники">Кровля</button>
+    <button data-l="domes" aria-pressed="true" title="Купол вместе с люстрой">Купол и люстра</button>
+    <button data-l="hung" aria-pressed="true">Подвесные ковры и светильники</button>
+    <button data-l="furniture" aria-pressed="true">Мебель</button>
+    <button data-l="planting" aria-pressed="true">Растения</button>
+    <button data-l="aivan" aria-pressed="true">Айван</button>
+    <button data-l="arcade" aria-pressed="true" title="Колонны, арки и балка айвана (A)">Арки айвана</button>
+    <button data-l="booths" aria-pressed="true">Кабинки</button>
+    <button data-l="corridor" aria-pressed="true">Коридор</button>
+    <button data-l="mangal" aria-pressed="true">Мангал</button>
+    <button data-l="bar" aria-pressed="true">Бар</button>
+    <button data-l="tents" aria-pressed="true">Топчаны и шатры</button>
+    <button data-l="majlis" aria-pressed="true">Маджлис</button>
+    <button data-l="fountain" aria-pressed="true">Хауз</button>
+    <button data-l="kids" aria-pressed="true">Детская</button>
+    <button data-l="building" aria-pressed="true">Здание</button>
+    <button data-l="facade" aria-pressed="true">Фасад</button>
+  </div>
+</nav>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script>
+(function () {
+  const stage = document.getElementById('stage'), status = document.getElementById('status');
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
+  renderer.localClippingEnabled = true; renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  stage.appendChild(renderer.domElement);
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xcfd9e0); scene.fog = new THREE.Fog(0xcfd9e0, 70, 160);
+  const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 400);
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true; controls.maxPolarAngle = Math.PI * 0.97;        // owner: must be able to look UP at ceilings and domes
+   controls.minDistance = 2; controls.maxDistance = 120;
+  // light: a soft image-based environment (warm sky dome, bright window panels, earthy ground) lights every surface, also under
+  // the roof where the sun cannot reach -- carved wood, carpets and tiles keep their colour instead of going black
+  const pmrem = new THREE.PMREMGenerator(renderer), envScene = new THREE.Scene();
+  const envGeo = new THREE.SphereGeometry(50, 32, 16), envCol = [];
+  for (let i = 0; i < envGeo.attributes.position.count; i++) {
+    const y = envGeo.attributes.position.getY(i) / 50, c = y > 0 ? new THREE.Color(0xd9cdb8).lerp(new THREE.Color(0xfff6e8), y).multiplyScalar(1.15) : new THREE.Color(0xa08a70).lerp(new THREE.Color(0x4a3a2c), -y);
+    envCol.push(c.r, c.g, c.b);
+  }
+  envGeo.setAttribute('color', new THREE.Float32BufferAttribute(envCol, 3));
+  envScene.add(new THREE.Mesh(envGeo, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide })));
+  scene.environment = pmrem.fromScene(envScene, 0.04).texture;
+  scene.add(new THREE.HemisphereLight(0xfff3e0, 0x5a4a3a, 0.35));
+  const sun = new THREE.DirectionalLight(0xffe6c4, 1.5); sun.position.set(30, 40, 25); sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.02;
+  Object.assign(sun.shadow.camera, { left: -35, right: 35, top: 35, bottom: -35, near: 1, far: 140 });
+  scene.add(sun); scene.add(sun.target);
+  const MAXANISO = renderer.capabilities.getMaxAnisotropy();
+
+  // Blender Z-up plan coords (x east, y north) are exported Y-up: plan (x, y, z) -> three (x, z, -y)
+  const P = (x, y, z) => new THREE.Vector3(x, z, -y);
+  let walk = false, cutY = 99;                            // first-person mode + section height (comfort tools below)
+  const VIEWS = {
+    overview: [P(30, -8, 24), P(6, 18, 0)], cutaway: [P(26, -4, 20), P(5.5, 18, 0)],
+    street: [P(17.5, 9, 0.4), P(6, 18.5, 0.9)], aivan: [P(3.0, 15.8, 1.6), P(1.2, 27, 0.6)], arcade: [P(6.2, 23.6, 1.3), P(3.2, 19.6, 1.4)],
+    tapchan: [P(7.4, 27.4, 1.6), P(3.5, 33.5, 0.4)],
+    kids: [P(-0.6, 0.9, 1.7), P(-4.2, 3.3, 0.2)],
+    domes: [P(24, 6, 9), P(6, 20, 3.5)], underdome: [P(7.6, 16.6, 1.1), P(6.0, 19.9, 4.4)], aivanceil: [P(2.6, 16.0, 1.0), P(1.7, 21.5, 3.0)],
+    bukhara: [P(5.0, 30.4, 1.6), P(6.1, 35.3, 0.9)],
+    corridor: [P(11.0, 16.8, 0.95), P(7.0, 16.8, 1.0)], booths: [P(6.4, 17.2, 1.2), P(8.6, 24.5, 0.6)], mangal: [P(7.4, 11.4, 1.3), P(10.6, 6.0, 0.5)], bar: [P(4.3, 14.6, 1.3), P(0.6, 10.6, 1.0)], portal: [P(17.6, 12.6, 0.8), P(11.4, 16.8, 1.0)]
+  };
+  // layers come from the model: every object carries extras.grp (see r3d/groups.py); a layer is shown only while the layers it hangs from are on
+  const groups = { skin: [], domes: [], structure: [], hung: [], furniture: [], planting: [], building: [], people: [], facade: [], kids: [], decor: [], context: [], floors: [], aivan: [], booths: [], corridor: [], mangal: [], bar: [], tents: [], majlis: [], fountain: [], arcade: [] };
+  const PARENTS = { skin: ['structure'], hung: ['skin', 'structure'] };
+  const state = {}; Object.keys(groups).forEach(k => { state[k] = true; });
+  function setView(v) {
+    const [p, t] = VIEWS[v];
+    const far = (v === 'overview' || v === 'cutaway') && camera.aspect < 1 ? 1.75 : 1;
+    camera.position.copy(t.clone().add(p.clone().sub(t).multiplyScalar(far))); controls.target.copy(t); controls.update();
+    document.querySelectorAll('#views button[data-v]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
+    if (v === 'cutaway') { toggle('skin', false); toggle('domes', false); toggle('hung', false); } else if (['overview', 'street', 'domes', 'underdome'].includes(v)) { toggle('structure', true); toggle('skin', true); toggle('domes', true); toggle('hung', true); }
+    markChange();
+  }
+  // look up: lift the orbit target to ceiling height in front of the camera (camera stays at eye level); press again to come back
+  let lookSaved = null;
+  function lookUp() {
+    const b = document.getElementById('lookup');
+    if (lookSaved) { controls.target.copy(lookSaved); lookSaved = null; b.setAttribute('aria-pressed', 'false'); controls.update(); markChange(); return; }
+    lookSaved = controls.target.clone();
+    const d = controls.target.clone().sub(camera.position); d.y = 0; if (d.length() < 0.1) d.set(0, 0, -1); d.normalize();
+    const ceil = Math.max(camera.position.y + 1.4, 3.0);
+    controls.target.copy(camera.position.clone().add(d.multiplyScalar(1.2))); controls.target.y = ceil;
+    b.setAttribute('aria-pressed', 'true'); controls.update(); markChange();
+  }
+  document.getElementById('lookup').addEventListener('click', lookUp);
+  window.addEventListener('keydown', e => { if (e.key === 'u' || e.key === 'U' || e.key === 'г' || e.key === 'Г') lookUp(); });
+  function toggle(l, on) {
+    if (!(l in state)) return;
+    state[l] = on;
+    Object.keys(groups).forEach(g => { const vis = state[g] && (PARENTS[g] || []).every(p => state[p]); groups[g].forEach(o => { o.visible = vis; }); });
+    document.querySelectorAll('#layers button[data-l]').forEach(b => {
+      const g = b.dataset.l; b.setAttribute('aria-pressed', String(state[g])); b.classList.toggle('dep-off', state[g] && !(PARENTS[g] || []).every(p => state[p]));
+    });
+    markChange();
+  }
+  const uiBtn = document.getElementById('ui-toggle');
+  function setClean(on) { document.body.classList.toggle('clean', on); uiBtn.setAttribute('aria-pressed', String(on)); uiBtn.textContent = on ? 'Показать кнопки' : 'Скрыть кнопки'; uiBtn.style.opacity = on ? '.55' : ''; }
+  uiBtn.addEventListener('click', () => setClean(!document.body.classList.contains('clean')));
+  window.addEventListener('keydown', e => { if (e.key === 'h' || e.key === 'H' || e.key === 'р' || e.key === 'Р') setClean(!document.body.classList.contains('clean')); });
+  document.getElementById('views').addEventListener('click', e => { const b = e.target.closest('button'); if (b && b.dataset.v) { if (lookSaved) lookUp(); setView(b.dataset.v); } });
+  document.getElementById('layers').addEventListener('click', e => { const b = e.target.closest('button'); if (b) toggle(b.dataset.l, b.getAttribute('aria-pressed') !== 'true'); });
+
+  const onModel = gltf => {
+    const root = gltf.scene;
+    root.traverse(o => {
+      if (!o.isMesh) return;
+      o.castShadow = true; o.receiveShadow = true;
+      const mats = Array.isArray(o.material) ? o.material : [o.material];
+      mats.forEach(m => { if (m.transmission) { m.transparent = true; m.opacity = 0.35; } m.side = THREE.DoubleSide; });
+      const nm = (o.parent && o.parent !== root ? o.parent.name : o.name) || '';
+      const tgt = o.parent && o.parent !== root ? o.parent : o;
+      let g = (tgt.userData && tgt.userData.grp) || (o.userData && o.userData.grp) || 'decor';
+      if (/^Khiva_(column|arcade)/.test(nm)) g = 'arcade';                // the aivan arcade is its own layer
+      if (!(g in groups)) g = 'decor';
+      groups[g].push(tgt);
+      mats.forEach(m => ['map', 'normalMap', 'roughnessMap', 'emissiveMap'].forEach(k => { if (m[k]) { m[k].anisotropy = MAXANISO; m[k].needsUpdate = true; } }));
+      mats.forEach(m => {                                   // wood reads as matt carved walnut, not a glossy grey sheen; carving stays legible
+        if (/walnut|carved|oak|deck|roofwood|jali/i.test(m.name || '') && !m.userData.tuned) { m.roughness = Math.max(m.roughness, 0.72); if (m.map) m.color.setScalar(1.35); m.userData.tuned = true; }
+      });
+    });
+    scene.add(root); status.hidden = true; toggle('people', false); setView('overview');
+  };
+  const fail = () => { status.textContent = 'Не удалось загрузить модель. Обновите страницу.'; };
+  const get = (u, how) => fetch(u).then(r => { if (!r.ok) throw new Error(u + ' ' + r.status); return r[how](); });
+  get('m/model.json', 'json').then(g => {
+    const parts = (g.extras && g.extras.geo_parts) || ['geo1.txt', 'geo2.txt'];
+    return Promise.all(parts.map(p => get('m/' + p, 'text'))).then(txt => {
+      g.buffers[0].uri = 'data:application/octet-stream;base64,' + txt.map(t => t.trim()).join('');
+      new THREE.GLTFLoader().parse(JSON.stringify(g), 'm/', onModel, fail);
+    });
+  }).catch(fail);
+
+  // ---------- dimensions overlay: key sizes as red dimension lines + labels; hidden while the model moves, back when it stops
+  const TER = -0.45, dimsEl = document.getElementById('dims'), dimGroup = new THREE.Group(); dimGroup.visible = false; scene.add(dimGroup);
+  const DIMS = [   // plan coords (x east from the hall face, y north along it, z level), label, note
+    [[0.25, 0, TER + 0.06], [0.25, 37.1, TER + 0.06], 'Терраса вдоль зала'], [[0, 15.3, TER + 0.06], [12.14, 15.3, TER + 0.06], 'Глубина у входа'],
+    [[11.4, 15.55, 1.0], [11.4, 18.05, 1.0], 'Проём портала'], [[11.1, 16.8, TER], [11.1, 16.8, 1.868], 'В свету под аркой'], [[0.3, 16.9, 0.0], [0.3, 18.375, 0.0], 'Главная дверь зала'],
+    [[5.0, 15.55, TER + 0.06], [5.0, 18.05, TER + 0.06], 'Аллея'], [[3.2, 19.9, 3.9], [8.8, 19.9, 3.9], 'Купол-карбанди Ø'],
+    [[5.7, 20.325, TER + 0.55], [5.7, 22.875, TER + 0.55], 'Под куполом, спинка — спинка'], [[6.66, 29.45, TER + 0.3], [8.0, 29.45, TER + 0.3], 'Проход к кабинкам'],
+    [[8.2, 26.3, TER + 1.3], [8.2, 28.3, TER + 1.3], 'Кабинка'], [[4.5, 12.72, 3.2], [7.5, 12.72, 3.2], 'Зенитный фонарь'],
+    [[-7.1, 2.9, TER + 0.95], [-0.15, 2.9, TER + 0.95], 'Детская зона'], [[-3.6, 0, TER + 0.06], [-3.6, 1.6, TER + 0.06], 'Служебный проход'],
+    [[2.9, 8.6, TER + 1.15], [2.9, 14.3, TER + 1.15], 'Барная стойка'], [[9.0, 2.7, TER + 0.06], [12.3, 2.7, TER + 0.06], 'Мангальная'],
+    [[2.0, 10.5, TER], [2.0, 10.5, 3.1], 'Высота под балкой'], [[1.45, 33.9, TER + 0.5], [4.05, 33.9, TER + 0.5], 'Шатёр'],
+    [[4.4, 36.0, TER + 0.06], [8.45, 36.0, TER + 0.06], 'Хивинские ворота'], [[0.0, 31.4, TER + 0.06], [1.3, 31.4, TER + 0.06], 'Пандус 1:12']];
+  const dimMat = new THREE.LineBasicMaterial({ color: 0x8e1f24, depthTest: false, transparent: true });
+  const labels = [];
+  DIMS.forEach(([a, b, name]) => {
+    const A = P(...a), B = P(...b), d = B.clone().sub(A), L = d.length(); d.normalize();
+    const side = Math.abs(d.y) > 0.9 ? new THREE.Vector3(1, 0, 0) : new THREE.Vector3(0, 1, 0), t = side.clone().cross(d).normalize().multiplyScalar(0.12);
+    const pts = [A, B, A.clone().add(t), A.clone().sub(t), B.clone().add(t), B.clone().sub(t)];
+    const g = new THREE.BufferGeometry().setFromPoints([pts[0], pts[1], pts[2], pts[3], pts[4], pts[5]]);
+    const ln = new THREE.LineSegments(g, dimMat); ln.renderOrder = 999; dimGroup.add(ln);
+    const el = document.createElement('div'); el.className = 'dim-label'; el.innerHTML = `${Math.round(L * 1000).toLocaleString('ru-RU')}<small>${name}</small>`;
+    dimsEl.appendChild(el); labels.push([A.clone().add(B).multiplyScalar(0.5), el]);
+  });
+  const dimBtn = document.getElementById('dim-toggle'); let moveTimer = null;
+  function setDims(on) { dimGroup.visible = on; dimsEl.classList.toggle('off', !on); dimBtn.setAttribute('aria-pressed', String(on)); markChange(); }
+  dimBtn.addEventListener('click', () => setDims(!dimGroup.visible));
+  function moving(on) {
+    clearTimeout(moveTimer);
+    if (on) { dimsEl.classList.add('moving'); dimGroup.children.forEach(c => c.visible = false); }
+    else moveTimer = setTimeout(() => { dimsEl.classList.remove('moving'); dimGroup.children.forEach(c => c.visible = true); drawn = false; }, 350);
+  }
+  controls.addEventListener('start', () => moving(true)); controls.addEventListener('end', () => moving(false));
+  const v3 = new THREE.Vector3();
+  function placeLabels() {
+    if (!dimGroup.visible) return;
+    const w = stage.clientWidth, h = stage.clientHeight;
+    const placed = [];                                        // declutter: a label that would overlap one already shown waits for a closer view
+    labels.forEach(([p, el]) => { v3.copy(p).project(camera); let vis = v3.z < 1 && Math.abs(v3.x) < 1.05 && Math.abs(v3.y) < 1.05;
+      const x = (v3.x + 1) / 2 * w, y = (1 - v3.y) / 2 * h, hw = (el.offsetWidth || 90) / 2 + 3, hh = (el.offsetHeight || 28) / 2 + 2;
+      if (vis && placed.some(([px, py, pw, ph]) => Math.abs(px - x) < pw + hw && Math.abs(py - y) < ph + hh)) vis = false;
+      el.style.visibility = vis ? 'visible' : 'hidden'; if (vis) { el.style.left = x + 'px'; el.style.top = y + 'px'; placed.push([x, y, hw, hh]); } });
+  }
+
+  // ---------- full screen, landscape: Fullscreen API + orientation lock where the browser allows it; otherwise (iPhone) the whole
+  // page is turned 90° so the phone can be held sideways, with its own touch handling (orbit / pinch / pan in the turned frame)
+  const app = document.getElementById('app'), fsBtn = document.getElementById('fs-toggle');
+  let rot = false;
+  function layoutRot() {
+    if (rot) { app.style.width = innerHeight + 'px'; app.style.height = innerWidth + 'px'; app.style.left = innerWidth + 'px'; }
+    else { app.style.width = app.style.height = app.style.left = ''; }
+    resize();
+  }
+  function setRot(on) { rot = on; document.body.classList.toggle('rot', on); controls.enabled = !on; layoutRot(); }
+  function isFull() { return !!(document.fullscreenElement || document.webkitFullscreenElement); }
+  async function toggleFull() {
+    if (isFull()) { try { await (document.exitFullscreen || document.webkitExitFullscreen).call(document); } catch (e) {} return; }
+    if (rot) { setRot(false); setClean(false); fsBtn.setAttribute('aria-pressed', 'false'); fsBtn.textContent = 'Во весь экран'; return; }
+    const el = document.documentElement; let ok = false;
+    try { if (el.requestFullscreen) { await Promise.race([el.requestFullscreen({ navigationUI: 'hide' }), new Promise((_, no) => setTimeout(no, 1500))]); ok = isFull(); } else if (el.webkitRequestFullscreen) { el.webkitRequestFullscreen(); await new Promise(r => setTimeout(r, 400)); ok = isFull(); } } catch (e) { ok = false; }
+    if (ok) { try { await screen.orientation.lock('landscape'); } catch (e) { if (innerHeight > innerWidth) setRot(true); } }
+    else if (innerHeight > innerWidth) setRot(true);
+    fsBtn.setAttribute('aria-pressed', 'true'); fsBtn.textContent = 'Обычный вид'; setClean(true);   // whole screen for the model; panels come back with «Показать кнопки»
+  }
+  fsBtn.addEventListener('click', toggleFull);
+  ['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, () => {
+    if (!isFull()) { try { screen.orientation.unlock(); } catch (e) {} setRot(false); setClean(false); fsBtn.setAttribute('aria-pressed', 'false'); fsBtn.textContent = 'Во весь экран'; }
+    setTimeout(layoutRot, 120);
+  }));
+  // touch control in the turned frame: screen (sx, sy) -> app (sy, W - sx)
+  const cv = renderer.domElement, sph = new THREE.Spherical(); let tA = null;
+  const toApp = t => ({ x: t.clientY, y: innerWidth - t.clientX });
+  function rd(e) { return Array.from(e.touches).map(toApp); }
+  cv.addEventListener('touchstart', e => { if (!rot) return; e.preventDefault(); tA = rd(e); moving(true); }, { passive: false });
+  cv.addEventListener('touchend', e => { if (!rot) return; tA = e.touches.length ? rd(e) : null; if (!tA) moving(false); });
+  cv.addEventListener('touchmove', e => {
+    if (!rot || !tA) return; e.preventDefault(); const tB = rd(e); const h = stage.clientHeight;
+    sph.setFromVector3(camera.position.clone().sub(controls.target));
+    if (tB.length === 1 && tA.length === 1) {
+      sph.theta -= 2 * Math.PI * (tB[0].x - tA[0].x) / h; sph.phi = Math.min(controls.maxPolarAngle, Math.max(0.05, sph.phi - 2 * Math.PI * (tB[0].y - tA[0].y) / h));
+    } else if (tB.length >= 2 && tA.length >= 2) {
+      const dA = Math.hypot(tA[0].x - tA[1].x, tA[0].y - tA[1].y), dB = Math.hypot(tB[0].x - tB[1].x, tB[0].y - tB[1].y);
+      sph.radius = Math.min(controls.maxDistance, Math.max(controls.minDistance, sph.radius * dA / Math.max(dB, 1)));
+      const mx = (tB[0].x + tB[1].x - tA[0].x - tA[1].x) / 2, my = (tB[0].y + tB[1].y - tA[0].y - tA[1].y) / 2;
+      const k = 2 * sph.radius * Math.tan(camera.fov * Math.PI / 360) / h, right = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 0), up = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 1);
+      controls.target.add(right.multiplyScalar(-mx * k)).add(up.multiplyScalar(my * k));
+    }
+    camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(sph)); camera.lookAt(controls.target); tA = tB; markChange();
+  }, { passive: false });
+  window.addEventListener('orientationchange', () => setTimeout(layoutRot, 250));
+
+  // ---------- HD: while the model moves it renders at the normal resolution; when it stops, this view is re-rendered at the
+  // highest resolution the device's GPU allows (desktop: up to 2x supersampling / ~33 MP, phone: native density / ~8 MP),
+  // with a 4K shadow map focused on the area in view
+  const gl = renderer.getContext(), maxRB = gl.getParameter(gl.MAX_RENDERBUFFER_SIZE), maxVP = gl.getParameter(gl.MAX_VIEWPORT_DIMS);
+  const mobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || (window.matchMedia('(pointer: coarse)').matches && !window.matchMedia('(pointer: fine)').matches);
+  const PR0 = Math.min(window.devicePixelRatio || 1, 2), hdBtn = document.getElementById('hd-toggle');
+  let hd = false, hdOn = false, lastChange = 0;
+  function hdRatio() {
+    const w = stage.clientWidth, h = stage.clientHeight, dpr = window.devicePixelRatio || 1;
+    const want = mobile ? Math.min(dpr * 1.25, 3.5) : Math.max(2, dpr * 2);
+    const capDim = Math.min(maxRB, maxVP[0], maxVP[1]) / Math.max(w, h), capPix = Math.sqrt((mobile ? 8.3e6 : 33e6) / (w * h));
+    return Math.max(PR0, Math.min(want, capDim, capPix));
+  }
+  function setShadow(size, half) {
+    if (sun.shadow.mapSize.x !== size) { sun.shadow.mapSize.set(size, size); if (sun.shadow.map) { sun.shadow.map.dispose(); sun.shadow.map = null; } }
+    const c = sun.shadow.camera, t = half < 30 ? controls.target : new THREE.Vector3(6, 0, -18);
+    Object.assign(c, { left: -half, right: half, top: half, bottom: -half }); c.updateProjectionMatrix();
+    sun.target.position.copy(t); sun.position.copy(t).add(new THREE.Vector3(24, 40, 43)); sun.target.updateMatrixWorld();
+  }
+  function applyHD(on) {
+    hdOn = on; renderer.setPixelRatio(on ? hdRatio() : PR0); resize();
+    setShadow(on ? (mobile ? 2048 : 4096) : 2048, on ? 16 : 35);
+    const w = Math.round(stage.clientWidth * renderer.getPixelRatio()), h = Math.round(stage.clientHeight * renderer.getPixelRatio());
+    if (hd) hdBtn.textContent = on ? `HD ✓ ${w}×${h}` : 'HD …';
+  }
+  function markChange() { lastChange = performance.now(); if (hdOn) applyHD(false); }
+  hdBtn.addEventListener('click', () => {
+    hd = !hd; hdBtn.setAttribute('aria-pressed', String(hd));
+    if (hd) { hdBtn.textContent = 'HD …'; lastChange = 0; } else { applyHD(false); hdBtn.textContent = 'HD'; }
+  });
+  controls.addEventListener('change', markChange);
+  function resize() { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+  window.addEventListener('resize', () => { markChange(); rot ? layoutRot() : resize(); }); resize();
+  let drawn = false;
+  (function loop() {
+    requestAnimationFrame(loop);
+    if (!rot && !walk) controls.update();
+    if (hd && !hdOn && performance.now() - lastChange > 450) { applyHD(true); drawn = false; }
+    if (hdOn && drawn) return;                          // HD still: render once, then hold the frame until something changes
+    renderer.render(scene, camera); placeLabels(); drawn = true;
+  })();
+
+  // ================= comfort tools (rev 11.7 viewer) =================
+  const $ = id => document.getElementById(id);
+  const sheet = id => { const el = $(id), on = el.hidden; document.querySelectorAll('.sheet').forEach(s => { s.hidden = true; }); el.hidden = !on; };
+  $('t-help').addEventListener('click', () => sheet('help'));
+  document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => { $(b.dataset.close).hidden = true; }));
+  const lf = $('layers-fold');
+  lf.addEventListener('click', () => { const f = $('layers').classList.toggle('folded'); lf.textContent = f ? 'Слои ▸' : 'Слои ▾'; lf.setAttribute('aria-expanded', String(!f)); try { localStorage.setItem('sam_layers_folded', f ? '1' : '0'); } catch (e) {} });
+  try { if (localStorage.getItem('sam_layers_folded') === '1') lf.click(); } catch (e) {}
+
+  // ---- picking (visible geometry only, below the section cut)
+  const ray = new THREE.Raycaster();
+  function shown(o) { for (let p = o; p; p = p.parent) if (!p.visible) return false; return true; }
+  function pick(cx, cy) {
+    const r = renderer.domElement.getBoundingClientRect();
+    ray.setFromCamera({ x: (cx - r.left) / r.width * 2 - 1, y: -(cy - r.top) / r.height * 2 + 1 }, camera);
+    const hits = ray.intersectObjects(scene.children, true);
+    return hits.find(h => h.object.isMesh && shown(h.object) && h.point.y <= cutY + 1e-3) || null;
+  }
+  function floorBelow(p) {
+    ray.set(new THREE.Vector3(p.x, p.y + 0.6, p.z), new THREE.Vector3(0, -1, 0));
+    const h = ray.intersectObjects(scene.children, true).find(h => h.object.isMesh && shown(h.object) && h.face && h.face.normal && Math.abs(h.face.normal.y) > 0.3);
+    return h ? h.point.y : null;
+  }
+
+  // ---- section cut
+  const cutPlane = new THREE.Plane(new THREE.Vector3(0, -1, 0), 99);
+  $('t-cut').addEventListener('input', e => {
+    const v = parseFloat(e.target.value); const on = v < 8.95; cutY = on ? v - 0.45 : 99;      // slider = height above the terrace floor
+    cutPlane.constant = cutY; renderer.clippingPlanes = on ? [cutPlane] : [];
+    $('t-cut-v').textContent = on ? v.toFixed(1) + ' м' : 'выкл'; markChange();
+  });
+  // ---- brightness
+  $('t-exp').addEventListener('input', e => { renderer.toneMappingExposure = parseFloat(e.target.value); markChange(); });
+  // ---- zoom, spin, reset
+  function dolly(k) { const d = camera.position.clone().sub(controls.target); camera.position.copy(controls.target).add(d.multiplyScalar(k)); controls.update(); markChange(); }
+  $('t-zin').addEventListener('click', () => dolly(0.75)); $('t-zout').addEventListener('click', () => dolly(1.33));
+  $('t-spin').addEventListener('click', e => { controls.autoRotate = !controls.autoRotate; controls.autoRotateSpeed = 0.6; e.currentTarget.setAttribute('aria-pressed', String(controls.autoRotate)); });
+  function resetView() { if (walk) setWalk(false); const cur = document.querySelector('#views button[aria-pressed="true"]'); setView(cur ? cur.dataset.v : 'overview'); }
+  $('t-reset').addEventListener('click', resetView);
+
+  // ---- my views (this browser only)
+  let saved = []; try { saved = JSON.parse(localStorage.getItem('sam_views') || '[]'); } catch (e) { saved = []; }
+  function drawSaved() {
+    const box = $('t-saved'); box.innerHTML = '';
+    saved.forEach((v, i) => {
+      const b = document.createElement('button'); b.textContent = '★' + (i + 1); b.title = 'Вернуться к виду ' + (i + 1) + ' (клавиша ' + (i + 1) + '); двойной клик — удалить';
+      b.addEventListener('click', () => goSaved(i)); b.addEventListener('dblclick', () => { saved.splice(i, 1); store(); drawSaved(); });
+      box.appendChild(b);
+    });
+  }
+  function store() { try { localStorage.setItem('sam_views', JSON.stringify(saved)); } catch (e) {} }
+  function goSaved(i) { const v = saved[i]; if (!v) return; if (walk) setWalk(false); camera.position.fromArray(v.p); controls.target.fromArray(v.t); controls.update(); markChange(); }
+  $('t-save').addEventListener('click', () => { if (saved.length >= 9) saved.shift(); saved.push({ p: camera.position.toArray(), t: controls.target.toArray() }); store(); drawSaved(); });
+  drawSaved();
+
+  // ---- smooth re-centre (double click / double tap)
+  let fly = null;
+  function flyTo(t, p) { fly = { t0: controls.target.clone(), t1: t, p0: camera.position.clone(), p1: p || camera.position.clone().add(t.clone().sub(controls.target)), s: performance.now() }; }
+
+  // ---- ruler
+  let ruler = false, mPts = [];
+  const measG = new THREE.Group(); scene.add(measG); const measEl = $('meas'); const mLabels = [];
+  const mMat = new THREE.LineBasicMaterial({ color: 0x1f3f8a, depthTest: false }), dotGeo = new THREE.SphereGeometry(0.035, 12, 8), dotMat = new THREE.MeshBasicMaterial({ color: 0x1f3f8a, depthTest: false });
+  function setRuler(on) { ruler = on; document.body.classList.toggle('ruler', on); $('t-ruler').setAttribute('aria-pressed', String(on)); mPts = []; if (on && walk) setWalk(false); }
+  $('t-ruler').addEventListener('click', () => setRuler(!ruler));
+  $('t-clear').addEventListener('click', () => { measG.clear(); mLabels.length = 0; measEl.innerHTML = ''; mPts = []; $('t-clear').hidden = true; markChange(); });
+  function addPoint(pt) {
+    const d = new THREE.Mesh(dotGeo, dotMat); d.position.copy(pt); d.renderOrder = 1000; measG.add(d); mPts.push(pt.clone());
+    if (mPts.length === 2) {
+      const [a, b] = mPts; const ln = new THREE.Line(new THREE.BufferGeometry().setFromPoints([a, b]), mMat); ln.renderOrder = 1000; measG.add(ln);
+      const el = document.createElement('div'); el.className = 'm-label'; const L = a.distanceTo(b), dz = Math.abs(a.y - b.y);
+      el.textContent = Math.round(L * 1000).toLocaleString('ru-RU') + ' мм' + (dz > 0.05 && dz < L * 0.98 ? ` (по горизонтали ${Math.round(Math.hypot(a.x - b.x, a.z - b.z) * 1000).toLocaleString('ru-RU')})` : '');
+      measEl.appendChild(el); mLabels.push([a.clone().add(b).multiplyScalar(0.5), el]); mPts = []; $('t-clear').hidden = false;
+    }
+    markChange();
+  }
+  function placeMeas() {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    mLabels.forEach(([p, el]) => { v3.copy(p).project(camera); const vis = v3.z < 1 && Math.abs(v3.x) < 1.1 && Math.abs(v3.y) < 1.1;
+      el.style.visibility = vis ? 'visible' : 'hidden'; if (vis) { el.style.left = (v3.x + 1) / 2 * w + 'px'; el.style.top = (1 - v3.y) / 2 * h + 'px'; } });
+  }
+
+  // ---- walk (first person, eye 1.60 above the floor under you)
+  let yaw = 0, pitch = 0; const keys = {}; const EYE = 1.6;
+  function setWalk(on) {
+    walk = on; document.body.classList.toggle('walking', on); $('t-walk').setAttribute('aria-pressed', String(on)); $('pad').hidden = !on;
+    if (on) {
+      if (ruler) setRuler(false); controls.enabled = false; controls.autoRotate = false; $('t-spin').setAttribute('aria-pressed', 'false');
+      const d = controls.target.clone().sub(camera.position); yaw = Math.atan2(-d.x, -d.z); pitch = 0;
+      if (camera.position.y > 6) {                                              // from an overview: start at eye height where you were looking
+        const f = floorBelow(new THREE.Vector3(controls.target.x, 6, controls.target.z)); camera.position.set(controls.target.x, (f === null ? -0.45 : f) + EYE, controls.target.z);
+      } else { const f = floorBelow(camera.position); if (f !== null) camera.position.y = f + EYE; }
+    } else {
+      controls.enabled = !rot; const d = new THREE.Vector3(-Math.sin(yaw) * Math.cos(pitch), Math.sin(pitch), -Math.cos(yaw) * Math.cos(pitch));
+      controls.target.copy(camera.position).add(d.multiplyScalar(2)); controls.update();
+    }
+    markChange();
+  }
+  $('t-walk').addEventListener('click', () => setWalk(!walk));
+  let drag = null;
+  cv.addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, t: performance.now() }; });
+  cv.addEventListener('pointermove', e => {
+    if (!walk || !drag || rot) return;
+    yaw -= (e.clientX - drag.x) * 0.004; pitch = Math.max(-1.3, Math.min(1.3, pitch - (e.clientY - drag.y) * 0.004)); drag.x = e.clientX; drag.y = e.clientY; markChange();
+  });
+  let lastTap = 0;
+  cv.addEventListener('pointerup', e => {
+    if (!drag) return; const still = Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) < 6 && performance.now() - drag.t < 400; drag = null;
+    if (!still || rot) return;
+    const now = performance.now(), dbl = now - lastTap < 320; lastTap = now;
+    if (ruler) { const h = pick(e.clientX, e.clientY); if (h) addPoint(h.point); return; }
+    if (!dbl) return;
+    const h = pick(e.clientX, e.clientY); if (!h) return;
+    if (walk) { const f = floorBelow(h.point.clone().setY(h.point.y + 0.3)); const y = (f === null ? h.point.y : f) + EYE; walkTo = new THREE.Vector3(h.point.x, y, h.point.z); }
+    else flyTo(h.point.clone());
+  });
+  let walkTo = null;
+  const K = { KeyW: 'fwd', ArrowUp: 'fwd', KeyS: 'back', ArrowDown: 'back', KeyA: 'left', ArrowLeft: 'left', KeyD: 'right', ArrowRight: 'right', KeyQ: 'tl', KeyE: 'tr' };
+  window.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT') return;
+    if (walk && K[e.code]) { keys[K[e.code]] = true; keys.fast = e.shiftKey; e.preventDefault(); return; }
+    if (e.code === 'KeyF') setWalk(!walk); else if (e.code === 'KeyM') setRuler(!ruler); else if (e.code === 'KeyR') resetView();
+    else if (e.key === '+' || e.key === '=') dolly(0.75); else if (e.key === '-') dolly(1.33);
+    else if (/^[1-9]$/.test(e.key)) goSaved(parseInt(e.key) - 1);
+    else if (e.code === 'KeyA' && !walk) toggle('arcade', !state.arcade);
+  });
+  window.addEventListener('keyup', e => { if (K[e.code]) keys[K[e.code]] = false; keys.fast = e.shiftKey; });
+  document.querySelectorAll('#pad button').forEach(b => {
+    const k = b.dataset.k, on = e => { e.preventDefault(); keys[k] = true; }, off = () => { keys[k] = false; };
+    b.addEventListener('pointerdown', on); ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => b.addEventListener(ev, off));
+  });
+  let tPrev = performance.now();
+  function tick() {
+    const now = performance.now(), dt = Math.min(0.05, (now - tPrev) / 1000); tPrev = now;
+    if (fly) {
+      const a = Math.min(1, (now - fly.s) / 450), k = a * a * (3 - 2 * a);
+      controls.target.lerpVectors(fly.t0, fly.t1, k); camera.position.lerpVectors(fly.p0, fly.p1, k); controls.update(); markChange(); if (a >= 1) fly = null;
+    }
+    if (walk) {
+      const sp = (keys.fast ? 3.2 : 1.4) * dt, f = new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw)), r = new THREE.Vector3(-f.z, 0, f.x);
+      const mv = new THREE.Vector3();
+      if (keys.fwd) mv.add(f); if (keys.back) mv.sub(f); if (keys.right) mv.add(r); if (keys.left) mv.sub(r);
+      if (keys.tl) yaw += 1.4 * dt; if (keys.tr) yaw -= 1.4 * dt;
+      if (walkTo) { const d = walkTo.clone().sub(camera.position); if (d.length() < 0.05) { camera.position.copy(walkTo); walkTo = null; } else camera.position.add(d.multiplyScalar(Math.min(1, dt * 4))); }
+      if (mv.lengthSq() > 0) {
+        camera.position.add(mv.normalize().multiplyScalar(sp));
+        const fl = floorBelow(camera.position.clone().setY(camera.position.y - EYE + 0.5)); if (fl !== null) camera.position.y += (fl + EYE - camera.position.y) * 0.3;
+      }
+      const look = new THREE.Vector3(-Math.sin(yaw) * Math.cos(pitch), Math.sin(pitch), -Math.cos(yaw) * Math.cos(pitch));
+      camera.lookAt(camera.position.clone().add(look));
+      if (mv.lengthSq() > 0 || keys.tl || keys.tr || walkTo) markChange();
+    }
+    if (controls.autoRotate && !walk) markChange();
+    placeMeas();
+    requestAnimationFrame(tick);
+  }
+  tick();
+
+})();
+</script>
