@@ -2420,6 +2420,14 @@ footer { position: relative; z-index: 2; margin-top: -36px; }
 .lens-svg { -webkit-mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent), linear-gradient(180deg, #000 75%, transparent 100%) !important; mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent), linear-gradient(180deg, #000 75%, transparent 100%) !important; }
 .featured { margin-top: clamp(80px, 12vw, 140px) !important; }
 
+/* ===== v26: brief with fewer lines ===== */
+.bq { border-top: 0 !important; padding: 18px 0 !important; }
+#brief .form-foot { border-top: 0 !important; padding-top: 18px !important; }
+#brief input:not([type=radio]):not([type=checkbox]):not(.bud), #brief textarea { border: 0 !important; border-radius: 16px !important; background: rgba(255,255,255,.045) !important; padding: 14px 16px !important; transition: background .2s, box-shadow .2s; }
+#brief input:not([type=radio]):not([type=checkbox]):not(.bud):focus, #brief textarea:focus { background: rgba(255,255,255,.07) !important; box-shadow: inset 0 0 0 1px rgba(143,178,255,.5) !important; }
+#brief textarea { resize: none; min-height: 110px; }
+#brief input.bud.bud.bud:not([type=radio]):not([type=checkbox]) { border: 0 !important; border-bottom: 0 !important; background: transparent !important; box-shadow: none !important; padding: 0 !important; border-radius: 0 !important; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
