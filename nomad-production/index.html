@@ -2645,6 +2645,11 @@ footer .about p { margin-bottom: 0 !important; }
   footer .foot-bottom { margin-top: 26px !important; }
 }
 
+#brief .form-foot { display: flex !important; flex-wrap: nowrap !important; align-items: center; justify-content: space-between; gap: 16px !important; }
+#brief .form-foot small { flex: 1; min-width: 0; max-width: 30ch; font-size: .72rem !important; line-height: 1.45; }
+#brief .form-foot .btn { flex: none; padding: 12px 18px !important; font-size: .86rem !important; gap: 8px; }
+#brief .form-foot .btn svg.i { width: 16px; height: 16px; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
@@ -2996,7 +3001,7 @@ footer .about p { margin-bottom: 0 !important; }
               <div class="bud-l"><span>&lt;$2k</span><span>$2–8k</span><span>$8–20k</span><span>$20k+</span><span>Not sure</span></div>
               <div class="bud-r" hidden><input type="radio" name="budget" id="b1" value="Under $2k"><input type="radio" name="budget" id="b2" value="$2k–8k"><input type="radio" name="budget" id="b3" value="$8k–20k"><input type="radio" name="budget" id="b4" value="$20k+"><input type="radio" name="budget" id="b5" value="Not sure" checked></div></div></div>
             <div class="bq"><span class="bq-n">06</span><div class="field"><label for="f-msg">About the project</label><textarea id="f-msg" name="message" placeholder="Goal, deadline, where it will run. Links to references help."></textarea></div></div>
-            <div class="form-foot"><small>We use your contact only to reply to this brief.</small><button class="btn" type="submit">Send brief <svg class="i"><use href="#i-send"/></svg></button></div>
+            <div class="form-foot"><small>We use your contact only to reply to this brief.</small><button class="btn" type="submit">Send brief <svg class="i"><use href="#i-arrow"/></svg></button></div>
             <div class="notice" id="notice" hidden role="status"></div>
           </form>
         </div>
