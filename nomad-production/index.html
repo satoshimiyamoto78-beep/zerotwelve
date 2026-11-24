@@ -2633,6 +2633,18 @@ svg.i { stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; shape-
   footer .foot-bottom { margin-top: 22px !important; padding-top: 14px; font-size: .68rem !important; }
 }
 
+/* Footer, final pass */
+footer .about p { margin-bottom: 0 !important; }
+@media (max-width: 760px) {
+  footer .about { display: block !important; }
+  footer .about p { margin-top: 12px !important; }
+  footer .foot-grid { gap: 26px 16px !important; }
+  footer .foot-grid > div:last-child ul { gap: 22px !important; padding-top: 2px; }
+  footer .foot-grid > div:last-child ul a { width: auto !important; height: auto !important; border: 0 !important; border-radius: 0 !important; }
+  footer .foot-grid > div:last-child ul a svg.i { width: 22px !important; height: 22px !important; color: var(--blue-2) !important; }
+  footer .foot-bottom { margin-top: 26px !important; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
@@ -3007,7 +3019,7 @@ svg.i { stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; shape-
 <footer>
   <div class="wrap">
     <div class="foot-grid">
-      <div class="about"><a class="logo" href="#top"><span class="mk"><svg viewBox="0 0 32 32" aria-hidden="true"><use href="#g-logo"/></svg></span><span>NOMAD<small>Production</small></span></a><p>AI-focused video production. AI films, hybrid and edits for brands.</p><a class="btn white sm ft-cta" href="#brief">Start a brief<svg class="i"><use href="#i-arrow"/></svg></a></div>
+      <div class="about"><a class="logo" href="#top"><span class="mk"><svg viewBox="0 0 32 32" aria-hidden="true"><use href="#g-logo"/></svg></span><span>NOMAD<small>Production</small></span></a><p>AI-focused video production. AI films, hybrid and edits for brands.</p></div>
       <div><h4>Showcase</h4><ul><li><a href="#showcase" data-fmt="short"><svg class="i"><use href="#i-phone"/></svg>Short-form</a></li><li><a href="#showcase" data-fmt="promo"><svg class="i"><use href="#i-monitor"/></svg>Promo and ads</a></li><li><a href="#showcase" data-fmt="film"><svg class="i"><use href="#i-film"/></svg>Brand films</a></li></ul></div>
       <div><h4>Studio</h4><ul><li><a href="#approach"><svg class="i"><use href="#i-layers"/></svg>How we make</a></li><li><a href="#pricing"><svg class="i"><use href="#i-tag"/></svg>Pricing</a></li><li><a href="#process"><svg class="i"><use href="#i-clock"/></svg>Process</a></li><li><a href="#faq"><svg class="i"><use href="#i-help"/></svg>FAQ</a></li></ul></div>
       <div><h4>Contact</h4><ul><li><a href="https://t.me/nomadproduction" target="_blank" rel="noopener"><svg class="i"><use href="#i-send"/></svg>Telegram</a></li><li><a href="https://wa.me/" target="_blank" rel="noopener"><svg class="i"><use href="#i-wa"/></svg>WhatsApp</a></li><li><a href="https://youtube.com/@nomadproduction" target="_blank" rel="noopener"><svg class="i"><use href="#i-yt"/></svg>YouTube</a></li><li><a href="https://instagram.com/nomad.production" target="_blank" rel="noopener"><svg class="i"><use href="#i-ig"/></svg>Instagram</a></li><li><a href="mailto:hello@nomad.production"><svg class="i"><use href="#i-mail"/></svg>Email</a></li></ul></div>
