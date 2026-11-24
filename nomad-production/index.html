@@ -2527,6 +2527,84 @@ footer ul a svg.i { width: 16px; height: 16px; color: rgba(143,178,255,.75); str
 footer .foot-bottom { margin-top: clamp(32px, 5vw, 56px); padding-top: 20px; border-top: 1px solid rgba(255,255,255,.06); font-size: .74rem; color: var(--dim); display: flex; justify-content: space-between; gap: 12px; }
 @media (max-width: 860px) { footer .foot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } footer .about { grid-column: 1 / -1; } }
 
+/* ===== v29 ===== */
+svg.i { stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; shape-rendering: geometricPrecision; }
+
+/* Contact: circles, the chosen one opens into the field */
+.seg2.via { flex-wrap: nowrap; align-items: center; gap: 8px; }
+.via label { flex: none; width: 46px; height: 46px; padding: 0 !important; justify-content: center; border-radius: 999px !important; transition: width .45s cubic-bezier(.3,.7,.2,1), background .3s, border-color .3s !important; }
+.via label .vt { display: none; }
+.via label svg.i { width: 19px !important; height: 19px !important; }
+.via label.on { background: #fff !important; color: #05070c !important; border-color: #fff !important; }
+#brief .via #f-contact { flex: 1; min-width: 0; height: 46px; border-radius: 999px !important; padding: 0 18px !important; background: rgba(255,255,255,.045) !important; animation: viaIn .45s cubic-bezier(.3,.7,.2,1); }
+@keyframes viaIn { from { opacity: 0; transform: translateX(-12px); } }
+
+/* Stepper: flat */
+.stepper { padding: 0 !important; gap: 4px !important; background: none !important; border: 0 !important; box-shadow: none !important; align-items: center; }
+.stepper button { width: 34px !important; height: 34px !important; padding: 0 !important; display: grid !important; place-items: center; border-radius: 50% !important; background: none !important; border: 1px solid rgba(255,255,255,.16) !important; color: #fff; box-shadow: none !important; }
+.stepper button svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; fill: none; }
+.stepper button:disabled { opacity: .3; }
+.stepper output { min-width: 34px !important; text-align: center; font-size: 1.05rem !important; font-weight: 500 !important; font-variant-numeric: tabular-nums; }
+
+/* Services: glowing cards */
+.svc { gap: clamp(16px, 2vw, 26px) !important; }
+.sv { padding: 0 !important; grid-template-areas: none !important; display: flex !important; flex-direction: column; border-radius: 26px !important; box-shadow: 0 30px 60px -30px rgba(40,60,200,.55) !important;
+  background: linear-gradient(#0b0d1c, #0b0d1c) padding-box, linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,.05) 50%, rgba(255,255,255,.08)) border-box !important; }
+.sv-art { display: none !important; }
+.sv-top { position: relative; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: clamp(22px, 2.6vw, 30px); min-height: 130px; overflow: hidden; }
+.sv-top::before { content: ""; position: absolute; left: 10%; right: -10%; bottom: -55%; height: 120%; border-radius: 50%; background: radial-gradient(50% 50% at 55% 50%, rgba(120,170,255,.95) 0%, rgba(70,80,255,.75) 25%, rgba(90,50,220,.45) 50%, transparent 72%); filter: blur(14px); opacity: .85; transition: opacity .5s, transform .8s cubic-bezier(.2,.8,.2,1); animation: svGlow 9s ease-in-out calc(var(--k) * -2s) infinite alternate; }
+@keyframes svGlow { from { transform: translateX(-8%) scaleY(.9); } to { transform: translateX(6%) scaleY(1.05); } }
+.sv-tt { position: relative; z-index: 1; }
+.sv-n { position: static !important; display: block; font: 600 .62rem ui-monospace, Menlo, monospace !important; letter-spacing: .14em; color: rgba(200,215,255,.7) !important; text-transform: uppercase; margin-bottom: 8px; }
+.sv h3 { font-size: clamp(1.4rem, 2.2vw, 1.8rem) !important; font-weight: 400 !important; letter-spacing: -.02em; margin: 0 !important; }
+.sv-ic { position: relative; z-index: 1; flex: none; width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; color: #fff;
+  background: linear-gradient(160deg, rgba(150,110,255,.35), rgba(40,30,120,.5)) padding-box, linear-gradient(160deg, #b693ff, #5b4bff 60%, #2f6bff) border-box; border: 1.5px solid transparent; box-shadow: 0 0 18px rgba(140,100,255,.45); }
+.sv-ic svg.i { width: 20px; height: 20px; }
+.sv-bot { position: relative; padding: 16px clamp(22px, 2.6vw, 30px) clamp(20px, 2.4vw, 26px); background: rgba(8,9,20,.72); border-top: 1px solid rgba(255,255,255,.07); display: flex; flex-direction: column; gap: 16px; flex: 1; }
+.sv-bot p { margin: 0 !important; color: rgba(255,255,255,.62) !important; font-size: .88rem !important; }
+.sv-bot .pt-foot { margin-top: auto !important; }
+@media (min-width: 761px) {
+  .sv { transform: rotate(calc((var(--k) - 1.5) * .8deg)); }
+  @media (hover: hover) { .sv:hover { transform: rotate(0) translateY(-4px); } .sv:hover .sv-top::before { opacity: 1; } }
+}
+
+/* Film strip: one seamless loop */
+.perf { height: 34px !important; display: grid !important; place-items: center; opacity: 1 !important; gap: 0 !important; position: relative; }
+.perf i { display: none !important; }
+.pf-run { position: absolute; inset: 0; left: -24px; right: 0;
+  background:
+    radial-gradient(circle 2.6px at 12px 50%, rgba(143,178,255,.55) 98%, transparent) 0 4px / 24px 6px repeat-x,
+    radial-gradient(circle 2.6px at 12px 50%, rgba(143,178,255,.55) 98%, transparent) 0 calc(100% - 4px) / 24px 6px repeat-x,
+    linear-gradient(rgba(143,178,255,.18), rgba(143,178,255,.18)) 0 12px / 100% 1px no-repeat,
+    linear-gradient(rgba(143,178,255,.18), rgba(143,178,255,.18)) 0 calc(100% - 12px) / 100% 1px no-repeat;
+  animation: pfRun 2.4s linear infinite; will-change: transform; }
+@keyframes pfRun { from { transform: translate3d(0,0,0); } to { transform: translate3d(24px,0,0); } }
+.perf span { position: relative; z-index: 1; padding: 0 14px; background: #05070c; font: 600 .56rem ui-monospace, Menlo, monospace !important; letter-spacing: .3em; color: rgba(143,178,255,.85) !important; }
+
+/* Extras: one swipeable row on phones; estimate sits close to its options, packages get room */
+@media (max-width: 760px) {
+  .toggles { flex-wrap: nowrap !important; overflow-x: auto; scrollbar-width: none; max-width: 100%; padding-right: 40px !important; scroll-snap-type: x proximity; -webkit-mask-image: linear-gradient(90deg, #000 82%, transparent); mask-image: linear-gradient(90deg, #000 82%, transparent); }
+  .toggles::-webkit-scrollbar { display: none; }
+  .toggles .tg { flex: none; scroll-snap-align: start; white-space: nowrap; }
+  .est { gap: 22px !important; }
+  .pk-head { margin-top: 110px !important; }
+}
+
+@media (max-width: 760px) {
+  .bq { display: block !important; position: relative; padding: 16px 0 !important; }
+  .bq-n { position: absolute; left: 0; top: 17px; }
+  .bq .field > label:first-child { padding-left: 30px; }
+}
+
+.est > *, .est .panel, .est .opt { min-width: 0; }
+.est .opt { max-width: 100%; }
+
+.toggles .tg { position: relative; }
+.toggles .tg input { left: 0; top: 0; width: 1px; height: 1px; }
+
+#brief .seg2.via input#f-contact { position: static !important; opacity: 1 !important; width: 0 !important; flex: 1 1 0 !important; min-width: 0 !important; height: 46px !important; }
+#brief .brief-grid > *, #brief form, .bq, .bq .field, .seg2.via { min-width: 0; max-width: 100%; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
@@ -2561,20 +2639,20 @@ footer .foot-bottom { margin-top: clamp(32px, 5vw, 56px); padding-top: 20px; bor
   <symbol id="g-cut" viewBox="0 0 32 32"><path d="M11.6 11.4 27.5 26.5M11.6 20.6 27.5 5.5" stroke="url(#gA)" stroke-width="3.4" stroke-linecap="round"/><circle cx="7.5" cy="8" r="4.8" fill="none" stroke="url(#gB)" stroke-width="3.2"/><circle cx="7.5" cy="24" r="4.8" fill="none" stroke="url(#gB)" stroke-width="3.2"/><circle cx="18" cy="16" r="1.8" fill="#fff"/></symbol>
 
   <filter id="duo" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="table" tableValues="0.02 0.05 0.18 1"/><feFuncG type="table" tableValues="0.03 0.1 0.42 1"/><feFuncB type="table" tableValues="0.05 0.26 1 1"/></feComponentTransfer></filter>
-  <symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="3.5" width="18" height="17" rx="2.5"/><path d="M7.5 3.5v17M16.5 3.5v17M3 8h4.5M3 12h4.5M3 16h4.5M16.5 8H21M16.5 12H21M16.5 16H21"/></symbol>
+  <symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="3.5" width="18" height="17" rx="2.5"/><path d="M7.5 3.5v17M16.5 3.5v17M3 8h4.5M3 12h18M3 16h4.5M16.5 8H21M16.5 16H21"/></symbol>
   <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3.5s6 6.4 6 10.5a6 6 0 0 1-12 0c0-4.1 6-10.5 6-10.5Z"/></symbol>
-  <symbol id="i-wave" viewBox="0 0 24 24"><path d="M3 12h2M7 8v8M11 5v14M15 9v6M19 11v2"/></symbol>
+  <symbol id="i-wave" viewBox="0 0 24 24"><path d="M3 10v4M7 7v10M11 4v16M15 8v8M19 10.5v3"/></symbol>
   <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-3.8 4-5.5 7.5-5.5s6.3 1.7 7.5 5.5"/></symbol>
-  <symbol id="i-box" viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/></symbol>
-  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 3.6 5.4 3.6 8.5s-1.1 5.9-3.6 8.5c-2.5-2.6-3.6-5.4-3.6-8.5S9.5 6.1 12 3.5Z"/></symbol>
-  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3 5 13.5h6L10 21l8-10.5h-6L13 3Z"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24"><path d="M12 2.8 20.5 7.5v9L12 21.2 3.5 16.5v-9Z"/><path d="M3.5 7.5 12 12.2l8.5-4.7M12 12.2v9"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3Z"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13.5 2.5 5 13.5h6.5L10.5 21.5 19 10.5h-6.5Z"/></symbol>
   <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
-  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
-  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></symbol>
-  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2.5" y="4" width="19" height="13" rx="2"/><path d="M8.5 21h7M12 17v4"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6.5" y="2.5" width="11" height="19" rx="3"/><path d="M10.5 18.5h3"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2.5" y="4" width="19" height="13" rx="2.5"/><path d="M8.5 21h7M12 17v4"/></symbol>
   <symbol id="i-laurel" viewBox="-8 -4 30 68"><path d="M16 60Q-2 32 14 2" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><path d="M16.00 60.00Q11.83 55.26 5.62 56.37Q9.79 61.11 16.00 60.00ZM16.00 60.00Q19.51 55.84 17.51 50.77Q14.00 54.94 16.00 60.00ZM12.03 52.97Q8.67 48.04 2.71 48.41Q6.08 53.34 12.03 52.97ZM12.03 52.97Q15.80 49.47 14.47 44.49Q10.70 48.00 12.03 52.97ZM9.12 45.88Q6.61 40.85 1.00 40.48Q3.51 45.51 9.12 45.88ZM9.12 45.88Q13.09 43.08 12.44 38.28Q8.47 41.07 9.12 45.88ZM7.28 38.72Q5.63 33.71 0.46 32.65Q2.11 37.67 7.28 38.72ZM7.28 38.72Q11.35 36.67 11.35 32.12Q7.29 34.17 7.28 38.72ZM6.50 31.50Q5.69 26.64 1.04 24.99Q1.85 29.85 6.50 31.50ZM6.50 31.50Q10.55 30.18 11.15 25.97Q7.10 27.29 6.50 31.50ZM6.78 24.22Q6.71 19.63 2.65 17.52Q2.71 22.10 6.78 24.22ZM6.78 24.22Q10.69 23.57 11.78 19.77Q7.88 20.41 6.78 24.22ZM8.12 16.88Q8.68 12.67 5.21 10.24Q4.65 14.44 8.12 16.88ZM8.12 16.88Q11.79 16.81 13.25 13.45Q9.59 13.52 8.12 16.88ZM10.53 9.47Q11.56 5.71 8.66 3.11Q7.63 6.87 10.53 9.47ZM10.53 9.47Q13.87 9.87 15.57 6.96Q12.23 6.56 10.53 9.47ZM14.00 2.00Q15.35 -1.28 12.97 -3.91Q11.61 -0.63 14.00 2.00ZM14.00 2.00Q16.29 -0.64 15.04 -3.91Q12.75 -1.27 14.00 2.00Z" fill="currentColor"/></symbol>
-  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3.5 12.4V4.5a1 1 0 0 1 1-1h7.9a1 1 0 0 1 .7.3l7.6 7.6a1 1 0 0 1 0 1.4l-7.9 7.9a1 1 0 0 1-1.4 0l-7.6-7.6a1 1 0 0 1-.3-.7Z"/><circle cx="8.5" cy="8.5" r="1.5"/></symbol>
-  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.4a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.7M12 16.8v.2"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3.5 4.5v6.8c0 .5.2 1 .6 1.4l8.2 8.2a2 2 0 0 0 2.8 0l5.8-5.8a2 2 0 0 0 0-2.8l-8.2-8.2a2 2 0 0 0-1.4-.6H4.5a1 1 0 0 0-1 1Z"/><circle cx="8" cy="8" r="1.4" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 0 1 4.8 1c0 1.7-2.4 2.1-2.4 3.6"/><circle cx="12" cy="17.2" r=".9" fill="currentColor" stroke="none"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5L7 4.5Z"/></symbol>
   <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
   <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
@@ -2586,12 +2664,12 @@ footer .foot-bottom { margin-top: clamp(32px, 5vw, 56px); padding-top: 20px; bor
   <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.8v.2"/></symbol>
   <symbol id="i-video" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M10 9v6l5-3-5-3Z"/></symbol>
   <symbol id="i-camera" viewBox="0 0 24 24"><rect x="2.5" y="7" width="13" height="10" rx="2"/><path d="M15.5 10.5 21 7.5v9l-5.5-3"/></symbol>
-  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3c.6 4.2 2.8 6.4 7 7-4.2.6-6.4 2.8-7 7-.6-4.2-2.8-6.4-7-7 4.2-.6 6.4-2.8 7-7Z"/></symbol>
-  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></symbol>
-  <symbol id="i-cut" viewBox="0 0 24 24"><circle cx="6" cy="6.5" r="2.8"/><circle cx="6" cy="17.5" r="2.8"/><path d="M8.3 8.2 20 18M8.3 15.8 20 6"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3.5c.6 4.3 2.7 6.4 7 7-4.3.6-6.4 2.7-7 7-.6-4.3-2.7-6.4-7-7 4.3-.6 6.4-2.7 7-7Z"/><path d="M19 16.5v4M17 18.5h4"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3.5 9 4.8-9 4.8-9-4.8Z"/><path d="m3 12.3 9 4.8 9-4.8"/><path d="m3 16.3 9 4.8 9-4.8"/></symbol>
+  <symbol id="i-cut" viewBox="0 0 24 24"><circle cx="6.5" cy="6.5" r="3"/><circle cx="6.5" cy="17.5" r="3"/><path d="M8.7 8.7 20 20M8.7 15.3 20 4"/></symbol>
   <symbol id="i-ref" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 9h18M8 4v5"/></symbol>
-  <symbol id="i-wa" viewBox="0 0 24 24"><path d="M4 20l1.2-4A8.2 8.2 0 1 1 8.4 19z"/><path d="M9.2 8.6c0 3.3 2.9 6.2 6.2 6.2l1-1.4-2-1-1 1a4.7 4.7 0 0 1-2.8-2.8l1-1-1-2Z" stroke-width="1.4"/></symbol><symbol id="i-yt" viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.2 9.4v5.2l4.4-2.6Z" fill="currentColor" stroke="none"/></symbol><symbol id="i-ig" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6" fill="currentColor"/></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9.5 18h5M10.5 21h3"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2h5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3Z"/></symbol><symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="m4 17.5 5-4.5 4 3.5 3-2.5 4 3.5"/></symbol><symbol id="i-inf" viewBox="0 0 24 24"><path d="M7 9a3 3 0 1 0 0 6c2.5 0 3.5-3 5-3s2.5 3 5 3a3 3 0 1 0 0-6c-2.5 0-3.5 3-5 3S9.5 9 7 9Z"/></symbol><symbol id="i-coin1" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5"/><path d="M12 8.5v7"/></symbol><symbol id="i-coin2" viewBox="0 0 24 24"><circle cx="10" cy="13" r="6.5"/><path d="M13.5 5.2A6.5 6.5 0 0 1 20.5 11a6.5 6.5 0 0 1-3.2 5.6"/></symbol><symbol id="i-coin3" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="2.5"/><path d="M5 6v4c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5V6M5 10v4c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-4M5 14v3.5c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5V14"/></symbol><symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol><linearGradient id="gLg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#8fb2ff"/><stop offset="1" stop-color="#2f6bff"/></linearGradient><symbol id="g-logo" viewBox="0 0 32 32"><rect x="2.5" y="8.5" width="20" height="15" rx="4.5" fill="url(#gLg)"/><path d="M23.8 14 29.5 10.4v11.2L23.8 18Z" fill="url(#gLg)"/><circle cx="12.5" cy="16" r="3.8" fill="#05070c"/><circle cx="12.5" cy="16" r="1.5" fill="#8fb2ff"/></symbol><symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></symbol>
-  <symbol id="i-send" viewBox="0 0 24 24"><path d="M21 3.5 2.5 10.8l7 2.7 2.7 7L21 3.5Z"/><path d="m9.5 13.5 4-4"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><path d="M3.5 20.5 4.8 16A8.5 8.5 0 1 1 8 19.2Z"/><path d="M9 8.2c.3-.6.9-.6 1.2 0l.7 1.5c.1.3 0 .6-.2.8l-.5.5a5.6 5.6 0 0 0 2.8 2.8l.5-.5c.2-.2.5-.3.8-.2l1.5.7c.6.3.6.9 0 1.2l-.7.4c-.7.4-1.6.4-2.4 0A8.4 8.4 0 0 1 8.8 11c-.4-.8-.4-1.7 0-2.4Z"/></symbol><symbol id="i-yt" viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9.3v5.4l4.6-2.7Z" fill="currentColor"/></symbol><symbol id="i-ig" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9.5 18h5M10.5 21h3"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2h5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3Z"/></symbol><symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="m4 17.5 5-4.5 4 3.5 3-2.5 4 3.5"/></symbol><symbol id="i-inf" viewBox="0 0 24 24"><path d="M7 9a3 3 0 1 0 0 6c2.5 0 3.5-3 5-3s2.5 3 5 3a3 3 0 1 0 0-6c-2.5 0-3.5 3-5 3S9.5 9 7 9Z"/></symbol><symbol id="i-coin1" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5"/><path d="M12 8.5v7"/></symbol><symbol id="i-coin2" viewBox="0 0 24 24"><circle cx="10" cy="13" r="6.5"/><path d="M13.5 5.2A6.5 6.5 0 0 1 20.5 11a6.5 6.5 0 0 1-3.2 5.6"/></symbol><symbol id="i-coin3" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="2.5"/><path d="M5 6v4c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5V6M5 10v4c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-4M5 14v3.5c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5V14"/></symbol><symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol><linearGradient id="gLg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#8fb2ff"/><stop offset="1" stop-color="#2f6bff"/></linearGradient><symbol id="g-logo" viewBox="0 0 32 32"><rect x="2.5" y="8.5" width="20" height="15" rx="4.5" fill="url(#gLg)"/><path d="M23.8 14 29.5 10.4v11.2L23.8 18Z" fill="url(#gLg)"/><circle cx="12.5" cy="16" r="3.8" fill="#05070c"/><circle cx="12.5" cy="16" r="1.5" fill="#8fb2ff"/></symbol><symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3.6 7 7.2 5.4a2 2 0 0 0 2.4 0L20.4 7"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M20.5 3.5 3.5 10.2a.6.6 0 0 0 0 1.1l6.4 2.8 2.8 6.4a.6.6 0 0 0 1.1 0Z"/><path d="m9.9 14.1 10.6-10.6"/></symbol>
 </svg>
 
 <div class="drum top" aria-hidden="true"><div class="drum-in" id="drum"></div><i class="drum-h"></i><span class="drum-t" id="tcl-t">00:00:00</span><i id="tcl-h" hidden></i></div>
@@ -2701,7 +2779,7 @@ footer .foot-bottom { margin-top: clamp(32px, 5vw, 56px); padding-top: 20px; bor
    </div>
   </div>
 
-  <div class="perf" aria-hidden="true"><i></i><span>NOMAD · 35MM · SC 02</span><i></i></div>
+  <div class="perf" aria-hidden="true"><div class="pf-run"></div><span>NOMAD · 35MM · SC 02</span></div>
   <section class="sec" id="showcase">
     <div class="wrap">
       <div class="head">
@@ -2773,7 +2851,7 @@ footer .foot-bottom { margin-top: clamp(32px, 5vw, 56px); padding-top: 20px; bor
           <p class="muted" style="font-size:.92rem;margin-bottom:22px">Change any option and the estimate updates instantly.</p>
           <div class="opt"><span>Format</span><div class="opts eo4" id="e-format"></div></div>
           <div class="opt"><span>Approach</span><div class="opts" id="e-ap"></div><small id="e-ap-note" hidden>Editing works with your own footage, so the approach doesn’t apply.</small></div>
-          <div class="opt ver-row"><div><span>Extra platform versions</span><small id="v-note"></small></div><div class="stepper"><button type="button" id="v-minus" aria-label="Fewer versions">−</button><output id="v-out" aria-live="polite">0</output><button type="button" id="v-plus" aria-label="More versions">+</button></div></div>
+          <div class="opt ver-row"><div><span>Extra platform versions</span><small id="v-note"></small></div><div class="stepper"><button type="button" id="v-minus" aria-label="Fewer versions"><svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg></button><output id="v-out" aria-live="polite">0</output><button type="button" id="v-plus" aria-label="More versions"><svg viewBox="0 0 24 24"><path d="M6 12h12M12 6v12"/></svg></button></div></div>
           <div class="opt"><span>Extras</span>
             <div class="toggles">
               <label class="tg" id="tg-day"><span class="tg-ic"><svg class="i"><use href="#i-wave"/></svg></span><span class="tg-t"><b>AI voice-over<em>+$300</em></b><small>Any language, any voice</small></span><input type="checkbox" id="x-day"><span class="sw"></span></label>
@@ -2807,7 +2885,7 @@ footer .foot-bottom { margin-top: clamp(32px, 5vw, 56px); padding-top: 20px; bor
   </section>
 
   <!-- PROCESS -->
-  <div class="perf" aria-hidden="true"><i></i><span>NOMAD · 35MM · SC 05</span><i></i></div>
+  <div class="perf" aria-hidden="true"><div class="pf-run"></div><span>NOMAD · 35MM · SC 05</span></div>
   <section class="sec alt" id="process">
     <div class="wrap">
       <div class="head">
@@ -2863,8 +2941,8 @@ footer .foot-bottom { margin-top: clamp(32px, 5vw, 56px); padding-top: 20px; bor
             <div class="ref" id="ref" hidden><svg class="i ic"><use href="#i-ref"/></svg><div><b id="ref-t"></b><span id="ref-s"></span></div><button type="button" id="ref-x" aria-label="Remove reference">×</button></div>
             <div class="bq"><span class="bq-n">01</span><div class="field"><label for="f-name">Your name <i>*</i></label><input id="f-name" name="name" autocomplete="name" placeholder="How should we call you?"></div></div>
             <div class="bq"><span class="bq-n">02</span><div class="field"><label>Best way to reach you <i>*</i></label>
-              <div class="seg2" role="radiogroup"><input type="radio" name="via" id="via-email" value="email"><label for="via-email"><svg class="i"><use href="#i-mail"/></svg>Email</label><input type="radio" name="via" id="via-telegram" value="telegram" checked><label for="via-telegram"><svg class="i"><use href="#i-send"/></svg>Telegram</label><input type="radio" name="via" id="via-whatsapp" value="whatsapp"><label for="via-whatsapp"><svg class="i"><use href="#i-wa"/></svg>WhatsApp</label></div>
-              <input id="f-contact" name="contact" placeholder="@username" autocomplete="off"></div></div>
+              <div class="seg2 via" role="radiogroup"><input type="radio" name="via" id="via-email" value="email"><label for="via-email" aria-label="Email"><svg class="i"><use href="#i-mail"/></svg><span class="vt">Email</span></label><input type="radio" name="via" id="via-telegram" value="telegram" checked><label for="via-telegram" aria-label="Telegram"><svg class="i"><use href="#i-send"/></svg><span class="vt">Telegram</span></label><input type="radio" name="via" id="via-whatsapp" value="whatsapp"><label for="via-whatsapp" aria-label="WhatsApp"><svg class="i"><use href="#i-wa"/></svg><span class="vt">WhatsApp</span></label>
+              <input id="f-contact" name="contact" placeholder="@username" autocomplete="off"></div></div></div>
             <div class="bq"><span class="bq-n">03</span><div class="field"><label>Format</label>
               <div class="seg2" data-for="f-format"><input type="radio" name="fmt" id="fmt-short" value="short"><label for="fmt-short"><svg class="i"><use href="#i-phone"/></svg>Short-form</label><input type="radio" name="fmt" id="fmt-promo" value="promo"><label for="fmt-promo"><svg class="i"><use href="#i-monitor"/></svg>Promo</label><input type="radio" name="fmt" id="fmt-film" value="film"><label for="fmt-film"><svg class="i"><use href="#i-film"/></svg>Brand film</label><input type="radio" name="fmt" id="fmt-other" value="other"><label for="fmt-other">Other</label></div>
               <input id="f-format-other" class="bq-other" placeholder="Tell us the format" hidden>
@@ -3544,7 +3622,7 @@ footer .foot-bottom { margin-top: clamp(32px, 5vw, 56px); padding-top: 20px; bor
   };
   $("#svc").innerHTML = FOLD.map(function (f, k) {
     var link = f.k === "voice" ? '<a class="pt-go" href="#brief">Ask <svg class="i"><use href="#i-arrow"/></svg></a>' : '<button type="button" class="pt-go" data-ex="' + f.k + '">See examples <svg class="i"><use href="#i-arrow"/></svg></button>';
-    return '<article class="sv sv-' + f.k + '"><span class="sv-n">0' + (k + 1) + '</span><div class="sv-art" aria-hidden="true">' + SVART[f.k] + '</div><span class="pt-k">' + ({ ai: "From scratch", hybrid: "AI + your footage", edit: "Your footage", voice: "Audio" }[f.k]) + "</span><h3>" + f.t + "</h3><p>" + f.d + '</p><div class="pt-foot"><span>from <b>' + money(f.from) + "</b></span>" + link + "</div></article>";
+    return '<article class="sv sv-' + f.k + '" style="--k:' + k + '"><div class="sv-top"><div class="sv-tt"><span class="sv-n">0' + (k + 1) + ' · ' + ({ ai: "From scratch", hybrid: "AI + your footage", edit: "Your footage", voice: "Audio" }[f.k]) + "</span><h3>" + f.t + '</h3></div><span class="sv-ic"><svg class="i"><use href="#' + ({ ai: "i-spark", hybrid: "i-layers", edit: "i-cut", voice: "i-wave" }[f.k]) + '"/></svg></span></div><div class="sv-bot"><p>' + f.d + '</p><div class="pt-foot"><span>from <b>' + money(f.from) + "</b></span>" + link + "</div></div></article>";
   }).join("");
   document.addEventListener("click", function (e) {
     var s = e.target.closest("[data-show]");
@@ -4094,10 +4172,12 @@ footer .foot-bottom { margin-top: clamp(32px, 5vw, 56px); padding-top: 20px; bor
     };
     document.addEventListener("change", function (e) {
       var t = e.target;
-      if (t.name === "via") { c.placeholder = PH[t.value]; c.type = t.value === "email" ? "email" : t.value === "whatsapp" ? "tel" : "text"; c.focus(); }
+      if (t.name === "via") { c.placeholder = PH[t.value]; c.type = t.value === "email" ? "email" : t.value === "whatsapp" ? "tel" : "text"; placeVia(); c.focus(); }
       if (t.name === "fmt") { $("#f-format").value = t.value; oth.hidden = t.value !== "other"; if (t.value === "other") oth.focus(); }
       if (t.name === "apr") $("#f-ap").value = t.value;
     });
+    function placeVia() { var r = $('input[name="via"]:checked'); if (!r) return; var l = $('label[for="' + r.id + '"]'); $$(".via label").forEach(function (x) { x.classList.toggle("on", x === l); }); l.after(c); }
+    placeVia();
     bud.addEventListener("input", function () { paintBud(); hapt(); });
     syncBrief();
   })();
