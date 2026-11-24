@@ -2650,6 +2650,25 @@ footer .about p { margin-bottom: 0 !important; }
 #brief .form-foot .btn { flex: none; padding: 12px 18px !important; font-size: .86rem !important; gap: 8px; }
 #brief .form-foot .btn svg.i { width: 16px; height: 16px; }
 
+/* Brief: pill fields everywhere, compact contact row, swipeable chips on phones */
+#brief input:not([type=radio]):not([type=checkbox]):not(.bud) { border-radius: 999px !important; height: 48px; padding: 0 20px !important; font-size: .92rem !important; }
+#brief input::placeholder, #brief textarea::placeholder { font-size: .88rem; color: rgba(255,255,255,.35); }
+#brief textarea { border-radius: 22px !important; }
+.via label { width: 42px !important; height: 42px !important; }
+.via label svg.i { width: 17px !important; height: 17px !important; }
+#brief .seg2.via input#f-contact { height: 42px !important; padding: 0 16px !important; font-size: .86rem !important; }
+@media (max-width: 760px) {
+  #brief .seg2:not(.via) { flex-wrap: nowrap !important; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; padding-right: 32px; -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent); mask-image: linear-gradient(90deg, #000 85%, transparent); }
+  #brief .seg2:not(.via)::-webkit-scrollbar { display: none; }
+  #brief .seg2:not(.via) label { flex: none; white-space: nowrap; scroll-snap-align: start; }
+  .seg2 input { left: 0; top: 0; }
+  .seg2 { position: relative; }
+}
+
+input:not([type=radio]):not([type=checkbox]):not([type=range]), select { border-radius: 999px !important; }
+textarea { border-radius: 22px !important; }
+.chip, .fbtn, .seg2 label, .tg, .btn, .hb, .lang-btn, .pt-go, .gl-go, .tp-play { border-radius: 999px !important; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
@@ -4206,7 +4225,7 @@ footer .about p { margin-bottom: 0 !important; }
 
   /* ================= Brief controls ================= */
   (function () {
-    var PH = { email: "name@company.com", telegram: "@username", whatsapp: "+1 555 000 0000" }, BL = ["Under $2k", "$2k–8k", "$8k–20k", "$20k+", "Not sure"];
+    var PH = { email: "you@mail.com", telegram: "@username", whatsapp: "+1 555 000 00 00" }, BL = ["Under $2k", "$2k–8k", "$8k–20k", "$20k+", "Not sure"];
     var c = $("#f-contact"), bud = $("#bud"), out = $("#bud-out"), oth = $("#f-format-other");
     function paintBud() { var v = +bud.value; out.textContent = BL[v]; bud.style.setProperty("--p", v / 4 * 100 + "%"); $("#b" + (v + 1)).checked = true; }
     window.syncBrief = function () {
